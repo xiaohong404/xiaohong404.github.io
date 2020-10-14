@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://example.com">
   <title>Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="查看给出的c语言源代码  显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。 IDA32打开文件  编写python脚本123456from pwn import *io &#x3D; remote(&amp;#x27;pwnable.kr&amp;#x27;,9000)payload &#x3D; &amp;#x27;a&amp;#x27;*0x2C + &amp;#x27;junk&amp;#">
+  <meta name="description" content="bof  查看给出的c语言源代码  显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。 IDA32打开文件  编写python脚本123456from pwn import *io &#x3D; remote(&amp;#x27;pwnable.kr&amp;#x27;,9000)payload &#x3D; &amp;#x27;a&amp;#x27;*0x2C + &amp;#x27;jun">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hexo">
 <meta property="og:url" content="http://example.com/2020/10/14/bof/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="查看给出的c语言源代码  显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。 IDA32打开文件  编写python脚本123456from pwn import *io &#x3D; remote(&amp;#x27;pwnable.kr&amp;#x27;,9000)payload &#x3D; &amp;#x27;a&amp;#x27;*0x2C + &amp;#x27;junk&amp;#">
+<meta property="og:description" content="bof  查看给出的c语言源代码  显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。 IDA32打开文件  编写python脚本123456from pwn import *io &#x3D; remote(&amp;#x27;pwnable.kr&amp;#x27;,9000)payload &#x3D; &amp;#x27;a&amp;#x27;*0x2C + &amp;#x27;jun">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="c:/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201012224340251.png">
 <meta property="og:image" content="c:/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201012225056912.png">
 <meta property="og:image" content="c:/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201012232356510.png">
 <meta property="article:published_time" content="2020-10-14T15:06:28.960Z">
-<meta property="article:modified_time" content="2020-10-12T15:24:04.000Z">
+<meta property="article:modified_time" content="2020-10-14T15:25:38.000Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="c:/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201012224340251.png">
@@ -163,7 +163,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <img src="C:/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201012224340251.png" alt="image-20201012224340251" style="zoom:33%;" />
+        <h1 id="bof"><a href="#bof" class="headerlink" title="bof"></a>bof</h1><img src="C:/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201012224340251.png" alt="image-20201012224340251" style="zoom:33%;" />
 
 <h3 id="查看给出的c语言源代码"><a href="#查看给出的c语言源代码" class="headerlink" title="查看给出的c语言源代码"></a>查看给出的c语言源代码</h3><img src="C:/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201012225056912.png" alt="image-20201012225056912" style="zoom:33%;" />
 
