@@ -118,35 +118,35 @@
             </div>
             <!-- Post -->
             <div class="typo" style="padding: 3rem;">
-                <p><img src="/.com//1.png"></p>
-<h3 id="查看passcode-c源文件"><a href="#查看passcode-c源文件" class="headerlink" title="查看passcode.c源文件"></a>查看passcode.c源文件</h3><img src="C:/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201013191052090.png" alt="image-20201013191052090" style="zoom:33%;">
+                <p><strong><img src="/2020/10/15/passcode/1.png" class title="This is an test image"></strong></p>
+<h3 id="查看passcode-c源文件"><a href="#查看passcode-c源文件" class="headerlink" title="查看passcode.c源文件"></a>查看passcode.c源文件</h3><img src="/2020/10/15/passcode/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201013191052090.png" alt="image-20201013191052090" style="zoom:33%;">
 
 <p>第一反应为使得passcode1为338150、passcode2为13371337，之后调用system函数。</p>
-<img src="C:/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201013195126511.png" alt="image-20201013195126511" style="zoom:33%;">
+<img src="/2020/10/15/passcode/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201013195126511.png" alt="image-20201013195126511" style="zoom:33%;">
 
 <p>login函数中要求输入两个密码passcode1和passcode2，但scanf函数用法错误，其后并没有加上&amp;符号取其地址，而是直接使用了栈上两个没有初始化的随机值，因此直接输入则会出现segmentation fault。因此考虑在login函数之前执行的welcome函数。</p>
-<img src="C:/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201013190830421.png" alt="image-20201013190830421" style="zoom:33%;">
+<img src="/2020/10/15/passcode/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201013190830421.png" alt="image-20201013190830421" style="zoom:33%;">
 
 <p>welcome函数要求用户输入姓名的字符串，但是允许输入100字节长度，因此尝试使用其覆盖栈上两个变量的“随机值”。</p>
-<h3 id="gdb-passcode查看其汇编代码"><a href="#gdb-passcode查看其汇编代码" class="headerlink" title="gdb passcode查看其汇编代码"></a>gdb passcode查看其汇编代码</h3><h4 id="disassemble-r-welcome"><a href="#disassemble-r-welcome" class="headerlink" title="disassemble /r welcome"></a>disassemble /r welcome</h4><img src="C:/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201013192534295.png" alt="image-20201013192534295" style="zoom:33%;">
+<h3 id="gdb-passcode查看其汇编代码"><a href="#gdb-passcode查看其汇编代码" class="headerlink" title="gdb passcode查看其汇编代码"></a>gdb passcode查看其汇编代码</h3><h4 id="disassemble-r-welcome"><a href="#disassemble-r-welcome" class="headerlink" title="disassemble /r welcome"></a>disassemble /r welcome</h4><img src="/2020/10/15/passcode/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201013192534295.png" alt="image-20201013192534295" style="zoom:33%;">
 
-<h4 id="disassemble-r-login"><a href="#disassemble-r-login" class="headerlink" title="disassemble /r login"></a>disassemble /r login</h4><img src="C:/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201013192940960.png" alt="image-20201013192940960" style="zoom:33%;">
+<h4 id="disassemble-r-login"><a href="#disassemble-r-login" class="headerlink" title="disassemble /r login"></a>disassemble /r login</h4><img src="/2020/10/15/passcode/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201013192940960.png" alt="image-20201013192940960" style="zoom:33%;">
 
 <p>发现char数组在$ebp - 0x70$处，而passcode1、passcode2分别在$ebp - 0x10、ebp - 0xc$处，其相差的距离$0x70 - 0x10 = 96 &lt; 100,0x70 - 0xc = 100$，因此并不能直接通过输入姓名字符串覆盖变量passcode2,只可以覆盖passcode1。</p>
-<h3 id="转换思路"><a href="#转换思路" class="headerlink" title="转换思路"></a>转换思路</h3><h4 id="查看文件保护措施"><a href="#查看文件保护措施" class="headerlink" title="查看文件保护措施"></a>查看文件保护措施</h4><img src="C:/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201013194727963.png" alt="image-20201013194727963" style="zoom:33%;">
+<h3 id="转换思路"><a href="#转换思路" class="headerlink" title="转换思路"></a>转换思路</h3><h4 id="查看文件保护措施"><a href="#查看文件保护措施" class="headerlink" title="查看文件保护措施"></a>查看文件保护措施</h4><img src="/2020/10/15/passcode/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201013194727963.png" alt="image-20201013194727963" style="zoom:33%;">
 
 <p>栈上开启了Canary机制，因此栈溢出很难成功，发现没有开启PIE，因此可以通过修改某些函数got表的地址，进行调用system函数。实际上，既然scanf是一个具有写功能的函数，我们完全可以利用scanf来修改此后使用到的某个函数的got表项。例如，程序在<strong>scanf(“%d”, passcode1);**后立即使用了</strong>fflush函数<strong>，所以我们完全可以先找到fflush的got表项地址（程序没有开PIE，无需leak），把passcode1布局为该地址，并在调用到scanf(“%d”, passcode1)时输入程序代码中调用</strong>system(“/bin/cat flag”);**处的地址，这样执行fflush函数时就会执行system函数。</p>
 <p><strong>注意这里区分got表本身的地址和写入got表项中的地址</strong></p>
-<h4 id="fflush函数的地址"><a href="#fflush函数的地址" class="headerlink" title="fflush函数的地址"></a>fflush函数的地址</h4><img src="C:/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201013194007909.png" alt="image-20201013194007909" style="zoom:33%;">
+<h4 id="fflush函数的地址"><a href="#fflush函数的地址" class="headerlink" title="fflush函数的地址"></a>fflush函数的地址</h4><img src="/2020/10/15/passcode/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201013194007909.png" alt="image-20201013194007909" style="zoom:33%;">
 
 <p>fflush地址为$0x0804a004$</p>
-<h4 id="system函数的地址"><a href="#system函数的地址" class="headerlink" title="system函数的地址"></a>system函数的地址</h4><img src="C:/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201013215628382.png" alt="image-20201013215628382" style="zoom:33%;">
+<h4 id="system函数的地址"><a href="#system函数的地址" class="headerlink" title="system函数的地址"></a>system函数的地址</h4><img src="/2020/10/15/passcode/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201013215628382.png" alt="image-20201013215628382" style="zoom:33%;">
 
 <p>这里注意system函数需要将参数先压栈之后再调用，即真正调用的函数地址为$0x080485e3$，即在printf函数之后执行。</p>
 <h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c <span class="string">&quot;print &#x27;A&#x27; * 96 + &#x27;\x04\xa0\x04\x08&#x27; + &#x27;134514147\n&#x27;&quot;</span> | ./passcode</span><br></pre></td></tr></table></figure>
 
 <p>因为passcode是输入int型，即输入$0x080485e3 = 134514147$。</p>
-<h3 id="获得flag"><a href="#获得flag" class="headerlink" title="获得flag"></a>获得flag</h3><img src="C:/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201013220230826.png" alt="image-20201013220230826" style="zoom:33%;">
+<h3 id="获得flag"><a href="#获得flag" class="headerlink" title="获得flag"></a>获得flag</h3><img src="/2020/10/15/passcode/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201013220230826.png" alt="image-20201013220230826" style="zoom:33%;">
 
 
             </div>
