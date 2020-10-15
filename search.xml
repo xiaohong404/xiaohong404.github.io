@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>collision</title>
+    <url>/xiaohong404.github.io/2020/10/15/collision/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/1.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/2.png" class></strong></p>
+<h3 id="查看C语言源代码"><a href="#查看C语言源代码" class="headerlink" title="查看C语言源代码"></a>查看C语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/3.png" class></strong></p>
+<h3 id="main-int-argc-char-argv"><a href="#main-int-argc-char-argv" class="headerlink" title="main(int argc, char* argv[])"></a><a href="https://blog.csdn.net/LYJ_viviani/article/details/51873961">main(int argc, char* argv[])</a></h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/4.png" class></strong></p>
+<p>传递三个参数$aa,bb,cc$, 程序运行结果如下:</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/5.png" class></strong></p>
+<p><strong>注意：若传递n个参数，实际上相当于给main函数传递了n+1个参数，argc=n+1（因为argv[0]是路径名自动传递）</strong></p>
+<h3 id="分析col-c"><a href="#分析col-c" class="headerlink" title="分析col.c"></a>分析col.c</h3><ul>
+<li>函数传递了两个参数，第一个参数为int型，第二个参数为一个字符数组，main函数首先判断第一个参数如果小于2,即若不显式传递参数，则打印argv[0]之后会直接退出。</li>
+<li>argv[1]，即传入的第二个参数，第一个参数为文件所在路径，指向的字符串的长度需要等于20字节。</li>
+<li>check_password函数将指向20字节的字符指针转为int指针，因为int是4字节，即将20字节字符串拆分成为5个int类型的数据，之后求和。</li>
+<li>如果求和的结果和给定的哈希值0x21DD09EC相等，则会执行system函数拿到flag。</li>
+</ul>
+<p>最直接的想法是暴力穷举，寻找哈希碰撞，但实际上这里可以直接凑出这个哈希值，可以令20字节的前16字节都设置为0x01，<strong>注意不能设置为0x00</strong>，因为0x00是一个截断字符，程序读入argv[1]时如果遇到了0x00会自动截断，从而导致程序结果有误。</p>
+<p>另外，注意数据按照小端序存放：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/6.png" class></strong></p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/7.png" class></strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">./col $(python -c <span class="string">&quot;print &#x27;\x01\x01\x01\x01&#x27;*4 + &#x27;\xe8\x05\xd9\x1d&#x27;&quot;</span>)</span><br><span class="line"><span class="comment"># 这一inline的python表达式可以将生成的结果作为argv[1]参数</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="拿到flag"><a href="#拿到flag" class="headerlink" title="拿到flag"></a>拿到flag</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/8.png" class></strong></p>
+]]></content>
+      <tags>
+        <tag>Pwnable.kr</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>bof</title>
     <url>/xiaohong404.github.io/2020/10/15/bof/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/4.png" class></strong></p>
@@ -12,23 +42,6 @@
 <h3 id="IDA32打开文件"><a href="#IDA32打开文件" class="headerlink" title="IDA32打开文件"></a>IDA32打开文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/3.png" class></strong></p>
 <h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = remote(<span class="string">&#x27;pwnable.kr&#x27;</span>,<span class="number">9000</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2C</span> + <span class="string">&#x27;junk&#x27;</span> + <span class="string">&#x27;junk&#x27;</span> + p32(<span class="number">0xcafebabe</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
 
-]]></content>
-      <tags>
-        <tag>Pwnable.kr</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>flag</title>
-    <url>/xiaohong404.github.io/2020/10/15/flag/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/1.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/2.png" class></strong></p>
-<h3 id="checksec查看文件属性"><a href="#checksec查看文件属性" class="headerlink" title="checksec查看文件属性"></a>checksec查看文件属性</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/3.png" class></strong></p>
-<h3 id="windows下使用upx-d命令解压缩"><a href="#windows下使用upx-d命令解压缩" class="headerlink" title="windows下使用upx -d命令解压缩"></a>windows下使用upx -d命令解压缩</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/4.png" class></strong></p>
-<h3 id="IDA64打开解压缩的文件"><a href="#IDA64打开解压缩的文件" class="headerlink" title="IDA64打开解压缩的文件"></a>IDA64打开解压缩的文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/5.png" class></strong></p>
-<p>将flag的值存放到dest中，直接查看flag即可</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/6.png" class></strong></p>
 ]]></content>
       <tags>
         <tag>Pwnable.kr</tag>
@@ -65,52 +78,17 @@
       </tags>
   </entry>
   <entry>
-    <title>collision</title>
-    <url>/xiaohong404.github.io/2020/10/15/collision/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/1.png" class></strong></p>
+    <title>flag</title>
+    <url>/xiaohong404.github.io/2020/10/15/flag/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/1.png" class></strong></p>
  <a id="more"></a>
 
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/2.png" class></strong></p>
-<h3 id="查看C语言源代码"><a href="#查看C语言源代码" class="headerlink" title="查看C语言源代码"></a>查看C语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/3.png" class></strong></p>
-<h3 id="main-int-argc-char-argv"><a href="#main-int-argc-char-argv" class="headerlink" title="main(int argc, char* argv[])"></a><a href="https://blog.csdn.net/LYJ_viviani/article/details/51873961">main(int argc, char* argv[])</a></h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/4.png" class></strong></p>
-<p>传递三个参数$aa,bb,cc$, 程序运行结果如下:</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/5.png" class></strong></p>
-<p><strong>注意：若传递n个参数，实际上相当于给main函数传递了n+1个参数，argc=n+1（因为argv[0]是路径名自动传递）</strong></p>
-<h3 id="分析col-c"><a href="#分析col-c" class="headerlink" title="分析col.c"></a>分析col.c</h3><ul>
-<li>函数传递了两个参数，第一个参数为int型，第二个参数为一个字符数组，main函数首先判断第一个参数如果小于2,即若不显式传递参数，则打印argv[0]之后会直接退出。</li>
-<li>argv[1]，即传入的第二个参数，第一个参数为文件所在路径，指向的字符串的长度需要等于20字节。</li>
-<li>check_password函数将指向20字节的字符指针转为int指针，因为int是4字节，即将20字节字符串拆分成为5个int类型的数据，之后求和。</li>
-<li>如果求和的结果和给定的哈希值0x21DD09EC相等，则会执行system函数拿到flag。</li>
-</ul>
-<p>最直接的想法是暴力穷举，寻找哈希碰撞，但实际上这里可以直接凑出这个哈希值，可以令20字节的前16字节都设置为0x01，<strong>注意不能设置为0x00</strong>，因为0x00是一个截断字符，程序读入argv[1]时如果遇到了0x00会自动截断，从而导致程序结果有误。</p>
-<p>另外，注意数据按照小端序存放：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/6.png" class></strong></p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/7.png" class></strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">./col $(python -c <span class="string">&quot;print &#x27;\x01\x01\x01\x01&#x27;*4 + &#x27;\xe8\x05\xd9\x1d&#x27;&quot;</span>)</span><br><span class="line"><span class="comment"># 这一inline的python表达式可以将生成的结果作为argv[1]参数</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="拿到flag"><a href="#拿到flag" class="headerlink" title="拿到flag"></a>拿到flag</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/8.png" class></strong></p>
-]]></content>
-      <tags>
-        <tag>Pwnable.kr</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>random</title>
-    <url>/xiaohong404.github.io/2020/10/15/random/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/random/1.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/random/2.png" class></strong></p>
-<h3 id="查看random-c源代码"><a href="#查看random-c源代码" class="headerlink" title="查看random.c源代码"></a>查看random.c源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/random/3.png" class></strong></p>
-<p>函数的整个执行流程是rand（）产生的随机值和输入的密钥进行异或，若其结果等于$0xdeadbeef$，则可以执行system函数，拿到flag。</p>
-<h3 id="rand（）函数"><a href="#rand（）函数" class="headerlink" title="rand（）函数"></a>rand（）函数</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/random/4.png" class></strong></p>
-<p>由此可见，如果不重新生成种子（一般情况下，默认生成种子为1），则每次产生的随机数将会是一个固定值，那么接下来的任务就是确定这个固定值。</p>
-<h3 id="查看随机数"><a href="#查看随机数" class="headerlink" title="查看随机数"></a>查看随机数</h3><h4 id="disassemble-r-main-查看汇编代码"><a href="#disassemble-r-main-查看汇编代码" class="headerlink" title="$disassemble /r \ main$查看汇编代码"></a>$disassemble /r \ main$查看汇编代码</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/random/5.png" class></strong></p>
-<h4 id="在cmp处下断点"><a href="#在cmp处下断点" class="headerlink" title="在cmp处下断点"></a>在cmp处下断点</h4><p>汇编代码中，在进行cmp之前先进行了一次异或运算，显然这是将用户输入的key和生成的随机数进行异或，由此可以判断随机数的位置为$rbp-4$（先压入栈中），因此使用$x/10x \ $rbp-4$查看内存的值即可。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/random/6.png" class></strong></p>
-<p>所以生成的随机数为0x6b8b4567，可多次运行程序查看其值是否发生变化，这里不做演示。</p>
-<h3 id="获得flag"><a href="#获得flag" class="headerlink" title="获得flag"></a>获得flag</h3><p>求出$0x6b8b4567\oplus 0xdeadbeef$的值输入即可</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/random/7.png" class></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/2.png" class></strong></p>
+<h3 id="checksec查看文件属性"><a href="#checksec查看文件属性" class="headerlink" title="checksec查看文件属性"></a>checksec查看文件属性</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/3.png" class></strong></p>
+<h3 id="windows下使用upx-d命令解压缩"><a href="#windows下使用upx-d命令解压缩" class="headerlink" title="windows下使用upx -d命令解压缩"></a>windows下使用upx -d命令解压缩</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/4.png" class></strong></p>
+<h3 id="IDA64打开解压缩的文件"><a href="#IDA64打开解压缩的文件" class="headerlink" title="IDA64打开解压缩的文件"></a>IDA64打开解压缩的文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/5.png" class></strong></p>
+<p>将flag的值存放到dest中，直接查看flag即可</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/6.png" class></strong></p>
 ]]></content>
       <tags>
         <tag>Pwnable.kr</tag>
@@ -143,6 +121,28 @@
 
 <p>因为passcode是输入int型，即输入$0x080485e3 = 134514147$。</p>
 <h3 id="获得flag"><a href="#获得flag" class="headerlink" title="获得flag"></a>获得flag</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/10.png" class></strong></p>
+]]></content>
+      <tags>
+        <tag>Pwnable.kr</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>random</title>
+    <url>/xiaohong404.github.io/2020/10/15/random/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/random/1.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/random/2.png" class></strong></p>
+<h3 id="查看random-c源代码"><a href="#查看random-c源代码" class="headerlink" title="查看random.c源代码"></a>查看random.c源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/random/3.png" class></strong></p>
+<p>函数的整个执行流程是rand（）产生的随机值和输入的密钥进行异或，若其结果等于$0xdeadbeef$，则可以执行system函数，拿到flag。</p>
+<h3 id="rand（）函数"><a href="#rand（）函数" class="headerlink" title="rand（）函数"></a>rand（）函数</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/random/4.png" class></strong></p>
+<p>由此可见，如果不重新生成种子（一般情况下，默认生成种子为1），则每次产生的随机数将会是一个固定值，那么接下来的任务就是确定这个固定值。</p>
+<h3 id="查看随机数"><a href="#查看随机数" class="headerlink" title="查看随机数"></a>查看随机数</h3><h4 id="disassemble-r-main-查看汇编代码"><a href="#disassemble-r-main-查看汇编代码" class="headerlink" title="$disassemble /r \ main$查看汇编代码"></a>$disassemble /r \ main$查看汇编代码</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/random/5.png" class></strong></p>
+<h4 id="在cmp处下断点"><a href="#在cmp处下断点" class="headerlink" title="在cmp处下断点"></a>在cmp处下断点</h4><p>汇编代码中，在进行cmp之前先进行了一次异或运算，显然这是将用户输入的key和生成的随机数进行异或，由此可以判断随机数的位置为$rbp-4$（先压入栈中），因此使用$x/10x \ $rbp-4$查看内存的值即可。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/random/6.png" class></strong></p>
+<p>所以生成的随机数为0x6b8b4567，可多次运行程序查看其值是否发生变化，这里不做演示。</p>
+<h3 id="获得flag"><a href="#获得flag" class="headerlink" title="获得flag"></a>获得flag</h3><p>求出$0x6b8b4567\oplus 0xdeadbeef$的值输入即可</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/random/7.png" class></strong></p>
 ]]></content>
       <tags>
         <tag>Pwnable.kr</tag>
