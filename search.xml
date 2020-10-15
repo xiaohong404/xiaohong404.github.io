@@ -18,30 +18,17 @@
       </tags>
   </entry>
   <entry>
-    <title>collision</title>
-    <url>/xiaohong404.github.io/2020/10/15/collision/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/1.png" class></strong></p>
+    <title>flag</title>
+    <url>/xiaohong404.github.io/2020/10/15/flag/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/1.png" class></strong></p>
  <a id="more"></a>
 
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/2.png" class></strong></p>
-<h3 id="查看C语言源代码"><a href="#查看C语言源代码" class="headerlink" title="查看C语言源代码"></a>查看C语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/3.png" class></strong></p>
-<h3 id="main-int-argc-char-argv"><a href="#main-int-argc-char-argv" class="headerlink" title="main(int argc, char* argv[])"></a><a href="https://blog.csdn.net/LYJ_viviani/article/details/51873961">main(int argc, char* argv[])</a></h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/4.png" class></strong></p>
-<p>传递三个参数$aa,bb,cc$, 程序运行结果如下:</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/5.png" class></strong></p>
-<p><strong>注意：若传递n个参数，实际上相当于给main函数传递了n+1个参数，argc=n+1（因为argv[0]是路径名自动传递）</strong></p>
-<h3 id="分析col-c"><a href="#分析col-c" class="headerlink" title="分析col.c"></a>分析col.c</h3><ul>
-<li>函数传递了两个参数，第一个参数为int型，第二个参数为一个字符数组，main函数首先判断第一个参数如果小于2,即若不显式传递参数，则打印argv[0]之后会直接退出。</li>
-<li>argv[1]，即传入的第二个参数，第一个参数为文件所在路径，指向的字符串的长度需要等于20字节。</li>
-<li>check_password函数将指向20字节的字符指针转为int指针，因为int是4字节，即将20字节字符串拆分成为5个int类型的数据，之后求和。</li>
-<li>如果求和的结果和给定的哈希值0x21DD09EC相等，则会执行system函数拿到flag。</li>
-</ul>
-<p>最直接的想法是暴力穷举，寻找哈希碰撞，但实际上这里可以直接凑出这个哈希值，可以令20字节的前16字节都设置为0x01，<strong>注意不能设置为0x00</strong>，因为0x00是一个截断字符，程序读入argv[1]时如果遇到了0x00会自动截断，从而导致程序结果有误。</p>
-<p>另外，注意数据按照小端序存放：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/6.png" class></strong></p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/7.png" class></strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">./col $(python -c <span class="string">&quot;print &#x27;\x01\x01\x01\x01&#x27;*4 + &#x27;\xe8\x05\xd9\x1d&#x27;&quot;</span>)</span><br><span class="line"><span class="comment"># 这一inline的python表达式可以将生成的结果作为argv[1]参数</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="拿到flag"><a href="#拿到flag" class="headerlink" title="拿到flag"></a>拿到flag</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/8.png" class></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/2.png" class></strong></p>
+<h3 id="checksec查看文件属性"><a href="#checksec查看文件属性" class="headerlink" title="checksec查看文件属性"></a>checksec查看文件属性</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/3.png" class></strong></p>
+<h3 id="windows下使用upx-d命令解压缩"><a href="#windows下使用upx-d命令解压缩" class="headerlink" title="windows下使用upx -d命令解压缩"></a>windows下使用upx -d命令解压缩</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/4.png" class></strong></p>
+<h3 id="IDA64打开解压缩的文件"><a href="#IDA64打开解压缩的文件" class="headerlink" title="IDA64打开解压缩的文件"></a>IDA64打开解压缩的文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/5.png" class></strong></p>
+<p>将flag的值存放到dest中，直接查看flag即可</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/6.png" class></strong></p>
 ]]></content>
       <tags>
         <tag>Pwnable.kr</tag>
@@ -78,17 +65,30 @@
       </tags>
   </entry>
   <entry>
-    <title>flag</title>
-    <url>/xiaohong404.github.io/2020/10/15/flag/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/1.png" class></strong></p>
+    <title>collision</title>
+    <url>/xiaohong404.github.io/2020/10/15/collision/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/1.png" class></strong></p>
  <a id="more"></a>
 
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/2.png" class></strong></p>
-<h3 id="checksec查看文件属性"><a href="#checksec查看文件属性" class="headerlink" title="checksec查看文件属性"></a>checksec查看文件属性</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/3.png" class></strong></p>
-<h3 id="windows下使用upx-d命令解压缩"><a href="#windows下使用upx-d命令解压缩" class="headerlink" title="windows下使用upx -d命令解压缩"></a>windows下使用upx -d命令解压缩</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/4.png" class></strong></p>
-<h3 id="IDA64打开解压缩的文件"><a href="#IDA64打开解压缩的文件" class="headerlink" title="IDA64打开解压缩的文件"></a>IDA64打开解压缩的文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/5.png" class></strong></p>
-<p>将flag的值存放到dest中，直接查看flag即可</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/6.png" class></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/2.png" class></strong></p>
+<h3 id="查看C语言源代码"><a href="#查看C语言源代码" class="headerlink" title="查看C语言源代码"></a>查看C语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/3.png" class></strong></p>
+<h3 id="main-int-argc-char-argv"><a href="#main-int-argc-char-argv" class="headerlink" title="main(int argc, char* argv[])"></a><a href="https://blog.csdn.net/LYJ_viviani/article/details/51873961">main(int argc, char* argv[])</a></h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/4.png" class></strong></p>
+<p>传递三个参数$aa,bb,cc$, 程序运行结果如下:</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/5.png" class></strong></p>
+<p><strong>注意：若传递n个参数，实际上相当于给main函数传递了n+1个参数，argc=n+1（因为argv[0]是路径名自动传递）</strong></p>
+<h3 id="分析col-c"><a href="#分析col-c" class="headerlink" title="分析col.c"></a>分析col.c</h3><ul>
+<li>函数传递了两个参数，第一个参数为int型，第二个参数为一个字符数组，main函数首先判断第一个参数如果小于2,即若不显式传递参数，则打印argv[0]之后会直接退出。</li>
+<li>argv[1]，即传入的第二个参数，第一个参数为文件所在路径，指向的字符串的长度需要等于20字节。</li>
+<li>check_password函数将指向20字节的字符指针转为int指针，因为int是4字节，即将20字节字符串拆分成为5个int类型的数据，之后求和。</li>
+<li>如果求和的结果和给定的哈希值0x21DD09EC相等，则会执行system函数拿到flag。</li>
+</ul>
+<p>最直接的想法是暴力穷举，寻找哈希碰撞，但实际上这里可以直接凑出这个哈希值，可以令20字节的前16字节都设置为0x01，<strong>注意不能设置为0x00</strong>，因为0x00是一个截断字符，程序读入argv[1]时如果遇到了0x00会自动截断，从而导致程序结果有误。</p>
+<p>另外，注意数据按照小端序存放：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/6.png" class></strong></p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/7.png" class></strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">./col $(python -c <span class="string">&quot;print &#x27;\x01\x01\x01\x01&#x27;*4 + &#x27;\xe8\x05\xd9\x1d&#x27;&quot;</span>)</span><br><span class="line"><span class="comment"># 这一inline的python表达式可以将生成的结果作为argv[1]参数</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="拿到flag"><a href="#拿到flag" class="headerlink" title="拿到flag"></a>拿到flag</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/8.png" class></strong></p>
 ]]></content>
       <tags>
         <tag>Pwnable.kr</tag>
