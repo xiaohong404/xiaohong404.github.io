@@ -95,21 +95,6 @@
       </tags>
   </entry>
   <entry>
-    <title>mmutag</title>
-    <url>/xiaohong404.github.io/2020/10/16/mmutag/</url>
-    <content><![CDATA[<img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/16/mmutag/1.png" alt="image-20201016100551317" style="zoom:33%;">
-
- <a id="more"></a>
-
-<h3 id="检查文件保护措施"><a href="#检查文件保护措施" class="headerlink" title="检查文件保护措施"></a>检查文件保护措施</h3><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/16/mmutag/2.png" alt="image-20201016100738162" style="zoom:33%;">
-
-<p>程序开启了Canary机制和不可执行栈，因此不能直接通过栈溢出或者在栈上执行shellcode的方式进行攻击。</p>
-]]></content>
-      <tags>
-        <tag>西湖论剑</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>passcode</title>
     <url>/xiaohong404.github.io/2020/10/15/passcode/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/11.png" class></strong></p>
