@@ -231,6 +231,20 @@
               <span class="post-meta-item-text">Views: </span>
               <span id="busuanzi_value_page_pv"></span>
             </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/xiaohong404.github.io/2020/10/15/collision/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/xiaohong404.github.io/2020/10/15/collision/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
@@ -269,23 +283,6 @@
     
     
     
-        
-
-<div>
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>Post author:  </strong>Xiao Hong
-  </li>
-  <li class="post-copyright-link">
-    <strong>Post link: </strong>
-    <a href="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/15/collision/" title="collision">https://github.com/xiaohong404/xiaohong404.github.io/2020/10/15/collision/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
-  </li>
-</ul>
-</div>
-
 
       <footer class="post-footer">
           <div class="post-tags">
@@ -317,6 +314,7 @@
 
           </div>
           
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -534,12 +532,43 @@ $(document).ready(function() {
 
 
 
-  
 
   
 
+  
+
 
 
   
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qgoG1EyC6yrAnmbPcCl9pCH8-gzGzoHsz',
+      appKey     : 'yzRsxAlXtg72qlBbwrwA034j',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
 </body>
 </html>
