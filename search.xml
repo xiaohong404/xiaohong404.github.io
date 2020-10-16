@@ -8,14 +8,7 @@
 
 <iframe src="./PWN-Basic/pwn-basic.pdf" width="100%" height="800px"></iframe>
 
-
-
-	<div class="row">
-    <embed src="./PWN-Basic/pwn-basic.pdf" width="100%" height="550" type="application/pdf">
-	</div>
-
-
-]]></content>
+<div class="pdfobject-container" data-target="./PWN-Basic/pwn-basic.pdf" data-height="500px"></div>]]></content>
       <tags>
         <tag>Learning</tag>
       </tags>
