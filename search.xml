@@ -6,8 +6,10 @@
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN-Basic/1.png" class></strong></p>
  <a id="more"></a>
 
-<p><strong><div class="pdfobject-container" data-target="./\_posts/PWN-Basic/pwn-basic.pdf" data-height="500px"></div></strong></p>
-]]></content>
+<object data="./PWN-Basic/pwn-basic.pdf" type="application/pdf" width="100%" height="100%">
+
+<p><strong><div class="pdfobject-container" data-target="./PWN-Basic/pwn-basic.pdf" data-height="500px"></div></strong></p>
+</object>]]></content>
       <tags>
         <tag>Learning</tag>
       </tags>
