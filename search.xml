@@ -1,6 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Heap I</title>
+    <url>/xiaohong404.github.io/2020/10/16/Heap-I/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/0.png" class></strong></p>
+ <a id="more"></a>
+
+<h3 id="WHAT-IS-THE-HEAP-AND-WHY-DO-PEOPLE-USE-IT"><a href="#WHAT-IS-THE-HEAP-AND-WHY-DO-PEOPLE-USE-IT" class="headerlink" title="WHAT IS THE HEAP, AND WHY DO PEOPLE USE IT?"></a><strong>WHAT IS THE HEAP, AND WHY DO PEOPLE USE IT?</strong></h3><p>堆是C/C++程序员在程序执行期间手动分配的新的区域。程序员通过调用堆相关的函数如<em>malloc</em>向堆管理器请求这部分区域。这些被分配的内存区域，或者称为“allocations”，之后可以被程序员一直使用、修改或者引用，直到他们不再需要这部分区域，会调用free函数将这部分区域返还给堆管理器。</p>
+<p>下面是一个C语言程序分配、使用并且释放堆上的结构体的例子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> field1;</span><br><span class="line">    <span class="keyword">char</span>* field2;</span><br><span class="line">&#125; SomeStruct;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    SomeStruct* myObject = (SomeStruct*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(SomeStruct));</span><br><span class="line">    <span class="keyword">if</span>(myObject != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        myObject-&gt;field1 = <span class="number">1234</span>;</span><br><span class="line">        myObject-&gt;field2 = “Hello World!”;</span><br><span class="line">        do_stuff(myObject);</span><br><span class="line">	<span class="built_in">free</span>(myObject);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以只要程序员遵循下面几个小的规则，堆管理器将确保每个已分配的堆不会相互重叠。这个特点使得堆非常有用并且高效，这和大多数C/C++程序追求性能的要求相符合。</p>
+<p>接下来的图表列出了一些程序员在使用堆时的基本规则，以及在程序员违反这些规则时发生的一些漏洞类别。之后，我将更详细地讨论所有这些与堆相关的漏洞类别，目前只讨论堆使用正确时的表现。</p>
+<h3 id="HEAP-RULES"><a href="#HEAP-RULES" class="headerlink" title="HEAP RULES"></a>HEAP RULES</h3><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/1.png" class></strong></p>
+<p>当然，<em>malloc</em>和<em>free</em>并不是C和C++程序员与堆进行交互的唯一方式。相反，C++开发人员通常通过C++运算符<em>new</em>和<em>new []<em>分配内存。必须使用相应的C++运算符</em>delete</em>和<em>delete []<em>而不是</em>free</em>释放这些分配。程序员还可以通过与malloc兼容的堆函数（例如<a href="http://man7.org/linux/man-pages/man3/calloc.3p.html"><em>calloc</em></a>，<a href="http://man7.org/linux/man-pages/man3/realloc.3p.html"><em>realloc</em></a>和<a href="https://linux.die.net/man/3/memalign"><em>memalign）</em></a>来分配内存，这些函数最终也通过<em>free</em>释放，就像<em>malloc</em>一样。</p>
+<p>为简单起见，将首先讨论<em>malloc</em>和<em>free</em>，下面是一个C++程序如何分配，使用和释放堆上的结构体的例子：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomeClass</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> field1;</span><br><span class="line">    <span class="keyword">char</span>* field2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    SomeClass* myObject = <span class="keyword">new</span> SomeClass();</span><br><span class="line">    myObject-&gt;field1 = <span class="number">1234</span>;</span><br><span class="line">    myObject-&gt;field2 = “Hello World!”;</span><br><span class="line">    do_stuff(myObject);</span><br><span class="line">    <span class="keyword">delete</span> myObject;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="MEMORY-CHUNKS-AND-THE-CHUNK-ALLOCATION-STRATEGIES"><a href="#MEMORY-CHUNKS-AND-THE-CHUNK-ALLOCATION-STRATEGIES" class="headerlink" title="MEMORY CHUNKS AND THE CHUNK ALLOCATION STRATEGIES"></a><strong>MEMORY CHUNKS AND THE CHUNK ALLOCATION STRATEGIES</strong></h3><p>假设一个程序员通过malloc需求10字节内存，为了满足这个请求，堆管理器不仅仅只随机寻找一个10字节的程序员可以写的区域，而是需要做更多的事情。堆管理器也需要存储此次分配的元数据。这个元数据被存储在紧邻分配的10字节区域处。</p>
+<p>堆管理器还需要确保分配空间在32位系统上是8字节对齐的，在64位系统上是16字节对齐的。如果程序员只想存储文本字符串或字节数组之类的数据，那么分配空间的对齐方式无关紧要。但是如果程序员打算使用分配空间来存储更多复杂的数据结构，则对齐方式会对程序的正确性和性能会产生重大影响。由于<em>malloc</em>无法知道程序员将在分配空间中存储什么内容，因此堆管理器必须默认确保所有分配空间均对齐。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/2.png" class></strong></p>
+<p>此分配元数据和对齐填充字节与<em>malloc</em>的内存区域将一起被存储并返回给程序员。因此，堆管理器在内部分配的“块”内存比程序员最初要求的稍大。当程序员要求10个字节的内存时，堆管理器会找到或创建一个新的内存块，该块足以存储10个字节的空间、元数据以及对齐填充字节。然后，堆管理器将此块标记为“已分配”，并返回指向块内对齐的10字节“用户数据”区域的指针，程序员将收到<em>malloc</em>调用的返回值。</p>
+<h3 id="CHUNK-ALLOCATION-BASIC-STRATEGY"><a href="#CHUNK-ALLOCATION-BASIC-STRATEGY" class="headerlink" title="CHUNK ALLOCATION: BASIC STRATEGY"></a><strong>CHUNK ALLOCATION: BASIC STRATEGY</strong></h3><p>那么堆管理器如何在内部分配这些块呢？</p>
+<p>首先，让我们看一下堆管理器的大部分工作，分配小块内存的（大大简化的）策略。我将在详细地解释每个步骤，之后我们就可以研究分配大块内存的特殊情况。</p>
+<p>简化的小块分配策略如下：</p>
+<ol>
+<li><p>如果有一个先前释放的内存块，并且该块足够大，可以满足用户的请求，则堆管理器将使用这个释放的块进行新的分配。</p>
+</li>
+<li><p>否则，如果堆顶部有可用空间，则堆管理器将从这个空闲的空间中分配一个新的块并使用它。</p>
+</li>
+<li><p>否则，堆管理器将要求内核向堆的末尾添加新的内存，并且从新分配的空间中分配一个新块给用户。</p>
+</li>
+<li><p>如果前面所有策略均失败，则无法为提供分配服务，并且<em>malloc</em>返回NULL。</p>
+</li>
+</ol>
+<h4 id="ALLOCATING-FROM-FREE’D-CHUNKS"><a href="#ALLOCATING-FROM-FREE’D-CHUNKS" class="headerlink" title="ALLOCATING FROM FREE’D CHUNKS"></a><strong>ALLOCATING FROM FREE’D CHUNKS</strong></h4><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/3.png" class></strong></p>
+<p>从概念上讲，分配之前释放的块非常简单。因为当一个块在内存中被释放，堆管理器会在一系列称为<em>“bins”</em>的不同链表中记录这些释放的块。用户发出一个分配请求后，堆管理器会在这些<em>“bins”</em>中搜索一个足够大的空闲块，为用户提供服务。如果可以成功找到一个，则将这个空闲块从特定的bin中删除，并标记为“已分配”，然后这个指向该“user data”区域块的指针，会作为<em>malloc</em>的返回值返回给程序员。</p>
+<p>出于性能原因，有几种不同类型的<em>bins</em>，即<em>fast bins 、unsorted bins 、small bins、large bins 、per-thread tcache</em>。下个部分将详细讨论这些不同种类的<em>bins</em>。</p>
+<h4 id="ALLOCATING-FROM-THE-TOP-OF-THE-HEAP"><a href="#ALLOCATING-FROM-THE-TOP-OF-THE-HEAP" class="headerlink" title="ALLOCATING FROM THE TOP OF THE HEAP"></a><strong>ALLOCATING FROM THE TOP OF THE HEAP</strong></h4><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/4.gif" class></strong></p>
+<p>如果没有可用的空闲块可以满足分配请求，则堆管理器必须从头开始构造一个新块。为此，堆管理器首先查看堆顶部是否有足够的可用空间（有时称为“top chunk”或“remainder chunk”）。如果存在，堆管理器将在此可用空间基础上构造一个新块。</p>
+<h4 id="ASKING-THE-KERNEL-FOR-MORE-MEMORY-AT-THE-TOP-OF-THE-HEAP"><a href="#ASKING-THE-KERNEL-FOR-MORE-MEMORY-AT-THE-TOP-OF-THE-HEAP" class="headerlink" title="ASKING THE KERNEL FOR MORE MEMORY AT THE TOP OF THE HEAP"></a><strong>ASKING THE KERNEL FOR MORE MEMORY AT THE TOP OF THE HEAP</strong></h4><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/5.gif" class></strong></p>
+<p>一旦堆顶部的可用空间用完，堆管理器将不得不要求内核在堆的末尾增加更多内存。</p>
+<p>在建立堆的开始阶段上，堆管理器通过调用<a href="http://man7.org/linux/man-pages/man2/sbrk.2.html"><em>sbrk</em></a>，要求内核在堆末尾分配更多的内存。在大多数基于Linux的系统上，在内部使用称为“ <a href="https://linux.die.net/man/2/brk">brk</a> ”的系统调用。这个系统调用的名称很容易混淆，它最初的意思是“更改程序中断位置”，通俗来说，它表示在程序加载到内存之后，该区域会增加更多的内存。因为这是堆管理器从一开始创建堆的地方，所以此系统调用的作用是在程序堆的末尾分配更多的内存。</p>
+<p>最终，如果一直使用<em>sbrk</em>扩展堆会导致分配失败，因为堆空间增长得太大之后，进一步扩展将导致其与进程地址空间中的其他内容发生冲突，例如内存映射，共享库或线程的堆栈区域。因此sbrk无法分配时，堆管理器将使用<a href="http://man7.org/linux/man-pages/man2/mmap.2.html"><em>mmap</em></a>调用将新的非连续内存<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l2320">附加</a>到初始程序堆。</p>
+<p>如果<em>mmap</em>也失败，则该进程根本无法分配更多的内存，并且<em>malloc</em>将返回NULL。</p>
+<h3 id="OFF-HEAP-ALLOCATIONS-VIA-MMAP"><a href="#OFF-HEAP-ALLOCATIONS-VIA-MMAP" class="headerlink" title="OFF-HEAP ALLOCATIONS VIA MMAP"></a><strong>OFF-HEAP ALLOCATIONS VIA MMAP</strong></h3><p>很大的分配请求（超过某个阈值）在堆管理器中会得到<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l866">特殊处理</a>。通过直接调用<em>mmap</em>可以在堆外分配这些大块，并使用块中元数据的标记位来标记这一事实。当这些巨大块通过调用<em>free</em>释放到堆管理器时，堆管理器将通过<em>munmap</em>将整个<em>mmap</em> 过的区域返还给系统。</p>
+<p>*默认情况下，此<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l858">阈值</a> 在32位系统上为128KB~512KB，在64位系统上为32MB，但是，如果堆管理器检测到这些分配的大块内存只需要被临时使用，则此阈值也会<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l949">动态增加</a>。</p>
+<h3 id="ARENAS"><a href="#ARENAS" class="headerlink" title="ARENAS"></a><strong>ARENAS</strong></h3><h3 id="SUBHEAPS"><a href="#SUBHEAPS" class="headerlink" title="SUBHEAPS"></a><strong>SUBHEAPS</strong></h3><h3 id="CHUNK-METADATA"><a href="#CHUNK-METADATA" class="headerlink" title="CHUNK METADATA"></a><strong>CHUNK METADATA</strong></h3>]]></content>
+      <tags>
+        <tag>Heap_Learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>bof</title>
     <url>/xiaohong404.github.io/2020/10/15/bof/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/4.png" class></strong></p>

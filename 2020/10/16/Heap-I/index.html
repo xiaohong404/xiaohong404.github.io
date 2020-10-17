@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/xiaohong404.github.io/images/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/xiaohong404.github.io/images/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/xiaohong404.github.io/images/logo.png">
+  <link rel="mask-icon" href="/xiaohong404.github.io/images/logo.png" color="#222">
+
+<link rel="stylesheet" href="/xiaohong404.github.io/css/main.css">
+
+
+<link rel="stylesheet" href="/xiaohong404.github.io/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"github.com","root":"/xiaohong404.github.io/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="Heap I">
+<meta property="og:url" content="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/16/Heap-I/index.html">
+<meta property="og:site_name" content="Mr.red">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/16/Heap-I/0.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/16/Heap-I/1.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/16/Heap-I/2.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/16/Heap-I/3.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/16/Heap-I/4.gif">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/16/Heap-I/5.gif">
+<meta property="article:published_time" content="2020-10-16T14:10:00.000Z">
+<meta property="article:modified_time" content="2020-10-17T04:12:36.000Z">
+<meta property="article:author" content="Xiao Hong">
+<meta property="article:tag" content="Heap_Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/xiaohong404.github.io/2020/10/16/Heap-I/0.png">
+
+<link rel="canonical" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/16/Heap-I/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Heap I | Mr.red</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/xiaohong404.github.io/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Mr.red</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/xiaohong404.github.io/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/xiaohong404.github.io/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/xiaohong404.github.io/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/xiaohong404.github.io/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/16/Heap-I/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
+      <meta itemprop="name" content="Xiao Hong">
+      <meta itemprop="description" content="Things always start to get better after you give up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mr.red">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Heap I
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-16 22:10:00" itemprop="dateCreated datePublished" datetime="2020-10-16T22:10:00+08:00">2020-10-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-17 12:12:36" itemprop="dateModified" datetime="2020-10-17T12:12:36+08:00">2020-10-17</time>
+              </span>
+
+          
+            <span id="/xiaohong404.github.io/2020/10/16/Heap-I/" class="post-meta-item leancloud_visitors" data-flag-title="Heap I" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/xiaohong404.github.io/2020/10/16/Heap-I/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/xiaohong404.github.io/2020/10/16/Heap-I/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/0.png" class></strong></p>
+ <a id="more"></a>
+
+<h3 id="WHAT-IS-THE-HEAP-AND-WHY-DO-PEOPLE-USE-IT"><a href="#WHAT-IS-THE-HEAP-AND-WHY-DO-PEOPLE-USE-IT" class="headerlink" title="WHAT IS THE HEAP, AND WHY DO PEOPLE USE IT?"></a><strong>WHAT IS THE HEAP, AND WHY DO PEOPLE USE IT?</strong></h3><p>堆是C/C++程序员在程序执行期间手动分配的新的区域。程序员通过调用堆相关的函数如<em>malloc</em>向堆管理器请求这部分区域。这些被分配的内存区域，或者称为“allocations”，之后可以被程序员一直使用、修改或者引用，直到他们不再需要这部分区域，会调用free函数将这部分区域返还给堆管理器。</p>
+<p>下面是一个C语言程序分配、使用并且释放堆上的结构体的例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> field1;</span><br><span class="line">    <span class="keyword">char</span>* field2;</span><br><span class="line">&#125; SomeStruct;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    SomeStruct* myObject = (SomeStruct*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(SomeStruct));</span><br><span class="line">    <span class="keyword">if</span>(myObject != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        myObject-&gt;field1 = <span class="number">1234</span>;</span><br><span class="line">        myObject-&gt;field2 = “Hello World!”;</span><br><span class="line">        do_stuff(myObject);</span><br><span class="line">	<span class="built_in">free</span>(myObject);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以只要程序员遵循下面几个小的规则，堆管理器将确保每个已分配的堆不会相互重叠。这个特点使得堆非常有用并且高效，这和大多数C/C++程序追求性能的要求相符合。</p>
+<p>接下来的图表列出了一些程序员在使用堆时的基本规则，以及在程序员违反这些规则时发生的一些漏洞类别。之后，我将更详细地讨论所有这些与堆相关的漏洞类别，目前只讨论堆使用正确时的表现。</p>
+<h3 id="HEAP-RULES"><a href="#HEAP-RULES" class="headerlink" title="HEAP RULES"></a>HEAP RULES</h3><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/1.png" class></strong></p>
+<p>当然，<em>malloc</em>和<em>free</em>并不是C和C++程序员与堆进行交互的唯一方式。相反，C++开发人员通常通过C++运算符<em>new</em>和<em>new []<em>分配内存。必须使用相应的C++运算符</em>delete</em>和<em>delete []<em>而不是</em>free</em>释放这些分配。程序员还可以通过与malloc兼容的堆函数（例如<a target="_blank" rel="noopener" href="http://man7.org/linux/man-pages/man3/calloc.3p.html"><em>calloc</em></a>，<a target="_blank" rel="noopener" href="http://man7.org/linux/man-pages/man3/realloc.3p.html"><em>realloc</em></a>和<a target="_blank" rel="noopener" href="https://linux.die.net/man/3/memalign"><em>memalign）</em></a>来分配内存，这些函数最终也通过<em>free</em>释放，就像<em>malloc</em>一样。</p>
+<p>为简单起见，将首先讨论<em>malloc</em>和<em>free</em>，下面是一个C++程序如何分配，使用和释放堆上的结构体的例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomeClass</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> field1;</span><br><span class="line">    <span class="keyword">char</span>* field2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    SomeClass* myObject = <span class="keyword">new</span> SomeClass();</span><br><span class="line">    myObject-&gt;field1 = <span class="number">1234</span>;</span><br><span class="line">    myObject-&gt;field2 = “Hello World!”;</span><br><span class="line">    do_stuff(myObject);</span><br><span class="line">    <span class="keyword">delete</span> myObject;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="MEMORY-CHUNKS-AND-THE-CHUNK-ALLOCATION-STRATEGIES"><a href="#MEMORY-CHUNKS-AND-THE-CHUNK-ALLOCATION-STRATEGIES" class="headerlink" title="MEMORY CHUNKS AND THE CHUNK ALLOCATION STRATEGIES"></a><strong>MEMORY CHUNKS AND THE CHUNK ALLOCATION STRATEGIES</strong></h3><p>假设一个程序员通过malloc需求10字节内存，为了满足这个请求，堆管理器不仅仅只随机寻找一个10字节的程序员可以写的区域，而是需要做更多的事情。堆管理器也需要存储此次分配的元数据。这个元数据被存储在紧邻分配的10字节区域处。</p>
+<p>堆管理器还需要确保分配空间在32位系统上是8字节对齐的，在64位系统上是16字节对齐的。如果程序员只想存储文本字符串或字节数组之类的数据，那么分配空间的对齐方式无关紧要。但是如果程序员打算使用分配空间来存储更多复杂的数据结构，则对齐方式会对程序的正确性和性能会产生重大影响。由于<em>malloc</em>无法知道程序员将在分配空间中存储什么内容，因此堆管理器必须默认确保所有分配空间均对齐。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/2.png" class></strong></p>
+<p>此分配元数据和对齐填充字节与<em>malloc</em>的内存区域将一起被存储并返回给程序员。因此，堆管理器在内部分配的“块”内存比程序员最初要求的稍大。当程序员要求10个字节的内存时，堆管理器会找到或创建一个新的内存块，该块足以存储10个字节的空间、元数据以及对齐填充字节。然后，堆管理器将此块标记为“已分配”，并返回指向块内对齐的10字节“用户数据”区域的指针，程序员将收到<em>malloc</em>调用的返回值。</p>
+<h3 id="CHUNK-ALLOCATION-BASIC-STRATEGY"><a href="#CHUNK-ALLOCATION-BASIC-STRATEGY" class="headerlink" title="CHUNK ALLOCATION: BASIC STRATEGY"></a><strong>CHUNK ALLOCATION: BASIC STRATEGY</strong></h3><p>那么堆管理器如何在内部分配这些块呢？</p>
+<p>首先，让我们看一下堆管理器的大部分工作，分配小块内存的（大大简化的）策略。我将在详细地解释每个步骤，之后我们就可以研究分配大块内存的特殊情况。</p>
+<p>简化的小块分配策略如下：</p>
+<ol>
+<li><p>如果有一个先前释放的内存块，并且该块足够大，可以满足用户的请求，则堆管理器将使用这个释放的块进行新的分配。</p>
+</li>
+<li><p>否则，如果堆顶部有可用空间，则堆管理器将从这个空闲的空间中分配一个新的块并使用它。</p>
+</li>
+<li><p>否则，堆管理器将要求内核向堆的末尾添加新的内存，并且从新分配的空间中分配一个新块给用户。</p>
+</li>
+<li><p>如果前面所有策略均失败，则无法为提供分配服务，并且<em>malloc</em>返回NULL。</p>
+</li>
+</ol>
+<h4 id="ALLOCATING-FROM-FREE’D-CHUNKS"><a href="#ALLOCATING-FROM-FREE’D-CHUNKS" class="headerlink" title="ALLOCATING FROM FREE’D CHUNKS"></a><strong>ALLOCATING FROM FREE’D CHUNKS</strong></h4><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/3.png" class></strong></p>
+<p>从概念上讲，分配之前释放的块非常简单。因为当一个块在内存中被释放，堆管理器会在一系列称为<em>“bins”</em>的不同链表中记录这些释放的块。用户发出一个分配请求后，堆管理器会在这些<em>“bins”</em>中搜索一个足够大的空闲块，为用户提供服务。如果可以成功找到一个，则将这个空闲块从特定的bin中删除，并标记为“已分配”，然后这个指向该“user data”区域块的指针，会作为<em>malloc</em>的返回值返回给程序员。</p>
+<p>出于性能原因，有几种不同类型的<em>bins</em>，即<em>fast bins 、unsorted bins 、small bins、large bins 、per-thread tcache</em>。下个部分将详细讨论这些不同种类的<em>bins</em>。</p>
+<h4 id="ALLOCATING-FROM-THE-TOP-OF-THE-HEAP"><a href="#ALLOCATING-FROM-THE-TOP-OF-THE-HEAP" class="headerlink" title="ALLOCATING FROM THE TOP OF THE HEAP"></a><strong>ALLOCATING FROM THE TOP OF THE HEAP</strong></h4><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/4.gif" class></strong></p>
+<p>如果没有可用的空闲块可以满足分配请求，则堆管理器必须从头开始构造一个新块。为此，堆管理器首先查看堆顶部是否有足够的可用空间（有时称为“top chunk”或“remainder chunk”）。如果存在，堆管理器将在此可用空间基础上构造一个新块。</p>
+<h4 id="ASKING-THE-KERNEL-FOR-MORE-MEMORY-AT-THE-TOP-OF-THE-HEAP"><a href="#ASKING-THE-KERNEL-FOR-MORE-MEMORY-AT-THE-TOP-OF-THE-HEAP" class="headerlink" title="ASKING THE KERNEL FOR MORE MEMORY AT THE TOP OF THE HEAP"></a><strong>ASKING THE KERNEL FOR MORE MEMORY AT THE TOP OF THE HEAP</strong></h4><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/5.gif" class></strong></p>
+<p>一旦堆顶部的可用空间用完，堆管理器将不得不要求内核在堆的末尾增加更多内存。</p>
+<p>在建立堆的开始阶段上，堆管理器通过调用<a target="_blank" rel="noopener" href="http://man7.org/linux/man-pages/man2/sbrk.2.html"><em>sbrk</em></a>，要求内核在堆末尾分配更多的内存。在大多数基于Linux的系统上，在内部使用称为“ <a target="_blank" rel="noopener" href="https://linux.die.net/man/2/brk">brk</a> ”的系统调用。这个系统调用的名称很容易混淆，它最初的意思是“更改程序中断位置”，通俗来说，它表示在程序加载到内存之后，该区域会增加更多的内存。因为这是堆管理器从一开始创建堆的地方，所以此系统调用的作用是在程序堆的末尾分配更多的内存。</p>
+<p>最终，如果一直使用<em>sbrk</em>扩展堆会导致分配失败，因为堆空间增长得太大之后，进一步扩展将导致其与进程地址空间中的其他内容发生冲突，例如内存映射，共享库或线程的堆栈区域。因此sbrk无法分配时，堆管理器将使用<a target="_blank" rel="noopener" href="http://man7.org/linux/man-pages/man2/mmap.2.html"><em>mmap</em></a>调用将新的非连续内存<a target="_blank" rel="noopener" href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l2320">附加</a>到初始程序堆。</p>
+<p>如果<em>mmap</em>也失败，则该进程根本无法分配更多的内存，并且<em>malloc</em>将返回NULL。</p>
+<h3 id="OFF-HEAP-ALLOCATIONS-VIA-MMAP"><a href="#OFF-HEAP-ALLOCATIONS-VIA-MMAP" class="headerlink" title="OFF-HEAP ALLOCATIONS VIA MMAP"></a><strong>OFF-HEAP ALLOCATIONS VIA MMAP</strong></h3><p>很大的分配请求（超过某个阈值）在堆管理器中会得到<a target="_blank" rel="noopener" href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l866">特殊处理</a>。通过直接调用<em>mmap</em>可以在堆外分配这些大块，并使用块中元数据的标记位来标记这一事实。当这些巨大块通过调用<em>free</em>释放到堆管理器时，堆管理器将通过<em>munmap</em>将整个<em>mmap</em> 过的区域返还给系统。</p>
+<p>*默认情况下，此<a target="_blank" rel="noopener" href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l858">阈值</a> 在32位系统上为128KB~512KB，在64位系统上为32MB，但是，如果堆管理器检测到这些分配的大块内存只需要被临时使用，则此阈值也会<a target="_blank" rel="noopener" href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l949">动态增加</a>。</p>
+<h3 id="ARENAS"><a href="#ARENAS" class="headerlink" title="ARENAS"></a><strong>ARENAS</strong></h3><h3 id="SUBHEAPS"><a href="#SUBHEAPS" class="headerlink" title="SUBHEAPS"></a><strong>SUBHEAPS</strong></h3><h3 id="CHUNK-METADATA"><a href="#CHUNK-METADATA" class="headerlink" title="CHUNK METADATA"></a><strong>CHUNK METADATA</strong></h3>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/xiaohong404.github.io/tags/Heap-Learning/" rel="tag"># Heap_Learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/xiaohong404.github.io/2020/10/16/uaf/" rel="prev" title="uaf">
+      <i class="fa fa-chevron-left"></i> uaf
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+  
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#WHAT-IS-THE-HEAP-AND-WHY-DO-PEOPLE-USE-IT"><span class="nav-number">1.</span> <span class="nav-text">WHAT IS THE HEAP, AND WHY DO PEOPLE USE IT?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HEAP-RULES"><span class="nav-number">2.</span> <span class="nav-text">HEAP RULES</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MEMORY-CHUNKS-AND-THE-CHUNK-ALLOCATION-STRATEGIES"><span class="nav-number">3.</span> <span class="nav-text">MEMORY CHUNKS AND THE CHUNK ALLOCATION STRATEGIES</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CHUNK-ALLOCATION-BASIC-STRATEGY"><span class="nav-number">4.</span> <span class="nav-text">CHUNK ALLOCATION: BASIC STRATEGY</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ALLOCATING-FROM-FREE%E2%80%99D-CHUNKS"><span class="nav-number">4.1.</span> <span class="nav-text">ALLOCATING FROM FREE’D CHUNKS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ALLOCATING-FROM-THE-TOP-OF-THE-HEAP"><span class="nav-number">4.2.</span> <span class="nav-text">ALLOCATING FROM THE TOP OF THE HEAP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ASKING-THE-KERNEL-FOR-MORE-MEMORY-AT-THE-TOP-OF-THE-HEAP"><span class="nav-number">4.3.</span> <span class="nav-text">ASKING THE KERNEL FOR MORE MEMORY AT THE TOP OF THE HEAP</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OFF-HEAP-ALLOCATIONS-VIA-MMAP"><span class="nav-number">5.</span> <span class="nav-text">OFF-HEAP ALLOCATIONS VIA MMAP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ARENAS"><span class="nav-number">6.</span> <span class="nav-text">ARENAS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SUBHEAPS"><span class="nav-number">7.</span> <span class="nav-text">SUBHEAPS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CHUNK-METADATA"><span class="nav-number">8.</span> <span class="nav-text">CHUNK METADATA</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiao Hong"
+      src="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
+  <p class="site-author-name" itemprop="name">Xiao Hong</p>
+  <div class="site-description" itemprop="description">Things always start to get better after you give up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/xiaohong404.github.io/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/xiaohong404.github.io/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaohong404" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaohong404"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/pluto-9-55" title="ZhiHu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;pluto-9-55" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>ZhiHu</a>
+      </span>
+  </div>
+
+
+<!-- CloudCalendar -->
+<div class="widget-wrap" style="width: 90%;margin-left: auto;margin-right: auto; opacity: 0.97;">
+	<div class="widget" id="CloudCalendar"></div>
+</div>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020-10-17</span>
+  <span class="with-love",id="animate">
+    <i class="fa fa-basketball-ball"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaohong</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/xiaohong404.github.io/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/xiaohong404.github.io/lib/anime.min.js"></script>
+  <script src="/xiaohong404.github.io/lib/velocity/velocity.min.js"></script>
+  <script src="/xiaohong404.github.io/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/xiaohong404.github.io/js/utils.js"></script>
+
+<script src="/xiaohong404.github.io/js/motion.js"></script>
+
+
+<script src="/xiaohong404.github.io/js/schemes/muse.js"></script>
+
+
+<script src="/xiaohong404.github.io/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/xiaohong404.github.io/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/xiaohong404.github.io/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+
+
+  
+
+  
+
+
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qgoG1EyC6yrAnmbPcCl9pCH8-gzGzoHsz',
+      appKey     : 'yzRsxAlXtg72qlBbwrwA034j',
+      placeholder: "Just go go",
+      avatar     : 'wavatar',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : 'en,zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+<script src="/xiaohong404.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/xiaohong404.github.io/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":150,"height":300,"hOffset":80,"vOffset":-50},"mobile":{"show":true},"log":false,"tagMode":false});</script></body>
+</html>
