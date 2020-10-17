@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/16/Heap-I/8.png">
 <meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/16/Heap-I/9.gif">
 <meta property="article:published_time" content="2020-10-16T14:10:00.000Z">
-<meta property="article:modified_time" content="2020-10-17T07:43:08.000Z">
+<meta property="article:modified_time" content="2020-10-17T09:21:24.000Z">
 <meta property="article:author" content="Xiao Hong">
 <meta property="article:tag" content="Heap_Learning">
 <meta name="twitter:card" content="summary">
@@ -228,7 +228,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-17 15:43:08" itemprop="dateModified" datetime="2020-10-17T15:43:08+08:00">2020-10-17</time>
+                <time title="Modified: 2020-10-17 17:21:24" itemprop="dateModified" datetime="2020-10-17T17:21:24+08:00">2020-10-17</time>
               </span>
 
           
@@ -274,7 +274,7 @@
 <p>所以只要程序员遵循下面几个小的规则，堆管理器将确保每个已分配的堆不会相互重叠。这个特点使得堆非常有用并且高效，这和大多数C/C++程序追求性能的要求相符合。</p>
 <p>接下来的图表列出了一些程序员在使用堆时的基本规则，以及在程序员违反这些规则时发生的一些漏洞类别。之后，我将更详细地讨论所有这些与堆相关的漏洞类别，目前只讨论堆使用正确时的表现。</p>
 <h3 id="HEAP-RULES"><a href="#HEAP-RULES" class="headerlink" title="HEAP RULES"></a>HEAP RULES</h3><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/1.png" class></strong></p>
-<p>当然，<em>malloc</em>和<em>free</em>并不是C和C++程序员与堆进行交互的唯一方式。相反，C++开发人员通常通过C++运算符<em>new</em>和<em>new []<em>分配内存。必须使用相应的C++运算符</em>delete</em>和<em>delete []<em>而不是</em>free</em>释放这些分配。程序员还可以通过与malloc兼容的堆函数（例如<a target="_blank" rel="noopener" href="http://man7.org/linux/man-pages/man3/calloc.3p.html"><em>calloc</em></a>，<a target="_blank" rel="noopener" href="http://man7.org/linux/man-pages/man3/realloc.3p.html"><em>realloc</em></a>和<a target="_blank" rel="noopener" href="https://linux.die.net/man/3/memalign"><em>memalign）</em></a>来分配内存，这些函数最终也通过<em>free</em>释放，就像<em>malloc</em>一样。</p>
+<p>当然，<em>malloc</em>和<em>free</em>并不是C和C++程序员与堆进行交互的唯一方式。相反，C++开发人员通常通过C++运算符new和new []分配内存。必须使用相应的C++运算符delete和delete []而不是<em>free</em>释放这些分配。程序员还可以通过与malloc兼容的堆函数（例如<a target="_blank" rel="noopener" href="http://man7.org/linux/man-pages/man3/calloc.3p.html"><em>calloc</em></a>，<a target="_blank" rel="noopener" href="http://man7.org/linux/man-pages/man3/realloc.3p.html"><em>realloc</em></a>和<a target="_blank" rel="noopener" href="https://linux.die.net/man/3/memalign"><em>memalign）</em></a>来分配内存，这些函数最终也通过<em>free</em>释放，就像<em>malloc</em>一样。</p>
 <p>为简单起见，将首先讨论<em>malloc</em>和<em>free</em>，下面是一个C++程序如何分配，使用和释放堆上的结构体的例子：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomeClass</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> field1;</span><br><span class="line">    <span class="keyword">char</span>* field2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    SomeClass* myObject = <span class="keyword">new</span> SomeClass();</span><br><span class="line">    myObject-&gt;field1 = <span class="number">1234</span>;</span><br><span class="line">    myObject-&gt;field2 = “Hello World!”;</span><br><span class="line">    do_stuff(myObject);</span><br><span class="line">    <span class="keyword">delete</span> myObject;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
