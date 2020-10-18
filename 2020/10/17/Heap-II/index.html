@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/xiaohong404.github.io/images/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/xiaohong404.github.io/images/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/xiaohong404.github.io/images/logo.png">
+  <link rel="mask-icon" href="/xiaohong404.github.io/images/logo.png" color="#222">
+
+<link rel="stylesheet" href="/xiaohong404.github.io/css/main.css">
+
+
+<link rel="stylesheet" href="/xiaohong404.github.io/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"github.com","root":"/xiaohong404.github.io/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="Heap II">
+<meta property="og:url" content="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/17/Heap-II/index.html">
+<meta property="og:site_name" content="Mr.red">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/17/Heap-II/0.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/17/Heap-II/1.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/17/Heap-II/2.gif">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/17/Heap-II/3.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/17/Heap-II/4.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/17/Heap-II/5.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/17/Heap-II/6.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/17/Heap-II/7.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/17/Heap-II/8.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/17/Heap-II/9.png">
+<meta property="article:published_time" content="2020-10-17T13:32:43.000Z">
+<meta property="article:modified_time" content="2020-10-18T02:19:02.000Z">
+<meta property="article:author" content="Xiao Hong">
+<meta property="article:tag" content="Heap_Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/xiaohong404.github.io/2020/10/17/Heap-II/0.png">
+
+<link rel="canonical" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/17/Heap-II/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Heap II | Mr.red</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/xiaohong404.github.io/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Mr.red</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/xiaohong404.github.io/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/xiaohong404.github.io/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/xiaohong404.github.io/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/xiaohong404.github.io/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/17/Heap-II/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
+      <meta itemprop="name" content="Xiao Hong">
+      <meta itemprop="description" content="Things always start to get better after you give up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mr.red">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Heap II
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-17 21:32:43" itemprop="dateCreated datePublished" datetime="2020-10-17T21:32:43+08:00">2020-10-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-18 10:19:02" itemprop="dateModified" datetime="2020-10-18T10:19:02+08:00">2020-10-18</time>
+              </span>
+
+          
+            <span id="/xiaohong404.github.io/2020/10/17/Heap-II/" class="post-meta-item leancloud_visitors" data-flag-title="Heap II" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/xiaohong404.github.io/2020/10/17/Heap-II/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/xiaohong404.github.io/2020/10/17/Heap-II/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p>[<a target="_blank" rel="noopener" href="https://azeria-labs.com/heap-exploitation-part-2-glibc-heap-free-bins/">原版传送门</a>]</p>
+<h3 id="UNDERSTANDING-THE-GLIBC-HEAP-IMPLEMENTATION"><a href="#UNDERSTANDING-THE-GLIBC-HEAP-IMPLEMENTATION" class="headerlink" title="UNDERSTANDING THE GLIBC HEAP IMPLEMENTATION"></a><strong>UNDERSTANDING THE GLIBC HEAP IMPLEMENTATION</strong></h3><p>前一部分解释了<a target="_blank" rel="noopener" href="https://linux.die.net/man/3/malloc"><em>malloc</em></a>和<a target="_blank" rel="noopener" href="https://linux.die.net/man/3/free"><em>free</em></a>的基本行为。我们看到，<em>malloc</em>通过分配内存块来处理内存分配请求<em>。</em>每个块不仅存储程序员将与之交互的malloc返回的“用户数据”区域，还存储与该块关联的元数据。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/1.png" class></strong></p>
+<p>我们看到了堆管理器的基本块分配策略是如何工作的，并且看到了当没有已经释放的块可以被用于响应用户的请求时，如何从堆的顶部创建新块。</p>
+<p>接下来这篇文章，将解释这种块回收策略是如何工作的，即如何将已经分配的块被<em>free</em>然后保存起来，并最终回收以服务之后的<em>malloc</em>请求。许多堆利用技术都依赖于这些内部机制，但是现在，让我们看看堆正确运行时如何通过<em>free</em>回收这些块。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/2.gif" class></strong></p>
+<h3 id="HOW-DOES-FREE-WORK"><a href="#HOW-DOES-FREE-WORK" class="headerlink" title="HOW DOES FREE WORK?"></a><strong>HOW DOES FREE WORK?</strong></h3><p>当程序员完成<em>malloc</em>的分配块的任务（或malloc兼容的分配，如<em>calloc</em>）后，程序员将通过<a target="_blank" rel="noopener" href="https://linux.die.net/man/3/free"><em>free</em></a>将其释放回堆管理器。在<a target="_blank" rel="noopener" href="http://www.open-std.org/JTC1/SC22/wg14/www/docs/n1124.pdf">C标准</a>定义了<em>free（NULL）</em>什么也不做，但对于所有其他<em>free</em>调用，堆管理器的第一份工作是使指针指回其相应的块。堆管理器通过从传递给free的指针中<a target="_blank" rel="noopener" href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l1172">减去该块元数据的大小来实现</a>此目的。</p>
+<p>从指针到块的这种转换之所以有效，是因为用户数据区域位于块内，但是，仅当传递给free的指针确实来自<em>malloc</em>的实时分配时，该转换才有效。如果将其他一些指针传递给free，则堆管理器可能释放或回收无效的块，从而导致内存损坏问题，这可能导致进程崩溃，甚至可能使黑客远程接管该进程。</p>
+<p>因此，<em>free</em>首先进行了一些基本的检查，检查是否这个释放的块是显然无效的，防止之后再分配。如果其中任何一个检查失败，则程序中止。检查包括：</p>
+<ol>
+<li>检查分配<a target="_blank" rel="noopener" href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l4182">是否</a>在8字节（或64位为16字节）边界上对齐，因为<em>malloc</em>确保所有分配都对齐。</li>
+<li>检查块的大小字段是否可能，因为它可能<a target="_blank" rel="noopener" href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l4318">太小</a>，太大，或者没有对齐字节，还是因为它<a target="_blank" rel="noopener" href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l4175">与进程地址空间的末尾重叠</a>。</li>
+<li>检查块位于<a target="_blank" rel="noopener" href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l4318">arena的边界内</a>。</li>
+<li>通过检查位于下一个块开头的元数据中的相应“ P”位，检查该块是否<a target="_blank" rel="noopener" href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l4182">尚未标记为空闲</a>。</li>
+</ol>
+<p>这里的堆管理器检查并不详尽。攻击者控制的指向数据的指针可能会绕过这些完整性检查，并且仍会在进程中触发内存崩溃。我们将在以后的文章中更详细地介绍这一点。</p>
+<h3 id="FREE-CHUNK-METADATA"><a href="#FREE-CHUNK-METADATA" class="headerlink" title="FREE CHUNK METADATA"></a><strong>FREE CHUNK METADATA</strong></h3><p>在上一篇文章中，展示了已分配块如何将元数据与程序员使用的“用户数据”区域一起存储。这些已经分配的块存储了“块大小”以及其元数据中的三个位，分别称为“ A”，“ M”和“ P”。这些位可分别帮助堆管理器记住该块是否是从非主arena分配的，是否是通过<em>mmap</em>进行堆外分配的，以及前一个块是否是空闲的。</p>
+<p>空闲块也存储元数据。类似已分配的块，他们存储“块大小”，“A”和“P”字段，但他们不使用“M”字段，因为一个<a target="_blank" rel="noopener" href="http://man7.org/linux/man-pages/man2/mmap.2.html">MMAP</a>过的块在释放期间将永远是<a target="_blank" rel="noopener" href="https://linux.die.net/man/3/munmap"><em>munmap-</em></a>ed（取消虚拟内存映射），而不是转变成一个<em>free</em>块回收，即空闲块的”M“字段是一个确定的值，一定不会通过mmap从堆外分配。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/3.png" class></strong></p>
+<p>空闲块还使用称为“<a target="_blank" rel="noopener" href="http://g.oswego.edu/dl/html/malloc.html">边界标签</a>”的技术在用户数据区域之后存储信息。这些边界标签在块之前和之后携带大小信息。这允许从任何已知的块开始并在任何方向上遍历块，从而能够非常快速地合并相邻的空闲块。</p>
+<p>这些释放的块存储在相应的<em>”free bins“</em>中，这些<em>“free bins”</em>用作<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Linked_list">链表</a>。这要求每个空闲块还存储指向其他块的指针。由于释放的块中的“用户数据”（根据定义）是免费供堆管理器使用的，因此堆管理器将释放的块中的“用户数据”区域重新定位为额外的元数据所在的位置。</p>
+<h3 id="RECYCLING-MEMORY-WITH-BINS"><a href="#RECYCLING-MEMORY-WITH-BINS" class="headerlink" title="RECYCLING MEMORY WITH BINS"></a><strong>RECYCLING MEMORY WITH BINS</strong></h3><p>在内部，堆管理器需要记录释放的块，以便malloc可以在分配请求期间重用它们。在最初的实现中，堆管理器可以通过将所有释放的块简单地存储在某个巨大的链表中来完成此操作。这可以工作，但是会使<a target="_blank" rel="noopener" href="https://linux.die.net/man/3/malloc"><em>malloc</em></a>变慢。由于<em>malloc</em>是大多数程序的高利用率组件，因此这种缓慢将对系统上运行的程序的整体性能产生巨大影响。</p>
+<p>为了提高性能，堆管理器而是维护一系列称为“ bins”的列表，这些列表旨在最大程度地提高分配和释放的速度。共有5种类型<em>bins</em>：每个线程<a target="_blank" rel="noopener" href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l1407">62</a> <strong>small bins,</strong> 63 <strong>large bins,</strong> 1 <strong>unsorted bin,</strong> 10 <strong>fast bins</strong> and 64 <strong>tcache bins</strong> 。</p>
+<p><em>small，large，unsorted bins</em>是最古老的bin类型，其实现这里将其称为堆的基本回收策略。fast bins和tcache bins是在这些基础上的优化。</p>
+<p>容易混淆的地方在于，在堆管理器的源代码中，<em>small，large，unsorted bins</em>都一起存在<a target="_blank" rel="noopener" href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l1686">同一数组</a>中。索引0没有被使用，索引1是<em>unsorted bin</em>，2-64是<em>small bins</em>，65-127是<em>large bins</em>。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/4.png" class></strong></p>
+<h3 id="CHUNK-RECYCLING-THE-BASIC-STRATEGY"><a href="#CHUNK-RECYCLING-THE-BASIC-STRATEGY" class="headerlink" title="CHUNK RECYCLING: THE BASIC STRATEGY"></a><strong>CHUNK RECYCLING: THE BASIC STRATEGY</strong></h3><p>在<em>tcache</em>和<em>fastbin</em>优化之前，首先来看一下堆管理器使用的基本回收策略。</p>
+<p><em>free</em>的基本算法如下（低地址在前，高地址在后）：</p>
+<ol>
+<li><p>如果块在元数据中设置了<em>M</em>位，则分配是在堆外分配的，则应该被<a target="_blank" rel="noopener" href="https://linux.die.net/man/3/munmap"><em>munmap</em></a>。</p>
+</li>
+<li><p>否则，如果该块之前的块是空闲的，则将之前的块向后合并以创建更大的空闲块。</p>
+</li>
+<li><p>同样，如果此块之后的块是空闲的，则将之后的块将向前合并以创建更大的空闲块。</p>
+</li>
+<li><p>如果这个之后可能更大的块与堆的“顶部”相邻，则整个块将被存储到堆的末端，而不是存储在“ bin”中。</p>
+</li>
+<li><p>否则，该块将被标记为空闲并将其放置在适当的bin中。</p>
+</li>
+</ol>
+<h3 id="SMALL-BINS"><a href="#SMALL-BINS" class="headerlink" title="SMALL BINS"></a><strong>SMALL BINS</strong></h3><p><em>small bins</em>是最容易理解的基本bin。它们有62个，每个<em>small bin</em>都存储相同大小的固定块。在32位系统上小于512字节（在64位系统上小于1024字节）的每个块都有一个对应的<em>small bin</em>。由于每个<em>small bin</em>仅存储一个特定大小的块，它们会自动排序，因此在这些列表中插入和删除条目的速度非常快。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/5.png" class></strong></p>
+<h3 id="LARGE-BINS"><a href="#LARGE-BINS" class="headerlink" title="LARGE BINS"></a><strong>LARGE BINS</strong></h3><p><em>small bins</em>的策略非常适合小型分配，但是我们无法为每个可能的块大小都设置一个存储区。对于超过512字节（64位为1024字节）的块，堆管理器将改为使用<em>large bins</em>。</p>
+<p>63个<em>large bins</em>中的每个大都与<em>small bins</em>以相同的方式运行，但是它们不是存储固定大小的块，而是存储一定大小范围内的块。每个<em>large bins</em>的大小范围都设计为与<em>small bins</em>的块大小或其他<em>large bins</em>的范围不重叠。换句话说，在给定块的大小的情况下，恰好只有一个对应于此大小的<em>small bin</em>或<em>large bin</em>。</p>
+<p>由于<em>large bins</em>存储一定大小范围的块，因此向<em>large bin</em>中插入一个块必须手动进行排序，并且从链表中的分配也需要遍历该列表。这使得<em>large bins</em>本质上比<em>small bins</em>慢。但是，在大多数程序中，<em>large bins</em>的使用频率较低。这是因为平均意义上说，程序更倾向于以更高的频率分配（或释放）小的分配块。出于相同的原因，<em>large bins</em>的使用频率会聚集在覆盖范围较小的<em>large bin</em>中；最小的<em>large bin</em>仅覆盖从512字节到576字节的64字节范围的块，而第二大的<em>large bin</em>则覆盖256KB的大小范围的块。最大的<em>large bin</em>覆盖了<a target="_blank" rel="noopener" href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l1394">1MB以上</a>的所有已释放块。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/6.png" class></strong></p>
+<h3 id="UNSORTED-BIN"><a href="#UNSORTED-BIN" class="headerlink" title="UNSORTED BIN"></a><strong>UNSORTED BIN</strong></h3><p>堆管理器使用称为<em>unsorted bins</em>的优化缓存层面进一步改善了基本的分配算法。此优化基于以下观察结果：通常这些free的块都聚集在一起，并且释放后通常立即分配大小相似的块。例如，释放树或列表的程序通常会一次释放大多数分配空间中的所有条目，或者更新列表中条目的程序可能会释放前一个条目，然后再分配新的空间替换条目。</p>
+<p>在这些情况下，在将较大的块放入正确的bin中之前合并这些释放的块将避免一些开销，并且在分配过程中能够快速返回最近释放的块将简单地加快整个过程。</p>
+<p>因此堆管理器引入了<em>unsorted bin</em>，当一个块释放时，堆管理器没有立即将新释放的块放入相应的bin中，而是与相邻的块合并，然后将其转储到常规的<em>unsorted</em>的链表中。在<em>malloc</em>期间，将检查<em>unsorted bins</em>上的每个项目，以查看其是否“适合“请求。如果大小匹配，<em>malloc</em>可以立即使用它。如果没有匹配的块，则malloc之后会将块放入其相应的<em>small bins</em>或<em>large bins</em>中。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/7.png" class></strong></p>
+<h3 id="FAST-BINS"><a href="#FAST-BINS" class="headerlink" title="FAST BINS"></a><strong>FAST BINS</strong></h3><p><em>fast bins</em>是在之前看到的三个基本bin基础上的进一步优化。这些bins实际上将最近释放的小块保留在“fast-turnaround queue”中，并且在块被释放之后不将其与相邻的块合并，使得这些块始终保持活跃状态，以便在释放后不久若有匹配该块大小的malloc请求，可以立即重新利用该块。</p>
+<p>像<em>small bins</em>一样，每个<em>fast bins</em>仅负责单个固定大小的块。有10个这样的<em>fast bins</em>，覆盖大小为16、24、32、40、48、56、64、72、80和88字节的块以及块元数据。</p>
+<p>与<em>small bins</em>不同，<em>fast bins</em>的块永远不会与相邻的块合并。实际上，这是堆管理器不会在下一个块的开头设置“ P”位的方式。换句话说，在概念上可以认为，堆管理器不会“真正”释放<em>fast bins</em>中的块。</p>
+<p>和<em>small bins</em>相同的部分在于，<em>fast bins</em>也仅覆盖固定的大小的块，并且会自动排序分类，因此插入和删除的速度也非常快。而且，由于<em>fast-binned</em>的块永远不会合并，因此它们只需要被<a target="_blank" rel="noopener" href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l1678">存储在单链表</a>，而不需要存储在双向链表中，因为其不存在合并块时从列表中进行删除的操作。</p>
+<p>当然，<em>fast bin</em>的缺点是，<em>fast bin</em>块不会“真正”释放或合并，最终会导致进程的内存空间随着时间的流逝而碎片化和膨胀。为了解决这个问题，堆管理器会定期“<a target="_blank" rel="noopener" href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l4448">合并</a>”堆。通过“实际释放”它（即将其与相邻的空闲块合并），并将生成的空闲块放置到<em>unsorted bins</em>上，以供malloc之后使用，从而“刷新”<em>fast bins</em>中的每个条目。</p>
+<p>每当<a target="_blank" rel="noopener" href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l1592">释放任何大于64KB的块</a>（其中64KB为近似值 ），或用户发出大于<em>fast bin</em>可以处理的<em>malloc</em>请求（即对于32位中<a target="_blank" rel="noopener" href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l3696">512字节</a>以上的块或64位中1024字节以上的块）时，或者当程序调用<a target="_blank" rel="noopener" href="http://man7.org/linux/man-pages/man3/mallopt.3.html">malloc_trim</a>或<a target="_blank" rel="noopener" href="http://man7.org/linux/man-pages/man3/mallopt.3.html">mallopt</a>时，都会发生“合并”阶段。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/8.png" class></strong></p>
+<h3 id="TCACHE-PER-THREAD-CACHE-BINS"><a href="#TCACHE-PER-THREAD-CACHE-BINS" class="headerlink" title="TCACHE (PER-THREAD CACHE) BINS"></a><strong>TCACHE (PER-THREAD CACHE) BINS</strong></h3><p>堆管理器用来加快分配速度的最终优化是每个线程进行缓存或“ <em>tcache”</em>分配器。首先让我们看一下tcache试图解决的问题。</p>
+<p>假如一个计算机系统上的每个进程都同时运行一个或多个线程。多线程允许一个进程执行多个并发操作。例如，一个大容量的Web服务器可能同时具有多个传入请求，并且该Web服务器可能让每个传入请求都在自己的线程上进行服务，而不是让每个请求都排成一队等待服务。</p>
+<p>给定进程中的每个线程共享相同的地址空间，也就是说，每个线程可以在内存中看到相同的代码和数据。每个线程都有自己的寄存器和堆栈来存储临时局部变量，但是诸如全局变量和堆之类的资源在所有线程之间共享。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/9.png" class></strong></p>
+<p>协调访问诸如堆之类的全局资源是一个复杂的话题，它出错可能导致一个称为“<em>race condition”的问题</em>，这会导致难以调试的崩溃，通常也可被黑客利用。</p>
+<p>假设在一个线程上提供服务的Web请求尝试更新数据库某一行，而另一个并发Web请求尝试从同一行读取。通常，我们将要确保第二个线程永远不会看到中间写入的值，但因为它正被另一个线程覆盖使用，从而第二个线程可能看到部分或损坏形式的行数据。数据库通过使读写操作看起来像<strong>原子操作</strong>来解决此问题：如果两个线程试图同时访问同一行，则必须先完成一个操作，然后才能开始下一个操作。解决这些竞争条件的一种非常常见的方法是通过使用锁，使其他同时访问全局资源的请求强制进入顺序队列。</p>
+<p>通常，锁是通过一个线程在其使用之前“标记”它拥有全局资源的所有权，然后执行其操作，然后标记该资源不再使用来进行锁定的。如果出现另一个线程并希望使用该资源并看到其他线程正在使用该资源，则该线程将等待，直到另一个线程完成。这样可以确保全局资源一次仅由一个线程使用。但这带来了成本：正在等待资源的线程停滞并浪费时间。这称为“<em>lock contention</em>”（锁争用）。</p>
+<p>对于许多全局变量，这个开销还可以接受。但是对于所有线程都在不断使用的堆，此开销会很快导致整个程序的速度变慢。</p>
+<p>堆管理器主要通过为每个线程创建自己的<em>arena</em>解决这个问题，直到达到arena分配数目的阈值。此外，<em>tcache</em> 中<em>per-thread cache</em>的目的是减少锁本身的成本，因为锁指令开销很大，并且最终会占用”fast-path“中很大一部分执行时间。此功能已<a target="_blank" rel="noopener" href="https://www.phoronix.com/scan.php?page=news_item&px=glibc-malloc-thread-cache">添加到glibc 2.26中的malloc内存分配功能中</a>，并且默认情况下启用。</p>
+<p><em>Per-thread caching</em>通过准备好小块的<em>per-thread bins</em>来加快分配速度。这样，当线程请求一个块时，如果该线程在其tcache上有一个块可用，则它可以为分配提供服务，而不必等待堆锁。</p>
+<p>默认情况下，每个线程都有64个单链接的<em>tcache bins</em>。每个bin最多包含<a target="_blank" rel="noopener" href="https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/malloc.c;h=2527e2504761744df2bdb1abdc02d936ff907ad2;hb=d5c3fafc4307c9b7a4c7d5cb381fcdbfad340bcc#l323">7个相同大小的块</a>，<a target="_blank" rel="noopener" href="https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/malloc.c;h=2527e2504761744df2bdb1abdc02d936ff907ad2;hb=d5c3fafc4307c9b7a4c7d5cb381fcdbfad340bcc#l315">在64位系统上为</a><a target="_blank" rel="noopener" href="https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/malloc.c;h=2527e2504761744df2bdb1abdc02d936ff907ad2;hb=d5c3fafc4307c9b7a4c7d5cb381fcdbfad340bcc#l315">24到1032字节，在32位系统上为12到516字节</a>。</p>
+<h3 id="HOW-DO-CHUNKS-END-UP-IN-TCACHE-BINS"><a href="#HOW-DO-CHUNKS-END-UP-IN-TCACHE-BINS" class="headerlink" title="HOW DO CHUNKS END UP IN TCACHE BINS?"></a><strong>HOW DO CHUNKS END UP IN TCACHE BINS?</strong></h3><p>一个块被释放后，堆管理器将查看该块是否存在与该块大小相对应的<em>tcache</em>容器。与<em>fast bin</em>一样，<em>tcache bin</em> 上的块被视为“正在使用”，并且不会与相邻释放的块合并。</p>
+<p>如果匹配该块大小的<em>tcache</em>已满（或者该块对于<em>tcache</em> bin而言太大），则堆管理器将恢复到我们以前的”slow-path“策略，即获取堆锁，然后像以前一样处理该块。</p>
+<p>相应的<em>tcache</em>分配策略也非常简单。如果在匹配的<em>tcache</em> bin上有块可用，则给定一个块请求，堆将返回该块，而不会获得堆锁。如果块对于<em>tcache</em>来说太大，继续采用”slow-path“策略。</p>
+<p>在我们尝试进行分配的情况下，有一个对应的<em>tcache bin</em>，但如果这个bin已满，我们进行了稍微修改的分配策略。我们不只是获取堆锁并查找单个块，还获取了堆锁，并<a target="_blank" rel="noopener" href="https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/malloc.c;h=2527e2504761744df2bdb1abdc02d936ff907ad2;hb=d5c3fafc4307c9b7a4c7d5cb381fcdbfad340bcc#l3585">趁机将尽可能多的这种大小的块提升到<em>tcache，</em></a>（<strong>时间局部性和空间局部性</strong>）同时我们仍然保持堆锁，直到<em>tcache</em> bin限制为七个，<a target="_blank" rel="noopener" href="https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/malloc.c;h=2527e2504761744df2bdb1abdc02d936ff907ad2;hb=d5c3fafc4307c9b7a4c7d5cb381fcdbfad340bcc#l3778">并且将最后匹配的块</a>返回给用户。</p>
+<h3 id="PUTTING-IT-ALL-TOGETHER"><a href="#PUTTING-IT-ALL-TOGETHER" class="headerlink" title="PUTTING IT ALL TOGETHER"></a><strong>PUTTING IT ALL TOGETHER</strong></h3><p>下面让我们回顾一下，<em>glibc</em>中整个<em>malloc、free</em>的实现以及设计每步算法的原因。</p>
+<p>首先，每个分配的内存块是对齐的，并包含元数据以及用户区域。当程序员从堆中请求内存时，堆管理器首先计算出分配请求对应的块大小，然后按以下顺序搜索内存（这里直接考虑多线程）：</p>
+<ol>
+<li><p>如果请求的块大小与<em>tcache bin</em>相匹配，并且<em>tcache bin</em>中有可用的块，则立即分配返回。</p>
+</li>
+<li><p>如果请求的块很大，则通过mmap分配堆外资源</p>
+</li>
+<li><p>否则，我们将获得<em>arena heap lock</em>，并且按照以下策略顺序执行：</p>
+<p>​    <strong>A、尝试<em>fast bin / small bin</em>回收策略</strong></p>
+<ul>
+<li>如果存在相应的<em>fast bin</em>，尝试找到一个块匹配（同时用<em>fast bins</em>中的条目（如果存在匹配）预填充<em>tcache</em>）</li>
+<li>否则，如果存在对应的<em>small bin</em>，尝试找到一个块匹配（同时预填充<em>tcache</em>）</li>
+</ul>
+</li>
+</ol>
+<p>   ​    <strong>B、解决所有延期释放块</strong></p>
+<ul>
+<li><p>否则，<em>fast bin</em>中的条目将被真正释放，并且将其合并到<em>unsorted bin</em>中。</p>
+</li>
+<li><p>遍历<em>unsorted bin</em>中的所有条目。如果匹配，则停止。否则，在操作时将unsorted中的条目放在其相应的<em>small/large bin</em>中（同时尽可能提升<em>small bin</em>中的条目到<em>tcache bin</em>）</p>
+</li>
+</ul>
+<p>   ​    <strong>C、默认回到基本回收策略</strong></p>
+<ul>
+<li>如果块大小与一个<em>large bin</em>相匹配，则立即搜索相应的<em>large bin</em>           </li>
+</ul>
+<p>   ​    <strong>D、从头创建一个新的块</strong></p>
+<ul>
+<li><p>否则，将没有可用的块，所以尝试从堆顶部获取一个块</p>
+</li>
+<li><p>如果堆的顶部空间不足，尝试使用<em>sbrk</em>对其进行扩展</p>
+</li>
+<li><p>如果遇到了地址空间的其他问题，导致堆不可以扩展，则使用<em>mmap</em>创建一个不连续的扩展并从那里进行分配。</p>
+</li>
+</ul>
+<p>   ​    <strong>E、如果所有方法均失败，则返回NULL 。</strong></p>
+<p>以及相应的<em>free</em>策略：</p>
+<ol>
+<li>如果指针为NULL，则C标准将该行为定义为“不执行任何操作”。</li>
+<li>否则，通过减去块元数据的大小，将指针指回。</li>
+<li>对块执行一些完整性检查，如果完整性检查失败，则中止。</li>
+<li>如果该块适合放入<em>tcache bin</em>，则将其存储在其中。</li>
+<li>如果该块设置了<em>M</em>位，则通过<em>munmap</em>将其返回给操作系统。</li>
+<li>否则，我们将获得<em>arena</em>堆锁，然后：<ul>
+<li>如果该块适合一个fastbin，将其放在相应的fastbin上，结束。</li>
+<li>如果块大于64KB，立即合并fastbin，然后将合并的块放入<em>unsorted bin</em>中。</li>
+<li>将数据块与相邻的释放的数据块在<em>small bin、large bin、unsorted bin</em>中前后合并。</li>
+<li>如果生成的块位于堆的顶部，则将其合并到堆的顶部，而不是将其存储在bin中。</li>
+<li>否则将其存储在<em>unsorted bin</em>中。（<em>Malloc</em>稍后会做工作，将<em>unsorted bin</em>中的条目放入<em>small bin</em>或者<em>large bin</em>中。）</li>
+</ul>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/xiaohong404.github.io/tags/Heap-Learning/" rel="tag"># Heap_Learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/xiaohong404.github.io/2020/10/16/Heap-I/" rel="prev" title="Heap I">
+      <i class="fa fa-chevron-left"></i> Heap I
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+  
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#UNDERSTANDING-THE-GLIBC-HEAP-IMPLEMENTATION"><span class="nav-number">1.</span> <span class="nav-text">UNDERSTANDING THE GLIBC HEAP IMPLEMENTATION</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HOW-DOES-FREE-WORK"><span class="nav-number">2.</span> <span class="nav-text">HOW DOES FREE WORK?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FREE-CHUNK-METADATA"><span class="nav-number">3.</span> <span class="nav-text">FREE CHUNK METADATA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RECYCLING-MEMORY-WITH-BINS"><span class="nav-number">4.</span> <span class="nav-text">RECYCLING MEMORY WITH BINS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CHUNK-RECYCLING-THE-BASIC-STRATEGY"><span class="nav-number">5.</span> <span class="nav-text">CHUNK RECYCLING: THE BASIC STRATEGY</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SMALL-BINS"><span class="nav-number">6.</span> <span class="nav-text">SMALL BINS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LARGE-BINS"><span class="nav-number">7.</span> <span class="nav-text">LARGE BINS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UNSORTED-BIN"><span class="nav-number">8.</span> <span class="nav-text">UNSORTED BIN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FAST-BINS"><span class="nav-number">9.</span> <span class="nav-text">FAST BINS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCACHE-PER-THREAD-CACHE-BINS"><span class="nav-number">10.</span> <span class="nav-text">TCACHE (PER-THREAD CACHE) BINS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HOW-DO-CHUNKS-END-UP-IN-TCACHE-BINS"><span class="nav-number">11.</span> <span class="nav-text">HOW DO CHUNKS END UP IN TCACHE BINS?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PUTTING-IT-ALL-TOGETHER"><span class="nav-number">12.</span> <span class="nav-text">PUTTING IT ALL TOGETHER</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiao Hong"
+      src="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
+  <p class="site-author-name" itemprop="name">Xiao Hong</p>
+  <div class="site-description" itemprop="description">Things always start to get better after you give up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/xiaohong404.github.io/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/xiaohong404.github.io/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaohong404" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaohong404"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/pluto-9-55" title="ZhiHu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;pluto-9-55" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>ZhiHu</a>
+      </span>
+  </div>
+
+
+<!-- CloudCalendar -->
+<div class="widget-wrap" style="width: 90%;margin-left: auto;margin-right: auto; opacity: 0.97;">
+	<div class="widget" id="CloudCalendar"></div>
+</div>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020-10-18</span>
+  <span class="with-love",id="animate">
+    <i class="fa fa-basketball-ball"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaohong</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/xiaohong404.github.io/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/xiaohong404.github.io/lib/anime.min.js"></script>
+  <script src="/xiaohong404.github.io/lib/velocity/velocity.min.js"></script>
+  <script src="/xiaohong404.github.io/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/xiaohong404.github.io/js/utils.js"></script>
+
+<script src="/xiaohong404.github.io/js/motion.js"></script>
+
+
+<script src="/xiaohong404.github.io/js/schemes/muse.js"></script>
+
+
+<script src="/xiaohong404.github.io/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/xiaohong404.github.io/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/xiaohong404.github.io/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+
+
+  
+
+  
+
+
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qgoG1EyC6yrAnmbPcCl9pCH8-gzGzoHsz',
+      appKey     : 'yzRsxAlXtg72qlBbwrwA034j',
+      placeholder: "Just go go",
+      avatar     : 'wavatar',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : 'en,zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+<script src="/xiaohong404.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/xiaohong404.github.io/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":150,"height":300,"hOffset":80,"vOffset":-50},"mobile":{"show":true},"log":false,"tagMode":false});</script></body>
+</html>
