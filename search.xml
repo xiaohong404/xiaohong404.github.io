@@ -378,7 +378,7 @@
 <p>如果匹配该块大小的<em>tcache</em>已满（或者该块对于<em>tcache</em> bin而言太大），则堆管理器将恢复到我们以前的”slow-path“策略，即获取堆锁，然后像以前一样处理该块。</p>
 <p>相应的<em>tcache</em>分配策略也非常简单。如果在匹配的<em>tcache</em> bin上有块可用，则给定一个块请求，堆将返回该块，而不会获得堆锁。如果块对于<em>tcache</em>来说太大，继续采用”slow-path“策略。</p>
 <p>在我们尝试进行分配的情况下，有一个对应的<em>tcache bin</em>，但如果这个bin已满，我们进行了稍微修改的分配策略。我们不只是获取堆锁并查找单个块，还获取了堆锁，并<a href="https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/malloc.c;h=2527e2504761744df2bdb1abdc02d936ff907ad2;hb=d5c3fafc4307c9b7a4c7d5cb381fcdbfad340bcc#l3585">趁机将尽可能多的这种大小的块提升到<em>tcache，</em></a>（<strong>时间局部性和空间局部性</strong>）同时我们仍然保持堆锁，直到<em>tcache</em> bin限制为七个，<a href="https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/malloc.c;h=2527e2504761744df2bdb1abdc02d936ff907ad2;hb=d5c3fafc4307c9b7a4c7d5cb381fcdbfad340bcc#l3778">并且将最后匹配的块</a>返回给用户。</p>
-<h3 id="PUTTING-IT-ALL-TOGETHER"><a href="#PUTTING-IT-ALL-TOGETHER" class="headerlink" title="PUTTING IT ALL TOGETHER"></a><strong>PUTTING IT ALL TOGETHER</strong></h3><p>下面让我们回顾一下，<em>glibc</em>中整个<em>malloc、free</em>的实现以及设计每步算法的原因。</p>
+<h3 id="PUTTING-IT-ALL-TOGETHER"><a href="#PUTTING-IT-ALL-TOGETHER" class="headerlink" title="PUTTING IT ALL TOGETHER"></a><strong>PUTTING IT ALL TOGETHER</strong></h3><p>下面让我们整体回顾一下，<em>glibc</em>中整个<em>malloc、free</em>的实现的算法。</p>
 <p>首先，每个分配的内存块是对齐的，并包含元数据以及用户区域。当程序员从堆中请求内存时，堆管理器首先计算出分配请求对应的块大小，然后按以下顺序搜索内存（这里直接考虑多线程）：</p>
 <ol>
 <li><p>如果请求的块大小与<em>tcache bin</em>相匹配，并且<em>tcache bin</em>中有可用的块，则立即分配返回。</p>
