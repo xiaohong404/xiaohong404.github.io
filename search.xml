@@ -156,40 +156,6 @@
       </tags>
   </entry>
   <entry>
-    <title>fd</title>
-    <url>/xiaohong404.github.io/2020/10/15/fd/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/fd/1.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/fd/2.png" class></strong></p>
-<h3 id="登录远程服务器"><a href="#登录远程服务器" class="headerlink" title="登录远程服务器"></a>登录远程服务器</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/fd/3.png" class></strong></p>
-<h3 id="ls-la查看文件信息"><a href="#ls-la查看文件信息" class="headerlink" title="ls -la查看文件信息"></a>ls -la查看文件信息</h3><p><strong><a href="https://blog.csdn.net/u013197629/article/details/73608613">linux文件权限知识</a></strong></p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/fd/4.png" class></strong></p>
-<p>发现fd.c和其对应的可执行文件fd（用户有执行权限）</p>
-<h3 id="cat-fd-c查看c语言代码"><a href="#cat-fd-c查看c语言代码" class="headerlink" title="cat fd.c查看c语言代码"></a>cat fd.c查看c语言代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/fd/5.png" class></strong></p>
-<p>有源代码可知，这里需要执行system函数的条件为buf缓冲区内容为LETMEIWN</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/fd/6.png" class></strong></p>
-<h3 id="read-fd-buf-32"><a href="#read-fd-buf-32" class="headerlink" title="read(fd,buf,32)"></a>read(fd,buf,32)</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">read(fd, buf, <span class="number">32</span>)</span><br><span class="line"></span><br><span class="line">fd == <span class="number">0</span>时：则表示标准输入；</span><br><span class="line">fd == <span class="number">1</span>时：则表示标准输出；</span><br><span class="line">fd == <span class="number">2</span>时，则表示标准输出错误。</span><br><span class="line">buf 表示读入的缓冲区；</span><br><span class="line"><span class="number">32</span>表示读入<span class="number">32</span>字节；</span><br></pre></td></tr></table></figure>
-
-<p>因此我们需要设置fd为0，读取我们输入的LETMEWIN到buf缓冲区中即可获得flag。</p>
-<p>注意到</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">fd = atoi(argv[<span class="number">1</span>]) - <span class="number">0x1234</span></span><br></pre></td></tr></table></figure>
-
-<p>要使得$fd=0$，就是让main函数的第一个参数argv[1]等于$0x1234$</p>
-<h3 id="fd-4660"><a href="#fd-4660" class="headerlink" title="./fd 4660"></a>./fd 4660</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/fd/7.png" class></strong></p>
-<p>注意这里参数需要转为10进制   $0x1234_{16} = 4660_{10}$</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">flag: mommy! I think I know what a file descriptor is!!</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>collision</title>
     <url>/xiaohong404.github.io/2020/10/15/collision/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/collision/1.png" class></strong></p>
@@ -245,6 +211,75 @@
       </tags>
   </entry>
   <entry>
+    <title>fd</title>
+    <url>/xiaohong404.github.io/2020/10/15/fd/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/fd/1.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/fd/2.png" class></strong></p>
+<h3 id="登录远程服务器"><a href="#登录远程服务器" class="headerlink" title="登录远程服务器"></a>登录远程服务器</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/fd/3.png" class></strong></p>
+<h3 id="ls-la查看文件信息"><a href="#ls-la查看文件信息" class="headerlink" title="ls -la查看文件信息"></a>ls -la查看文件信息</h3><p><strong><a href="https://blog.csdn.net/u013197629/article/details/73608613">linux文件权限知识</a></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/fd/4.png" class></strong></p>
+<p>发现fd.c和其对应的可执行文件fd（用户有执行权限）</p>
+<h3 id="cat-fd-c查看c语言代码"><a href="#cat-fd-c查看c语言代码" class="headerlink" title="cat fd.c查看c语言代码"></a>cat fd.c查看c语言代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/fd/5.png" class></strong></p>
+<p>有源代码可知，这里需要执行system函数的条件为buf缓冲区内容为LETMEIWN</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/fd/6.png" class></strong></p>
+<h3 id="read-fd-buf-32"><a href="#read-fd-buf-32" class="headerlink" title="read(fd,buf,32)"></a>read(fd,buf,32)</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">read(fd, buf, <span class="number">32</span>)</span><br><span class="line"></span><br><span class="line">fd == <span class="number">0</span>时：则表示标准输入；</span><br><span class="line">fd == <span class="number">1</span>时：则表示标准输出；</span><br><span class="line">fd == <span class="number">2</span>时，则表示标准输出错误。</span><br><span class="line">buf 表示读入的缓冲区；</span><br><span class="line"><span class="number">32</span>表示读入<span class="number">32</span>字节；</span><br></pre></td></tr></table></figure>
+
+<p>因此我们需要设置fd为0，读取我们输入的LETMEWIN到buf缓冲区中即可获得flag。</p>
+<p>注意到</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">fd = atoi(argv[<span class="number">1</span>]) - <span class="number">0x1234</span></span><br></pre></td></tr></table></figure>
+
+<p>要使得$fd=0$，就是让main函数的第一个参数argv[1]等于$0x1234$</p>
+<h3 id="fd-4660"><a href="#fd-4660" class="headerlink" title="./fd 4660"></a>./fd 4660</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/fd/7.png" class></strong></p>
+<p>注意这里参数需要转为10进制   $0x1234_{16} = 4660_{10}$</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">flag: mommy! I think I know what a file descriptor is!!</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>passcode</title>
+    <url>/xiaohong404.github.io/2020/10/15/passcode/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/11.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/1.png" class></strong></p>
+<h3 id="查看passcode-c源文件"><a href="#查看passcode-c源文件" class="headerlink" title="查看passcode.c源文件"></a>查看passcode.c源文件</h3><p><strong></strong></p>
+<p>第一反应为使得passcode1为338150、passcode2为13371337，之后调用system函数。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/3.png" class></strong></p>
+<p>login函数中要求输入两个密码passcode1和passcode2，但scanf函数用法错误，其后并没有加上&amp;符号取其地址，而是直接使用了栈上两个没有初始化的随机值，因此直接输入则会出现segmentation fault。因此考虑在login函数之前执行的welcome函数。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/4.png" class></strong></p>
+<p>welcome函数要求用户输入姓名的字符串，但是允许输入100字节长度，因此尝试使用其覆盖栈上两个变量的“随机值”。</p>
+<h3 id="gdb-passcode查看其汇编代码"><a href="#gdb-passcode查看其汇编代码" class="headerlink" title="gdb passcode查看其汇编代码"></a>gdb passcode查看其汇编代码</h3><h4 id="disassemble-r-welcome"><a href="#disassemble-r-welcome" class="headerlink" title="disassemble /r welcome"></a>disassemble /r welcome</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/5.png" class></strong></p>
+<h4 id="disassemble-r-login"><a href="#disassemble-r-login" class="headerlink" title="disassemble /r login"></a>disassemble /r login</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/6.png" class></strong></p>
+<p>发现char数组在$ebp - 0x70$处，而passcode1、passcode2分别在$ebp - 0x10、ebp - 0xc$处，其相差的距离$0x70 - 0x10 = 96 &lt; 100,0x70 - 0xc = 100$，因此并不能直接通过输入姓名字符串覆盖变量passcode2,只可以覆盖passcode1。</p>
+<h3 id="转换思路"><a href="#转换思路" class="headerlink" title="转换思路"></a>转换思路</h3><h4 id="查看文件保护措施"><a href="#查看文件保护措施" class="headerlink" title="查看文件保护措施"></a>查看文件保护措施</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/7.png" class></strong></p>
+<p>栈上开启了Canary机制，因此栈溢出很难成功，发现没有开启PIE，因此可以通过修改某些函数got表的地址，进行调用system函数。实际上，既然scanf是一个具有写功能的函数，我们完全可以利用scanf来修改此后使用到的某个函数的got表项。例如，程序在<strong>scanf(“%d”, passcode1);**后立即使用了</strong>fflush函数<strong>，所以我们完全可以先找到fflush的got表项地址（程序没有开PIE，无需leak），把passcode1布局为该地址，并在调用到scanf(“%d”, passcode1)时输入程序代码中调用</strong>system(“/bin/cat flag”);**处的地址，这样执行fflush函数时就会执行system函数。</p>
+<p><strong>注意这里区分got表本身的地址和写入got表项中的地址</strong></p>
+<h4 id="fflush函数的地址"><a href="#fflush函数的地址" class="headerlink" title="fflush函数的地址"></a>fflush函数的地址</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/8.png" class></strong></p>
+<p>fflush地址为$0x0804a004$</p>
+<h4 id="system函数的地址"><a href="#system函数的地址" class="headerlink" title="system函数的地址"></a>system函数的地址</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/9.png" class></strong></p>
+<p>这里注意system函数需要将参数先压栈之后再调用，即真正调用的函数地址为$0x080485e3$，即在printf函数之后执行。</p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">python -c <span class="string">&quot;print &#x27;A&#x27; * 96 + &#x27;\x04\xa0\x04\x08&#x27; + &#x27;134514147\n&#x27;&quot;</span> | ./passcode</span><br></pre></td></tr></table></figure>
+
+<p>因为passcode是输入int型，即输入$0x080485e3 = 134514147$。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/10.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>Pwnable.kr</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>random</title>
     <url>/xiaohong404.github.io/2020/10/15/random/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/random/1.png" class></strong></p>
@@ -288,42 +323,6 @@
 <p>而另一方面，<strong>0作为文件描述符，它指向的是stdin</strong>。</p>
 <p>因此，后面的read函数实际上是从stdin读取，而不是password文件，而stdin我们可以控制，则我们可以输入任意已知的密码，之后再输入与$0x1$异或的值，使得两次输入的密码相匹配。</p>
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/mistake/3.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>Pwnable.kr</category>
-        <category>1</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>passcode</title>
-    <url>/xiaohong404.github.io/2020/10/15/passcode/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/11.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/1.png" class></strong></p>
-<h3 id="查看passcode-c源文件"><a href="#查看passcode-c源文件" class="headerlink" title="查看passcode.c源文件"></a>查看passcode.c源文件</h3><p><strong></strong></p>
-<p>第一反应为使得passcode1为338150、passcode2为13371337，之后调用system函数。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/3.png" class></strong></p>
-<p>login函数中要求输入两个密码passcode1和passcode2，但scanf函数用法错误，其后并没有加上&amp;符号取其地址，而是直接使用了栈上两个没有初始化的随机值，因此直接输入则会出现segmentation fault。因此考虑在login函数之前执行的welcome函数。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/4.png" class></strong></p>
-<p>welcome函数要求用户输入姓名的字符串，但是允许输入100字节长度，因此尝试使用其覆盖栈上两个变量的“随机值”。</p>
-<h3 id="gdb-passcode查看其汇编代码"><a href="#gdb-passcode查看其汇编代码" class="headerlink" title="gdb passcode查看其汇编代码"></a>gdb passcode查看其汇编代码</h3><h4 id="disassemble-r-welcome"><a href="#disassemble-r-welcome" class="headerlink" title="disassemble /r welcome"></a>disassemble /r welcome</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/5.png" class></strong></p>
-<h4 id="disassemble-r-login"><a href="#disassemble-r-login" class="headerlink" title="disassemble /r login"></a>disassemble /r login</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/6.png" class></strong></p>
-<p>发现char数组在$ebp - 0x70$处，而passcode1、passcode2分别在$ebp - 0x10、ebp - 0xc$处，其相差的距离$0x70 - 0x10 = 96 &lt; 100,0x70 - 0xc = 100$，因此并不能直接通过输入姓名字符串覆盖变量passcode2,只可以覆盖passcode1。</p>
-<h3 id="转换思路"><a href="#转换思路" class="headerlink" title="转换思路"></a>转换思路</h3><h4 id="查看文件保护措施"><a href="#查看文件保护措施" class="headerlink" title="查看文件保护措施"></a>查看文件保护措施</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/7.png" class></strong></p>
-<p>栈上开启了Canary机制，因此栈溢出很难成功，发现没有开启PIE，因此可以通过修改某些函数got表的地址，进行调用system函数。实际上，既然scanf是一个具有写功能的函数，我们完全可以利用scanf来修改此后使用到的某个函数的got表项。例如，程序在<strong>scanf(“%d”, passcode1);**后立即使用了</strong>fflush函数<strong>，所以我们完全可以先找到fflush的got表项地址（程序没有开PIE，无需leak），把passcode1布局为该地址，并在调用到scanf(“%d”, passcode1)时输入程序代码中调用</strong>system(“/bin/cat flag”);**处的地址，这样执行fflush函数时就会执行system函数。</p>
-<p><strong>注意这里区分got表本身的地址和写入got表项中的地址</strong></p>
-<h4 id="fflush函数的地址"><a href="#fflush函数的地址" class="headerlink" title="fflush函数的地址"></a>fflush函数的地址</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/8.png" class></strong></p>
-<p>fflush地址为$0x0804a004$</p>
-<h4 id="system函数的地址"><a href="#system函数的地址" class="headerlink" title="system函数的地址"></a>system函数的地址</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/9.png" class></strong></p>
-<p>这里注意system函数需要将参数先压栈之后再调用，即真正调用的函数地址为$0x080485e3$，即在printf函数之后执行。</p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">python -c <span class="string">&quot;print &#x27;A&#x27; * 96 + &#x27;\x04\xa0\x04\x08&#x27; + &#x27;134514147\n&#x27;&quot;</span> | ./passcode</span><br></pre></td></tr></table></figure>
-
-<p>因为passcode是输入int型，即输入$0x080485e3 = 134514147$。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/10.png" class></strong></p>
 ]]></content>
       <categories>
         <category>Pwnable.kr</category>
