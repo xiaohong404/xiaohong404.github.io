@@ -157,6 +157,35 @@
       </tags>
   </entry>
   <entry>
+    <title>cmd2</title>
+    <url>/xiaohong404.github.io/2020/10/20/cmd2/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/20/cmd2/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/20/cmd2/1.png" class></strong></p>
+<p>这里登录的密码为cmd1解出的flag：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">mommy now I get what PATH environment is <span class="keyword">for</span> :)</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看cmd2-c源代码"><a href="#查看cmd2-c源代码" class="headerlink" title="查看cmd2.c源代码"></a>查看cmd2.c源代码</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">filter</span><span class="params">(<span class="keyword">char</span>* cmd)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> r=<span class="number">0</span>;</span><br><span class="line">        r += <span class="built_in">strstr</span>(cmd, <span class="string">&quot;=&quot;</span>)!=<span class="number">0</span>;</span><br><span class="line">        r += <span class="built_in">strstr</span>(cmd, <span class="string">&quot;PATH&quot;</span>)!=<span class="number">0</span>;</span><br><span class="line">        r += <span class="built_in">strstr</span>(cmd, <span class="string">&quot;export&quot;</span>)!=<span class="number">0</span>;</span><br><span class="line">        r += <span class="built_in">strstr</span>(cmd, <span class="string">&quot;/&quot;</span>)!=<span class="number">0</span>;</span><br><span class="line">        r += <span class="built_in">strstr</span>(cmd, <span class="string">&quot;`&quot;</span>)!=<span class="number">0</span>;</span><br><span class="line">        r += <span class="built_in">strstr</span>(cmd, <span class="string">&quot;flag&quot;</span>)!=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> r;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">char</span>** environ;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">delete_env</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">char</span>** p;</span><br><span class="line">        <span class="keyword">for</span>(p=environ; *p; p++) <span class="built_in">memset</span>(*p, <span class="number">0</span>, <span class="built_in">strlen</span>(*p));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[], <span class="keyword">char</span>** envp)</span></span>&#123;</span><br><span class="line">        delete_env();</span><br><span class="line">        putenv(<span class="string">&quot;PATH=/no_command_execution_until_you_become_a_hacker&quot;</span>);</span><br><span class="line">    	<span class="keyword">if</span>(filter(argv[<span class="number">1</span>])) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, argv[<span class="number">1</span>]);</span><br><span class="line">        system( argv[<span class="number">1</span>] );</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>cmd2在cmd1的基础上，加强了过滤操作。这里$=、PATH、export、/、$`$、flag$都不可以用。</p>
+<p>下面介绍一种方法：</p>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>创建<a href="https://www.runoob.com/linux/linux-comm-ln.html">linux软链接</a>方法如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ln -s [源文件或目录][目标文件或目录]</span><br><span class="line"># 这里如果当前文件夹下不存在该目标文件，会自动创建，软链接相当于windows的快捷方式</span><br></pre></td></tr></table></figure>
+
+<p>首先在/tmp目录下建立自己的目录xiaohong404(这个目录可以任意取名，但不能和已经存在的文件名重复），然后创建目录*<em>/tmp/xiaohong404/c<strong>。那么，如果在/tmp/xiaohong404/c目录下执行</strong>pwd命令<strong>就可以得到这个路径字符”/tmp/xiaohong404/c“。然后在</strong>/tmp/exploit<strong>目录下构造</strong>cat<strong>的软链接</strong>ln -s /bin/cat cat<strong>，在</strong>/tmp/exploit/c<strong>下建立</strong>flag<strong>的软链接</strong>ln -s /home/cmd2/flag flag<strong>。然后在</strong>/tmp/exploit/c<strong>下执行命令</strong>/home/cmd2/cmd2”$(pwd)at f**</em>，这里表示执行cmd2程序，相当于*<em>./cmd2 “$(pwd)at f\</em>“<strong>就可以得到flag了。其原理就是利用</strong>”$(pwd)at”<strong>构造出</strong>/tmp/xiaohong404/cat**命令。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/20/cmd2/2.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>coin</title>
     <url>/xiaohong404.github.io/2020/10/18/coin/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/coin/0.png" class></strong></p>
@@ -325,33 +354,6 @@
       </tags>
   </entry>
   <entry>
-    <title>random</title>
-    <url>/xiaohong404.github.io/2020/10/15/random/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/random/1.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/random/2.png" class></strong></p>
-<h3 id="查看random-c源代码"><a href="#查看random-c源代码" class="headerlink" title="查看random.c源代码"></a>查看random.c源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/random/3.png" class></strong></p>
-<p>函数的整个执行流程是rand（）产生的随机值和输入的密钥进行异或，若其结果等于$0xdeadbeef$，则可以执行system函数，拿到flag。</p>
-<h3 id="rand（）函数"><a href="#rand（）函数" class="headerlink" title="rand（）函数"></a>rand（）函数</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/random/4.png" class></strong></p>
-<p>由此可见，如果不重新生成种子（一般情况下，默认生成种子为1），则每次产生的随机数将会是一个固定值，那么接下来的任务就是确定这个固定值。</p>
-<h3 id="查看随机数"><a href="#查看随机数" class="headerlink" title="查看随机数"></a>查看随机数</h3><h4 id="disassemble-r-main-查看汇编代码"><a href="#disassemble-r-main-查看汇编代码" class="headerlink" title="$disassemble /r \ main$查看汇编代码"></a>$disassemble /r \ main$查看汇编代码</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/random/5.png" class></strong></p>
-<h4 id="在cmp处下断点"><a href="#在cmp处下断点" class="headerlink" title="在cmp处下断点"></a>在cmp处下断点</h4><p>汇编代码中，在进行cmp之前先进行了一次异或运算，显然这是将用户输入的key和生成的随机数进行异或，由此可以判断随机数的位置为$rbp-4$（先压入栈中），因此使用$x/10x \ $rbp-4$查看内存的值即可。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/random/6.png" class></strong></p>
-<p>所以生成的随机数为0x6b8b4567，可多次运行程序查看其值是否发生变化，这里不做演示。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>求出$0x6b8b4567\oplus 0xdeadbeef$的值输入即可</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/random/7.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>passcode</title>
     <url>/xiaohong404.github.io/2020/10/15/passcode/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/11.png" class></strong></p>
@@ -378,6 +380,33 @@
 
 <p>因为passcode是输入int型，即输入$0x080485e3 = 134514147$。</p>
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/passcode/10.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>random</title>
+    <url>/xiaohong404.github.io/2020/10/15/random/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/random/1.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/random/2.png" class></strong></p>
+<h3 id="查看random-c源代码"><a href="#查看random-c源代码" class="headerlink" title="查看random.c源代码"></a>查看random.c源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/random/3.png" class></strong></p>
+<p>函数的整个执行流程是rand（）产生的随机值和输入的密钥进行异或，若其结果等于$0xdeadbeef$，则可以执行system函数，拿到flag。</p>
+<h3 id="rand（）函数"><a href="#rand（）函数" class="headerlink" title="rand（）函数"></a>rand（）函数</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/random/4.png" class></strong></p>
+<p>由此可见，如果不重新生成种子（一般情况下，默认生成种子为1），则每次产生的随机数将会是一个固定值，那么接下来的任务就是确定这个固定值。</p>
+<h3 id="查看随机数"><a href="#查看随机数" class="headerlink" title="查看随机数"></a>查看随机数</h3><h4 id="disassemble-r-main-查看汇编代码"><a href="#disassemble-r-main-查看汇编代码" class="headerlink" title="$disassemble /r \ main$查看汇编代码"></a>$disassemble /r \ main$查看汇编代码</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/random/5.png" class></strong></p>
+<h4 id="在cmp处下断点"><a href="#在cmp处下断点" class="headerlink" title="在cmp处下断点"></a>在cmp处下断点</h4><p>汇编代码中，在进行cmp之前先进行了一次异或运算，显然这是将用户输入的key和生成的随机数进行异或，由此可以判断随机数的位置为$rbp-4$（先压入栈中），因此使用$x/10x \ $rbp-4$查看内存的值即可。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/random/6.png" class></strong></p>
+<p>所以生成的随机数为0x6b8b4567，可多次运行程序查看其值是否发生变化，这里不做演示。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>求出$0x6b8b4567\oplus 0xdeadbeef$的值输入即可</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/random/7.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
