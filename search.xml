@@ -5,7 +5,9 @@
     <url>/xiaohong404.github.io/2020/10/22/1/</url>
     <content><![CDATA[ <a id="more"></a>
 
- <div class="pdfobject-container" data-target="./1.pdf" data-height="500px"></div>]]></content>
+ <div class="pdfobject-container" data-target="./1.pdf" data-height="500px"></div>
+
+<object data="./1/1.pdf" type="application/pdf" width="100%" height="100%"></object>]]></content>
   </entry>
   <entry>
     <title>Heap I</title>
