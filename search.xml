@@ -99,10 +99,12 @@
 
 <p>对抗样本攻击大体原理如下：</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/3.png" class></strong></p>
-<p>在这里，从熊猫的图像开始，攻击者在原始图像上添加小的扰动，这导致模型将此图像标记为长臂猿，且具有很高的可信度。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/1.png" class></strong></p>
-<p>又或者，原始图像（左图），对抗噪声（中图），扰动后的图片即对抗样本（右图）被错误地分类为数字 2。</p>
+<h3 id="什么是对抗性例子？"><a href="#什么是对抗性例子？" class="headerlink" title="什么是对抗性例子？"></a>什么是对抗性例子？</h3><p>对抗性示例是专门创建的输入，其目的是混淆神经网络，从而导致给定输入的分类错误。这些臭名昭著的输入对于人眼是无法区分的，但是会导致网络无法识别图像的内容。这类攻击有几种类型，但是，这里的重点是快速梯度符号方法攻击，这是一种<em>白盒</em>攻击，其目的是确保错误分类。白盒攻击是攻击者可以完全访问被攻击模型的地方。举下面两个例子：</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/2.png" class></strong></p>
+<p>原始图像（左图），对抗噪声（中图），扰动后的图片即对抗样本（右图）被错误地分类为数字 2。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/1.png" class></strong></p>
+<p>在这里，从熊猫的图像开始，攻击者向原始图像添加了较小的扰动（失真），这导致模型以较高的置信度将该图像标记为长臂猿。下面说明添加这些扰动的过程。</p>
+<h3 id="快速梯度符号法-FGSM"><a href="#快速梯度符号法-FGSM" class="headerlink" title="快速梯度符号法(FGSM)"></a>快速梯度符号法(FGSM)</h3><p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/11.png" class></strong></p>
 <p>下面展示简单的利用<a href="https://blog.csdn.net/crystal_sugar/article/details/106023055?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param">FGSM原理</a>实现的示例。</p>
 <p><strong>FGSM</strong>的工作原理是利用神经网络的梯度来创建一个<strong>Adversarial example</strong>。对于输入图像，该方法使用相对于输入图像的损失的梯度来创建使损失函数最大化的新图像。这个新图像被称为对抗图像。</p>
 <p>在这里，梯度是相对于输入的图像的。这样做是因为其目标是创造一个最大化损失的图像。实现这一点的方法是找出图像中每个像素对损失值的贡献程度，并相应地添加一个扰动（使用链式规则去计算梯度可以很容易地找到每个输入像素的贡献程度）。此外，由于模型不再被训练（因此梯度不针对可训练变量，即模型参数），因此模型参数保持不变。唯一的目的就是使一个已经受过训练的模型发生错误的分类。<br>在这篇文章中，模型是<strong>MobileNetV2</strong>模型，在<strong>ImageNet</strong>上进行了预训练。</p>
