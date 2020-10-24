@@ -21,13 +21,14 @@
   </script>
 
   <meta property="og:type" content="article">
-<meta property="og:title" content="unlink">
+<meta property="og:title" content="unlink漏洞攻击">
 <meta property="og:url" content="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/index.html">
 <meta property="og:site_name" content="Mr.red">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/0.png">
-<meta property="article:published_time" content="2020-10-24T10:48:59.000Z">
-<meta property="article:modified_time" content="2020-10-24T10:53:34.000Z">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/1.png">
+<meta property="article:published_time" content="2020-10-24T11:01:21.000Z">
+<meta property="article:modified_time" content="2020-10-24T11:18:08.000Z">
 <meta property="article:author" content="Xiao Hong">
 <meta property="article:tag" content="PWN">
 <meta name="twitter:card" content="summary">
@@ -46,7 +47,7 @@
   };
 </script>
 
-  <title>unlink | Mr.red</title>
+  <title>unlink漏洞攻击 | Mr.red</title>
   
 
 
@@ -207,7 +208,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          unlink
+          unlink漏洞攻击
         </h1>
 
         <div class="post-meta">
@@ -218,7 +219,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-10-24 18:48:59 / Modified: 18:53:34" itemprop="dateCreated datePublished" datetime="2020-10-24T18:48:59+08:00">2020-10-24</time>
+              <time title="Created: 2020-10-24 19:01:21 / Modified: 19:18:08" itemprop="dateCreated datePublished" datetime="2020-10-24T19:01:21+08:00">2020-10-24</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -234,12 +235,12 @@
                 </span>
                   , 
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/xiaohong404.github.io/Categories/PWN/Heap/Heap-Basic/" itemprop="url" rel="index"><span itemprop="name">Heap_Basic</span></a>
+                  <a href="/xiaohong404.github.io/Categories/PWN/Heap/Heap-Attack/" itemprop="url" rel="index"><span itemprop="name">Heap_Attack</span></a>
                 </span>
             </span>
 
           
-            <span id="/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/" class="post-meta-item leancloud_visitors" data-flag-title="unlink" title="Views">
+            <span id="/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/" class="post-meta-item leancloud_visitors" data-flag-title="unlink漏洞攻击" title="Views">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -273,7 +274,21 @@
         <p><strong><img src="/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/0.png" class></strong></p>
  <a id="more"></a>
 
-<h3 id="从一段代码入手"><a href="#从一段代码入手" class="headerlink" title="从一段代码入手"></a>从一段代码入手</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *first, *second;</span><br><span class="line">    first = <span class="built_in">malloc</span>(<span class="number">666</span>);</span><br><span class="line">    second = <span class="built_in">malloc</span>(<span class="number">12</span>);</span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">1</span>)</span><br><span class="line">        <span class="built_in">strcpy</span>(first, argv[<span class="number">1</span>]);</span><br><span class="line">    <span class="built_in">free</span>(first);</span><br><span class="line">    <span class="built_in">free</span>(second);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="从一段代码开始"><a href="#从一段代码开始" class="headerlink" title="从一段代码开始"></a>从一段代码开始</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *first, *second;</span><br><span class="line">    first = <span class="built_in">malloc</span>(<span class="number">666</span>);</span><br><span class="line">    second = <span class="built_in">malloc</span>(<span class="number">12</span>);</span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">1</span>)</span><br><span class="line">        <span class="built_in">strcpy</span>(first, argv[<span class="number">1</span>]);</span><br><span class="line">    <span class="built_in">free</span>(first);</span><br><span class="line">    <span class="built_in">free</span>(second);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述程序在分配完堆后，堆内存分布如下图所示：</p>
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/1.png" alt="img"></p>
+<p>程序中 strcpy 函数会导致堆溢出，argv[1] 大于 666 字节时，可覆盖第二个 chunk 的各个字段为指定的值，从而使堆管理器将第二个 chunk 判断为空闲状态。根据 malloc 的内存回收机制，在 free(first) 时会将上图中的 second chunk 从 bin 中 unlink，并与第一个 chunk 合并。通过修改 second chunk 的 fd、bk 字段，unlink 时可把 free 函数的 GOT 表项写为 shellcode 地址。当程序再次调用 free 函数时会执行 shellcode。</p>
+<h2 id="什么是unlink"><a href="#什么是unlink" class="headerlink" title="什么是unlink"></a>什么是unlink</h2><p>unlink攻击技术就是利用”glibc malloc”的内存回收机制，当堆块free时，会检查相邻的后面的堆块（地址更小的）或者前面的堆块（地址更大的）是否空闲，如果空闲，那么需要进行堆块合并操作。</p>
+<p>空闲的堆块一般以双向链表的形式组织（<strong>fast bin</strong>是单向链表，此攻击不适用），如果刚刚释放的堆块要与前面或者后面空闲的堆块进行合并操作，那么需要将前或后的堆块从双向链表中摘下来，合并成更大的堆块插入到<strong>unsort bin</strong>链表中。空闲堆块从（<strong>small bin</strong>)双向链表中摘下来的操作就是unlink。</p>
+<h3 id="向后合并"><a href="#向后合并" class="headerlink" title="向后合并"></a>向后合并</h3><p>首先判断前一个 chunk 是否空闲，即检查当前 chunk 的 PREV_INUSE（P）位是否为 0。若为空闲，则将其合并。合并时，改变当前 chunk 指针指向前一个 chunk，使用 unlink 宏将前一个空闲 chunk 从 bin 中移除，最后更新合并后 chunk 的大小。</p>
+<p>malloc.c 中向后合并的代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">INTERNAL_SIZE_T hd = p-&gt;size; <span class="comment">/* its head field */</span></span><br><span class="line">INTERNAL_SIZE_T sz;  <span class="comment">/* its size */</span></span><br><span class="line">INTERNAL_SIZE_T prevsz; <span class="comment">/* size of previous contiguous chunk */</span></span><br><span class="line">sz = hd &amp; ~PREV_INUSE;</span><br><span class="line"><span class="comment">/* consolidate backward */</span></span><br><span class="line"><span class="keyword">if</span> (!(hd &amp; PREV_INUSE))</span><br><span class="line">&#123;</span><br><span class="line">  prevsz = p-&gt;prev_size;</span><br><span class="line">  p = chunk_at_offset(p, -(<span class="keyword">long</span>)prevsz);</span><br><span class="line">  sz += prevsz;</span><br><span class="line">  unlink(p, bck, fwd);</span><br><span class="line">&#125;</span><br><span class="line">set_head(p, sz | PREV_INUSE);</span><br></pre></td></tr></table></figure>
+
+<p>本例中，释放 1st chunk 时，当前 chunk(1st chunk) 的前一个 chunk 是 allocated，所以不能向后合并，unlink 宏不会被调用。</p>
+<h3 id="向前合并"><a href="#向前合并" class="headerlink" title="向前合并"></a>向前合并</h3><p>首先判断下个 chunk 是否空闲，即检查下下个 chunk（相对当前 chunk）的 PREV_INUSE（P）位是否为 0，若为 0 表明下个 chunk 是空闲的，则进行合并。合并时使用 unlink 宏将下个 chunk 从它的 bin 中移除，并更新合并后的 chunk 大小。</p>
+<p>malloc.c 中向前合并的代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* check/set/clear inuse bits in known places */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> inuse_bit_at_offset(p, s)\</span></span><br><span class="line"> (((mchunkptr)(((<span class="keyword">char</span>*)(p)) + (s)))-&gt;size &amp; PREV_INUSE)</span><br><span class="line">INTERNAL_SIZE_T hd = p-&gt;size; <span class="comment">/* its head field */</span></span><br><span class="line">INTERNAL_SIZE_T sz;  <span class="comment">/* its size */</span></span><br><span class="line">sz = hd &amp; ~PREV_INUSE;</span><br><span class="line">next = chunk_at_offset(p, sz);</span><br><span class="line">nextsz = chunksize(next);</span><br><span class="line"><span class="comment">/* consolidate forward */</span></span><br><span class="line"><span class="keyword">if</span> (!(inuse_bit_at_offset(next, nextsz)))   </span><br><span class="line">&#123;</span><br><span class="line">  sz += nextsz;</span><br><span class="line">  ...</span><br><span class="line">  unlink(next, bck, fwd);</span><br><span class="line">  next = chunk_at_offset(p, sz);</span><br><span class="line">&#125;</span><br><span class="line">set_head(p, sz | PREV_INUSE);</span><br><span class="line">next-&gt;prev_size = sz;</span><br></pre></td></tr></table></figure>
 
 
     </div>
@@ -294,8 +309,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/xiaohong404.github.io/2020/10/24/Heap/Heap-III/" rel="prev" title="Heap-III">
-      <i class="fa fa-chevron-left"></i> Heap-III
+    <a href="/xiaohong404.github.io/2020/10/24/Pwnable_kr/unlink/" rel="prev" title="unlink">
+      <i class="fa fa-chevron-left"></i> unlink
     </a></div>
       <div class="post-nav-item"></div>
     </div>
@@ -358,7 +373,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8E%E4%B8%80%E6%AE%B5%E4%BB%A3%E7%A0%81%E5%85%A5%E6%89%8B"><span class="nav-number">1.</span> <span class="nav-text">从一段代码入手</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E4%B8%80%E6%AE%B5%E4%BB%A3%E7%A0%81%E5%BC%80%E5%A7%8B"><span class="nav-number">1.</span> <span class="nav-text">从一段代码开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFunlink"><span class="nav-number">2.</span> <span class="nav-text">什么是unlink</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%91%E5%90%8E%E5%90%88%E5%B9%B6"><span class="nav-number">2.1.</span> <span class="nav-text">向后合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%91%E5%89%8D%E5%90%88%E5%B9%B6"><span class="nav-number">2.2.</span> <span class="nav-text">向前合并</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -381,7 +396,7 @@
       <div class="site-state-item site-state-categories">
             <a href="/xiaohong404.github.io/Categories/">
           
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
