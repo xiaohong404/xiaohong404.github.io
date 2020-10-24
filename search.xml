@@ -1,95 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Heap I</title>
-    <url>/xiaohong404.github.io/2020/10/16/Heap-I/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><a href="https://azeria-labs.com/heap-exploitation-part-1-understanding-the-glibc-heap-implementation/">原版传送门</a></p>
-<h3 id="WHAT-IS-THE-HEAP-AND-WHY-DO-PEOPLE-USE-IT"><a href="#WHAT-IS-THE-HEAP-AND-WHY-DO-PEOPLE-USE-IT" class="headerlink" title="WHAT IS THE HEAP, AND WHY DO PEOPLE USE IT?"></a><strong>WHAT IS THE HEAP, AND WHY DO PEOPLE USE IT?</strong></h3><p>堆是C/C++程序员在程序执行期间手动分配的新的区域。程序员通过调用堆相关的函数如<em>malloc</em>向堆管理器请求这部分区域。这些被分配的内存区域，或者称为“allocations”，之后可以被程序员一直使用、修改或者引用，直到他们不再需要这部分区域，会调用free函数将这部分区域返还给堆管理器。</p>
-<p>下面是一个C语言程序分配、使用并且释放堆上的结构体的例子：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> field1;</span><br><span class="line">    <span class="keyword">char</span>* field2;</span><br><span class="line">&#125; SomeStruct;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    SomeStruct* myObject = (SomeStruct*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(SomeStruct));</span><br><span class="line">    <span class="keyword">if</span>(myObject != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        myObject-&gt;field1 = <span class="number">1234</span>;</span><br><span class="line">        myObject-&gt;field2 = “Hello World!”;</span><br><span class="line">        do_stuff(myObject);</span><br><span class="line">	<span class="built_in">free</span>(myObject);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>所以只要程序员遵循下面几个小的规则，堆管理器将确保每个已分配的堆不会相互重叠。这个特点使得堆非常有用并且高效，这和大多数C/C++程序追求性能的要求相符合。</p>
-<p>接下来的图表列出了一些程序员在使用堆时的基本规则，以及在程序员违反这些规则时发生的一些漏洞类别。之后，我将更详细地讨论所有这些与堆相关的漏洞类别，目前只讨论堆使用正确时的表现。</p>
-<h3 id="HEAP-RULES"><a href="#HEAP-RULES" class="headerlink" title="HEAP RULES"></a>HEAP RULES</h3><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/1.png" class></strong></p>
-<p>当然，<em>malloc</em>和<em>free</em>并不是C和C++程序员与堆进行交互的唯一方式。相反，C++开发人员通常通过C++运算符new和new []分配内存。必须使用相应的C++运算符delete和delete []而不是<em>free</em>释放这些分配。程序员还可以通过与malloc兼容的堆函数（例如<a href="http://man7.org/linux/man-pages/man3/calloc.3p.html"><em>calloc</em></a>，<a href="http://man7.org/linux/man-pages/man3/realloc.3p.html"><em>realloc</em></a>和<a href="https://linux.die.net/man/3/memalign"><em>memalign）</em></a>来分配内存，这些函数最终也通过<em>free</em>释放，就像<em>malloc</em>一样。</p>
-<p>为简单起见，将首先讨论<em>malloc</em>和<em>free</em>，下面是一个C++程序如何分配，使用和释放堆上的结构体的例子：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomeClass</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> field1;</span><br><span class="line">    <span class="keyword">char</span>* field2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    SomeClass* myObject = <span class="keyword">new</span> SomeClass();</span><br><span class="line">    myObject-&gt;field1 = <span class="number">1234</span>;</span><br><span class="line">    myObject-&gt;field2 = “Hello World!”;</span><br><span class="line">    do_stuff(myObject);</span><br><span class="line">    <span class="keyword">delete</span> myObject;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="MEMORY-CHUNKS-AND-THE-CHUNK-ALLOCATION-STRATEGIES"><a href="#MEMORY-CHUNKS-AND-THE-CHUNK-ALLOCATION-STRATEGIES" class="headerlink" title="MEMORY CHUNKS AND THE CHUNK ALLOCATION STRATEGIES"></a><strong>MEMORY CHUNKS AND THE CHUNK ALLOCATION STRATEGIES</strong></h3><p>假设一个程序员通过malloc需求10字节内存，为了满足这个请求，堆管理器不仅仅只随机寻找一个10字节的程序员可以写的区域，而是需要做更多的事情。堆管理器也需要存储此次分配的元数据。这个元数据被存储在紧邻分配的10字节区域处。</p>
-<p>堆管理器还需要确保分配空间在32位系统上是8字节对齐的，在64位系统上是16字节对齐的。如果程序员只想存储文本字符串或字节数组之类的数据，那么分配空间的对齐方式无关紧要。但是如果程序员打算使用分配空间来存储更多复杂的数据结构，则对齐方式会对程序的正确性和性能会产生重大影响。由于<em>malloc</em>无法知道程序员将在分配空间中存储什么内容，因此堆管理器必须默认确保所有分配空间均对齐。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/2.png" class></strong></p>
-<p>此分配元数据和对齐填充字节与<em>malloc</em>的内存区域将一起被存储并返回给程序员。因此，堆管理器在内部分配的“块”内存比程序员最初要求的稍大。当程序员要求10个字节的内存时，堆管理器会找到或创建一个新的内存块，该块足以存储10个字节的空间、元数据以及对齐填充字节。然后，堆管理器将此块标记为“已分配”，并返回指向块内对齐的10字节“用户数据”区域的指针，程序员将收到<em>malloc</em>调用的返回值。</p>
-<h3 id="CHUNK-ALLOCATION-BASIC-STRATEGY"><a href="#CHUNK-ALLOCATION-BASIC-STRATEGY" class="headerlink" title="CHUNK ALLOCATION: BASIC STRATEGY"></a><strong>CHUNK ALLOCATION: BASIC STRATEGY</strong></h3><p>那么堆管理器如何在内部分配这些块呢？</p>
-<p>首先，让我们看一下堆管理器的大部分工作，分配小块内存的（大大简化的）策略。我将在详细地解释每个步骤，之后我们就可以研究分配大块内存的特殊情况。</p>
-<p>简化的小块分配策略如下：</p>
-<ol>
-<li><p>如果有一个先前释放的内存块，并且该块足够大，可以满足用户的请求，则堆管理器将使用这个释放的块进行新的分配。</p>
-</li>
-<li><p>否则，如果堆顶部有可用空间，则堆管理器将从这个空闲的空间中分配一个新的块并使用它。</p>
-</li>
-<li><p>否则，堆管理器将要求内核向堆的末尾添加新的内存，并且从新分配的空间中分配一个新块给用户。</p>
-</li>
-<li><p>如果前面所有策略均失败，则无法为提供分配服务，并且<em>malloc</em>返回NULL。</p>
-</li>
-</ol>
-<h4 id="ALLOCATING-FROM-FREE’D-CHUNKS"><a href="#ALLOCATING-FROM-FREE’D-CHUNKS" class="headerlink" title="ALLOCATING FROM FREE’D CHUNKS"></a><strong>ALLOCATING FROM FREE’D CHUNKS</strong></h4><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/3.png" class></strong></p>
-<p>从概念上讲，分配之前释放的块非常简单。因为当一个块在内存中被释放，堆管理器会在一系列称为<em>“bins”</em>的不同链表中记录这些释放的块。用户发出一个分配请求后，堆管理器会在这些<em>“bins”</em>中搜索一个足够大的空闲块，为用户提供服务。如果可以成功找到一个，则将这个空闲块从特定的bin中删除，并标记为“已分配”，然后这个指向该“user data”区域块的指针，会作为<em>malloc</em>的返回值返回给程序员。</p>
-<p>出于性能原因，有几种不同类型的<em>bins</em>，即<em>fast bins 、unsorted bins 、small bins、large bins 、per-thread tcache</em>。下个部分将详细讨论这些不同种类的<em>bins</em>。</p>
-<h4 id="ALLOCATING-FROM-THE-TOP-OF-THE-HEAP"><a href="#ALLOCATING-FROM-THE-TOP-OF-THE-HEAP" class="headerlink" title="ALLOCATING FROM THE TOP OF THE HEAP"></a><strong>ALLOCATING FROM THE TOP OF THE HEAP</strong></h4><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/4.gif" class></strong></p>
-<p>如果没有可用的空闲块可以满足分配请求，则堆管理器必须从头开始构造一个新块。为此，堆管理器首先查看堆顶部是否有足够的可用空间（有时称为“top chunk”或“remainder chunk”）。如果存在，堆管理器将在此可用空间基础上构造一个新块。</p>
-<h4 id="ASKING-THE-KERNEL-FOR-MORE-MEMORY-AT-THE-TOP-OF-THE-HEAP"><a href="#ASKING-THE-KERNEL-FOR-MORE-MEMORY-AT-THE-TOP-OF-THE-HEAP" class="headerlink" title="ASKING THE KERNEL FOR MORE MEMORY AT THE TOP OF THE HEAP"></a><strong>ASKING THE KERNEL FOR MORE MEMORY AT THE TOP OF THE HEAP</strong></h4><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/5.gif" class></strong></p>
-<p>一旦堆顶部的可用空间用完，堆管理器将不得不要求内核在堆的末尾增加更多内存。</p>
-<p>在建立堆的开始阶段上，堆管理器通过调用<a href="http://man7.org/linux/man-pages/man2/sbrk.2.html"><em>sbrk</em></a>，要求内核在堆末尾分配更多的内存。在大多数基于Linux的系统上，在内部使用称为“ <a href="https://linux.die.net/man/2/brk">brk</a> ”的系统调用。这个系统调用的名称很容易混淆，它最初的意思是“更改程序中断位置”，通俗来说，它表示在程序加载到内存之后，该区域会增加更多的内存。因为这是堆管理器从一开始创建堆的地方，所以此系统调用的作用是在程序堆的末尾分配更多的内存。</p>
-<p>最终，如果一直使用<em>sbrk</em>扩展堆会导致分配失败，因为堆空间增长得太大之后，进一步扩展将导致其与进程地址空间中的其他内容发生冲突，例如内存映射，共享库或线程的堆栈区域。因此sbrk无法分配时，堆管理器将使用<a href="http://man7.org/linux/man-pages/man2/mmap.2.html"><em>mmap</em></a>调用将新的非连续内存<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l2320">附加</a>到初始程序堆。</p>
-<p>如果<em>mmap</em>也失败，则该进程根本无法分配更多的内存，并且<em>malloc</em>将返回NULL。</p>
-<h3 id="OFF-HEAP-ALLOCATIONS-VIA-MMAP"><a href="#OFF-HEAP-ALLOCATIONS-VIA-MMAP" class="headerlink" title="OFF-HEAP ALLOCATIONS VIA MMAP"></a><strong>OFF-HEAP ALLOCATIONS VIA MMAP</strong></h3><p>很大的分配请求（超过某个阈值*）在堆管理器中会得到<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l866">特殊处理</a>。通过直接调用<em>mmap</em>可以在堆外分配这些大块，并使用块中元数据的标记位来标记这一事实。当这些巨大块通过调用<em>free</em>释放到堆管理器时，堆管理器将通过<em>munmap</em>将整个<em>mmap</em> 过的区域返还给系统。</p>
-<p>*默认情况下，此<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l858">阈值</a> 在32位系统上为128KB~512KB，在64位系统上为32MB，但是，如果堆管理器检测到这些分配的大块内存只需要被临时使用，则此阈值也会<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l949">动态增加</a>。</p>
-<h3 id="ARENAS"><a href="#ARENAS" class="headerlink" title="ARENAS"></a><strong>ARENAS</strong></h3><p>在多线程应用程序上，堆管理器需要保护内部堆数据结构免受可能导致程序崩溃的竞争条件的影响。在<em>ptmalloc2</em>之前，堆管理器通过在每次堆操作之前简单地使用全局互斥锁，以确保在任何给定时间只有一个线程可以与堆进行交互。</p>
-<p>尽管此策略有效，但堆分配器对高利用率和性能非常敏感，以至于导致使用大量线程的应用程序出现严重的性能问题。为了解决这个问题，<em>ptmalloc2</em>堆分配器引入了<em>“arenas”</em>的概念。每个<em>“arenas”</em>本质上是一个完全不同的堆，它完全独立地管理自己的块分配和<em>free bins</em>。每个<em>“arenas”</em>仍然使用互斥锁来序列化不同线程对内部数据结构的访问，但是只要线程与不同的<em>“arenas”</em>进行交互，线程就可以安全地执行堆操作而不会彼此停顿。</p>
-<p>程序的初始（“main”）<em>“arenas”</em>仅包含我们已经看到的堆，对于单线程应用程序，这是堆管理器将使用的唯一<em>arena</em>。但是，随着新线程加入该进程，堆管理器会为每个新线程分配并附加<em>“arenas”</em>，以减少<em>malloc</em>和<em>free</em>等操作的等待时间。</p>
-<p>对于每个加入该进程的新线程，堆管理器将先查找没有被其他线程在使用的<em>“arenas”</em>，并将该<em>“arenas”</em>附加到该线程。一旦所有可用的<em>“arenas”</em>都是在其它线程使用中，堆管理器将<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/arena.c;h=efca2bcf682667c618e285b2357888d10d336c5f;hb=HEAD#l872">创建一个新的</a><em>“arenas”</em>，直到<em>“arenas”</em>的数目达到最大（32位进程为CPU核心数的2倍、64位进程位CPU核心的8倍）。一旦最终达到该限制，堆管理器就会放弃分配，这样多个线程将必须共享一个<em>“arenas”</em>，即执行堆操作将需要那些线程中的一个等待另一个线程。</p>
-<p>但是这些二级<em>“arenas”</em>如何工作？我们看到，主堆在程序加载到内存的紧邻其后的位置，并使用<em>brk</em>系统调用对其进行扩展开始工作，但二级<em>“arenas”</em>并不相同，这些二级<em>“arenas”</em>使用<em>mmap</em>和<em>mprotect</em>创建的一个或多个“<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/arena.c;h=efca2bcf682667c618e285b2357888d10d336c5f;hb=HEAD#l452">子堆</a>”来模拟主堆的行为。</p>
-<h3 id="SUBHEAPS"><a href="#SUBHEAPS" class="headerlink" title="SUBHEAPS"></a><strong>SUBHEAPS</strong></h3><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/6.png" class></strong></p>
-<p>子堆的工作方式与初始程序堆基本相同，主要存在两个区别。初始堆位于程序加载到内存之后的紧邻其后的位置，并且由<em>sbrk</em>动态扩展。相比之下，每个子堆使用<em>mmap</em>定位到内存中，堆管理器使用<em>mprotect</em>手动模拟增长子堆。</p>
-<p>当堆管理器想要创建子堆时，它首先通过调用<em>mmap</em>要求内核保留该子堆可能增长到的内存区域<em>。</em>保留该区域不会将内存直接分配到子堆中；它只是要求内核不要在该区域内分配诸如线程堆栈，mmap区域或者其它的分配任务。*默认情况下，子堆大小最大（即保留该子堆使用的内存区域）在32位上为1MB，在64位系统上为64MB。</p>
-<p>这是通过<em>mmap</em>询问标记为<em>PROT_NONE</em>的页面来完成的，这表明内核仅需要为该区域保留地址范围，不需要内核将内存直接分配给它。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/7.png" class></strong></p>
-<p>在使用<em>sbrk</em>增长初始堆的地方，堆管理器通过手动调用<a href="http://man7.org/linux/man-pages/man2/mprotect.2.html"><em>mprotect</em></a>将区域中的页面从<em>PROT_NONE</em>更改为<em>PROT_READ | PROT_WRITE</em>来将子堆“增长”到此保留的地址范围。这导致内核将物理内存附加到那些地址，实际上也会导致子堆缓慢增长，直到整个<em>mmap</em>区域已满。一旦整个子堆都用完，<em>arenas</em>便会分配另一个子堆。这将允许二级<em>”arenas”</em>几乎无限期地保持增长，直到内核耗尽内存或进程耗尽地址空间时才会失败。</p>
-<h4 id="Recap："><a href="#Recap：" class="headerlink" title="Recap："></a>Recap：</h4><p>初始（“main”）<em>arena</em>仅包含主堆，该主堆位于将程序二进制文件加载到内存之后的位置，并使用<em>sbrk</em>进行扩展。这是用于单线程应用程序的唯一<em>arena</em>。在多线程应用程序上，为新线程分配了二级<em>arena</em>，从中可以分配这些二级<em>arena</em>。使用<em>arenas</em>可以降低线程在执行堆操作之前需要等待互斥锁的可能性，从而提高了程序的速度。与<em>main arena</em>不同，这些二级<em>arena</em>从一个或多个子堆中分配块，这些子堆在内存中的位置首先使用<em>mmap</em>进行确定，并通过使用<em>mprotect</em>进行扩展。</p>
-<h3 id="CHUNK-METADATA"><a href="#CHUNK-METADATA" class="headerlink" title="CHUNK METADATA"></a><strong>CHUNK METADATA</strong></h3><p>现在，了解了分配块的所有不同方式，这些块不仅包含提供给程序员的“用户数据”区域（作为<em>malloc</em>的返回值），同时包含元数据。下面介绍元数据实际记录的值以及存放的位置。</p>
-<p>块的元数据在内存中的<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l1038">确切布局</a>可能会很混乱，因为堆管理器源代码将一个块末尾的元数据与下一个块末尾的元数据组合在一起，并且几个存在并被使用的元数据字段取决于不同种类的chunk。</p>
-<p>现在，我们仅看一下实时分配，它具有单个<em>size_t</em> * 标头，该标头位于给程序员的“用户数据”区域的后面。此字段（在源代码中称为<em>mchunk_size</em>）是在<em>malloc</em>期间写入的，之后由<em>free</em>决定如何处理该分配空间的释放。</p>
-<p>* size_t值在32位系统上为4字节整数，在64位系统上为8字节整数。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/8.png" class></strong></p>
-<p>该<em>mchunk_size</em>存储了四种信息：块的大小，以及被称为“A”,“M”和“P”三比特位。这些都被存储在相同的<em>size_t</em>字段中，因为块大小始终是8字节对齐的（在64位上是16字节对齐），因此，块大小的低三位始终为零。</p>
-<p><strong>“ A ”标志</strong>是用来告诉堆管理器，是否该块属于二级<em>arena</em>，而不是在<em>main arena</em>。在free期间，堆管理器仅仅给了一个指向程序员想要释放空间的指针，并且堆管理器需要确定该指针属于哪一个<em>arena</em>。如果在块的元数据中A标志被设置，则堆管理器必须搜索每个<em>arena</em>，并查看指针是否位于该<em>arena</em>的任何子堆中。如果未设置该标志，则堆管理器可以减少搜索，因为它知道该块来自初始的<em>arena</em>。</p>
-<p><strong>“ M ”标志</strong>用于指示该块是一个通过<em>mmap</em>进行堆外分配的巨大分配。当此分配空间最终返回给<em>free时</em>，堆管理器将通过<em>munmap</em>立即将整个块返回给操作系统，而不是尝试对其进行回收。因此，空闲即已经被释放的块永远不会设置该标志位。</p>
-<p><strong>“ P ”标志</strong>令人困惑，因为它实际上属于先前的块。它指示先前的块是一个空闲块。这意味着当这个块被释放时，可以将其安全地连接到先前的块上，以创建更大的空闲块。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap-I/9.gif" class></strong></p>
-<p>下面是一些和堆相关的文章：</p>
-<ul>
-<li><a href="http://phrack.org/issues/57/9.html">Once upon a free()</a></li>
-<li><a href="http://phrack.org/issues/66/10.html">Malloc des-maleficarum</a></li>
-<li><a href="http://phrack.org/issues/67/8.html">The house of lore</a></li>
-<li><a href="http://phrack.org/issues/61/6.html">Advanced Doug Lea’s malloc exploits</a></li>
-<li><a href="http://phrack.org/issues/66/6.html">Yet another free() exploitation technique</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Heap</category>
-        <category>Heap_Basic</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>阅读深度学习的对抗攻击方法综述及实例</title>
     <url>/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/0.png" class></strong></p>
@@ -152,6 +63,175 @@
       </tags>
   </entry>
   <entry>
+    <title>Heap I</title>
+    <url>/xiaohong404.github.io/2020/10/16/Heap/Heap-I/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><a href="https://azeria-labs.com/heap-exploitation-part-1-understanding-the-glibc-heap-implementation/">原版传送门</a></p>
+<h3 id="WHAT-IS-THE-HEAP-AND-WHY-DO-PEOPLE-USE-IT"><a href="#WHAT-IS-THE-HEAP-AND-WHY-DO-PEOPLE-USE-IT" class="headerlink" title="WHAT IS THE HEAP, AND WHY DO PEOPLE USE IT?"></a><strong>WHAT IS THE HEAP, AND WHY DO PEOPLE USE IT?</strong></h3><p>堆是C/C++程序员在程序执行期间手动分配的新的区域。程序员通过调用堆相关的函数如<em>malloc</em>向堆管理器请求这部分区域。这些被分配的内存区域，或者称为“allocations”，之后可以被程序员一直使用、修改或者引用，直到他们不再需要这部分区域，会调用free函数将这部分区域返还给堆管理器。</p>
+<p>下面是一个C语言程序分配、使用并且释放堆上的结构体的例子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> field1;</span><br><span class="line">    <span class="keyword">char</span>* field2;</span><br><span class="line">&#125; SomeStruct;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    SomeStruct* myObject = (SomeStruct*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(SomeStruct));</span><br><span class="line">    <span class="keyword">if</span>(myObject != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        myObject-&gt;field1 = <span class="number">1234</span>;</span><br><span class="line">        myObject-&gt;field2 = “Hello World!”;</span><br><span class="line">        do_stuff(myObject);</span><br><span class="line">	<span class="built_in">free</span>(myObject);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以只要程序员遵循下面几个小的规则，堆管理器将确保每个已分配的堆不会相互重叠。这个特点使得堆非常有用并且高效，这和大多数C/C++程序追求性能的要求相符合。</p>
+<p>接下来的图表列出了一些程序员在使用堆时的基本规则，以及在程序员违反这些规则时发生的一些漏洞类别。之后，我将更详细地讨论所有这些与堆相关的漏洞类别，目前只讨论堆使用正确时的表现。</p>
+<h3 id="HEAP-RULES"><a href="#HEAP-RULES" class="headerlink" title="HEAP RULES"></a>HEAP RULES</h3><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/1.png" class></strong></p>
+<p>当然，<em>malloc</em>和<em>free</em>并不是C和C++程序员与堆进行交互的唯一方式。相反，C++开发人员通常通过C++运算符new和new []分配内存。必须使用相应的C++运算符delete和delete []而不是<em>free</em>释放这些分配。程序员还可以通过与malloc兼容的堆函数（例如<a href="http://man7.org/linux/man-pages/man3/calloc.3p.html"><em>calloc</em></a>，<a href="http://man7.org/linux/man-pages/man3/realloc.3p.html"><em>realloc</em></a>和<a href="https://linux.die.net/man/3/memalign"><em>memalign）</em></a>来分配内存，这些函数最终也通过<em>free</em>释放，就像<em>malloc</em>一样。</p>
+<p>为简单起见，将首先讨论<em>malloc</em>和<em>free</em>，下面是一个C++程序如何分配，使用和释放堆上的结构体的例子：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomeClass</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> field1;</span><br><span class="line">    <span class="keyword">char</span>* field2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    SomeClass* myObject = <span class="keyword">new</span> SomeClass();</span><br><span class="line">    myObject-&gt;field1 = <span class="number">1234</span>;</span><br><span class="line">    myObject-&gt;field2 = “Hello World!”;</span><br><span class="line">    do_stuff(myObject);</span><br><span class="line">    <span class="keyword">delete</span> myObject;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="MEMORY-CHUNKS-AND-THE-CHUNK-ALLOCATION-STRATEGIES"><a href="#MEMORY-CHUNKS-AND-THE-CHUNK-ALLOCATION-STRATEGIES" class="headerlink" title="MEMORY CHUNKS AND THE CHUNK ALLOCATION STRATEGIES"></a><strong>MEMORY CHUNKS AND THE CHUNK ALLOCATION STRATEGIES</strong></h3><p>假设一个程序员通过malloc需求10字节内存，为了满足这个请求，堆管理器不仅仅只随机寻找一个10字节的程序员可以写的区域，而是需要做更多的事情。堆管理器也需要存储此次分配的元数据。这个元数据被存储在紧邻分配的10字节区域处。</p>
+<p>堆管理器还需要确保分配空间在32位系统上是8字节对齐的，在64位系统上是16字节对齐的。如果程序员只想存储文本字符串或字节数组之类的数据，那么分配空间的对齐方式无关紧要。但是如果程序员打算使用分配空间来存储更多复杂的数据结构，则对齐方式会对程序的正确性和性能会产生重大影响。由于<em>malloc</em>无法知道程序员将在分配空间中存储什么内容，因此堆管理器必须默认确保所有分配空间均对齐。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/2.png" class></strong></p>
+<p>此分配元数据和对齐填充字节与<em>malloc</em>的内存区域将一起被存储并返回给程序员。因此，堆管理器在内部分配的“块”内存比程序员最初要求的稍大。当程序员要求10个字节的内存时，堆管理器会找到或创建一个新的内存块，该块足以存储10个字节的空间、元数据以及对齐填充字节。然后，堆管理器将此块标记为“已分配”，并返回指向块内对齐的10字节“用户数据”区域的指针，程序员将收到<em>malloc</em>调用的返回值。</p>
+<h3 id="CHUNK-ALLOCATION-BASIC-STRATEGY"><a href="#CHUNK-ALLOCATION-BASIC-STRATEGY" class="headerlink" title="CHUNK ALLOCATION: BASIC STRATEGY"></a><strong>CHUNK ALLOCATION: BASIC STRATEGY</strong></h3><p>那么堆管理器如何在内部分配这些块呢？</p>
+<p>首先，让我们看一下堆管理器的大部分工作，分配小块内存的（大大简化的）策略。我将在详细地解释每个步骤，之后我们就可以研究分配大块内存的特殊情况。</p>
+<p>简化的小块分配策略如下：</p>
+<ol>
+<li><p>如果有一个先前释放的内存块，并且该块足够大，可以满足用户的请求，则堆管理器将使用这个释放的块进行新的分配。</p>
+</li>
+<li><p>否则，如果堆顶部有可用空间，则堆管理器将从这个空闲的空间中分配一个新的块并使用它。</p>
+</li>
+<li><p>否则，堆管理器将要求内核向堆的末尾添加新的内存，并且从新分配的空间中分配一个新块给用户。</p>
+</li>
+<li><p>如果前面所有策略均失败，则无法为提供分配服务，并且<em>malloc</em>返回NULL。</p>
+</li>
+</ol>
+<h4 id="ALLOCATING-FROM-FREE’D-CHUNKS"><a href="#ALLOCATING-FROM-FREE’D-CHUNKS" class="headerlink" title="ALLOCATING FROM FREE’D CHUNKS"></a><strong>ALLOCATING FROM FREE’D CHUNKS</strong></h4><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/3.png" class></strong></p>
+<p>从概念上讲，分配之前释放的块非常简单。因为当一个块在内存中被释放，堆管理器会在一系列称为<em>“bins”</em>的不同链表中记录这些释放的块。用户发出一个分配请求后，堆管理器会在这些<em>“bins”</em>中搜索一个足够大的空闲块，为用户提供服务。如果可以成功找到一个，则将这个空闲块从特定的bin中删除，并标记为“已分配”，然后这个指向该“user data”区域块的指针，会作为<em>malloc</em>的返回值返回给程序员。</p>
+<p>出于性能原因，有几种不同类型的<em>bins</em>，即<em>fast bins 、unsorted bins 、small bins、large bins 、per-thread tcache</em>。下个部分将详细讨论这些不同种类的<em>bins</em>。</p>
+<h4 id="ALLOCATING-FROM-THE-TOP-OF-THE-HEAP"><a href="#ALLOCATING-FROM-THE-TOP-OF-THE-HEAP" class="headerlink" title="ALLOCATING FROM THE TOP OF THE HEAP"></a><strong>ALLOCATING FROM THE TOP OF THE HEAP</strong></h4><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/4.gif" class></strong></p>
+<p>如果没有可用的空闲块可以满足分配请求，则堆管理器必须从头开始构造一个新块。为此，堆管理器首先查看堆顶部是否有足够的可用空间（有时称为“top chunk”或“remainder chunk”）。如果存在，堆管理器将在此可用空间基础上构造一个新块。</p>
+<h4 id="ASKING-THE-KERNEL-FOR-MORE-MEMORY-AT-THE-TOP-OF-THE-HEAP"><a href="#ASKING-THE-KERNEL-FOR-MORE-MEMORY-AT-THE-TOP-OF-THE-HEAP" class="headerlink" title="ASKING THE KERNEL FOR MORE MEMORY AT THE TOP OF THE HEAP"></a><strong>ASKING THE KERNEL FOR MORE MEMORY AT THE TOP OF THE HEAP</strong></h4><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/5.gif" class></strong></p>
+<p>一旦堆顶部的可用空间用完，堆管理器将不得不要求内核在堆的末尾增加更多内存。</p>
+<p>在建立堆的开始阶段上，堆管理器通过调用<a href="http://man7.org/linux/man-pages/man2/sbrk.2.html"><em>sbrk</em></a>，要求内核在堆末尾分配更多的内存。在大多数基于Linux的系统上，在内部使用称为“ <a href="https://linux.die.net/man/2/brk">brk</a> ”的系统调用。这个系统调用的名称很容易混淆，它最初的意思是“更改程序中断位置”，通俗来说，它表示在程序加载到内存之后，该区域会增加更多的内存。因为这是堆管理器从一开始创建堆的地方，所以此系统调用的作用是在程序堆的末尾分配更多的内存。</p>
+<p>最终，如果一直使用<em>sbrk</em>扩展堆会导致分配失败，因为堆空间增长得太大之后，进一步扩展将导致其与进程地址空间中的其他内容发生冲突，例如内存映射，共享库或线程的堆栈区域。因此sbrk无法分配时，堆管理器将使用<a href="http://man7.org/linux/man-pages/man2/mmap.2.html"><em>mmap</em></a>调用将新的非连续内存<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l2320">附加</a>到初始程序堆。</p>
+<p>如果<em>mmap</em>也失败，则该进程根本无法分配更多的内存，并且<em>malloc</em>将返回NULL。</p>
+<h3 id="OFF-HEAP-ALLOCATIONS-VIA-MMAP"><a href="#OFF-HEAP-ALLOCATIONS-VIA-MMAP" class="headerlink" title="OFF-HEAP ALLOCATIONS VIA MMAP"></a><strong>OFF-HEAP ALLOCATIONS VIA MMAP</strong></h3><p>很大的分配请求（超过某个阈值*）在堆管理器中会得到<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l866">特殊处理</a>。通过直接调用<em>mmap</em>可以在堆外分配这些大块，并使用块中元数据的标记位来标记这一事实。当这些巨大块通过调用<em>free</em>释放到堆管理器时，堆管理器将通过<em>munmap</em>将整个<em>mmap</em> 过的区域返还给系统。</p>
+<p>*默认情况下，此<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l858">阈值</a> 在32位系统上为128KB~512KB，在64位系统上为32MB，但是，如果堆管理器检测到这些分配的大块内存只需要被临时使用，则此阈值也会<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l949">动态增加</a>。</p>
+<h3 id="ARENAS"><a href="#ARENAS" class="headerlink" title="ARENAS"></a><strong>ARENAS</strong></h3><p>在多线程应用程序上，堆管理器需要保护内部堆数据结构免受可能导致程序崩溃的竞争条件的影响。在<em>ptmalloc2</em>之前，堆管理器通过在每次堆操作之前简单地使用全局互斥锁，以确保在任何给定时间只有一个线程可以与堆进行交互。</p>
+<p>尽管此策略有效，但堆分配器对高利用率和性能非常敏感，以至于导致使用大量线程的应用程序出现严重的性能问题。为了解决这个问题，<em>ptmalloc2</em>堆分配器引入了<em>“arenas”</em>的概念。每个<em>“arenas”</em>本质上是一个完全不同的堆，它完全独立地管理自己的块分配和<em>free bins</em>。每个<em>“arenas”</em>仍然使用互斥锁来序列化不同线程对内部数据结构的访问，但是只要线程与不同的<em>“arenas”</em>进行交互，线程就可以安全地执行堆操作而不会彼此停顿。</p>
+<p>程序的初始（“main”）<em>“arenas”</em>仅包含我们已经看到的堆，对于单线程应用程序，这是堆管理器将使用的唯一<em>arena</em>。但是，随着新线程加入该进程，堆管理器会为每个新线程分配并附加<em>“arenas”</em>，以减少<em>malloc</em>和<em>free</em>等操作的等待时间。</p>
+<p>对于每个加入该进程的新线程，堆管理器将先查找没有被其他线程在使用的<em>“arenas”</em>，并将该<em>“arenas”</em>附加到该线程。一旦所有可用的<em>“arenas”</em>都是在其它线程使用中，堆管理器将<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/arena.c;h=efca2bcf682667c618e285b2357888d10d336c5f;hb=HEAD#l872">创建一个新的</a><em>“arenas”</em>，直到<em>“arenas”</em>的数目达到最大（32位进程为CPU核心数的2倍、64位进程位CPU核心的8倍）。一旦最终达到该限制，堆管理器就会放弃分配，这样多个线程将必须共享一个<em>“arenas”</em>，即执行堆操作将需要那些线程中的一个等待另一个线程。</p>
+<p>但是这些二级<em>“arenas”</em>如何工作？我们看到，主堆在程序加载到内存的紧邻其后的位置，并使用<em>brk</em>系统调用对其进行扩展开始工作，但二级<em>“arenas”</em>并不相同，这些二级<em>“arenas”</em>使用<em>mmap</em>和<em>mprotect</em>创建的一个或多个“<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/arena.c;h=efca2bcf682667c618e285b2357888d10d336c5f;hb=HEAD#l452">子堆</a>”来模拟主堆的行为。</p>
+<h3 id="SUBHEAPS"><a href="#SUBHEAPS" class="headerlink" title="SUBHEAPS"></a><strong>SUBHEAPS</strong></h3><p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/6.png" class></strong></p>
+<p>子堆的工作方式与初始程序堆基本相同，主要存在两个区别。初始堆位于程序加载到内存之后的紧邻其后的位置，并且由<em>sbrk</em>动态扩展。相比之下，每个子堆使用<em>mmap</em>定位到内存中，堆管理器使用<em>mprotect</em>手动模拟增长子堆。</p>
+<p>当堆管理器想要创建子堆时，它首先通过调用<em>mmap</em>要求内核保留该子堆可能增长到的内存区域<em>。</em>保留该区域不会将内存直接分配到子堆中；它只是要求内核不要在该区域内分配诸如线程堆栈，mmap区域或者其它的分配任务。*默认情况下，子堆大小最大（即保留该子堆使用的内存区域）在32位上为1MB，在64位系统上为64MB。</p>
+<p>这是通过<em>mmap</em>询问标记为<em>PROT_NONE</em>的页面来完成的，这表明内核仅需要为该区域保留地址范围，不需要内核将内存直接分配给它。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/7.png" class></strong></p>
+<p>在使用<em>sbrk</em>增长初始堆的地方，堆管理器通过手动调用<a href="http://man7.org/linux/man-pages/man2/mprotect.2.html"><em>mprotect</em></a>将区域中的页面从<em>PROT_NONE</em>更改为<em>PROT_READ | PROT_WRITE</em>来将子堆“增长”到此保留的地址范围。这导致内核将物理内存附加到那些地址，实际上也会导致子堆缓慢增长，直到整个<em>mmap</em>区域已满。一旦整个子堆都用完，<em>arenas</em>便会分配另一个子堆。这将允许二级<em>”arenas”</em>几乎无限期地保持增长，直到内核耗尽内存或进程耗尽地址空间时才会失败。</p>
+<h4 id="Recap："><a href="#Recap：" class="headerlink" title="Recap："></a>Recap：</h4><p>初始（“main”）<em>arena</em>仅包含主堆，该主堆位于将程序二进制文件加载到内存之后的位置，并使用<em>sbrk</em>进行扩展。这是用于单线程应用程序的唯一<em>arena</em>。在多线程应用程序上，为新线程分配了二级<em>arena</em>，从中可以分配这些二级<em>arena</em>。使用<em>arenas</em>可以降低线程在执行堆操作之前需要等待互斥锁的可能性，从而提高了程序的速度。与<em>main arena</em>不同，这些二级<em>arena</em>从一个或多个子堆中分配块，这些子堆在内存中的位置首先使用<em>mmap</em>进行确定，并通过使用<em>mprotect</em>进行扩展。</p>
+<h3 id="CHUNK-METADATA"><a href="#CHUNK-METADATA" class="headerlink" title="CHUNK METADATA"></a><strong>CHUNK METADATA</strong></h3><p>现在，了解了分配块的所有不同方式，这些块不仅包含提供给程序员的“用户数据”区域（作为<em>malloc</em>的返回值），同时包含元数据。下面介绍元数据实际记录的值以及存放的位置。</p>
+<p>块的元数据在内存中的<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l1038">确切布局</a>可能会很混乱，因为堆管理器源代码将一个块末尾的元数据与下一个块末尾的元数据组合在一起，并且几个存在并被使用的元数据字段取决于不同种类的chunk。</p>
+<p>现在，我们仅看一下实时分配，它具有单个<em>size_t</em> * 标头，该标头位于给程序员的“用户数据”区域的后面。此字段（在源代码中称为<em>mchunk_size</em>）是在<em>malloc</em>期间写入的，之后由<em>free</em>决定如何处理该分配空间的释放。</p>
+<p>* size_t值在32位系统上为4字节整数，在64位系统上为8字节整数。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/8.png" class></strong></p>
+<p>该<em>mchunk_size</em>存储了四种信息：块的大小，以及被称为“A”,“M”和“P”三比特位。这些都被存储在相同的<em>size_t</em>字段中，因为块大小始终是8字节对齐的（在64位上是16字节对齐），因此，块大小的低三位始终为零。</p>
+<p><strong>“ A ”标志</strong>是用来告诉堆管理器，是否该块属于二级<em>arena</em>，而不是在<em>main arena</em>。在free期间，堆管理器仅仅给了一个指向程序员想要释放空间的指针，并且堆管理器需要确定该指针属于哪一个<em>arena</em>。如果在块的元数据中A标志被设置，则堆管理器必须搜索每个<em>arena</em>，并查看指针是否位于该<em>arena</em>的任何子堆中。如果未设置该标志，则堆管理器可以减少搜索，因为它知道该块来自初始的<em>arena</em>。</p>
+<p><strong>“ M ”标志</strong>用于指示该块是一个通过<em>mmap</em>进行堆外分配的巨大分配。当此分配空间最终返回给<em>free时</em>，堆管理器将通过<em>munmap</em>立即将整个块返回给操作系统，而不是尝试对其进行回收。因此，空闲即已经被释放的块永远不会设置该标志位。</p>
+<p><strong>“ P ”标志</strong>令人困惑，因为它实际上属于先前的块。它指示先前的块是一个空闲块。这意味着当这个块被释放时，可以将其安全地连接到先前的块上，以创建更大的空闲块。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/9.gif" class></strong></p>
+<p>下面是一些和堆相关的文章：</p>
+<ul>
+<li><a href="http://phrack.org/issues/57/9.html">Once upon a free()</a></li>
+<li><a href="http://phrack.org/issues/66/10.html">Malloc des-maleficarum</a></li>
+<li><a href="http://phrack.org/issues/67/8.html">The house of lore</a></li>
+<li><a href="http://phrack.org/issues/61/6.html">Advanced Doug Lea’s malloc exploits</a></li>
+<li><a href="http://phrack.org/issues/66/6.html">Yet another free() exploitation technique</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Heap</category>
+        <category>Heap_Basic</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>unlink</title>
+    <url>/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/0.png" class></strong></p>
+ <a id="more"></a>
+
+<h3 id="从一段代码入手"><a href="#从一段代码入手" class="headerlink" title="从一段代码入手"></a>从一段代码入手</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *first, *second;</span><br><span class="line">    first = <span class="built_in">malloc</span>(<span class="number">666</span>);</span><br><span class="line">    second = <span class="built_in">malloc</span>(<span class="number">12</span>);</span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">1</span>)</span><br><span class="line">        <span class="built_in">strcpy</span>(first, argv[<span class="number">1</span>]);</span><br><span class="line">    <span class="built_in">free</span>(first);</span><br><span class="line">    <span class="built_in">free</span>(second);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Heap</category>
+        <category>Heap_Basic</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Heap-III</title>
+    <url>/xiaohong404.github.io/2020/10/24/Heap/Heap-III/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Heap</category>
+        <category>Heap_Basic</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>blukat</title>
+    <url>/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/1.png" class></strong></p>
+<h3 id="查看blukat-c源文件"><a href="#查看blukat-c源文件" class="headerlink" title="查看blukat.c源文件"></a>查看blukat.c源文件</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="keyword">char</span> flag[<span class="number">100</span>];</span><br><span class="line"><span class="keyword">char</span> password[<span class="number">100</span>];</span><br><span class="line"><span class="keyword">char</span>* key = <span class="string">&quot;3\rG[S/%\x1c\x1d#0?\rIS\x0f\x1c\x1d\x18;,4\x1b\x00\x1bp;5\x0b\x1b\x08\x45+&quot;</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">calc_flag</span><span class="params">(<span class="keyword">char</span>* s)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;<span class="built_in">strlen</span>(s); i++)&#123;</span><br><span class="line">                flag[i] = s[i] ^ key[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, flag);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">        FILE* fp = fopen(<span class="string">&quot;/home/blukat/password&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">        fgets(password, <span class="number">100</span>, fp);</span><br><span class="line">        <span class="keyword">char</span> buf[<span class="number">100</span>];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;guess the password!\n&quot;</span>);</span><br><span class="line">        fgets(buf, <span class="number">128</span>, <span class="built_in">stdin</span>);</span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(password, buf))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;congrats! here is your flag: &quot;</span>);</span><br><span class="line">                calc_flag(password);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;wrong guess!\n&quot;</span>);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>程序先读取password文件中的内容到password数组中，之后使用buf缓冲区读取用户输入的字符，buf缓冲区的大小为100，而读取的字符为128，之后比较用户输入的字符和password数组中的内容，如果相等，则可以执行cacl_flag函数，经过和密钥的异或运算计算出flag。如果采用缓冲区溢出覆盖fgets的返回地址为函数calc_flag的地址，由于不知道password的内容，无法正确计算出flag，因此这里缓冲区溢出攻击行不通。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>想到本题题干中的描述，本题应该是具有一种巧妙的解法（<a href="https://blog.csdn.net/jackywgw/article/details/41545957">ls-la各项说明​</a>）。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/2.png" class></strong></p>
+<p>这里看到password文件的用户组含有blukat_pwn，而当前用户在blukat_pwn组，因此是具有读权限的，那运行cat命令：</p>
+<p>提示没有访问权限？不，这里的文件内容就是这句话，那直接将这句话输入到可执行文件中即可拿到flag。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/3.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>blackjack</title>
+    <url>/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/1.png" class></strong></p>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>本题链接打不开了！！！ 只能参考别人的wp</p>
+<p>有两个比较关键的点</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/2.png" class></strong></p>
+<p>判断用户下注的金额如果大于用户拥有的金额，则会提示用户不能下注，但程序的漏洞在于如果输入的金额是负数，会直接通过，并且返回输入的下注金额。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/3.png" class></strong></p>
+<p>如果用户输了，则会扣除用户下注的金额，这里使用简单的减法操作，结合前面下注金额可以为负数，则直接输入一个很大的负数，之后故意输掉比赛，使得金额超过阈值拿到flag。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/4.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>python实现端口扫描器</title>
     <url>/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/0.png" class></strong></p>
@@ -182,55 +262,6 @@
       </categories>
       <tags>
         <tag>Python Nmap</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>blackjack</title>
-    <url>/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/1.png" class></strong></p>
-<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>本题链接打不开了！！！ 只能参考别人的wp</p>
-<p>有两个比较关键的点</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/2.png" class></strong></p>
-<p>判断用户下注的金额如果大于用户拥有的金额，则会提示用户不能下注，但程序的漏洞在于如果输入的金额是负数，会直接通过，并且返回输入的下注金额。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/3.png" class></strong></p>
-<p>如果用户输了，则会扣除用户下注的金额，这里使用简单的减法操作，结合前面下注金额可以为负数，则直接输入一个很大的负数，之后故意输掉比赛，使得金额超过阈值拿到flag。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/4.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>blukat</title>
-    <url>/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/1.png" class></strong></p>
-<h3 id="查看blukat-c源文件"><a href="#查看blukat-c源文件" class="headerlink" title="查看blukat.c源文件"></a>查看blukat.c源文件</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="keyword">char</span> flag[<span class="number">100</span>];</span><br><span class="line"><span class="keyword">char</span> password[<span class="number">100</span>];</span><br><span class="line"><span class="keyword">char</span>* key = <span class="string">&quot;3\rG[S/%\x1c\x1d#0?\rIS\x0f\x1c\x1d\x18;,4\x1b\x00\x1bp;5\x0b\x1b\x08\x45+&quot;</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">calc_flag</span><span class="params">(<span class="keyword">char</span>* s)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;<span class="built_in">strlen</span>(s); i++)&#123;</span><br><span class="line">                flag[i] = s[i] ^ key[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, flag);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">        FILE* fp = fopen(<span class="string">&quot;/home/blukat/password&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">        fgets(password, <span class="number">100</span>, fp);</span><br><span class="line">        <span class="keyword">char</span> buf[<span class="number">100</span>];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;guess the password!\n&quot;</span>);</span><br><span class="line">        fgets(buf, <span class="number">128</span>, <span class="built_in">stdin</span>);</span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(password, buf))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;congrats! here is your flag: &quot;</span>);</span><br><span class="line">                calc_flag(password);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;wrong guess!\n&quot;</span>);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>程序先读取password文件中的内容到password数组中，之后使用buf缓冲区读取用户输入的字符，buf缓冲区的大小为100，而读取的字符为128，之后比较用户输入的字符和password数组中的内容，如果相等，则可以执行cacl_flag函数，经过和密钥的异或运算计算出flag。如果采用缓冲区溢出覆盖fgets的返回地址为函数calc_flag的地址，由于不知道password的内容，无法正确计算出flag，因此这里缓冲区溢出攻击行不通。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>想到本题题干中的描述，本题应该是具有一种巧妙的解法（<a href="https://blog.csdn.net/jackywgw/article/details/41545957">ls-la各项说明​</a>）。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/2.png" class></strong></p>
-<p>这里看到password文件的用户组含有blukat_pwn，而当前用户在blukat_pwn组，因此是具有读权限的，那运行cat命令：</p>
-<p>提示没有访问权限？不，这里的文件内容就是这句话，那直接将这句话输入到可执行文件中即可拿到flag。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/3.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
       </tags>
   </entry>
   <entry>
@@ -306,30 +337,6 @@
       </tags>
   </entry>
   <entry>
-    <title>coin</title>
-    <url>/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/3.png" class></strong></p>
-<h3 id="使用netcat连接上远程的服务器"><a href="#使用netcat连接上远程的服务器" class="headerlink" title="使用netcat连接上远程的服务器"></a>使用netcat连接上远程的服务器</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/1.png" class></strong></p>
-<p>题目是一个游戏，大致意思是，一堆硬币，有一个假币，重量为9，而其他为10，要通过给定的C次机会内找到假币。一共要在30s内找到100个假币，也就是完成100次游戏，最终会给出flag。</p>
-<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>简单的二分法，但这里不能从本地直接连远程服务器，这样会超时，需要通过之前的连接登录远程服务器，之后在服务器上编写脚本运行，下面的代码即可成功运行：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;localhost&#x27;</span>, <span class="number">9007</span>)</span><br><span class="line">print(p.recv())</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100</span>):</span><br><span class="line">	N, C = re.findall(<span class="string">&quot;N=(\d+) C=(\d+)&quot;</span>, p.recv())[<span class="number">0</span>]</span><br><span class="line">	N = int(N)</span><br><span class="line">	C = int(C)</span><br><span class="line">	print(N, C)</span><br><span class="line"></span><br><span class="line">	start, end = <span class="number">0</span>, N<span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> start &lt;= end <span class="keyword">and</span> C &gt; <span class="number">0</span>:</span><br><span class="line">		mid = (start + end) // <span class="number">2</span></span><br><span class="line">		x = <span class="string">&quot; &quot;</span>.join([str(j) <span class="keyword">for</span> j <span class="keyword">in</span> range(start, mid+<span class="number">1</span>)])	<span class="comment"># build range list</span></span><br><span class="line">		p.sendline(x)</span><br><span class="line">		</span><br><span class="line">		res = int(p.recvline()[:<span class="number">-1</span>])</span><br><span class="line">		<span class="keyword">if</span> res % <span class="number">10</span> == <span class="number">0</span>:</span><br><span class="line">			start = mid+<span class="number">1</span>	<span class="comment"># through first half</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid<span class="number">-1</span>		<span class="comment"># through second half</span></span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> C &gt; <span class="number">0</span>:	<span class="comment"># use all the tries</span></span><br><span class="line">		p.sendline(<span class="string">&quot;0&quot;</span>)</span><br><span class="line">		p.recv(<span class="number">1024</span>)</span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	p.sendline(str(start))	<span class="comment"># final answer</span></span><br><span class="line">	print(p.recv())</span><br><span class="line"></span><br><span class="line">print(p.recv())</span><br></pre></td></tr></table></figure>
-
-<p>注意这里有个细节是需要先进入服务器的/tmp文件夹下，之后自己再主动建立一个新的文件夹，否则会没有权限访问python的库，一直提示未定义的错误。之后在这个新的文件夹下建立一个python文件，可以随便取个名字，这里我就命名为coin.py。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/2.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>collision</title>
     <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/1.png" class></strong></p>
@@ -365,6 +372,30 @@
       </tags>
   </entry>
   <entry>
+    <title>coin</title>
+    <url>/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/3.png" class></strong></p>
+<h3 id="使用netcat连接上远程的服务器"><a href="#使用netcat连接上远程的服务器" class="headerlink" title="使用netcat连接上远程的服务器"></a>使用netcat连接上远程的服务器</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/1.png" class></strong></p>
+<p>题目是一个游戏，大致意思是，一堆硬币，有一个假币，重量为9，而其他为10，要通过给定的C次机会内找到假币。一共要在30s内找到100个假币，也就是完成100次游戏，最终会给出flag。</p>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>简单的二分法，但这里不能从本地直接连远程服务器，这样会超时，需要通过之前的连接登录远程服务器，之后在服务器上编写脚本运行，下面的代码即可成功运行：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;localhost&#x27;</span>, <span class="number">9007</span>)</span><br><span class="line">print(p.recv())</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100</span>):</span><br><span class="line">	N, C = re.findall(<span class="string">&quot;N=(\d+) C=(\d+)&quot;</span>, p.recv())[<span class="number">0</span>]</span><br><span class="line">	N = int(N)</span><br><span class="line">	C = int(C)</span><br><span class="line">	print(N, C)</span><br><span class="line"></span><br><span class="line">	start, end = <span class="number">0</span>, N<span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> start &lt;= end <span class="keyword">and</span> C &gt; <span class="number">0</span>:</span><br><span class="line">		mid = (start + end) // <span class="number">2</span></span><br><span class="line">		x = <span class="string">&quot; &quot;</span>.join([str(j) <span class="keyword">for</span> j <span class="keyword">in</span> range(start, mid+<span class="number">1</span>)])	<span class="comment"># build range list</span></span><br><span class="line">		p.sendline(x)</span><br><span class="line">		</span><br><span class="line">		res = int(p.recvline()[:<span class="number">-1</span>])</span><br><span class="line">		<span class="keyword">if</span> res % <span class="number">10</span> == <span class="number">0</span>:</span><br><span class="line">			start = mid+<span class="number">1</span>	<span class="comment"># through first half</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid<span class="number">-1</span>		<span class="comment"># through second half</span></span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> C &gt; <span class="number">0</span>:	<span class="comment"># use all the tries</span></span><br><span class="line">		p.sendline(<span class="string">&quot;0&quot;</span>)</span><br><span class="line">		p.recv(<span class="number">1024</span>)</span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	p.sendline(str(start))	<span class="comment"># final answer</span></span><br><span class="line">	print(p.recv())</span><br><span class="line"></span><br><span class="line">print(p.recv())</span><br></pre></td></tr></table></figure>
+
+<p>注意这里有个细节是需要先进入服务器的/tmp文件夹下，之后自己再主动建立一个新的文件夹，否则会没有权限访问python的库，一直提示未定义的错误。之后在这个新的文件夹下建立一个python文件，可以随便取个名字，这里我就命名为coin.py。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/2.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>fd</title>
     <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/1.png" class></strong></p>
@@ -387,7 +418,7 @@
 <p>要使得$fd=0$，就是让main函数的第一个参数argv[1]等于$0x1234$</p>
 <h3 id="fd-4660"><a href="#fd-4660" class="headerlink" title="./fd 4660"></a>./fd 4660</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/7.png" class></strong></p>
 <p>注意这里参数需要转为10进制   $0x1234_{16} = 4660_{10}$</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">flag: mommy! I think I know what a file descriptor is!!</span><br></pre></td></tr></table></figure>
+<figure class="highlight erlang-repl"><table><tr><td class="code"><pre><span class="line">flag: mommy! I think I know what a file descriptor is!!</span><br></pre></td></tr></table></figure>
 
 ]]></content>
       <categories>
@@ -422,30 +453,6 @@
       </tags>
   </entry>
   <entry>
-    <title>lotto</title>
-    <url>/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/1.png" class></strong></p>
-<h3 id="查看lotto-c源代码"><a href="#查看lotto-c源代码" class="headerlink" title="查看lotto.c源代码"></a>查看lotto.c源代码</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> submit[<span class="number">6</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">play</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Submit your 6 lotto bytes : &quot;</span>);</span><br><span class="line">        fflush(<span class="built_in">stdout</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> r;</span><br><span class="line">        r = read(<span class="number">0</span>, submit, <span class="number">6</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Lotto Start!\n&quot;</span>);</span><br><span class="line">        <span class="comment">//sleep(1);</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// generate lotto numbers</span></span><br><span class="line">        <span class="keyword">int</span> fd = open(<span class="string">&quot;/dev/urandom&quot;</span>, O_RDONLY);</span><br><span class="line">        <span class="keyword">if</span>(fd==<span class="number">-1</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;error. tell admin\n&quot;</span>);</span><br><span class="line">				<span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">unsigned</span> <span class="keyword">char</span> lotto[<span class="number">6</span>];</span><br><span class="line">        <span class="keyword">if</span>(read(fd, lotto, <span class="number">6</span>) != <span class="number">6</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;error2. tell admin\n&quot;</span>);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;<span class="number">6</span>; i++)&#123;</span><br><span class="line">                lotto[i] = (lotto[i] % <span class="number">45</span>) + <span class="number">1</span>;         <span class="comment">// 1 ~ 45</span></span><br><span class="line">        &#125;</span><br><span class="line">        close(fd);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// calculate lotto score</span></span><br><span class="line">        <span class="keyword">int</span> match = <span class="number">0</span>, j = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;<span class="number">6</span>; i++)&#123;</span><br><span class="line">                <span class="keyword">for</span>(j=<span class="number">0</span>; j&lt;<span class="number">6</span>; j++)&#123;</span><br><span class="line">                        <span class="keyword">if</span>(lotto[i] == submit[j])&#123;</span><br><span class="line">                                match++;</span><br><span class="line">                        &#125;</span><br><span class="line">                &#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// win!</span></span><br><span class="line">        <span class="keyword">if</span>(match == <span class="number">6</span>)&#123;</span><br><span class="line">                system(<span class="string">&quot;/bin/cat flag&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;bad luck...\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">help</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;- nLotto Rule -\n&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;nlotto is consisted with 6 random natural numbers less than 46\n&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;your goal is to match lotto numbers as many as you can\n&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;if you win lottery for *1st place*, you will get reward\n&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;for more details, follow the link below\n&quot;</span>);</span><br><span class="line"> 		<span class="built_in">printf</span>(<span class="string">&quot;http://www.nlotto.co.kr/counsel.do?				     method=playerGuide#buying_guide01\n\n&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;mathematical chance to win this game is known to be 1/8145060.\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// menu</span></span><br><span class="line">        <span class="keyword">unsigned</span> <span class="keyword">int</span> menu;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line"></span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;- Select Menu -\n&quot;</span>);</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;1. Play Lotto\n&quot;</span>);</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;2. Help\n&quot;</span>);</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;3. Exit\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">                <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;menu);</span><br><span class="line">            </span><br><span class="line">             	<span class="keyword">switch</span>(menu)&#123;</span><br><span class="line">                        <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">                                play();</span><br><span class="line">                                <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">                                help();</span><br><span class="line">                                <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">                                <span class="built_in">printf</span>(<span class="string">&quot;bye\n&quot;</span>);</span><br><span class="line">                                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">                        <span class="keyword">default</span>:</span><br><span class="line">                                <span class="built_in">printf</span>(<span class="string">&quot;invalid menu\n&quot;</span>);</span><br><span class="line">                                <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>程序的大致逻辑为，用户输入6个字符，如果与系统中<a href="https://zh.wikipedia.org/wiki//dev/random">/dev/urandom</a>随机生成的数相同，累计可以达到6分则最后可拿到flag。显然，需要寻找措施进行绕过，重点在于play函数。</p>
-<h3 id="查看play函数"><a href="#查看play函数" class="headerlink" title="查看play函数"></a>查看play函数</h3><p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/2.png" class></strong></p>
-<p>判断用户输入的字符和随机数是否相同本应该是一重for循环，而这里使用了两重for循环，判断的是要求的每一位只要我们输入的6位中存在就可以了，不管是哪一位都可以，只要有六个相等就好了。那只需要一直尝试同一个字符串，总有一次人品好。另外，注意这里随机生成的字符ASCII码范围为1~45，参照<a href="https://blog.csdn.net/jinduozhao/article/details/75398793">ASCII码表</a>，只有 DEC 33 开始才是可见字符，所以需要输入的字符为 ASCII DEC 33 到 45 。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>可以编写python脚本，也可以直接自己多次重复输入。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/3.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>mistake</title>
     <url>/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/0.png" class></strong></p>
@@ -463,6 +470,30 @@
 <p>而另一方面，<strong>0作为文件描述符，它指向的是stdin</strong>。</p>
 <p>因此，后面的read函数实际上是从stdin读取，而不是password文件，而stdin我们可以控制，则我们可以输入任意已知的密码，之后再输入与$0x1$异或的值，使得两次输入的密码相匹配。</p>
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/mistake/3.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>lotto</title>
+    <url>/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/1.png" class></strong></p>
+<h3 id="查看lotto-c源代码"><a href="#查看lotto-c源代码" class="headerlink" title="查看lotto.c源代码"></a>查看lotto.c源代码</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> submit[<span class="number">6</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">play</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Submit your 6 lotto bytes : &quot;</span>);</span><br><span class="line">        fflush(<span class="built_in">stdout</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> r;</span><br><span class="line">        r = read(<span class="number">0</span>, submit, <span class="number">6</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Lotto Start!\n&quot;</span>);</span><br><span class="line">        <span class="comment">//sleep(1);</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// generate lotto numbers</span></span><br><span class="line">        <span class="keyword">int</span> fd = open(<span class="string">&quot;/dev/urandom&quot;</span>, O_RDONLY);</span><br><span class="line">        <span class="keyword">if</span>(fd==<span class="number">-1</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;error. tell admin\n&quot;</span>);</span><br><span class="line">				<span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">unsigned</span> <span class="keyword">char</span> lotto[<span class="number">6</span>];</span><br><span class="line">        <span class="keyword">if</span>(read(fd, lotto, <span class="number">6</span>) != <span class="number">6</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;error2. tell admin\n&quot;</span>);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;<span class="number">6</span>; i++)&#123;</span><br><span class="line">                lotto[i] = (lotto[i] % <span class="number">45</span>) + <span class="number">1</span>;         <span class="comment">// 1 ~ 45</span></span><br><span class="line">        &#125;</span><br><span class="line">        close(fd);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// calculate lotto score</span></span><br><span class="line">        <span class="keyword">int</span> match = <span class="number">0</span>, j = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;<span class="number">6</span>; i++)&#123;</span><br><span class="line">                <span class="keyword">for</span>(j=<span class="number">0</span>; j&lt;<span class="number">6</span>; j++)&#123;</span><br><span class="line">                        <span class="keyword">if</span>(lotto[i] == submit[j])&#123;</span><br><span class="line">                                match++;</span><br><span class="line">                        &#125;</span><br><span class="line">                &#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// win!</span></span><br><span class="line">        <span class="keyword">if</span>(match == <span class="number">6</span>)&#123;</span><br><span class="line">                system(<span class="string">&quot;/bin/cat flag&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;bad luck...\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">help</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;- nLotto Rule -\n&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;nlotto is consisted with 6 random natural numbers less than 46\n&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;your goal is to match lotto numbers as many as you can\n&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;if you win lottery for *1st place*, you will get reward\n&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;for more details, follow the link below\n&quot;</span>);</span><br><span class="line"> 		<span class="built_in">printf</span>(<span class="string">&quot;http://www.nlotto.co.kr/counsel.do?				     method=playerGuide#buying_guide01\n\n&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;mathematical chance to win this game is known to be 1/8145060.\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// menu</span></span><br><span class="line">        <span class="keyword">unsigned</span> <span class="keyword">int</span> menu;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line"></span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;- Select Menu -\n&quot;</span>);</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;1. Play Lotto\n&quot;</span>);</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;2. Help\n&quot;</span>);</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;3. Exit\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">                <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;menu);</span><br><span class="line">            </span><br><span class="line">             	<span class="keyword">switch</span>(menu)&#123;</span><br><span class="line">                        <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">                                play();</span><br><span class="line">                                <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">                                help();</span><br><span class="line">                                <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">                                <span class="built_in">printf</span>(<span class="string">&quot;bye\n&quot;</span>);</span><br><span class="line">                                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">                        <span class="keyword">default</span>:</span><br><span class="line">                                <span class="built_in">printf</span>(<span class="string">&quot;invalid menu\n&quot;</span>);</span><br><span class="line">                                <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>程序的大致逻辑为，用户输入6个字符，如果与系统中<a href="https://zh.wikipedia.org/wiki//dev/random">/dev/urandom</a>随机生成的数相同，累计可以达到6分则最后可拿到flag。显然，需要寻找措施进行绕过，重点在于play函数。</p>
+<h3 id="查看play函数"><a href="#查看play函数" class="headerlink" title="查看play函数"></a>查看play函数</h3><p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/2.png" class></strong></p>
+<p>判断用户输入的字符和随机数是否相同本应该是一重for循环，而这里使用了两重for循环，判断的是要求的每一位只要我们输入的6位中存在就可以了，不管是哪一位都可以，只要有六个相等就好了。那只需要一直尝试同一个字符串，总有一次人品好。另外，注意这里随机生成的字符ASCII码范围为1~45，参照<a href="https://blog.csdn.net/jinduozhao/article/details/75398793">ASCII码表</a>，只有 DEC 33 开始才是可见字符，所以需要输入的字符为 ASCII DEC 33 到 45 。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>可以编写python脚本，也可以直接自己多次重复输入。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/3.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -527,6 +558,43 @@
 <p>所以生成的随机数为0x6b8b4567，可多次运行程序查看其值是否发生变化，这里不做演示。</p>
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>求出$0x6b8b4567\oplus 0xdeadbeef$的值输入即可</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/7.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>shellshock</title>
+    <url>/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/1.png" class></strong></p>
+<h3 id="查看shellshock-c源文件"><a href="#查看shellshock-c源文件" class="headerlink" title="查看shellshock.c源文件"></a>查看shellshock.c源文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/2.png" class></strong></p>
+<p>程序依次运行三个函数*<a href="https://www.man7.org/linux/man-pages/man2/setresgid.2.html">setresuid、setresgid</a>、system*</p>
+<h3 id="查看程序的执行权限"><a href="#查看程序的执行权限" class="headerlink" title="查看程序的执行权限"></a>查看程序的执行权限</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/3.png" class></strong></p>
+<p>以shellshock身份启动时，程序的权限是other权限r-x，而在setresuid和setresgid中使用的是effective gid，也就是shellshock_pwn的权限r-s，当程序执行到system时，程序已经具有shellshock_pwn组权限了。</p>
+<p><strong>这个组权限对于flag文件来说是可读的（r–）</strong>，但是问题在于这一段程序并没有涉及对flag的读操作，权限虽然有了，但怎么办呢？显然这里利用shellshock漏洞。可通过下面的命令证明确实存在shellshock漏洞：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">env x=&#x27;() &#123; :;&#125;; echo vulnerable&#x27; ./bash -c &quot;echo this is a test&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/4.png" class></strong></p>
+<p>实际上，“x=’() { :;}; echo vulnerable”​是new出来了一个新的环境变量：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">KEY=x</span><br><span class="line">VALUE=() &#123;:;&#125;; echo vulnerable</span><br></pre></td></tr></table></figure>
+
+<p>而当我们后续执行bash的时候，最终会定位到initialize_shell_variables中，这个函数内部会遍历所有的环境变量，而我们设计的VALUE绕过了其中一个export函数的定义检查，使得最终执行的是后面的echo vulnerable串。所以，调用bash的时候，自定义的这个语句就会触发。简而言之，这个漏洞会把用户输入的指令当作代码执行。</p>
+<p>于是，我们在这条语句的基础上将自定义语句换为bash -c “cat ./flag”，执行的程序bash -c换成./shellshock(它内部调用了bash -c ‘echo shock_me’)，因此当执行shellshock中的system函数会调用bash，总而自动执行cat flag这条命令，因为./shellshock执行时拿到了shellshock_pwn的权限，从而破壳漏洞可以在此权限上成功执行了cat ./flag，即成功实现了提权操作。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>运行下面语句拿到flag</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">env x=&#x27;() &#123; :;&#125;; bash -c &quot;cat ./flag&quot;&#x27; ./shellshock</span><br></pre></td></tr></table></figure>
+
+<p><strong></strong></p>
+<p>关于shellshock漏洞相关知识可参考：</p>
+<p>1、<a href="https://www.baidu.com/link?url=3yWq37n7Y_LHRUa2L-iudGGqqgT-6s4gKmaU0_hOQBDFSacVZ_bxZqpA999gplxb_gOwXfn9XSE9mE53bYkDBK&wd=&eqid=e40eff4200053949000000035aa32eda">关于<em>ShellShock</em>漏洞的利用过程和原理解析 - CSDN博客</a></p>
+<p>2、<a href="http://www.freebuf.com/articles/system/45390.html">破壳（ShellShock）漏洞样本分析报告</a></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -611,54 +679,17 @@
       </tags>
   </entry>
   <entry>
-    <title>shellshock</title>
-    <url>/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/1.png" class></strong></p>
-<h3 id="查看shellshock-c源文件"><a href="#查看shellshock-c源文件" class="headerlink" title="查看shellshock.c源文件"></a>查看shellshock.c源文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/2.png" class></strong></p>
-<p>程序依次运行三个函数*<a href="https://www.man7.org/linux/man-pages/man2/setresgid.2.html">setresuid、setresgid</a>、system*</p>
-<h3 id="查看程序的执行权限"><a href="#查看程序的执行权限" class="headerlink" title="查看程序的执行权限"></a>查看程序的执行权限</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/3.png" class></strong></p>
-<p>以shellshock身份启动时，程序的权限是other权限r-x，而在setresuid和setresgid中使用的是effective gid，也就是shellshock_pwn的权限r-s，当程序执行到system时，程序已经具有shellshock_pwn组权限了。</p>
-<p><strong>这个组权限对于flag文件来说是可读的（r–）</strong>，但是问题在于这一段程序并没有涉及对flag的读操作，权限虽然有了，但怎么办呢？显然这里利用shellshock漏洞。可通过下面的命令证明确实存在shellshock漏洞：</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">env x=&#x27;() &#123; :;&#125;; echo vulnerable&#x27; ./bash -c &quot;echo this is a test&quot;</span><br></pre></td></tr></table></figure>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/4.png" class></strong></p>
-<p>实际上，“x=’() { :;}; echo vulnerable”​是new出来了一个新的环境变量：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">KEY=x</span><br><span class="line">VALUE=() &#123;:;&#125;; echo vulnerable</span><br></pre></td></tr></table></figure>
-
-<p>而当我们后续执行bash的时候，最终会定位到initialize_shell_variables中，这个函数内部会遍历所有的环境变量，而我们设计的VALUE绕过了其中一个export函数的定义检查，使得最终执行的是后面的echo vulnerable串。所以，调用bash的时候，自定义的这个语句就会触发。简而言之，这个漏洞会把用户输入的指令当作代码执行。</p>
-<p>于是，我们在这条语句的基础上将自定义语句换为bash -c “cat ./flag”，执行的程序bash -c换成./shellshock(它内部调用了bash -c ‘echo shock_me’)，因此当执行shellshock中的system函数会调用bash，总而自动执行cat flag这条命令，因为./shellshock执行时拿到了shellshock_pwn的权限，从而破壳漏洞可以在此权限上成功执行了cat ./flag，即成功实现了提权操作。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>运行下面语句拿到flag</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">env x=&#x27;() &#123; :;&#125;; bash -c &quot;cat ./flag&quot;&#x27; ./shellshock</span><br></pre></td></tr></table></figure>
-
-<p><strong></strong></p>
-<p>关于shellshock漏洞相关知识可参考：</p>
-<p>1、<a href="https://www.baidu.com/link?url=3yWq37n7Y_LHRUa2L-iudGGqqgT-6s4gKmaU0_hOQBDFSacVZ_bxZqpA999gplxb_gOwXfn9XSE9mE53bYkDBK&wd=&eqid=e40eff4200053949000000035aa32eda">关于<em>ShellShock</em>漏洞的利用过程和原理解析 - CSDN博客</a></p>
-<p>2、<a href="http://www.freebuf.com/articles/system/45390.html">破壳（ShellShock）漏洞样本分析报告</a></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Heap II</title>
-    <url>/xiaohong404.github.io/2020/10/17/Heap-II/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/0.png" class></strong></p>
+    <url>/xiaohong404.github.io/2020/10/17/Heap/Heap-II/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap/Heap-II/0.png" class></strong></p>
  <a id="more"></a>
 
 <p>[<a href="https://azeria-labs.com/heap-exploitation-part-2-glibc-heap-free-bins/">原版传送门</a>]</p>
 <h3 id="UNDERSTANDING-THE-GLIBC-HEAP-IMPLEMENTATION"><a href="#UNDERSTANDING-THE-GLIBC-HEAP-IMPLEMENTATION" class="headerlink" title="UNDERSTANDING THE GLIBC HEAP IMPLEMENTATION"></a><strong>UNDERSTANDING THE GLIBC HEAP IMPLEMENTATION</strong></h3><p>前一部分解释了<a href="https://linux.die.net/man/3/malloc"><em>malloc</em></a>和<a href="https://linux.die.net/man/3/free"><em>free</em></a>的基本行为。我们看到，<em>malloc</em>通过分配内存块来处理内存分配请求<em>。</em>每个块不仅存储程序员将与之交互的malloc返回的“用户数据”区域，还存储与该块关联的元数据。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/1.png" class></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap/Heap-II/1.png" class></strong></p>
 <p>我们看到了堆管理器的基本块分配策略是如何工作的，并且看到了当没有已经释放的块可以被用于响应用户的请求时，如何从堆的顶部创建新块。</p>
 <p>接下来这篇文章，将解释这种块回收策略是如何工作的，即如何将已经分配的块被<em>free</em>然后保存起来，并最终回收以服务之后的<em>malloc</em>请求。许多堆利用技术都依赖于这些内部机制，但是现在，让我们看看堆正确运行时如何通过<em>free</em>回收这些块。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/2.gif" class></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap/Heap-II/2.gif" class></strong></p>
 <h3 id="HOW-DOES-FREE-WORK"><a href="#HOW-DOES-FREE-WORK" class="headerlink" title="HOW DOES FREE WORK?"></a><strong>HOW DOES FREE WORK?</strong></h3><p>当程序员完成<em>malloc</em>的分配块的任务（或malloc兼容的分配，如<em>calloc</em>）后，程序员将通过<a href="https://linux.die.net/man/3/free"><em>free</em></a>将其释放回堆管理器。在<a href="http://www.open-std.org/JTC1/SC22/wg14/www/docs/n1124.pdf">C标准</a>定义了<em>free（NULL）</em>什么也不做，但对于所有其他<em>free</em>调用，堆管理器的第一份工作是使指针指回其相应的块。堆管理器通过从传递给free的指针中<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l1172">减去该块元数据的大小来实现</a>此目的。</p>
 <p>从指针到块的这种转换之所以有效，是因为用户数据区域位于块内，但是，仅当传递给free的指针确实来自<em>malloc</em>的实时分配时，该转换才有效。如果将其他一些指针传递给free，则堆管理器可能释放或回收无效的块，从而导致内存损坏问题，这可能导致进程崩溃，甚至可能使黑客远程接管该进程。</p>
 <p>因此，<em>free</em>首先进行了一些基本的检查，检查是否这个释放的块是显然无效的，防止之后再分配。如果其中任何一个检查失败，则程序中止。检查包括：</p>
@@ -671,14 +702,14 @@
 <p>这里的堆管理器检查并不详尽。攻击者控制的指向数据的指针可能会绕过这些完整性检查，并且仍会在进程中触发内存崩溃。我们将在以后的文章中更详细地介绍这一点。</p>
 <h3 id="FREE-CHUNK-METADATA"><a href="#FREE-CHUNK-METADATA" class="headerlink" title="FREE CHUNK METADATA"></a><strong>FREE CHUNK METADATA</strong></h3><p>在上一篇文章中，展示了已分配块如何将元数据与程序员使用的“用户数据”区域一起存储。这些已经分配的块存储了“块大小”以及其元数据中的三个位，分别称为“ A”，“ M”和“ P”。这些位可分别帮助堆管理器记住该块是否是从非主arena分配的，是否是通过<em>mmap</em>进行堆外分配的，以及前一个块是否是空闲的。</p>
 <p>空闲块也存储元数据。类似已分配的块，他们存储“块大小”，“A”和“P”字段，但他们不使用“M”字段，因为一个<a href="http://man7.org/linux/man-pages/man2/mmap.2.html">MMAP</a>过的块在释放期间将永远是<a href="https://linux.die.net/man/3/munmap"><em>munmap-</em></a>ed（取消虚拟内存映射），而不是转变成一个<em>free</em>块回收，即空闲块的”M“字段是一个确定的值，一定不会通过mmap从堆外分配。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/3.png" class></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap/Heap-II/3.png" class></strong></p>
 <p>空闲块还使用称为“<a href="http://g.oswego.edu/dl/html/malloc.html">边界标签</a>”的技术在用户数据区域之后存储信息。这些边界标签在块之前和之后携带大小信息。这允许从任何已知的块开始并在任何方向上遍历块，从而能够非常快速地合并相邻的空闲块。</p>
 <p>这些释放的块存储在相应的<em>”free bins“</em>中，这些<em>“free bins”</em>用作<a href="https://en.wikipedia.org/wiki/Linked_list">链表</a>。这要求每个空闲块还存储指向其他块的指针。由于释放的块中的“用户数据”（根据定义）是免费供堆管理器使用的，因此堆管理器将释放的块中的“用户数据”区域重新定位为额外的元数据所在的位置。</p>
 <h3 id="RECYCLING-MEMORY-WITH-BINS"><a href="#RECYCLING-MEMORY-WITH-BINS" class="headerlink" title="RECYCLING MEMORY WITH BINS"></a><strong>RECYCLING MEMORY WITH BINS</strong></h3><p>在内部，堆管理器需要记录释放的块，以便malloc可以在分配请求期间重用它们。在最初的实现中，堆管理器可以通过将所有释放的块简单地存储在某个巨大的链表中来完成此操作。这可以工作，但是会使<a href="https://linux.die.net/man/3/malloc"><em>malloc</em></a>变慢。由于<em>malloc</em>是大多数程序的高利用率组件，因此这种缓慢将对系统上运行的程序的整体性能产生巨大影响。</p>
 <p>为了提高性能，堆管理器而是维护一系列称为“ bins”的列表，这些列表旨在最大程度地提高分配和释放的速度。共有5种类型<em>bins</em>：每个线程<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l1407">62</a> <strong>small bins,</strong> 63 <strong>large bins,</strong> 1 <strong>unsorted bin,</strong> 10 <strong>fast bins</strong> and 64 <strong>tcache bins</strong> 。</p>
 <p><em>small，large，unsorted bins</em>是最古老的bin类型，其实现这里将其称为堆的基本回收策略。fast bins和tcache bins是在这些基础上的优化。</p>
 <p>容易混淆的地方在于，在堆管理器的源代码中，<em>small，large，unsorted bins</em>都一起存在<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l1686">同一数组</a>中。索引0没有被使用，索引1是<em>unsorted bin</em>，2-64是<em>small bins</em>，65-127是<em>large bins</em>。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/4.png" class></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap/Heap-II/4.png" class></strong></p>
 <h3 id="CHUNK-RECYCLING-THE-BASIC-STRATEGY"><a href="#CHUNK-RECYCLING-THE-BASIC-STRATEGY" class="headerlink" title="CHUNK RECYCLING: THE BASIC STRATEGY"></a><strong>CHUNK RECYCLING: THE BASIC STRATEGY</strong></h3><p>在<em>tcache</em>和<em>fastbin</em>优化之前，首先来看一下堆管理器使用的基本回收策略。</p>
 <p><em>free</em>的基本算法如下（低地址在前，高地址在后）：</p>
 <ol>
@@ -694,26 +725,26 @@
 </li>
 </ol>
 <h3 id="SMALL-BINS"><a href="#SMALL-BINS" class="headerlink" title="SMALL BINS"></a><strong>SMALL BINS</strong></h3><p><em>small bins</em>是最容易理解的基本bin。它们有62个，每个<em>small bin</em>都存储相同大小的固定块。在32位系统上小于512字节（在64位系统上小于1024字节）的每个块都有一个对应的<em>small bin</em>。由于每个<em>small bin</em>仅存储一个特定大小的块，它们会自动排序，因此在这些列表中插入和删除条目的速度非常快。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/5.png" class></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap/Heap-II/5.png" class></strong></p>
 <h3 id="LARGE-BINS"><a href="#LARGE-BINS" class="headerlink" title="LARGE BINS"></a><strong>LARGE BINS</strong></h3><p><em>small bins</em>的策略非常适合小型分配，但是我们无法为每个可能的块大小都设置一个存储区。对于超过512字节（64位为1024字节）的块，堆管理器将改为使用<em>large bins</em>。</p>
 <p>63个<em>large bins</em>中的每个大都与<em>small bins</em>以相同的方式运行，但是它们不是存储固定大小的块，而是存储一定大小范围内的块。每个<em>large bins</em>的大小范围都设计为与<em>small bins</em>的块大小或其他<em>large bins</em>的范围不重叠。换句话说，在给定块的大小的情况下，恰好只有一个对应于此大小的<em>small bin</em>或<em>large bin</em>。</p>
 <p>由于<em>large bins</em>存储一定大小范围的块，因此向<em>large bin</em>中插入一个块必须手动进行排序，并且从链表中的分配也需要遍历该列表。这使得<em>large bins</em>本质上比<em>small bins</em>慢。但是，在大多数程序中，<em>large bins</em>的使用频率较低。这是因为平均意义上说，程序更倾向于以更高的频率分配（或释放）小的分配块。出于相同的原因，<em>large bins</em>的使用频率会聚集在覆盖范围较小的<em>large bin</em>中；最小的<em>large bin</em>仅覆盖从512字节到576字节的64字节范围的块，而第二大的<em>large bin</em>则覆盖256KB的大小范围的块。最大的<em>large bin</em>覆盖了<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l1394">1MB以上</a>的所有已释放块。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/6.png" class></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap/Heap-II/6.png" class></strong></p>
 <h3 id="UNSORTED-BIN"><a href="#UNSORTED-BIN" class="headerlink" title="UNSORTED BIN"></a><strong>UNSORTED BIN</strong></h3><p>堆管理器使用称为<em>unsorted bins</em>的优化缓存层面进一步改善了基本的分配算法。此优化基于以下观察结果：通常这些free的块都聚集在一起，并且释放后通常立即分配大小相似的块。例如，释放树或列表的程序通常会一次释放大多数分配空间中的所有条目，或者更新列表中条目的程序可能会释放前一个条目，然后再分配新的空间替换条目。</p>
 <p>在这些情况下，在将较大的块放入正确的bin中之前合并这些释放的块将避免一些开销，并且在分配过程中能够快速返回最近释放的块将简单地加快整个过程。</p>
 <p>因此堆管理器引入了<em>unsorted bin</em>，当一个块释放时，堆管理器没有立即将新释放的块放入相应的bin中，而是与相邻的块合并，然后将其转储到常规的<em>unsorted</em>的链表中。在<em>malloc</em>期间，将检查<em>unsorted bins</em>上的每个项目，以查看其是否“适合“请求。如果大小匹配，<em>malloc</em>可以立即使用它。如果没有匹配的块，则malloc之后会将块放入其相应的<em>small bins</em>或<em>large bins</em>中。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/7.png" class></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap/Heap-II/7.png" class></strong></p>
 <h3 id="FAST-BINS"><a href="#FAST-BINS" class="headerlink" title="FAST BINS"></a><strong>FAST BINS</strong></h3><p><em>fast bins</em>是在之前看到的三个基本bin基础上的进一步优化。这些bins实际上将最近释放的小块保留在“fast-turnaround queue”中，并且在块被释放之后不将其与相邻的块合并，使得这些块始终保持活跃状态，以便在释放后不久若有匹配该块大小的malloc请求，可以立即重新利用该块。</p>
 <p>像<em>small bins</em>一样，每个<em>fast bins</em>仅负责单个固定大小的块。有10个这样的<em>fast bins</em>，覆盖大小为16、24、32、40、48、56、64、72、80和88字节的块以及块元数据。</p>
 <p>与<em>small bins</em>不同，<em>fast bins</em>的块永远不会与相邻的块合并。实际上，这是堆管理器不会在下一个块的开头设置“ P”位的方式。换句话说，在概念上可以认为，堆管理器不会“真正”释放<em>fast bins</em>中的块。</p>
 <p>和<em>small bins</em>相同的部分在于，<em>fast bins</em>也仅覆盖固定的大小的块，并且会自动排序分类，因此插入和删除的速度也非常快。而且，由于<em>fast-binned</em>的块永远不会合并，因此它们只需要被<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l1678">存储在单链表</a>，而不需要存储在双向链表中，因为其不存在合并块时从列表中进行删除的操作。</p>
 <p>当然，<em>fast bin</em>的缺点是，<em>fast bin</em>块不会“真正”释放或合并，最终会导致进程的内存空间随着时间的流逝而碎片化和膨胀。为了解决这个问题，堆管理器会定期“<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l4448">合并</a>”堆。通过“实际释放”它（即将其与相邻的空闲块合并），并将生成的空闲块放置到<em>unsorted bins</em>上，以供malloc之后使用，从而“刷新”<em>fast bins</em>中的每个条目。</p>
 <p>每当<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l1592">释放任何大于64KB的块</a>（其中64KB为近似值 ），或用户发出大于<em>fast bin</em>可以处理的<em>malloc</em>请求（即对于32位中<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l3696">512字节</a>以上的块或64位中1024字节以上的块）时，或者当程序调用<a href="http://man7.org/linux/man-pages/man3/mallopt.3.html">malloc_trim</a>或<a href="http://man7.org/linux/man-pages/man3/mallopt.3.html">mallopt</a>时，都会发生“合并”阶段。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/8.png" class></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap/Heap-II/8.png" class></strong></p>
 <h3 id="TCACHE-PER-THREAD-CACHE-BINS"><a href="#TCACHE-PER-THREAD-CACHE-BINS" class="headerlink" title="TCACHE (PER-THREAD CACHE) BINS"></a><strong>TCACHE (PER-THREAD CACHE) BINS</strong></h3><p>堆管理器用来加快分配速度的最终优化是每个线程进行缓存或“ <em>tcache”</em>分配器。首先让我们看一下tcache试图解决的问题。</p>
 <p>假如一个计算机系统上的每个进程都同时运行一个或多个线程。多线程允许一个进程执行多个并发操作。例如，一个大容量的Web服务器可能同时具有多个传入请求，并且该Web服务器可能让每个传入请求都在自己的线程上进行服务，而不是让每个请求都排成一队等待服务。</p>
 <p>给定进程中的每个线程共享相同的地址空间，也就是说，每个线程可以在内存中看到相同的代码和数据。每个线程都有自己的寄存器和堆栈来存储临时局部变量，但是诸如全局变量和堆之类的资源在所有线程之间共享。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap-II/9.png" class></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap/Heap-II/9.png" class></strong></p>
 <p>协调访问诸如堆之类的全局资源是一个复杂的话题，它出错可能导致一个称为“<em>race condition”的问题</em>，这会导致难以调试的崩溃，通常也可被黑客利用。</p>
 <p>假设在一个线程上提供服务的Web请求尝试更新数据库某一行，而另一个并发Web请求尝试从同一行读取。通常，我们将要确保第二个线程永远不会看到中间写入的值，但因为它正被另一个线程覆盖使用，从而第二个线程可能看到部分或损坏形式的行数据。数据库通过使读写操作看起来像<strong>原子操作</strong>来解决此问题：如果两个线程试图同时访问同一行，则必须先完成一个操作，然后才能开始下一个操作。解决这些竞争条件的一种非常常见的方法是通过使用锁，使其他同时访问全局资源的请求强制进入顺序队列。</p>
 <p>通常，锁是通过一个线程在其使用之前“标记”它拥有全局资源的所有权，然后执行其操作，然后标记该资源不再使用来进行锁定的。如果出现另一个线程并希望使用该资源并看到其他线程正在使用该资源，则该线程将等待，直到另一个线程完成。这样可以确保全局资源一次仅由一个线程使用。但这带来了成本：正在等待资源的线程停滞并浪费时间。这称为“<em>lock contention</em>”（锁争用）。</p>
