@@ -20,30 +20,39 @@
     var CONFIG = {"hostname":"github.com","root":"/xiaohong404.github.io/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Things always start to get better after you give up">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Mr.red">
-<meta property="og:url" content="https://github.com/xiaohong404/xiaohong404.github.io/index.html">
+  <meta name="description" content="实现原理最简单的端口扫描工具使用TCP连接扫描的方式，即利用操作系统原生的网络功能，且通常作为SYN扫描的替代选项。Nmap将这种模式称为连接扫描，因为使用了类似Unix系统的connect()命令。如果该端口是开放的，操作系统就能完成TCP三次握手，然后端口扫描工具会立即关闭刚建立的连接，防止拒绝服务攻击。这种端口扫描模式的优势是用户无需特殊权限。但使用操作系统原生网络功能不能实现底层控制，因此">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python实现端口扫描器">
+<meta property="og:url" content="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/index.html">
 <meta property="og:site_name" content="Mr.red">
-<meta property="og:description" content="Things always start to get better after you give up">
+<meta property="og:description" content="实现原理最简单的端口扫描工具使用TCP连接扫描的方式，即利用操作系统原生的网络功能，且通常作为SYN扫描的替代选项。Nmap将这种模式称为连接扫描，因为使用了类似Unix系统的connect()命令。如果该端口是开放的，操作系统就能完成TCP三次握手，然后端口扫描工具会立即关闭刚建立的连接，防止拒绝服务攻击。这种端口扫描模式的优势是用户无需特殊权限。但使用操作系统原生网络功能不能实现底层控制，因此">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/2.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/Users/pluto/AppData/Roaming/Typora/typora-user-images/image-20201024095914461.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/4.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/1.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/5.png">
+<meta property="article:published_time" content="2020-10-24T00:19:51.000Z">
+<meta property="article:modified_time" content="2020-10-24T02:05:00.000Z">
 <meta property="article:author" content="Xiao Hong">
+<meta property="article:tag" content="Python、Nmap">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/2.png">
 
-<link rel="canonical" href="https://github.com/xiaohong404/xiaohong404.github.io/">
+<link rel="canonical" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'en'
   };
 </script>
 
-  <title>Mr.red</title>
+  <title>python实现端口扫描器 | Mr.red</title>
   
 
 
@@ -184,9 +193,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -202,10 +212,9 @@
       <meta itemprop="name" content="Mr.red">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/" class="post-title-link" itemprop="url">python实现端口扫描器</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          python实现端口扫描器
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -263,7 +272,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>最简单的端口扫描工具使用TCP连接扫描的方式，即利用操作系统原生的网络功能，且通常作为SYN扫描的替代选项。Nmap将这种模式称为连接扫描，因为使用了类似Unix系统的connect()命令。如果该端口是开放的，操作系统就能完成TCP三次握手，然后端口扫描工具会立即关闭刚建立的连接，防止拒绝服务攻击。这种端口扫描模式的优势是用户无需特殊权限。但使用操作系统原生网络功能不能实现底层控制，因此这种扫描方式并不流行。并且TCP扫描很容易被发现，尤其作为端口清扫的手段：这些服务会记录发送者的 IP 地址，入侵检测系统可能触发警报。$–&gt;$（<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/5376#toc-0">端口扫描类型</a>）</p>
+        <h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>最简单的端口扫描工具使用TCP连接扫描的方式，即利用操作系统原生的网络功能，且通常作为SYN扫描的替代选项。Nmap将这种模式称为连接扫描，因为使用了类似Unix系统的connect()命令。如果该端口是开放的，操作系统就能完成TCP三次握手，然后端口扫描工具会立即关闭刚建立的连接，防止拒绝服务攻击。这种端口扫描模式的优势是用户无需特殊权限。但使用操作系统原生网络功能不能实现底层控制，因此这种扫描方式并不流行。并且TCP扫描很容易被发现，尤其作为端口清扫的手段：这些服务会记录发送者的 IP 地址，入侵检测系统可能触发警报。$–&gt;$（<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/5376#toc-0">端口扫描类型</a>）</p>
 <p>还有另外一种扫描方式是 SYN 扫描，端口扫描工具不使用操作系统原生网络功能，而是自行生成、发送 IP 数据包，并监控其回应。这种扫描模式被称为 “半开放扫描”，因为它从不建立完整的 TCP 连接。端口扫描工具生成一个 SYN 包，如果目标端口开放，则会返回 SYN-ACK 包。扫描端回应一个 RST 包，然后在握手完成前关闭连接。如果端口关闭了但未使用过滤，目标端口应该会持续返回 RST 包。这种粗略的网络利用方式有几个优点：给扫描工具全权控制数据包发送和等待回应时长的权力，允许更详细的回应分析。关于哪一种对目标主机的扫描方式更不具备入侵性存在一些争议，但 SYN 扫描的优势是从不会建立完整的连接。然而，RST 包可能导致网络堵塞，尤其是一些简单如打印机之类的网络设备。</p>
 <p>实例中采用的是第一种扫描方式，直接利用操作系统的 socket 连接接口，初步测试目标服务器的端口是否可以连接，如果可以则返回端口打开状态。$–&gt;$（<a target="_blank" rel="noopener" href="https://gist.github.com/kevinkindom/108ffd675cb9253f8f71">socket编程基础</a>）</p>
 <h3 id="实现单线程扫描功能"><a href="#实现单线程扫描功能" class="headerlink" title="实现单线程扫描功能"></a>实现单线程扫描功能</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实现从程序外部向程序传递参数</span></span><br><span class="line">host = sys.argv[<span class="number">1</span>]</span><br><span class="line">portstrs = sys.argv[<span class="number">2</span>].split(<span class="string">&#x27;-&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 扫描端口范围</span></span><br><span class="line">start_port = int(portstrs[<span class="number">0</span>])</span><br><span class="line">end_port = int(portstrs[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取目标ip地址</span></span><br><span class="line">target_ip = gethostbyname(host)</span><br><span class="line">opened_ports = []</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行循环连接</span></span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(start_port, end_port):</span><br><span class="line">    sock = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">    sock.settimeout(<span class="number">10</span>)</span><br><span class="line">    result = sock.connect_ex((target_ip, port))</span><br><span class="line">    <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">        opened_ports.append(port)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印开放的端口</span></span><br><span class="line">print(<span class="string">&quot;Opened ports:&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> opened_ports:</span><br><span class="line">    print(i)</span><br></pre></td></tr></table></figure>
@@ -280,662 +289,41 @@
 <p>也可以直接使用zenmap工具进行端口扫描：</p>
 <p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/5.png" alt="image-20201024100444776"></p>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
-      <meta itemprop="name" content="Xiao Hong">
-      <meta itemprop="description" content="Things always start to get better after you give up">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mr.red">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
           
-            <a href="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/" class="post-title-link" itemprop="url">blukat</a>
-        </h2>
+          <div class="post-tags">
+              <a href="/xiaohong404.github.io/tags/Python%E3%80%81Nmap/" rel="tag"><i class="fa fa-tag"></i> Python、Nmap</a>
+          </div>
 
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-10-22 22:01:47" itemprop="dateCreated datePublished" datetime="2020-10-22T22:01:47+08:00">2020-10-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-23 08:13:38" itemprop="dateModified" datetime="2020-10-23T08:13:38+08:00">2020-10-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/xiaohong404.github.io/Categories/PWN/" itemprop="url" rel="index"><span itemprop="name">PWN</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/xiaohong404.github.io/Categories/PWN/Pwnable-kr/" itemprop="url" rel="index"><span itemprop="name">Pwnable.kr</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/xiaohong404.github.io/Categories/PWN/Pwnable-kr/Toddler-s-Bottle/" itemprop="url" rel="index"><span itemprop="name">Toddler's Bottle</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/" class="post-meta-item leancloud_visitors" data-flag-title="blukat" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/0.png" class></strong></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
-      <meta itemprop="name" content="Xiao Hong">
-      <meta itemprop="description" content="Things always start to get better after you give up">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mr.red">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/" class="post-title-link" itemprop="url">阅读深度学习的对抗攻击方法综述及实例</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2020-10-22 15:24:07 / Modified: 16:02:12" itemprop="dateCreated datePublished" datetime="2020-10-22T15:24:07+08:00">2020-10-22</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/xiaohong404.github.io/Categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/xiaohong404.github.io/Categories/AI/Adversarial-sample/" itemprop="url" rel="index"><span itemprop="name">Adversarial sample</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/" class="post-meta-item leancloud_visitors" data-flag-title="阅读深度学习的对抗攻击方法综述及实例" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/0.png" class></strong></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/" rel="prev" title="blukat">
+      <i class="fa fa-chevron-left"></i> blukat
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
   
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
-      <meta itemprop="name" content="Xiao Hong">
-      <meta itemprop="description" content="Things always start to get better after you give up">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mr.red">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd2/" class="post-title-link" itemprop="url">cmd2</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2020-10-20 14:07:54 / Modified: 15:27:30" itemprop="dateCreated datePublished" datetime="2020-10-20T14:07:54+08:00">2020-10-20</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/xiaohong404.github.io/Categories/PWN/" itemprop="url" rel="index"><span itemprop="name">PWN</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/xiaohong404.github.io/Categories/PWN/Pwnable-kr/" itemprop="url" rel="index"><span itemprop="name">Pwnable.kr</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/xiaohong404.github.io/Categories/PWN/Pwnable-kr/Toddler-s-Bottle/" itemprop="url" rel="index"><span itemprop="name">Toddler's Bottle</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd2/" class="post-meta-item leancloud_visitors" data-flag-title="cmd2" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd2/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd2/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><img src="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd2/0.png" class></strong></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd2/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
-      <meta itemprop="name" content="Xiao Hong">
-      <meta itemprop="description" content="Things always start to get better after you give up">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mr.red">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/" class="post-title-link" itemprop="url">cmd1</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2020-10-20 10:01:26 / Modified: 15:26:42" itemprop="dateCreated datePublished" datetime="2020-10-20T10:01:26+08:00">2020-10-20</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/xiaohong404.github.io/Categories/PWN/" itemprop="url" rel="index"><span itemprop="name">PWN</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/xiaohong404.github.io/Categories/PWN/Pwnable-kr/" itemprop="url" rel="index"><span itemprop="name">Pwnable.kr</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/xiaohong404.github.io/Categories/PWN/Pwnable-kr/Toddler-s-Bottle/" itemprop="url" rel="index"><span itemprop="name">Toddler's Bottle</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/" class="post-meta-item leancloud_visitors" data-flag-title="cmd1" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><img src="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/0.png" class></strong></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/xiaohong404.github.io/2020/10/20/Pwnable_kr/cmd1/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
-      <meta itemprop="name" content="Xiao Hong">
-      <meta itemprop="description" content="Things always start to get better after you give up">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mr.red">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/" class="post-title-link" itemprop="url">lotto</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-10-19 20:56:14" itemprop="dateCreated datePublished" datetime="2020-10-19T20:56:14+08:00">2020-10-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-20 08:50:22" itemprop="dateModified" datetime="2020-10-20T08:50:22+08:00">2020-10-20</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/xiaohong404.github.io/Categories/PWN/" itemprop="url" rel="index"><span itemprop="name">PWN</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/xiaohong404.github.io/Categories/PWN/Pwnable-kr/" itemprop="url" rel="index"><span itemprop="name">Pwnable.kr</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/xiaohong404.github.io/Categories/PWN/Pwnable-kr/Toddler-s-Bottle/" itemprop="url" rel="index"><span itemprop="name">Toddler's Bottle</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/" class="post-meta-item leancloud_visitors" data-flag-title="lotto" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/0.png" class></strong></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
-      <meta itemprop="name" content="Xiao Hong">
-      <meta itemprop="description" content="Things always start to get better after you give up">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mr.red">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/" class="post-title-link" itemprop="url">blackjack</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2020-10-19 08:54:25 / Modified: 15:09:34" itemprop="dateCreated datePublished" datetime="2020-10-19T08:54:25+08:00">2020-10-19</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/xiaohong404.github.io/Categories/PWN/" itemprop="url" rel="index"><span itemprop="name">PWN</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/xiaohong404.github.io/Categories/PWN/Pwnable-kr/" itemprop="url" rel="index"><span itemprop="name">Pwnable.kr</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/xiaohong404.github.io/Categories/PWN/Pwnable-kr/Toddler-s-Bottle/" itemprop="url" rel="index"><span itemprop="name">Toddler's Bottle</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/" class="post-meta-item leancloud_visitors" data-flag-title="blackjack" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/0.png" class></strong></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/xiaohong404.github.io/page/2/">2</a><a class="page-number" href="/xiaohong404.github.io/page/3/">3</a><a class="extend next" rel="next" href="/xiaohong404.github.io/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
-  </nav>
 
 
 
           </div>
           
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -983,6 +371,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%8D%95%E7%BA%BF%E7%A8%8B%E6%89%AB%E6%8F%8F%E5%8A%9F%E8%83%BD"><span class="nav-number">2.</span> <span class="nav-text">实现单线程扫描功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%89%AB%E6%8F%8F"><span class="nav-number">3.</span> <span class="nav-text">多线程扫描</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E9%80%9A%E8%BF%87%E7%BD%91%E5%9D%80%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3"><span class="nav-number">3.1.</span> <span class="nav-text">选择通过网址扫描端口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E9%80%9A%E8%BF%87IP%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3"><span class="nav-number">3.2.</span> <span class="nav-text">选择通过IP扫描端口</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8nmap%E6%89%AB%E6%8F%8F"><span class="nav-number">4.</span> <span class="nav-text">使用nmap扫描</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
