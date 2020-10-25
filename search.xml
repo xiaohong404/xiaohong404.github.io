@@ -180,19 +180,6 @@
       </tags>
   </entry>
   <entry>
-    <title>touch命令</title>
-    <url>/xiaohong404.github.io/2020/10/25/C/touch%E5%91%BD%E4%BB%A4/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>C</category>
-        <category>Linux</category>
-        <category>touch</category>
-      </categories>
-      <tags>
-        <tag>C Linux</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Heap I</title>
     <url>/xiaohong404.github.io/2020/10/16/Heap/Heap-I/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/0.png" class></strong></p>
@@ -573,6 +560,28 @@
       </tags>
   </entry>
   <entry>
+    <title>flag</title>
+    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/1.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/2.png" class></strong></p>
+<h3 id="checksec查看文件属性"><a href="#checksec查看文件属性" class="headerlink" title="checksec查看文件属性"></a>checksec查看文件属性</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/3.png" class></strong></p>
+<h3 id="windows下使用upx-d命令解压缩"><a href="#windows下使用upx-d命令解压缩" class="headerlink" title="windows下使用upx -d命令解压缩"></a>windows下使用upx -d命令解压缩</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/4.png" class></strong></p>
+<h3 id="IDA64打开解压缩的文件"><a href="#IDA64打开解压缩的文件" class="headerlink" title="IDA64打开解压缩的文件"></a>IDA64打开解压缩的文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/5.png" class></strong></p>
+<p>将flag的值存放到dest中，直接查看flag即可</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/6.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>lotto</title>
     <url>/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/0.png" class></strong></p>
@@ -586,28 +595,6 @@
 <p>判断用户输入的字符和随机数是否相同本应该是一重for循环，而这里使用了两重for循环，判断的是要求的每一位只要我们输入的6位中存在就可以了，不管是哪一位都可以，只要有六个相等就好了。那只需要一直尝试同一个字符串，总有一次人品好。另外，注意这里随机生成的字符ASCII码范围为1~45，参照<a href="https://blog.csdn.net/jinduozhao/article/details/75398793">ASCII码表</a>，只有 DEC 33 开始才是可见字符，所以需要输入的字符为 ASCII DEC 33 到 45 。</p>
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>可以编写python脚本，也可以直接自己多次重复输入。</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/lotto/3.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>flag</title>
-    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/1.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/2.png" class></strong></p>
-<h3 id="checksec查看文件属性"><a href="#checksec查看文件属性" class="headerlink" title="checksec查看文件属性"></a>checksec查看文件属性</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/3.png" class></strong></p>
-<h3 id="windows下使用upx-d命令解压缩"><a href="#windows下使用upx-d命令解压缩" class="headerlink" title="windows下使用upx -d命令解压缩"></a>windows下使用upx -d命令解压缩</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/4.png" class></strong></p>
-<h3 id="IDA64打开解压缩的文件"><a href="#IDA64打开解压缩的文件" class="headerlink" title="IDA64打开解压缩的文件"></a>IDA64打开解压缩的文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/5.png" class></strong></p>
-<p>将flag的值存放到dest中，直接查看flag即可</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/6.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -647,33 +634,6 @@
       </tags>
   </entry>
   <entry>
-    <title>random</title>
-    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/1.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/2.png" class></strong></p>
-<h3 id="查看random-c源代码"><a href="#查看random-c源代码" class="headerlink" title="查看random.c源代码"></a>查看random.c源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/3.png" class></strong></p>
-<p>函数的整个执行流程是rand（）产生的随机值和输入的密钥进行异或，若其结果等于$0xdeadbeef$，则可以执行system函数，拿到flag。</p>
-<h3 id="rand（）函数"><a href="#rand（）函数" class="headerlink" title="rand（）函数"></a>rand（）函数</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/4.png" class></strong></p>
-<p>由此可见，如果不重新生成种子（一般情况下，默认生成种子为1），则每次产生的随机数将会是一个固定值，那么接下来的任务就是确定这个固定值。</p>
-<h3 id="查看随机数"><a href="#查看随机数" class="headerlink" title="查看随机数"></a>查看随机数</h3><h4 id="disassemble-r-main-查看汇编代码"><a href="#disassemble-r-main-查看汇编代码" class="headerlink" title="$disassemble /r \ main$查看汇编代码"></a>$disassemble /r \ main$查看汇编代码</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/5.png" class></strong></p>
-<h4 id="在cmp处下断点"><a href="#在cmp处下断点" class="headerlink" title="在cmp处下断点"></a>在cmp处下断点</h4><p>汇编代码中，在进行cmp之前先进行了一次异或运算，显然这是将用户输入的key和生成的随机数进行异或，由此可以判断随机数的位置为$rbp-4$（先压入栈中），因此使用$x/10x \ $rbp-4$查看内存的值即可。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/6.png" class></strong></p>
-<p>所以生成的随机数为0x6b8b4567，可多次运行程序查看其值是否发生变化，这里不做演示。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>求出$0x6b8b4567\oplus 0xdeadbeef$的值输入即可</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/7.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>passcode</title>
     <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/passcode/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/passcode/11.png" class></strong></p>
@@ -700,6 +660,33 @@
 
 <p>因为passcode是输入int型，即输入$0x080485e3 = 134514147$。</p>
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/passcode/10.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>random</title>
+    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/1.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/2.png" class></strong></p>
+<h3 id="查看random-c源代码"><a href="#查看random-c源代码" class="headerlink" title="查看random.c源代码"></a>查看random.c源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/3.png" class></strong></p>
+<p>函数的整个执行流程是rand（）产生的随机值和输入的密钥进行异或，若其结果等于$0xdeadbeef$，则可以执行system函数，拿到flag。</p>
+<h3 id="rand（）函数"><a href="#rand（）函数" class="headerlink" title="rand（）函数"></a>rand（）函数</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/4.png" class></strong></p>
+<p>由此可见，如果不重新生成种子（一般情况下，默认生成种子为1），则每次产生的随机数将会是一个固定值，那么接下来的任务就是确定这个固定值。</p>
+<h3 id="查看随机数"><a href="#查看随机数" class="headerlink" title="查看随机数"></a>查看随机数</h3><h4 id="disassemble-r-main-查看汇编代码"><a href="#disassemble-r-main-查看汇编代码" class="headerlink" title="$disassemble /r \ main$查看汇编代码"></a>$disassemble /r \ main$查看汇编代码</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/5.png" class></strong></p>
+<h4 id="在cmp处下断点"><a href="#在cmp处下断点" class="headerlink" title="在cmp处下断点"></a>在cmp处下断点</h4><p>汇编代码中，在进行cmp之前先进行了一次异或运算，显然这是将用户输入的key和生成的随机数进行异或，由此可以判断随机数的位置为$rbp-4$（先压入栈中），因此使用$x/10x \ $rbp-4$查看内存的值即可。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/6.png" class></strong></p>
+<p>所以生成的随机数为0x6b8b4567，可多次运行程序查看其值是否发生变化，这里不做演示。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>求出$0x6b8b4567\oplus 0xdeadbeef$的值输入即可</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/7.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
