@@ -63,6 +63,44 @@
       </tags>
   </entry>
   <entry>
+    <title>forgot</title>
+    <url>/xiaohong404.github.io/2020/10/27/AD_World/forgot/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/6.png" class></strong></p>
+<h3 id="检查文件开启的保护措施"><a href="#检查文件开启的保护措施" class="headerlink" title="检查文件开启的保护措施"></a>检查文件开启的保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/1.png" class></strong></p>
+<h3 id="用IDA32打开"><a href="#用IDA32打开" class="headerlink" title="用IDA32打开"></a>用IDA32打开</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/2.png" class></strong></p>
+<p>**__isoc99_scanf()**函数存在栈溢出漏洞，不会检查输入的字符串的长度，第二个参数表明写入地址为v2的地址，因此可以利用从v2地址开始写入内容覆盖控制函数执行流。</p>
+<h3 id="shift-F12查看字符串"><a href="#shift-F12查看字符串" class="headerlink" title="shift+F12查看字符串"></a>shift+F12查看字符串</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/3.png" class></strong></p>
+<p>找到其调用函数的位置</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/4.png" class></strong></p>
+<p>查看sub_80486CC函数所在地址（这里函数名称就对应其地址）</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/5.png" class></strong></p>
+<p>其函数所在地址0x080486CC，注意这里调用system函数需要传递<strong>cat flag</strong>参数，如果跳转地址直接为system函数的地址，则无法传递相应的参数。</p>
+<h3 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h3><p>利用栈溢出漏洞，输入v2，将v3-v12任意一个函数的地址修改为sub_80486CC的地址，之后让控制函数执行调用即可。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/7.png" class></strong></p>
+<p>v2是一个32字节的char数组，v2基地址为ebp-0x74，v3基地址为0x54，相差0x74-0x54=0x20=32byte，正好是32字节的char数组的空间大小。因此，这里选择覆盖v3的地址，原因在于v3在栈中紧贴存在栈溢出漏洞的变量，对程序流程造成的未知影响的可能性最小。之后只需要保证函数结尾调用v3，则需要保证- -v14等于0，即让v14等于1。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/8.png" class></strong></p>
+<p>即使得sub_8048702判断条件不成立，直接跳出循环，使得v14的值保持不变，仍为刚开始的1。查看该函数执行的逻辑。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/9.png" class></strong></p>
+<p>查看其ASCII码对应的字符为：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/10.png" class></strong></p>
+<p>若要使得该函数的判断条件不成立，则不能输入字符‘a’-‘z’，’0‘-’9‘，’+‘ ，’-‘，’_’</p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;220.249.52.133&#x27;</span>,<span class="number">52435</span>)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,<span class="string">&#x27;xiaohong&#x27;</span>)</span><br><span class="line">cat_flag_addr = <span class="number">0x80486CC</span></span><br><span class="line">payload = <span class="string">&#x27;/&#x27;</span>*(<span class="number">0x74</span><span class="number">-0x54</span>)+ p32(cat_flag_addr)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/11.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>AD_World</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+        <tag>Stack</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>C语言实现Linux-touch命令</title>
     <url>/xiaohong404.github.io/2020/10/25/C/C%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0Linux-touch%E5%91%BD%E4%BB%A4/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/25/C/C%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0Linux-touch%E5%91%BD%E4%BB%A4/0.png" class></strong></p>
@@ -346,37 +384,273 @@
       </tags>
   </entry>
   <entry>
-    <title>python实现端口扫描器</title>
-    <url>/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/0.png" class></strong></p>
+    <title>TensorFlow2基础概念语法</title>
+    <url>/xiaohong404.github.io/2020/10/26/TensorFlow2.0/TensorFlow2%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%AD%E6%B3%95/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/TensorFlow2%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%AD%E6%B3%95/0.png" class></strong></p>
  <a id="more"></a>
 
-<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>最简单的端口扫描工具使用TCP连接扫描的方式，即利用操作系统原生的网络功能，且通常作为SYN扫描的替代选项。Nmap将这种模式称为连接扫描，因为使用了类似Unix系统的connect()命令。如果该端口是开放的，操作系统就能完成TCP三次握手，然后端口扫描工具会立即关闭刚建立的连接，防止拒绝服务攻击。这种端口扫描模式的优势是用户无需特殊权限。但使用操作系统原生网络功能不能实现底层控制，因此这种扫描方式并不流行。并且TCP扫描很容易被发现，尤其作为端口清扫的手段：这些服务会记录发送者的 IP 地址，入侵检测系统可能触发警报。$–&gt;$（<a href="https://xz.aliyun.com/t/5376#toc-0">端口扫描类型</a>）</p>
-<p>还有另外一种扫描方式是 SYN 扫描，端口扫描工具不使用操作系统原生网络功能，而是自行生成、发送 IP 数据包，并监控其回应。这种扫描模式被称为 “半开放扫描”，因为它从不建立完整的 TCP 连接。端口扫描工具生成一个 SYN 包，如果目标端口开放，则会返回 SYN-ACK 包。扫描端回应一个 RST 包，然后在握手完成前关闭连接。如果端口关闭了但未使用过滤，目标端口应该会持续返回 RST 包。这种粗略的网络利用方式有几个优点：给扫描工具全权控制数据包发送和等待回应时长的权力，允许更详细的回应分析。关于哪一种对目标主机的扫描方式更不具备入侵性存在一些争议，但 SYN 扫描的优势是从不会建立完整的连接。然而，RST 包可能导致网络堵塞，尤其是一些简单如打印机之类的网络设备。</p>
-<p>实例中采用的是第一种扫描方式，直接利用操作系统的 socket 连接接口，初步测试目标服务器的端口是否可以连接，如果可以则返回端口打开状态。$–&gt;$（<a href="https://gist.github.com/kevinkindom/108ffd675cb9253f8f71">socket编程基础</a>）</p>
-<h3 id="实现单线程扫描功能"><a href="#实现单线程扫描功能" class="headerlink" title="实现单线程扫描功能"></a>实现单线程扫描功能</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实现从程序外部向程序传递参数</span></span><br><span class="line">host = sys.argv[<span class="number">1</span>]</span><br><span class="line">portstrs = sys.argv[<span class="number">2</span>].split(<span class="string">&#x27;-&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 扫描端口范围</span></span><br><span class="line">start_port = int(portstrs[<span class="number">0</span>])</span><br><span class="line">end_port = int(portstrs[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取目标ip地址</span></span><br><span class="line">target_ip = gethostbyname(host)</span><br><span class="line">opened_ports = []</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行循环连接</span></span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(start_port, end_port):</span><br><span class="line">    sock = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">    sock.settimeout(<span class="number">10</span>)</span><br><span class="line">    result = sock.connect_ex((target_ip, port))</span><br><span class="line">    <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">        opened_ports.append(port)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印开放的端口</span></span><br><span class="line">print(<span class="string">&quot;Opened ports:&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> opened_ports:</span><br><span class="line">    print(i)</span><br></pre></td></tr></table></figure>
+<h2 id="张量"><a href="#张量" class="headerlink" title="张量"></a>张量</h2><p>数学或物理上关于张量的两种定义方法（抽象）：</p>
+<ul>
+<li>通常定义张量的物理学或传统数学方法，是把张量看成一个多维数组，当变换坐标或变换基底时，其分量会按照一定规则进行变换，这些规则有两种：即协变或逆变转换。</li>
+<li>通常现代数学中的方法，是把张量定义成某个矢量空间或其对偶空间上的多重线性映射，这矢量空间在需要引入基底之前不固定任何坐标系统。例如协变矢量，可以描述为 1-形式，或者作为逆变矢量的对偶空间的元素。</li>
+</ul>
+<p>通俗来讲，一阶张量为向量，二阶张量为矩阵。当然，零阶张量也就是标量，而更重要的是 𝑁 阶张量，也就是 𝑁 维数组。</p>
+<table>
+<thead>
+<tr>
+<th align="center">阶</th>
+<th align="center">数学实例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td align="center">标量（只有大小）</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">矢量（大小和方向）</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">矩阵（数据表）</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">3 阶张量（数据立体）</td>
+</tr>
+<tr>
+<td align="center">N</td>
+<td align="center">N 阶张量（自行想象）</td>
+</tr>
+</tbody></table>
+<p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/TensorFlow2%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%AD%E6%B3%95/1.png" class></strong></p>
+<p>大多数深度学习框架都会使用张量的概念，这样做的好处是统一对数据的定义。NumPy 中，数据都使用 Ndarray 多维数组进行定义，TensorFlow 中，数据都会用张量进行表述。</p>
+<p>下面就来学习 TensorFlow 中对张量的定义。在 TensorFlow 中，每一个 Tensor 都具备两个基础属性：<strong>数据类型（默认：float32）和形状</strong>。</p>
+<p>其中，数据类型大致如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th align="center">Tensor 类型</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>tf.float32</code></td>
+<td align="center">32 位浮点数</td>
+</tr>
+<tr>
+<td align="center"><code>tf.float64</code></td>
+<td align="center">64 位浮点数</td>
+</tr>
+<tr>
+<td align="center"><code>tf.int64</code></td>
+<td align="center">64 位有符号整型</td>
+</tr>
+<tr>
+<td align="center"><code>tf.int32</code></td>
+<td align="center">32 位有符号整型</td>
+</tr>
+<tr>
+<td align="center"><code>tf.int16</code></td>
+<td align="center">16 位有符号整型</td>
+</tr>
+<tr>
+<td align="center"><code>tf.int8</code></td>
+<td align="center">8 位有符号整型</td>
+</tr>
+<tr>
+<td align="center"><code>tf.uint8</code></td>
+<td align="center">8 位无符号整型</td>
+</tr>
+<tr>
+<td align="center"><code>tf.string</code></td>
+<td align="center">可变长度的字节数组</td>
+</tr>
+<tr>
+<td align="center"><code>tf.bool</code></td>
+<td align="center">布尔型</td>
+</tr>
+<tr>
+<td align="center"><code>tf.complex64</code></td>
+<td align="center">实数和虚数</td>
+</tr>
+</tbody></table>
+<p>另外，TensorFlow 通过三种符号约定来描述张量维度：<strong>阶，形状和维数</strong>。三者之间的关系如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">形状</th>
+<th align="center">阶</th>
+<th align="center">维数</th>
+<th align="center">示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">[]</td>
+<td align="center">0</td>
+<td align="center">0-D</td>
+<td align="center">0 维张量，标量。</td>
+</tr>
+<tr>
+<td align="center">[D0]</td>
+<td align="center">1</td>
+<td align="center">1-D</td>
+<td align="center">形状为 [5] 的 1 维张量。</td>
+</tr>
+<tr>
+<td align="center">[D0, D1]</td>
+<td align="center">2</td>
+<td align="center">2-D</td>
+<td align="center">形状为 [3, 4] 的 2 维张量。</td>
+</tr>
+<tr>
+<td align="center">[D0, D1, D2]</td>
+<td align="center">3</td>
+<td align="center">3-D</td>
+<td align="center">形状为 [1, 4, 3] 的 3 维张量。</td>
+</tr>
+<tr>
+<td align="center">[D0, D1, … Dn-1]</td>
+<td align="center">n</td>
+<td align="center">n-D</td>
+<td align="center">形状为 [D0, D1, … Dn-1] 的张量。</td>
+</tr>
+</tbody></table>
+<p>值得注意的是，上表中的示例都是形容张量的形状。例如 <code>[3, 4]</code> 指的张量的形状为 <code>[3, 4]</code>，而不是张量 <code>[3, 4]</code>。</p>
+<p> 根据不同的用途，TensorFlow 中主要有 2 种张量类型，分别是：</p>
+<ul>
+<li><p><code>tf.Variable</code> ：变量 Tensor，需要指定初始值，常用于定义可变参数，例如神经网络的权重。</p>
+</li>
+<li><p><code>tf.constant</code> ：常量 Tensor，需要指定初始值，定义不变化的张量。</p>
+</li>
+</ul>
+<p>我们可以通过传入列表或 NumPy 数组来新建变量和常量类型的张量：</p>
+<p>查看tensorflow版本</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">tf.__version__</span><br><span class="line"></span><br><span class="line">Out:  <span class="string">&#x27;2.1.0&#x27;</span></span><br></pre></td></tr></table></figure>
 
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/2.png" class></strong></p>
-<p>上面代码实现了单线程扫描端口的测试，但是正常的程序在执行中我们需要考虑执行效率和提升性能，所以需要实现多线程程序。</p>
-<h3 id="多线程扫描"><a href="#多线程扫描" class="headerlink" title="多线程扫描"></a>多线程扫描</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> monkey</span><br><span class="line"></span><br><span class="line">monkey.patch_all()</span><br><span class="line"><span class="keyword">import</span> gevent</span><br><span class="line"><span class="keyword">import</span> gevent.pool</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">TCP_connect</span>(<span class="params">ip, port</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;模拟TCP连接&quot;&quot;&quot;</span></span><br><span class="line">    TCP_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">    TCP_sock.settimeout(<span class="number">0.5</span>)  <span class="comment"># 设置连接超时</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        result = TCP_sock.connect_ex((ip, int(port)))</span><br><span class="line">        <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">            print(<span class="string">&quot;[*]%s 端口 开启\t&quot;</span> % port)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># print(&quot;[!]%s端口 关闭&quot;%port)</span></span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        TCP_sock.close()</span><br><span class="line">    <span class="keyword">except</span> socket.error <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]错误:&quot;</span>, e)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_ip</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标IP&quot;&quot;&quot;</span></span><br><span class="line">    ip = input(<span class="string">&quot;[+]输入扫描目标IP:&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;[*]正在扫描&quot;</span>)</span><br><span class="line">    scan_port(ip)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_web</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标网址&quot;&quot;&quot;</span></span><br><span class="line">    web = input(<span class="string">&quot;[+]输入扫描网址:&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;http://&quot;</span> <span class="keyword">in</span> web <span class="keyword">or</span> <span class="string">&quot;https://&quot;</span> <span class="keyword">in</span> web:</span><br><span class="line">        web = web[web.find(<span class="string">&#x27;://&#x27;</span>) + <span class="number">3</span>:]</span><br><span class="line">        print(web)</span><br><span class="line">        print(<span class="string">&quot;[*]正在分析网站服务器IP&quot;</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        server_ip = socket.gethostbyname(str(web))</span><br><span class="line">        print(<span class="string">&quot;[*]服务器IP为%s&quot;</span> % server_ip)</span><br><span class="line">        scan_port(server_ip)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]服务器IP获取失败&quot;</span>)</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_port</span>(<span class="params">ip</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描端口&quot;&quot;&quot;</span></span><br><span class="line">    print(<span class="string">&quot;[*]开始扫描目标端口&quot;</span>)</span><br><span class="line">    start = time.time()</span><br><span class="line">    g = gevent.pool.Pool(<span class="number">50</span>)  <span class="comment"># 设置线程数</span></span><br><span class="line">    run_list = []</span><br><span class="line">    <span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">65535</span>):</span><br><span class="line">        run_list.append(g.spawn(TCP_connect, ip, port))</span><br><span class="line">    gevent.joinall(run_list)</span><br><span class="line">    end = time.time()</span><br><span class="line">    print(<span class="string">&quot;[*]总耗时%s&quot;</span> % time.strftime(<span class="string">&quot;%H:%M:%S&quot;</span>, time.gmtime(end - start)))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    print(<span class="string">&quot;1.通过IP扫描端口&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;2.通过网址扫描端口&quot;</span>)</span><br><span class="line">    uc = int(input(<span class="string">&quot;[+]请输入选择:&quot;</span>))</span><br><span class="line">    <span class="keyword">if</span> <span class="number">1</span> == uc:</span><br><span class="line">        scan_ip()</span><br><span class="line">    <span class="keyword">elif</span> <span class="number">2</span> == uc:</span><br><span class="line">        scan_web()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">&quot;[!]输入有误&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<p>  输入形状为 (2, 2) 的二维变量</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">v = tf.Variable([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]])  <span class="comment"># 形状为 (2, 2) 的二维变量</span></span><br><span class="line">v</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Variable <span class="string">&#x27;Variable:0&#x27;</span> shape=(<span class="number">2</span>, <span class="number">2</span>) dtype=int32, numpy=</span><br><span class="line">		array([[<span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">      		   [<span class="number">3</span>, <span class="number">4</span>]], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
 
-<p>这里展示部分运行结果：</p>
-<h4 id="选择通过网址扫描端口"><a href="#选择通过网址扫描端口" class="headerlink" title="选择通过网址扫描端口"></a>选择通过网址扫描端口</h4><p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/3.png" class></strong></p>
-<h4 id="选择通过IP扫描端口"><a href="#选择通过IP扫描端口" class="headerlink" title="选择通过IP扫描端口"></a>选择通过IP扫描端口</h4><p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/4.png" class></strong></p>
-<h3 id="使用nmap扫描"><a href="#使用nmap扫描" class="headerlink" title="使用nmap扫描"></a>使用nmap扫描</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> nmap</span><br><span class="line"></span><br><span class="line">host = <span class="string">&#x27;192.168.56.1&#x27;</span></span><br><span class="line"><span class="comment"># 把nmap.exe的路径放入PortScanner中，否则会有环境变量错误</span></span><br><span class="line">nm = nmap.PortScanner(nmap_search_path=(<span class="string">&#x27;nmap&#x27;</span>, <span class="string">r&quot;E:\nmap\nmap.exe&quot;</span>))</span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">130</span>, <span class="number">136</span>):</span><br><span class="line">    result = nm.scan(host, str(port))</span><br><span class="line">    <span class="comment"># 在主机192.168.56.1上获取端口22/tcp状态</span></span><br><span class="line">    state = result[<span class="string">&#x27;scan&#x27;</span>][<span class="string">&#x27;192.168.56.1&#x27;</span>][<span class="string">&#x27;tcp&#x27;</span>][int(port)][<span class="string">&#x27;state&#x27;</span>]</span><br><span class="line">    print(<span class="string">&#x27;[%s] port state: %s&#x27;</span> % (port, state))</span><br></pre></td></tr></table></figure>
+<p>  输入形状为 (2, 2) 的二维常量</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">c = tf.constant([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]])  <span class="comment"># 形状为 (2, 2) 的二维常量</span></span><br><span class="line">c</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=int32, numpy=</span><br><span class="line">    	 array([[<span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">         	    [<span class="number">3</span>, <span class="number">4</span>]], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
 
-<p>使用<strong>netstat -an</strong>查看本机开启的端口服务，用端口135测试代码运行的正确性</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/1.png" class></strong></p>
-<p>也可以直接使用zenmap工具进行端口扫描：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/5.png" class></strong></p>
+<p>输出包含了张量的 3 部分属性，分别是形状 <code>shape</code>，数据类型 <code>dtype</code>，以及对应的 NumPy 数组。</p>
+<p>还可以直接通过 <code>.numpy()</code> 输出张量的 NumPy 数组：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">c.numpy()</span><br><span class="line"></span><br><span class="line">Out:  array([[<span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">             [<span class="number">3</span>, <span class="number">4</span>]], dtype=int32)</span><br></pre></td></tr></table></figure>
+
+<p>下面列举几个经常会用到的新建特殊常量张量的方法：</p>
+<ul>
+<li><code>tf.zeros</code>：新建指定形状且全为 0 的常量 Tensor</li>
+<li><code>tf.zeros_like</code>：参考某种形状，新建全为 0 的常量 Tensor</li>
+<li><code>tf.ones</code>：新建指定形状且全为 1 的常量 Tensor</li>
+<li><code>tf.ones_like</code>：参考某种形状，新建全为 1 的常量 Tensor</li>
+<li><code>tf.fill</code>：新建一个指定形状且全为某个标量值的常量 Tensor</li>
+</ul>
+<p>3x3 全为 0 的常量 Tensor</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">c = tf.zeros([<span class="number">3</span>, <span class="number">3</span>])  <span class="comment"># 3x3 全为 0 的常量 Tensor</span></span><br><span class="line">c</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">3</span>, <span class="number">3</span>), dtype=float32, numpy=</span><br><span class="line">        array([[<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
+
+<p>与 c 形状一致全为 1 的常量 Tensor</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.ones_like(c)  <span class="comment"># 与 c 形状一致全为 1 的常量 Tensor</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">3</span>, <span class="number">3</span>), dtype=float32, numpy=</span><br><span class="line">        array([[<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>],</span><br><span class="line">               [<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>],</span><br><span class="line">               [<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2x3 全为 6 的常量 Tensor</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.fill([<span class="number">2</span>, <span class="number">3</span>], <span class="number">6</span>)  <span class="comment"># 2x3 全为 6 的常量 Tensor</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">3</span>), dtype=int32, numpy=</span><br><span class="line">        array([[<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>],</span><br><span class="line">               [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>]], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
+
+<p>除此之外，还可以创建一些序列:</p>
+<ul>
+<li><code>tf.linspace</code>：创建一个等间隔序列。</li>
+<li><code>tf.range</code>：创建一个数字序列。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.linspace(<span class="number">1.0</span>, <span class="number">10.0</span>, <span class="number">5</span>, name=<span class="string">&quot;linspace&quot;</span>)</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">5</span>,), dtype=float32, numpy=array([ <span class="number">1.</span>  ,  <span class="number">3.25</span>,  <span class="number">5.5</span> ,  <span class="number">7.75</span>, <span class="number">10.</span>  ],     dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.range(start=<span class="number">1</span>, limit=<span class="number">10</span>, delta=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">5</span>,), dtype=int32, numpy=array([<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Eager-Execution"><a href="#Eager-Execution" class="headerlink" title="Eager Execution"></a>Eager Execution</h2><p>TensorFlow 2 带来的最大改变之一是将 1.x 的 Graph Execution（图与会话机制）更改为 Eager Execution（动态图机制）。在 1.x 版本中，低级别 TensorFlow API 首先需要定义数据流图，然后再创建 TensorFlow 会话，这一点在 2.0 中被完全舍弃。TensorFlow 2 中的 Eager Execution 是一种命令式编程环境，可立即评估操作，无需构建图。</p>
+<p>所以说，TensorFlow 的张量运算过程可以像 NumPy 一样直观且自然了。接下来，我们以最简单的加法运算为例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">c + c  <span class="comment"># 加法计算</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">3</span>, <span class="number">3</span>), dtype=float32, numpy=</span><br><span class="line">        array([[<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
+
+<p> 1.x 版本的 TensorFlow，一个加法运算过程十分复杂。我们需要初始化全局变量 → 建立会话 → 执行计算，最终才能打印出张量的运算结果。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">init_op = tf.global_variables_initializer()  <span class="comment"># 初始化全局变量</span></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:  <span class="comment"># 启动会话</span></span><br><span class="line">    sess.run(init_op)</span><br><span class="line">    print(sess.run(c + c))  <span class="comment"># 执行计算</span></span><br></pre></td></tr></table></figure>
+
+<p>Eager Execution 带来的好处显而易见，其进一步降低了 TensorFlow 的入门门槛。之前的 Graph Execution 模式，实际上让很多人在入门时都很郁闷，因为完全不符合正常思维习惯。</p>
+<p>TensorFlow 中提供的数学计算，包括线性代数计算方面的方法也是应有尽有，十分丰富。下面，我们再列举几个示例:</p>
+<p>矩阵乘法：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant([<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>], shape=[<span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line">b = tf.constant([<span class="number">7.</span>, <span class="number">8.</span>, <span class="number">9.</span>, <span class="number">10.</span>, <span class="number">11.</span>, <span class="number">12.</span>], shape=[<span class="number">3</span>, <span class="number">2</span>])</span><br><span class="line"></span><br><span class="line">c = tf.linalg.matmul(a, b)  <span class="comment"># 矩阵乘法</span></span><br><span class="line">c</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=float32, numpy=</span><br><span class="line">        array([[ <span class="number">58.</span>,  <span class="number">64.</span>],</span><br><span class="line">               [<span class="number">139.</span>, <span class="number">154.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
+
+<p>转置矩阵：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.linalg.matrix_transpose(c)  <span class="comment"># 转置矩阵</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=float32, numpy=</span><br><span class="line">        array([[ <span class="number">58.</span>, <span class="number">139.</span>],</span><br><span class="line">               [ <span class="number">64.</span>, <span class="number">154.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
+
+<p><code>可以把 TensorFlow 理解成为 TensorFlow 式的 NumPy + 为搭建神经网络而生的 API</code></p>
+<h2 id="自动微分"><a href="#自动微分" class="headerlink" title="自动微分"></a>自动微分</h2><p>在数学中，微分是对函数的局部变化率的一种线性描述。虽然微分和导数是两个不同的概念。但是，对一元函数来说，可微与可导是完全等价的。如果熟悉神经网络的搭建过程，应该明白梯度的重要性。而对于复杂函数的微分过程是极其麻烦的，为了提高应用效率，大部分深度学习框架都有自动微分机制。</p>
+<p>TensorFlow 中，可以使用 <code>tf.GradientTape</code> 跟踪全部运算过程，以便在必要的时候计算梯度。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">w = tf.Variable([<span class="number">1.0</span>])  <span class="comment"># 新建张量</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">    loss = w * w</span><br><span class="line"></span><br><span class="line">grad = tape.gradient(loss, w)  <span class="comment"># 计算梯度</span></span><br><span class="line">grad</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">1</span>,), dtype=float32, numpy=array([<span class="number">2.</span>], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
+
+<p>上面演示了一个自动微分过程，它的数学求导过程如下：</p>
+<p>$$ loss = w^2 \rightarrow \frac {\partial loss}{\partial w} = 2w $$</p>
+<p>所以，当 w 等于 1 时，计算结果为 2。</p>
+<p><code>tf.GradientTape</code> 会像磁带一样记录下计算图中的梯度信息，然后使用 <code>.gradient</code> 即可回溯计算出任意梯度，这对于使用 TensorFlow 低阶 API 构建神经网络时更新参数非常重要。</p>
+<h2 id="常用模块"><a href="#常用模块" class="headerlink" title="常用模块"></a>常用模块</h2><p>上面已经学习了 TensorFlow 核心知识，接下来将对 TensorFlow API 中的常用模块进行简单的功能介绍。对于框架的使用，实际上就是灵活运用各种封装好的类和函数。由于 TensorFlow API 数量太多，迭代太快，所以要养成随时 <a href="https://www.tensorflow.org/versions/r2.0/api_docs/python/tf"> <em>查阅官方文档</em></a> 的习惯。</p>
+<ul>
+<li><code>tf.</code>：包含了张量定义，变换等常用函数和类。</li>
+<li><code>tf.data</code>：输入数据处理模块，提供了像 <code>tf.data.Dataset</code> 等类用于封装输入数据，指定批量大小等。</li>
+<li><code>tf.image</code>：图像处理模块，提供了像图像裁剪，变换，编码，解码等类。</li>
+<li><code>tf.keras</code>：原 Keras 框架高阶 API。包含原 <code>tf.layers</code> 中高阶神经网络层。</li>
+<li><code>tf.linalg</code>：线性代数模块，提供了大量线性代数计算方法和类。</li>
+<li><code>tf.losses</code>：损失函数模块，用于方便神经网络定义损失函数。</li>
+<li><code>tf.math</code>：数学计算模块，提供了大量数学计算函数。</li>
+<li><code>tf.saved_model</code>：模型保存模块，可用于模型的保存和恢复。</li>
+<li><code>tf.train</code>：提供用于训练的组件，例如优化器，学习率衰减策略等。</li>
+<li><code>tf.nn</code>：提供用于构建神经网络的底层函数，以帮助实现深度神经网络各类功能层。</li>
+<li><code>tf.estimator</code>：高阶 API，提供了预创建的 Estimator 或自定义组件。</li>
+</ul>
+<p>在构建深度神经网络时，TensorFlow 可以说提供了你一切想要的组件，从不同形状的张量、激活函数、神经网络层，到优化器、数据集等，一应俱全。</p>
 ]]></content>
       <categories>
-        <category>Python</category>
-        <category>Web</category>
+        <category>Machine Learning</category>
+        <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>Python</tag>
-        <tag>Nmap</tag>
+        <tag>TensorFlow2.0</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>导数计算和自动微分实现</title>
+    <url>/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/0.png" class></strong></p>
+ <a id="more"></a>
+
+<h2 id="导数计算"><a href="#导数计算" class="headerlink" title="导数计算"></a>导数计算</h2><p>Sigmoid 函数是机器学习中会经常看到的一个函数，它是逻辑回归的基础也可以充当神经网络的激活函数。Sigmoid 函数如下所示：</p>
+<p>$<br>\mathit{sigmoid}(x) = \frac{1}{1+e^{-x}}<br>$</p>
+<p>下面使用Tensorflow实现sigmoid函数：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">tf.__version__</span><br><span class="line"></span><br><span class="line">Out:  <span class="string">&#x27;2.1.0&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid</span>(<span class="params">x</span>):</span></span><br><span class="line">    s = <span class="number">1</span> / (<span class="number">1</span> + tf.math.exp(-x))</span><br><span class="line">    <span class="keyword">return</span> s</span><br></pre></td></tr></table></figure>
+
+<p>接下来，使用 TensorFlow 2 提供的方法初始化一组 [−10,10] 之间等间隔的 100 个值，并作为 Sigmoid 函数的输入。最终，使用 Matplotlib 绘制出 Sigmoid 函数的曲线。同样，使用 TensorFlow 2 提供的相关方法。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br><span class="line"></span><br><span class="line">x = tf.linspace(<span class="number">-10.0</span>, <span class="number">10.0</span>, <span class="number">100</span>)</span><br><span class="line">plt.plot(x, sigmoid(x))</span><br></pre></td></tr></table></figure>
+
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/1.png" alt="image"></p>
+<p>接下来，对 Sigmoid 函数求导，并实现 Sigmoid 导数函数 <code>sigmoid_derivative(x)</code>：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid_derivative</span>(<span class="params">x</span>):</span></span><br><span class="line">    d_s = sigmoid(x) * (<span class="number">1</span> - sigmoid(x))</span><br><span class="line">    <span class="keyword">return</span> d_s</span><br></pre></td></tr></table></figure>
+
+<p>同样，使用上面初始化好的 x 值，绘制 Sigmoid 函数导数的变化曲线。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot(x, sigmoid_derivative(x))</span><br></pre></td></tr></table></figure>
+
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/2.png" alt="image"></p>
+<h2 id="自动微分"><a href="#自动微分" class="headerlink" title="自动微分"></a>自动微分</h2><p>TensorFlow 中，可以使用 <code>tf.GradientTape</code> 跟踪全部运算过程，以便在必要的时候计算梯度。当然，对于上方 Sigmoid 一元函数而言，也就是自动求导过程。</p>
+<p>接下来，使用在实验中学习到的方法，使用 <code>tf.GradientTape</code> 完成自动微分。同样，需要传入前面生成的等间距 x 并绘制出导数的变化曲线。提示，在计算梯度的过程中，x 可能需要被转换为变量张量。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = tf.Variable(x)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">    s = <span class="number">1</span> / (<span class="number">1</span> + tf.math.exp(-x))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">grad = tape.gradient(s, x)  <span class="comment"># 计算梯度</span></span><br><span class="line">grad</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot(x.numpy(), grad.numpy())  <span class="comment"># 绘制 sigmoid 导数变化曲线</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/3.png" alt="image"></p>
+<p>可以发现，借助于自动微分机制，我们只需要书写计算过程即可得到关于任意变量的微分结果。</p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+        <category>TensorFlow</category>
+      </categories>
+      <tags>
+        <tag>TensorFlow2.0</tag>
       </tags>
   </entry>
   <entry>
@@ -501,41 +775,6 @@
       </tags>
   </entry>
   <entry>
-    <title>collision</title>
-    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/1.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/2.png" class></strong></p>
-<h3 id="查看C语言源代码"><a href="#查看C语言源代码" class="headerlink" title="查看C语言源代码"></a>查看C语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/3.png" class></strong></p>
-<h3 id="main-int-argc-char-argv"><a href="#main-int-argc-char-argv" class="headerlink" title="main(int argc, char* argv[])"></a><a href="https://blog.csdn.net/LYJ_viviani/article/details/51873961">main(int argc, char* argv[])</a></h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/4.png" class></strong></p>
-<p>传递三个参数$aa,bb,cc$, 程序运行结果如下:</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/5.png" class></strong></p>
-<p><strong>注意：若传递n个参数，实际上相当于给main函数传递了n+1个参数，argc=n+1（因为argv[0]是路径名自动传递）</strong></p>
-<h3 id="分析col-c"><a href="#分析col-c" class="headerlink" title="分析col.c"></a>分析col.c</h3><ul>
-<li>函数传递了两个参数，第一个参数为int型，第二个参数为一个字符数组，main函数首先判断第一个参数如果小于2,即若不显式传递参数，则打印argv[0]之后会直接退出。</li>
-<li>argv[1]，即传入的第二个参数，第一个参数为文件所在路径，指向的字符串的长度需要等于20字节。</li>
-<li>check_password函数将指向20字节的字符指针转为int指针，因为int是4字节，即将20字节字符串拆分成为5个int类型的数据，之后求和。</li>
-<li>如果求和的结果和给定的哈希值0x21DD09EC相等，则会执行system函数拿到flag。</li>
-</ul>
-<p>最直接的想法是暴力穷举，寻找哈希碰撞，但实际上这里可以直接凑出这个哈希值，可以令20字节的前16字节都设置为0x01，<strong>注意不能设置为0x00</strong>，因为0x00是一个截断字符，程序读入argv[1]时如果遇到了0x00会自动截断，从而导致程序结果有误。</p>
-<p>另外，注意数据按照小端序存放：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/6.png" class></strong></p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/7.png" class></strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">./col $(python -c <span class="string">&quot;print &#x27;\x01\x01\x01\x01&#x27;*4 + &#x27;\xe8\x05\xd9\x1d&#x27;&quot;</span>)</span><br><span class="line"><span class="comment"># 这一inline的python表达式可以将生成的结果作为argv[1]参数</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/8.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>coin</title>
     <url>/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/0.png" class></strong></p>
@@ -584,6 +823,41 @@
 <p>注意这里参数需要转为10进制   $0x1234_{16} = 4660_{10}$</p>
 <figure class="highlight erlang-repl"><table><tr><td class="code"><pre><span class="line">flag: mommy! I think I know what a file descriptor is!!</span><br></pre></td></tr></table></figure>
 
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>collision</title>
+    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/1.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/2.png" class></strong></p>
+<h3 id="查看C语言源代码"><a href="#查看C语言源代码" class="headerlink" title="查看C语言源代码"></a>查看C语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/3.png" class></strong></p>
+<h3 id="main-int-argc-char-argv"><a href="#main-int-argc-char-argv" class="headerlink" title="main(int argc, char* argv[])"></a><a href="https://blog.csdn.net/LYJ_viviani/article/details/51873961">main(int argc, char* argv[])</a></h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/4.png" class></strong></p>
+<p>传递三个参数$aa,bb,cc$, 程序运行结果如下:</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/5.png" class></strong></p>
+<p><strong>注意：若传递n个参数，实际上相当于给main函数传递了n+1个参数，argc=n+1（因为argv[0]是路径名自动传递）</strong></p>
+<h3 id="分析col-c"><a href="#分析col-c" class="headerlink" title="分析col.c"></a>分析col.c</h3><ul>
+<li>函数传递了两个参数，第一个参数为int型，第二个参数为一个字符数组，main函数首先判断第一个参数如果小于2,即若不显式传递参数，则打印argv[0]之后会直接退出。</li>
+<li>argv[1]，即传入的第二个参数，第一个参数为文件所在路径，指向的字符串的长度需要等于20字节。</li>
+<li>check_password函数将指向20字节的字符指针转为int指针，因为int是4字节，即将20字节字符串拆分成为5个int类型的数据，之后求和。</li>
+<li>如果求和的结果和给定的哈希值0x21DD09EC相等，则会执行system函数拿到flag。</li>
+</ul>
+<p>最直接的想法是暴力穷举，寻找哈希碰撞，但实际上这里可以直接凑出这个哈希值，可以令20字节的前16字节都设置为0x01，<strong>注意不能设置为0x00</strong>，因为0x00是一个截断字符，程序读入argv[1]时如果遇到了0x00会自动截断，从而导致程序结果有误。</p>
+<p>另外，注意数据按照小端序存放：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/6.png" class></strong></p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/7.png" class></strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">./col $(python -c <span class="string">&quot;print &#x27;\x01\x01\x01\x01&#x27;*4 + &#x27;\xe8\x05\xd9\x1d&#x27;&quot;</span>)</span><br><span class="line"><span class="comment"># 这一inline的python表达式可以将生成的结果作为argv[1]参数</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/8.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -843,273 +1117,37 @@
       </tags>
   </entry>
   <entry>
-    <title>导数计算和自动微分实现</title>
-    <url>/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/0.png" class></strong></p>
+    <title>python实现端口扫描器</title>
+    <url>/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/0.png" class></strong></p>
  <a id="more"></a>
 
-<h2 id="导数计算"><a href="#导数计算" class="headerlink" title="导数计算"></a>导数计算</h2><p>Sigmoid 函数是机器学习中会经常看到的一个函数，它是逻辑回归的基础也可以充当神经网络的激活函数。Sigmoid 函数如下所示：</p>
-<p>$<br>\mathit{sigmoid}(x) = \frac{1}{1+e^{-x}}<br>$</p>
-<p>下面使用Tensorflow实现sigmoid函数：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">tf.__version__</span><br><span class="line"></span><br><span class="line">Out:  <span class="string">&#x27;2.1.0&#x27;</span></span><br></pre></td></tr></table></figure>
+<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>最简单的端口扫描工具使用TCP连接扫描的方式，即利用操作系统原生的网络功能，且通常作为SYN扫描的替代选项。Nmap将这种模式称为连接扫描，因为使用了类似Unix系统的connect()命令。如果该端口是开放的，操作系统就能完成TCP三次握手，然后端口扫描工具会立即关闭刚建立的连接，防止拒绝服务攻击。这种端口扫描模式的优势是用户无需特殊权限。但使用操作系统原生网络功能不能实现底层控制，因此这种扫描方式并不流行。并且TCP扫描很容易被发现，尤其作为端口清扫的手段：这些服务会记录发送者的 IP 地址，入侵检测系统可能触发警报。$–&gt;$（<a href="https://xz.aliyun.com/t/5376#toc-0">端口扫描类型</a>）</p>
+<p>还有另外一种扫描方式是 SYN 扫描，端口扫描工具不使用操作系统原生网络功能，而是自行生成、发送 IP 数据包，并监控其回应。这种扫描模式被称为 “半开放扫描”，因为它从不建立完整的 TCP 连接。端口扫描工具生成一个 SYN 包，如果目标端口开放，则会返回 SYN-ACK 包。扫描端回应一个 RST 包，然后在握手完成前关闭连接。如果端口关闭了但未使用过滤，目标端口应该会持续返回 RST 包。这种粗略的网络利用方式有几个优点：给扫描工具全权控制数据包发送和等待回应时长的权力，允许更详细的回应分析。关于哪一种对目标主机的扫描方式更不具备入侵性存在一些争议，但 SYN 扫描的优势是从不会建立完整的连接。然而，RST 包可能导致网络堵塞，尤其是一些简单如打印机之类的网络设备。</p>
+<p>实例中采用的是第一种扫描方式，直接利用操作系统的 socket 连接接口，初步测试目标服务器的端口是否可以连接，如果可以则返回端口打开状态。$–&gt;$（<a href="https://gist.github.com/kevinkindom/108ffd675cb9253f8f71">socket编程基础</a>）</p>
+<h3 id="实现单线程扫描功能"><a href="#实现单线程扫描功能" class="headerlink" title="实现单线程扫描功能"></a>实现单线程扫描功能</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实现从程序外部向程序传递参数</span></span><br><span class="line">host = sys.argv[<span class="number">1</span>]</span><br><span class="line">portstrs = sys.argv[<span class="number">2</span>].split(<span class="string">&#x27;-&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 扫描端口范围</span></span><br><span class="line">start_port = int(portstrs[<span class="number">0</span>])</span><br><span class="line">end_port = int(portstrs[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取目标ip地址</span></span><br><span class="line">target_ip = gethostbyname(host)</span><br><span class="line">opened_ports = []</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行循环连接</span></span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(start_port, end_port):</span><br><span class="line">    sock = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">    sock.settimeout(<span class="number">10</span>)</span><br><span class="line">    result = sock.connect_ex((target_ip, port))</span><br><span class="line">    <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">        opened_ports.append(port)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印开放的端口</span></span><br><span class="line">print(<span class="string">&quot;Opened ports:&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> opened_ports:</span><br><span class="line">    print(i)</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid</span>(<span class="params">x</span>):</span></span><br><span class="line">    s = <span class="number">1</span> / (<span class="number">1</span> + tf.math.exp(-x))</span><br><span class="line">    <span class="keyword">return</span> s</span><br></pre></td></tr></table></figure>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/2.png" class></strong></p>
+<p>上面代码实现了单线程扫描端口的测试，但是正常的程序在执行中我们需要考虑执行效率和提升性能，所以需要实现多线程程序。</p>
+<h3 id="多线程扫描"><a href="#多线程扫描" class="headerlink" title="多线程扫描"></a>多线程扫描</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> monkey</span><br><span class="line"></span><br><span class="line">monkey.patch_all()</span><br><span class="line"><span class="keyword">import</span> gevent</span><br><span class="line"><span class="keyword">import</span> gevent.pool</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">TCP_connect</span>(<span class="params">ip, port</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;模拟TCP连接&quot;&quot;&quot;</span></span><br><span class="line">    TCP_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">    TCP_sock.settimeout(<span class="number">0.5</span>)  <span class="comment"># 设置连接超时</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        result = TCP_sock.connect_ex((ip, int(port)))</span><br><span class="line">        <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">            print(<span class="string">&quot;[*]%s 端口 开启\t&quot;</span> % port)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># print(&quot;[!]%s端口 关闭&quot;%port)</span></span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        TCP_sock.close()</span><br><span class="line">    <span class="keyword">except</span> socket.error <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]错误:&quot;</span>, e)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_ip</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标IP&quot;&quot;&quot;</span></span><br><span class="line">    ip = input(<span class="string">&quot;[+]输入扫描目标IP:&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;[*]正在扫描&quot;</span>)</span><br><span class="line">    scan_port(ip)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_web</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标网址&quot;&quot;&quot;</span></span><br><span class="line">    web = input(<span class="string">&quot;[+]输入扫描网址:&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;http://&quot;</span> <span class="keyword">in</span> web <span class="keyword">or</span> <span class="string">&quot;https://&quot;</span> <span class="keyword">in</span> web:</span><br><span class="line">        web = web[web.find(<span class="string">&#x27;://&#x27;</span>) + <span class="number">3</span>:]</span><br><span class="line">        print(web)</span><br><span class="line">        print(<span class="string">&quot;[*]正在分析网站服务器IP&quot;</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        server_ip = socket.gethostbyname(str(web))</span><br><span class="line">        print(<span class="string">&quot;[*]服务器IP为%s&quot;</span> % server_ip)</span><br><span class="line">        scan_port(server_ip)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]服务器IP获取失败&quot;</span>)</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_port</span>(<span class="params">ip</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描端口&quot;&quot;&quot;</span></span><br><span class="line">    print(<span class="string">&quot;[*]开始扫描目标端口&quot;</span>)</span><br><span class="line">    start = time.time()</span><br><span class="line">    g = gevent.pool.Pool(<span class="number">50</span>)  <span class="comment"># 设置线程数</span></span><br><span class="line">    run_list = []</span><br><span class="line">    <span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">65535</span>):</span><br><span class="line">        run_list.append(g.spawn(TCP_connect, ip, port))</span><br><span class="line">    gevent.joinall(run_list)</span><br><span class="line">    end = time.time()</span><br><span class="line">    print(<span class="string">&quot;[*]总耗时%s&quot;</span> % time.strftime(<span class="string">&quot;%H:%M:%S&quot;</span>, time.gmtime(end - start)))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    print(<span class="string">&quot;1.通过IP扫描端口&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;2.通过网址扫描端口&quot;</span>)</span><br><span class="line">    uc = int(input(<span class="string">&quot;[+]请输入选择:&quot;</span>))</span><br><span class="line">    <span class="keyword">if</span> <span class="number">1</span> == uc:</span><br><span class="line">        scan_ip()</span><br><span class="line">    <span class="keyword">elif</span> <span class="number">2</span> == uc:</span><br><span class="line">        scan_web()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">&quot;[!]输入有误&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 
-<p>接下来，使用 TensorFlow 2 提供的方法初始化一组 [−10,10] 之间等间隔的 100 个值，并作为 Sigmoid 函数的输入。最终，使用 Matplotlib 绘制出 Sigmoid 函数的曲线。同样，使用 TensorFlow 2 提供的相关方法。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br><span class="line"></span><br><span class="line">x = tf.linspace(<span class="number">-10.0</span>, <span class="number">10.0</span>, <span class="number">100</span>)</span><br><span class="line">plt.plot(x, sigmoid(x))</span><br></pre></td></tr></table></figure>
+<p>这里展示部分运行结果：</p>
+<h4 id="选择通过网址扫描端口"><a href="#选择通过网址扫描端口" class="headerlink" title="选择通过网址扫描端口"></a>选择通过网址扫描端口</h4><p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/3.png" class></strong></p>
+<h4 id="选择通过IP扫描端口"><a href="#选择通过IP扫描端口" class="headerlink" title="选择通过IP扫描端口"></a>选择通过IP扫描端口</h4><p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/4.png" class></strong></p>
+<h3 id="使用nmap扫描"><a href="#使用nmap扫描" class="headerlink" title="使用nmap扫描"></a>使用nmap扫描</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> nmap</span><br><span class="line"></span><br><span class="line">host = <span class="string">&#x27;192.168.56.1&#x27;</span></span><br><span class="line"><span class="comment"># 把nmap.exe的路径放入PortScanner中，否则会有环境变量错误</span></span><br><span class="line">nm = nmap.PortScanner(nmap_search_path=(<span class="string">&#x27;nmap&#x27;</span>, <span class="string">r&quot;E:\nmap\nmap.exe&quot;</span>))</span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">130</span>, <span class="number">136</span>):</span><br><span class="line">    result = nm.scan(host, str(port))</span><br><span class="line">    <span class="comment"># 在主机192.168.56.1上获取端口22/tcp状态</span></span><br><span class="line">    state = result[<span class="string">&#x27;scan&#x27;</span>][<span class="string">&#x27;192.168.56.1&#x27;</span>][<span class="string">&#x27;tcp&#x27;</span>][int(port)][<span class="string">&#x27;state&#x27;</span>]</span><br><span class="line">    print(<span class="string">&#x27;[%s] port state: %s&#x27;</span> % (port, state))</span><br></pre></td></tr></table></figure>
 
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/1.png" alt="image"></p>
-<p>接下来，对 Sigmoid 函数求导，并实现 Sigmoid 导数函数 <code>sigmoid_derivative(x)</code>：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid_derivative</span>(<span class="params">x</span>):</span></span><br><span class="line">    d_s = sigmoid(x) * (<span class="number">1</span> - sigmoid(x))</span><br><span class="line">    <span class="keyword">return</span> d_s</span><br></pre></td></tr></table></figure>
-
-<p>同样，使用上面初始化好的 x 值，绘制 Sigmoid 函数导数的变化曲线。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot(x, sigmoid_derivative(x))</span><br></pre></td></tr></table></figure>
-
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/2.png" alt="image"></p>
-<h2 id="自动微分"><a href="#自动微分" class="headerlink" title="自动微分"></a>自动微分</h2><p>TensorFlow 中，可以使用 <code>tf.GradientTape</code> 跟踪全部运算过程，以便在必要的时候计算梯度。当然，对于上方 Sigmoid 一元函数而言，也就是自动求导过程。</p>
-<p>接下来，使用在实验中学习到的方法，使用 <code>tf.GradientTape</code> 完成自动微分。同样，需要传入前面生成的等间距 x 并绘制出导数的变化曲线。提示，在计算梯度的过程中，x 可能需要被转换为变量张量。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = tf.Variable(x)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">    s = <span class="number">1</span> / (<span class="number">1</span> + tf.math.exp(-x))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">grad = tape.gradient(s, x)  <span class="comment"># 计算梯度</span></span><br><span class="line">grad</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot(x.numpy(), grad.numpy())  <span class="comment"># 绘制 sigmoid 导数变化曲线</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/3.png" alt="image"></p>
-<p>可以发现，借助于自动微分机制，我们只需要书写计算过程即可得到关于任意变量的微分结果。</p>
+<p>使用<strong>netstat -an</strong>查看本机开启的端口服务，用端口135测试代码运行的正确性</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/1.png" class></strong></p>
+<p>也可以直接使用zenmap工具进行端口扫描：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/5.png" class></strong></p>
 ]]></content>
       <categories>
-        <category>Machine Learning</category>
-        <category>TensorFlow</category>
+        <category>Python</category>
+        <category>Web</category>
       </categories>
       <tags>
-        <tag>TensorFlow2.0</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>TensorFlow2基础概念语法</title>
-    <url>/xiaohong404.github.io/2020/10/26/TensorFlow2.0/TensorFlow2%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%AD%E6%B3%95/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/TensorFlow2%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%AD%E6%B3%95/0.png" class></strong></p>
- <a id="more"></a>
-
-<h2 id="张量"><a href="#张量" class="headerlink" title="张量"></a>张量</h2><p>数学或物理上关于张量的两种定义方法（抽象）：</p>
-<ul>
-<li>通常定义张量的物理学或传统数学方法，是把张量看成一个多维数组，当变换坐标或变换基底时，其分量会按照一定规则进行变换，这些规则有两种：即协变或逆变转换。</li>
-<li>通常现代数学中的方法，是把张量定义成某个矢量空间或其对偶空间上的多重线性映射，这矢量空间在需要引入基底之前不固定任何坐标系统。例如协变矢量，可以描述为 1-形式，或者作为逆变矢量的对偶空间的元素。</li>
-</ul>
-<p>通俗来讲，一阶张量为向量，二阶张量为矩阵。当然，零阶张量也就是标量，而更重要的是 𝑁 阶张量，也就是 𝑁 维数组。</p>
-<table>
-<thead>
-<tr>
-<th align="center">阶</th>
-<th align="center">数学实例</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">0</td>
-<td align="center">标量（只有大小）</td>
-</tr>
-<tr>
-<td align="center">1</td>
-<td align="center">矢量（大小和方向）</td>
-</tr>
-<tr>
-<td align="center">2</td>
-<td align="center">矩阵（数据表）</td>
-</tr>
-<tr>
-<td align="center">3</td>
-<td align="center">3 阶张量（数据立体）</td>
-</tr>
-<tr>
-<td align="center">N</td>
-<td align="center">N 阶张量（自行想象）</td>
-</tr>
-</tbody></table>
-<p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/TensorFlow2%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%AD%E6%B3%95/1.png" class></strong></p>
-<p>大多数深度学习框架都会使用张量的概念，这样做的好处是统一对数据的定义。NumPy 中，数据都使用 Ndarray 多维数组进行定义，TensorFlow 中，数据都会用张量进行表述。</p>
-<p>下面就来学习 TensorFlow 中对张量的定义。在 TensorFlow 中，每一个 Tensor 都具备两个基础属性：<strong>数据类型（默认：float32）和形状</strong>。</p>
-<p>其中，数据类型大致如下表所示：</p>
-<table>
-<thead>
-<tr>
-<th align="center">Tensor 类型</th>
-<th align="center">描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center"><code>tf.float32</code></td>
-<td align="center">32 位浮点数</td>
-</tr>
-<tr>
-<td align="center"><code>tf.float64</code></td>
-<td align="center">64 位浮点数</td>
-</tr>
-<tr>
-<td align="center"><code>tf.int64</code></td>
-<td align="center">64 位有符号整型</td>
-</tr>
-<tr>
-<td align="center"><code>tf.int32</code></td>
-<td align="center">32 位有符号整型</td>
-</tr>
-<tr>
-<td align="center"><code>tf.int16</code></td>
-<td align="center">16 位有符号整型</td>
-</tr>
-<tr>
-<td align="center"><code>tf.int8</code></td>
-<td align="center">8 位有符号整型</td>
-</tr>
-<tr>
-<td align="center"><code>tf.uint8</code></td>
-<td align="center">8 位无符号整型</td>
-</tr>
-<tr>
-<td align="center"><code>tf.string</code></td>
-<td align="center">可变长度的字节数组</td>
-</tr>
-<tr>
-<td align="center"><code>tf.bool</code></td>
-<td align="center">布尔型</td>
-</tr>
-<tr>
-<td align="center"><code>tf.complex64</code></td>
-<td align="center">实数和虚数</td>
-</tr>
-</tbody></table>
-<p>另外，TensorFlow 通过三种符号约定来描述张量维度：<strong>阶，形状和维数</strong>。三者之间的关系如下：</p>
-<table>
-<thead>
-<tr>
-<th align="center">形状</th>
-<th align="center">阶</th>
-<th align="center">维数</th>
-<th align="center">示例</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">[]</td>
-<td align="center">0</td>
-<td align="center">0-D</td>
-<td align="center">0 维张量，标量。</td>
-</tr>
-<tr>
-<td align="center">[D0]</td>
-<td align="center">1</td>
-<td align="center">1-D</td>
-<td align="center">形状为 [5] 的 1 维张量。</td>
-</tr>
-<tr>
-<td align="center">[D0, D1]</td>
-<td align="center">2</td>
-<td align="center">2-D</td>
-<td align="center">形状为 [3, 4] 的 2 维张量。</td>
-</tr>
-<tr>
-<td align="center">[D0, D1, D2]</td>
-<td align="center">3</td>
-<td align="center">3-D</td>
-<td align="center">形状为 [1, 4, 3] 的 3 维张量。</td>
-</tr>
-<tr>
-<td align="center">[D0, D1, … Dn-1]</td>
-<td align="center">n</td>
-<td align="center">n-D</td>
-<td align="center">形状为 [D0, D1, … Dn-1] 的张量。</td>
-</tr>
-</tbody></table>
-<p>值得注意的是，上表中的示例都是形容张量的形状。例如 <code>[3, 4]</code> 指的张量的形状为 <code>[3, 4]</code>，而不是张量 <code>[3, 4]</code>。</p>
-<p> 根据不同的用途，TensorFlow 中主要有 2 种张量类型，分别是：</p>
-<ul>
-<li><p><code>tf.Variable</code> ：变量 Tensor，需要指定初始值，常用于定义可变参数，例如神经网络的权重。</p>
-</li>
-<li><p><code>tf.constant</code> ：常量 Tensor，需要指定初始值，定义不变化的张量。</p>
-</li>
-</ul>
-<p>我们可以通过传入列表或 NumPy 数组来新建变量和常量类型的张量：</p>
-<p>查看tensorflow版本</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">tf.__version__</span><br><span class="line"></span><br><span class="line">Out:  <span class="string">&#x27;2.1.0&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<p>  输入形状为 (2, 2) 的二维变量</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">v = tf.Variable([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]])  <span class="comment"># 形状为 (2, 2) 的二维变量</span></span><br><span class="line">v</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Variable <span class="string">&#x27;Variable:0&#x27;</span> shape=(<span class="number">2</span>, <span class="number">2</span>) dtype=int32, numpy=</span><br><span class="line">		array([[<span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">      		   [<span class="number">3</span>, <span class="number">4</span>]], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
-
-<p>  输入形状为 (2, 2) 的二维常量</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">c = tf.constant([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]])  <span class="comment"># 形状为 (2, 2) 的二维常量</span></span><br><span class="line">c</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=int32, numpy=</span><br><span class="line">    	 array([[<span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">         	    [<span class="number">3</span>, <span class="number">4</span>]], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
-
-<p>输出包含了张量的 3 部分属性，分别是形状 <code>shape</code>，数据类型 <code>dtype</code>，以及对应的 NumPy 数组。</p>
-<p>还可以直接通过 <code>.numpy()</code> 输出张量的 NumPy 数组：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">c.numpy()</span><br><span class="line"></span><br><span class="line">Out:  array([[<span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">             [<span class="number">3</span>, <span class="number">4</span>]], dtype=int32)</span><br></pre></td></tr></table></figure>
-
-<p>下面列举几个经常会用到的新建特殊常量张量的方法：</p>
-<ul>
-<li><code>tf.zeros</code>：新建指定形状且全为 0 的常量 Tensor</li>
-<li><code>tf.zeros_like</code>：参考某种形状，新建全为 0 的常量 Tensor</li>
-<li><code>tf.ones</code>：新建指定形状且全为 1 的常量 Tensor</li>
-<li><code>tf.ones_like</code>：参考某种形状，新建全为 1 的常量 Tensor</li>
-<li><code>tf.fill</code>：新建一个指定形状且全为某个标量值的常量 Tensor</li>
-</ul>
-<p>3x3 全为 0 的常量 Tensor</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">c = tf.zeros([<span class="number">3</span>, <span class="number">3</span>])  <span class="comment"># 3x3 全为 0 的常量 Tensor</span></span><br><span class="line">c</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">3</span>, <span class="number">3</span>), dtype=float32, numpy=</span><br><span class="line">        array([[<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
-<p>与 c 形状一致全为 1 的常量 Tensor</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.ones_like(c)  <span class="comment"># 与 c 形状一致全为 1 的常量 Tensor</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">3</span>, <span class="number">3</span>), dtype=float32, numpy=</span><br><span class="line">        array([[<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>],</span><br><span class="line">               [<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>],</span><br><span class="line">               [<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
-<p>2x3 全为 6 的常量 Tensor</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.fill([<span class="number">2</span>, <span class="number">3</span>], <span class="number">6</span>)  <span class="comment"># 2x3 全为 6 的常量 Tensor</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">3</span>), dtype=int32, numpy=</span><br><span class="line">        array([[<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>],</span><br><span class="line">               [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>]], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
-
-<p>除此之外，还可以创建一些序列:</p>
-<ul>
-<li><code>tf.linspace</code>：创建一个等间隔序列。</li>
-<li><code>tf.range</code>：创建一个数字序列。</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.linspace(<span class="number">1.0</span>, <span class="number">10.0</span>, <span class="number">5</span>, name=<span class="string">&quot;linspace&quot;</span>)</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">5</span>,), dtype=float32, numpy=array([ <span class="number">1.</span>  ,  <span class="number">3.25</span>,  <span class="number">5.5</span> ,  <span class="number">7.75</span>, <span class="number">10.</span>  ],     dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.range(start=<span class="number">1</span>, limit=<span class="number">10</span>, delta=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">5</span>,), dtype=int32, numpy=array([<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Eager-Execution"><a href="#Eager-Execution" class="headerlink" title="Eager Execution"></a>Eager Execution</h2><p>TensorFlow 2 带来的最大改变之一是将 1.x 的 Graph Execution（图与会话机制）更改为 Eager Execution（动态图机制）。在 1.x 版本中，低级别 TensorFlow API 首先需要定义数据流图，然后再创建 TensorFlow 会话，这一点在 2.0 中被完全舍弃。TensorFlow 2 中的 Eager Execution 是一种命令式编程环境，可立即评估操作，无需构建图。</p>
-<p>所以说，TensorFlow 的张量运算过程可以像 NumPy 一样直观且自然了。接下来，我们以最简单的加法运算为例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">c + c  <span class="comment"># 加法计算</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">3</span>, <span class="number">3</span>), dtype=float32, numpy=</span><br><span class="line">        array([[<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
-<p> 1.x 版本的 TensorFlow，一个加法运算过程十分复杂。我们需要初始化全局变量 → 建立会话 → 执行计算，最终才能打印出张量的运算结果。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">init_op = tf.global_variables_initializer()  <span class="comment"># 初始化全局变量</span></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:  <span class="comment"># 启动会话</span></span><br><span class="line">    sess.run(init_op)</span><br><span class="line">    print(sess.run(c + c))  <span class="comment"># 执行计算</span></span><br></pre></td></tr></table></figure>
-
-<p>Eager Execution 带来的好处显而易见，其进一步降低了 TensorFlow 的入门门槛。之前的 Graph Execution 模式，实际上让很多人在入门时都很郁闷，因为完全不符合正常思维习惯。</p>
-<p>TensorFlow 中提供的数学计算，包括线性代数计算方面的方法也是应有尽有，十分丰富。下面，我们再列举几个示例:</p>
-<p>矩阵乘法：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant([<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>], shape=[<span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line">b = tf.constant([<span class="number">7.</span>, <span class="number">8.</span>, <span class="number">9.</span>, <span class="number">10.</span>, <span class="number">11.</span>, <span class="number">12.</span>], shape=[<span class="number">3</span>, <span class="number">2</span>])</span><br><span class="line"></span><br><span class="line">c = tf.linalg.matmul(a, b)  <span class="comment"># 矩阵乘法</span></span><br><span class="line">c</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=float32, numpy=</span><br><span class="line">        array([[ <span class="number">58.</span>,  <span class="number">64.</span>],</span><br><span class="line">               [<span class="number">139.</span>, <span class="number">154.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
-<p>转置矩阵：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.linalg.matrix_transpose(c)  <span class="comment"># 转置矩阵</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=float32, numpy=</span><br><span class="line">        array([[ <span class="number">58.</span>, <span class="number">139.</span>],</span><br><span class="line">               [ <span class="number">64.</span>, <span class="number">154.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
-<p><code>可以把 TensorFlow 理解成为 TensorFlow 式的 NumPy + 为搭建神经网络而生的 API</code></p>
-<h2 id="自动微分"><a href="#自动微分" class="headerlink" title="自动微分"></a>自动微分</h2><p>在数学中，微分是对函数的局部变化率的一种线性描述。虽然微分和导数是两个不同的概念。但是，对一元函数来说，可微与可导是完全等价的。如果熟悉神经网络的搭建过程，应该明白梯度的重要性。而对于复杂函数的微分过程是极其麻烦的，为了提高应用效率，大部分深度学习框架都有自动微分机制。</p>
-<p>TensorFlow 中，可以使用 <code>tf.GradientTape</code> 跟踪全部运算过程，以便在必要的时候计算梯度。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">w = tf.Variable([<span class="number">1.0</span>])  <span class="comment"># 新建张量</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">    loss = w * w</span><br><span class="line"></span><br><span class="line">grad = tape.gradient(loss, w)  <span class="comment"># 计算梯度</span></span><br><span class="line">grad</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">1</span>,), dtype=float32, numpy=array([<span class="number">2.</span>], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
-<p>上面演示了一个自动微分过程，它的数学求导过程如下：</p>
-<p>$$ loss = w^2 \rightarrow \frac {\partial loss}{\partial w} = 2w $$</p>
-<p>所以，当 w 等于 1 时，计算结果为 2。</p>
-<p><code>tf.GradientTape</code> 会像磁带一样记录下计算图中的梯度信息，然后使用 <code>.gradient</code> 即可回溯计算出任意梯度，这对于使用 TensorFlow 低阶 API 构建神经网络时更新参数非常重要。</p>
-<h2 id="常用模块"><a href="#常用模块" class="headerlink" title="常用模块"></a>常用模块</h2><p>上面已经学习了 TensorFlow 核心知识，接下来将对 TensorFlow API 中的常用模块进行简单的功能介绍。对于框架的使用，实际上就是灵活运用各种封装好的类和函数。由于 TensorFlow API 数量太多，迭代太快，所以要养成随时 <a href="https://www.tensorflow.org/versions/r2.0/api_docs/python/tf"> <em>查阅官方文档</em></a> 的习惯。</p>
-<ul>
-<li><code>tf.</code>：包含了张量定义，变换等常用函数和类。</li>
-<li><code>tf.data</code>：输入数据处理模块，提供了像 <code>tf.data.Dataset</code> 等类用于封装输入数据，指定批量大小等。</li>
-<li><code>tf.image</code>：图像处理模块，提供了像图像裁剪，变换，编码，解码等类。</li>
-<li><code>tf.keras</code>：原 Keras 框架高阶 API。包含原 <code>tf.layers</code> 中高阶神经网络层。</li>
-<li><code>tf.linalg</code>：线性代数模块，提供了大量线性代数计算方法和类。</li>
-<li><code>tf.losses</code>：损失函数模块，用于方便神经网络定义损失函数。</li>
-<li><code>tf.math</code>：数学计算模块，提供了大量数学计算函数。</li>
-<li><code>tf.saved_model</code>：模型保存模块，可用于模型的保存和恢复。</li>
-<li><code>tf.train</code>：提供用于训练的组件，例如优化器，学习率衰减策略等。</li>
-<li><code>tf.nn</code>：提供用于构建神经网络的底层函数，以帮助实现深度神经网络各类功能层。</li>
-<li><code>tf.estimator</code>：高阶 API，提供了预创建的 Estimator 或自定义组件。</li>
-</ul>
-<p>在构建深度神经网络时，TensorFlow 可以说提供了你一切想要的组件，从不同形状的张量、激活函数、神经网络层，到优化器、数据集等，一应俱全。</p>
-]]></content>
-      <categories>
-        <category>Machine Learning</category>
-        <category>TensorFlow</category>
-      </categories>
-      <tags>
-        <tag>TensorFlow2.0</tag>
+        <tag>Python</tag>
+        <tag>Nmap</tag>
       </tags>
   </entry>
   <entry>
