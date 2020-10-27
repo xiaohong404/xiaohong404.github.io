@@ -1290,4 +1290,94 @@
         <tag>PWN</tag>
       </tags>
   </entry>
+  <entry>
+    <title>TensorFlow2实现线性回归</title>
+    <url>/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p>线性回归是入门机器学习必学的算法，其也是最基础的算法之一。接下来，使用 TensorFlow 2 提供的 API 和 Eager Execution 机制对其进行实现。</p>
+<p>线性回归是一种较为简单，但十分重要的机器学习方法，它也是神经网络的基础。如下所示，线性回归要解决的问题就是如何找到最理想的直线去拟合散点样本。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/1.png" class></strong></p>
+<p>对于一个线性回归问题，一般来讲有 2 种解决方法，分别是：最小二乘法和梯度下降法。其中最小二乘法又分为两种求解思路：代数求解和矩阵求解。本次实验，将使用梯度下降方法来解决线性回归问题。同时，实验将使用 TensorFlow 低阶 API 和高阶 API 两种方法进行实现。</p>
+<h2 id="低阶-API-实现"><a href="#低阶-API-实现" class="headerlink" title="低阶 API 实现"></a>低阶 API 实现</h2><p>TensorFlow 的低阶 API 实现，实际上就是利用最基本的函数和组件，结合 Eager Execution 机制来完成。实验首先初始化一组随机数据样本，并添加噪声，然后将其可视化出来。</p>
+<p>在这个过程中，我们全部使用 TensorFlow 提供的 API 来完成，也可以使用numpy数组。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line">TRUE_W = <span class="number">3.0</span></span><br><span class="line">TRUE_b = <span class="number">2.0</span></span><br><span class="line">NUM_SAMPLES = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化随机数据</span></span><br><span class="line">X = tf.random.normal(shape=[NUM_SAMPLES, <span class="number">1</span>]).numpy()</span><br><span class="line">noise = tf.random.normal(shape=[NUM_SAMPLES, <span class="number">1</span>]).numpy()</span><br><span class="line">y = X * TRUE_W + TRUE_b + noise  <span class="comment"># 添加噪声</span></span><br><span class="line"></span><br><span class="line">plt.scatter(X, y)</span><br></pre></td></tr></table></figure>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/2.png" class></strong></p>
+<p>接下来，定义一元线性回归模型：</p>
+<p>$<br>f(w, b, x) = w*x + b<br>$</p>
+<p>这里我们构建自定义模型类，并使用 TensorFlow 提供的 <code>tf.Variable</code> 随机初始化参数 <em>w</em> 和截距项 <em>b</em>。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Model</span>(<span class="params">object</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.W = tf.Variable(tf.random.uniform([<span class="number">1</span>]))  <span class="comment"># 随机初始化参数</span></span><br><span class="line">        self.b = tf.Variable(tf.random.uniform([<span class="number">1</span>]))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.W * x + self.b  <span class="comment"># w*x + b</span></span><br></pre></td></tr></table></figure>
+
+<p>上方展示了一个标准的 TensorFlow 模型类的构建方法。</p>
+<p>对于随机初始化的 <em>w</em> 和 <em>b</em>，我们可以将其拟合直线绘制到样本散点图中。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model = Model()  <span class="comment"># 实例化模型</span></span><br><span class="line"></span><br><span class="line">plt.scatter(X, y)</span><br><span class="line">plt.plot(X, model(X), c=<span class="string">&#x27;r&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>正常情况下，应该会看到直线并没有很好地拟合样本。示例效果如下（仅参考）：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/3.png" class></strong></p>
+<p>当然，由于是随机初始化，也有极小概率一开始拟合效果非常好，那么重新执行一次上面的单元格另外随机初始化一组数据即可。尽可能保证一开始随机初始化的直线无法准确拟合数据，方便后续直观感受优化过程的效果。</p>
+<p>然后，定义线性回归使用到的损失函数。这里使用线性回归问题中常用的平方损失函数。</p>
+<p>$<br>{\rm Loss}(w, b, x, y) = \sum_{i=1}^N (f(w, b, x_i) - y_i)^2<br>$</p>
+<p>公式中，<em>f</em>(<em>w</em>,<em>b</em>,<em>$x_i$</em>) 是模型根据 <em>$x_i$</em> 计算的预测值，*$y_i$* 则表示真实值。</p>
+<p>接下来，根据公式实现损失计算函数，同样使用 TensorFlow 中的相关函数。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_fn</span>(<span class="params">model, x, y</span>):</span></span><br><span class="line">    y_ = model(x)</span><br><span class="line">    <span class="keyword">return</span> tf.reduce_mean(tf.square(y_ - y))</span><br></pre></td></tr></table></figure>
+
+<p>接下来，就可以开始迭代过程了，这也是最关键的一步。使用梯度下降法求解线性回归的问题中，我们首先需要计算参数的梯度，然后使用梯度下降法来更新参数。<br>$$<br>\begin{align}<br>w &amp;\leftarrow w - lr * \frac{\partial {\rm loss}(w, b)}{\partial w} \<br>b &amp;\leftarrow b - lr * \frac{\partial {\rm loss}(w, b)}{\partial b}<br>\end{align}<br>$$<br>公式中，<em>lr</em> 指代学习率。</p>
+<p>梯度下降方法是数学中的一种最优化方法，常被用于神经网络的迭代优化过程。简单概括，梯度下降法就是沿着梯度下降方向去寻找损失函数的极小值（梯度的反方向）。过程如下图所示。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/4.png" class></strong></p>
+<p>TensorFlow 2 中的 Eager Execution 提供了 <code>tf.GradientTape</code> 用于追踪梯度。所以，下面我们对照着参数更新公式来实现梯度下降法的迭代更新过程。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">EPOCHS = <span class="number">10</span>  <span class="comment"># 全部数据迭代 10 次</span></span><br><span class="line">LEARNING_RATE = <span class="number">0.1</span>  <span class="comment"># 学习率</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(EPOCHS):  <span class="comment"># 迭代次数</span></span><br><span class="line">    <span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">        loss = loss_fn(model, X, y)  <span class="comment"># 计算损失</span></span><br><span class="line">    dW, db = tape.gradient(loss, [model.W, model.b])  <span class="comment"># 计算梯度</span></span><br><span class="line">    model.W.assign_sub(LEARNING_RATE * dW)  <span class="comment"># 更新梯度</span></span><br><span class="line">    model.b.assign_sub(LEARNING_RATE * db)</span><br><span class="line">    <span class="comment"># 输出计算过程</span></span><br><span class="line">    print(<span class="string">f&#x27;Epoch [<span class="subst">&#123;epoch&#125;</span>/<span class="subst">&#123;EPOCHS&#125;</span>], loss [<span class="subst">&#123;loss&#125;</span>], W/b [<span class="subst">&#123;model.W.numpy()&#125;</span>/<span class="subst">&#123;model.b.numpy()&#125;</span>]&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码中，我们初始化 <code>tf.GradientTape()</code> 以追踪梯度，然后使用 <code>tape.gradient</code> 方法就可以计算梯度了。值得注意的是，<code>tape.gradient()</code> 第二个参数支持以列表形式传入多个参数同时计算梯度。紧接着，使用 <code>.assign_sub</code> 即可完成公式中的减法操作用以更新梯度。</p>
+<p>这是一个标准的梯度下降过程,可以看到，损失函数的值随着迭代过程不断减小，意味着我们离最优化参数不断接近。</p>
+<p> 最终，我们绘制参数学习完成之后，模型的拟合结果。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.scatter(X, y)</span><br><span class="line">plt.plot(X, model(X), c=<span class="string">&#x27;r&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>​                                                              <strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/5.png" class></strong></p>
+<p>由于是随机初始化参数，如果迭代后拟合效果仍然不好，一般是迭代次数太少的原因。可以重复执行上面的迭代单元格多次，增加参数更新迭代次数，即可改善拟合效果。</p>
+<h2 id="高阶-API-实现"><a href="#高阶-API-实现" class="headerlink" title="高阶 API 实现"></a>高阶 API 实现</h2><p>TensorFlow 2 中提供了大量的高阶 API 帮助我们快速构建所需模型，接下来，我们使用一些新的 API 来完成线性回归模型的构建。这里还是沿用上面提供的示例数据。</p>
+<p><code>tf.keras</code> 模块下提供的 <code>tf.keras.layers.Dense</code> 全连接层（线性层）实际上就是一个线性计算过程。所以，模型的定义部分就可以直接实例化一个全连接层即可。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model = tf.keras.layers.Dense(units=<span class="number">1</span>)  <span class="comment"># 实例化线性层</span></span><br><span class="line">model</span><br></pre></td></tr></table></figure>
+
+<p>其中，<code>units</code> 为输出空间维度。此时，参数已经被初始化了，所以我们可以绘制出拟合直线。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.scatter(X, y)</span><br><span class="line">plt.plot(X, model(X), c=<span class="string">&#x27;r&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>你可以使用 <code>model.variables</code> 打印出模型初始化的随机参数。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model.variables</span><br></pre></td></tr></table></figure>
+
+<p>接下来就可以直接构建模型迭代过程了。</p>
+<p>这里同样使用 <code>tf.GradientTape()</code> 来追踪梯度，我们简化损失计算和更新的过程。首先，损失函数无需再自行构造，我们可以直接使用 TensorFlow 提供的平方损失函数 <code>tf.keras.losses.mean_squared_error</code> 计算，然后使用 <code>tf.reduce_sum</code> 求得全部样本的平均损失。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">EPOCHS = <span class="number">10</span></span><br><span class="line">LEARNING_RATE = <span class="number">0.002</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(EPOCHS):  <span class="comment"># 迭代次数</span></span><br><span class="line">    <span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">        y_ = model(X)</span><br><span class="line">        loss = tf.reduce_sum(tf.keras.losses.mean_squared_error(y, y_))  <span class="comment"># 计算损失</span></span><br><span class="line"></span><br><span class="line">    grads = tape.gradient(loss, model.variables)  <span class="comment"># 计算梯度</span></span><br><span class="line">    optimizer = tf.keras.optimizers.SGD(LEARNING_RATE)  <span class="comment"># 随机梯度下降</span></span><br><span class="line">    optimizer.apply_gradients(zip(grads, model.variables))  <span class="comment"># 更新梯度</span></span><br><span class="line">    print(<span class="string">f&#x27;Epoch [<span class="subst">&#123;epoch&#125;</span>/<span class="subst">&#123;EPOCHS&#125;</span>], loss [<span class="subst">&#123;loss&#125;</span>]&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>其次，使用 <code>model.variables</code> 即可读取可参数的列表，无需像上面那样手动传入参数。这里不再按公式手动更新梯度，而是使用现有的随机梯度下降函数 <code>tf.keras.optimizers.SGD</code>，然后使用 <code>apply_gradients</code> 即可更新梯度。</p>
+<p>TensorFlow 中没有提供上方手动实现的梯度下降算法，只提供了<a href="https://zhuanlan.zhihu.com/p/25765735">随机梯度下降算法</a>。</p>
+<p>最终，同样将迭代完成的参数绘制拟合直线到原图中。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.scatter(X, y)</span><br><span class="line">plt.plot(X, model(X), c=<span class="string">&#x27;r&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/6.png" class></strong></p>
+<p>一般情况下，应该能看到一个更好的拟合结果。当然，如果拟合效果不好，可能是迭代批次太少，可以重复执行优化过程。</p>
+<h2 id="Keras-方式实现"><a href="#Keras-方式实现" class="headerlink" title="Keras 方式实现"></a>Keras 方式实现</h2><p>配合 TensorFlow 提供的高阶 API，我们省去了定义线性函数，定义损失函数，以及定义优化算法等 3 个步骤。至此，你应该可以初步感受到 TensorFlow 的易用性和存在的必要性了。不过，上面的高阶 API 实现过程实际上还不够精简，我们可以完全使用 TensorFlow Keras API 来实现线性回归。</p>
+<p>Keras 本来是一个用 Python 编写的独立高阶神经网络 API，它能够以 TensorFlow, CNTK，或者 Theano 作为后端运行。目前，TensorFlow 已经吸纳 Keras，并组成了 <code>tf.keras</code> 模块。官方介绍，<code>tf.keras</code> 和单独安装的 Keras 略有不同，但考虑到未来的发展趋势，实验以学习 <code>tf.keras</code> 为主。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/7.png" class></strong></p>
+<p>我们这里使用 Keras 提供的 Sequential 顺序模型结构。和上面的例子相似，向其中添加一个线性层。不同的地方在于，Keras 顺序模型第一层为线性层时，规定需指定输入维度，这里为 <code>input_dim=1</code>。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model = tf.keras.Sequential()  <span class="comment"># 新建顺序模型</span></span><br><span class="line">model.add(tf.keras.layers.Dense(units=<span class="number">1</span>, input_dim=<span class="number">1</span>))  <span class="comment"># 添加线性层</span></span><br><span class="line">model.summary()  <span class="comment"># 查看模型结构</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来，直接使用 <code>.compile</code> 编译模型，指定损失函数为 MSE 平方损失函数，优化器选择 SGD 随机梯度下降。然后，就可以使用 <code>.fit</code> 传入数据开始迭代了。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model.compile(optimizer=<span class="string">&#x27;sgd&#x27;</span>, loss=<span class="string">&#x27;mse&#x27;</span>)  <span class="comment"># 定义损失函数和优化方法</span></span><br><span class="line">model.fit(X, y, epochs=<span class="number">10</span>, batch_size=<span class="number">32</span>)  <span class="comment"># 训练模型</span></span><br></pre></td></tr></table></figure>
+
+<p><code>batch_size</code> 是采用小批次训练的参数，主要用于解决一次性传入数据过多无法训练的问题。当然，由于示例数据本身较少，这里意义不大，但还是按照常规使用方法进行设置。</p>
+<p>同样，绘制最终的结果：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.scatter(X, y)</span><br><span class="line">plt.plot(X, model(X), c=<span class="string">&#x27;r&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>会发现，完全使用 Keras 高阶 API 实际上只需要 4 行核心代码即可完成，相比于最开始的低阶 API 简化了很多。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model = tf.keras.Sequential()  <span class="comment"># 新建顺序模型</span></span><br><span class="line">model.add(tf.keras.layers.Dense(units=<span class="number">1</span>, input_dim=<span class="number">1</span>))  <span class="comment"># 添加线性层</span></span><br><span class="line">model.compile(optimizer=<span class="string">&#x27;sgd&#x27;</span>, loss=<span class="string">&#x27;mse&#x27;</span>)  <span class="comment"># 定义损失函数和优化方法</span></span><br><span class="line">model.fit(X, y, epochs=<span class="number">10</span>, batch_size=<span class="number">32</span>)  <span class="comment"># 训练模型</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Machine Learning</category>
+        <category>TensorFlow</category>
+      </categories>
+      <tags>
+        <tag>TensorFlow2.0</tag>
+      </tags>
+  </entry>
 </search>
