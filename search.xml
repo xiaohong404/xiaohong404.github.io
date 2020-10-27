@@ -1,44 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>forgot</title>
-    <url>/xiaohong404.github.io/2020/10/27/AD_World/forgot/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/6.png" class></strong></p>
-<h3 id="检查文件开启的保护措施"><a href="#检查文件开启的保护措施" class="headerlink" title="检查文件开启的保护措施"></a>检查文件开启的保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/1.png" class></strong></p>
-<h3 id="用IDA32打开"><a href="#用IDA32打开" class="headerlink" title="用IDA32打开"></a>用IDA32打开</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/2.png" class></strong></p>
-<p>**__isoc99_scanf()**函数存在栈溢出漏洞，不会检查输入的字符串的长度，第二个参数表明写入地址为v2的地址，因此可以利用从v2地址开始写入内容覆盖控制函数执行流。</p>
-<h3 id="shift-F12查看字符串"><a href="#shift-F12查看字符串" class="headerlink" title="shift+F12查看字符串"></a>shift+F12查看字符串</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/3.png" class></strong></p>
-<p>找到其调用函数的位置</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/4.png" class></strong></p>
-<p>查看sub_80486CC函数所在地址（这里函数名称就对应其地址）</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/5.png" class></strong></p>
-<p>其函数所在地址0x080486CC，注意这里调用system函数需要传递<strong>cat flag</strong>参数，如果跳转地址直接为system函数的地址，则无法传递相应的参数。</p>
-<h3 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h3><p>利用栈溢出漏洞，输入v2，将v3-v12任意一个函数的地址修改为sub_80486CC的地址，之后让控制函数执行调用即可。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/7.png" class></strong></p>
-<p>v2是一个32字节的char数组，v2基地址为ebp-0x74，v3基地址为0x54，相差0x74-0x54=0x20=32byte，正好是32字节的char数组的空间大小。因此，这里选择覆盖v3的地址，原因在于v3在栈中紧贴存在栈溢出漏洞的变量，对程序流程造成的未知影响的可能性最小。之后只需要保证函数结尾调用v3，则需要保证- -v14等于0，即让v14等于1。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/8.png" class></strong></p>
-<p>即使得sub_8048702判断条件不成立，直接跳出循环，使得v14的值保持不变，仍为刚开始的1。查看该函数执行的逻辑。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/9.png" class></strong></p>
-<p>查看其ASCII码对应的字符为：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/10.png" class></strong></p>
-<p>若要使得该函数的判断条件不成立，则不能输入字符‘a’-‘z’，’0‘-’9‘，’+‘ ，’-‘，’_’</p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;220.249.52.133&#x27;</span>,<span class="number">52435</span>)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,<span class="string">&#x27;xiaohong&#x27;</span>)</span><br><span class="line">cat_flag_addr = <span class="number">0x80486CC</span></span><br><span class="line">payload = <span class="string">&#x27;/&#x27;</span>*(<span class="number">0x74</span><span class="number">-0x54</span>)+ p32(cat_flag_addr)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/11.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>AD_World</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-        <tag>Stack</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>阅读深度学习的对抗攻击方法综述及实例</title>
     <url>/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/22/AI%E5%AE%89%E5%85%A8/%E9%98%85%E8%AF%BB%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0%E5%8F%8A%E5%AE%9E%E4%BE%8B/0.png" class></strong></p>
@@ -98,6 +60,44 @@
       </categories>
       <tags>
         <tag>AI</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>forgot</title>
+    <url>/xiaohong404.github.io/2020/10/27/AD_World/forgot/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/6.png" class></strong></p>
+<h3 id="检查文件开启的保护措施"><a href="#检查文件开启的保护措施" class="headerlink" title="检查文件开启的保护措施"></a>检查文件开启的保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/1.png" class></strong></p>
+<h3 id="用IDA32打开"><a href="#用IDA32打开" class="headerlink" title="用IDA32打开"></a>用IDA32打开</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/2.png" class></strong></p>
+<p>**__isoc99_scanf()**函数存在栈溢出漏洞，不会检查输入的字符串的长度，第二个参数表明写入地址为v2的地址，因此可以利用从v2地址开始写入内容覆盖控制函数执行流。</p>
+<h3 id="shift-F12查看字符串"><a href="#shift-F12查看字符串" class="headerlink" title="shift+F12查看字符串"></a>shift+F12查看字符串</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/3.png" class></strong></p>
+<p>找到其调用函数的位置</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/4.png" class></strong></p>
+<p>查看sub_80486CC函数所在地址（这里函数名称就对应其地址）</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/5.png" class></strong></p>
+<p>其函数所在地址0x080486CC，注意这里调用system函数需要传递<strong>cat flag</strong>参数，如果跳转地址直接为system函数的地址，则无法传递相应的参数。</p>
+<h3 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h3><p>利用栈溢出漏洞，输入v2，将v3-v12任意一个函数的地址修改为sub_80486CC的地址，之后让控制函数执行调用即可。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/7.png" class></strong></p>
+<p>v2是一个32字节的char数组，v2基地址为ebp-0x74，v3基地址为0x54，相差0x74-0x54=0x20=32byte，正好是32字节的char数组的空间大小。因此，这里选择覆盖v3的地址，原因在于v3在栈中紧贴存在栈溢出漏洞的变量，对程序流程造成的未知影响的可能性最小。之后只需要保证函数结尾调用v3，则需要保证- -v14等于0，即让v14等于1。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/8.png" class></strong></p>
+<p>即使得sub_8048702判断条件不成立，直接跳出循环，使得v14的值保持不变，仍为刚开始的1。查看该函数执行的逻辑。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/9.png" class></strong></p>
+<p>查看其ASCII码对应的字符为：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/10.png" class></strong></p>
+<p>若要使得该函数的判断条件不成立，则不能输入字符‘a’-‘z’，’0‘-’9‘，’+‘ ，’-‘，’_’</p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;220.249.52.133&#x27;</span>,<span class="number">52435</span>)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,<span class="string">&#x27;xiaohong&#x27;</span>)</span><br><span class="line">cat_flag_addr = <span class="number">0x80486CC</span></span><br><span class="line">payload = <span class="string">&#x27;/&#x27;</span>*(<span class="number">0x74</span><span class="number">-0x54</span>)+ p32(cat_flag_addr)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/11.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>AD_World</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+        <tag>Stack</tag>
       </tags>
   </entry>
   <entry>
@@ -384,30 +384,6 @@
       </tags>
   </entry>
   <entry>
-    <title>blackjack</title>
-    <url>/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/1.png" class></strong></p>
-<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>本题链接打不开了！！！ 只能参考别人的wp</p>
-<p>有两个比较关键的点</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/2.png" class></strong></p>
-<p>判断用户下注的金额如果大于用户拥有的金额，则会提示用户不能下注，但程序的漏洞在于如果输入的金额是负数，会直接通过，并且返回输入的下注金额。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/3.png" class></strong></p>
-<p>如果用户输了，则会扣除用户下注的金额，这里使用简单的减法操作，结合前面下注金额可以为负数，则直接输入一个很大的负数，之后故意输掉比赛，使得金额超过阈值拿到flag。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/4.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>blukat</title>
     <url>/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/0.png" class></strong></p>
@@ -422,6 +398,30 @@
 <p>这里看到password文件的用户组含有blukat_pwn，而当前用户在blukat_pwn组，因此是具有读权限的，那运行cat命令：</p>
 <p>提示没有访问权限？不，这里的文件内容就是这句话，那直接将这句话输入到可执行文件中即可拿到flag。</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/3.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>blackjack</title>
+    <url>/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/1.png" class></strong></p>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>本题链接打不开了！！！ 只能参考别人的wp</p>
+<p>有两个比较关键的点</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/2.png" class></strong></p>
+<p>判断用户下注的金额如果大于用户拥有的金额，则会提示用户不能下注，但程序的漏洞在于如果输入的金额是负数，会直接通过，并且返回输入的下注金额。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/3.png" class></strong></p>
+<p>如果用户输了，则会扣除用户下注的金额，这里使用简单的减法操作，结合前面下注金额可以为负数，则直接输入一个很大的负数，之后故意输掉比赛，使得金额超过阈值拿到flag。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/4.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -847,44 +847,37 @@
       </tags>
   </entry>
   <entry>
-    <title>导数计算和自动微分实现</title>
-    <url>/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/0.png" class></strong></p>
+    <title>python实现端口扫描器</title>
+    <url>/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/0.png" class></strong></p>
  <a id="more"></a>
 
-<h2 id="导数计算"><a href="#导数计算" class="headerlink" title="导数计算"></a>导数计算</h2><p>Sigmoid 函数是机器学习中会经常看到的一个函数，它是逻辑回归的基础也可以充当神经网络的激活函数。Sigmoid 函数如下所示：</p>
-<p>$<br>\mathit{sigmoid}(x) = \frac{1}{1+e^{-x}}<br>$</p>
-<p>下面使用Tensorflow实现sigmoid函数：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">tf.__version__</span><br><span class="line"></span><br><span class="line">Out:  <span class="string">&#x27;2.1.0&#x27;</span></span><br></pre></td></tr></table></figure>
+<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>最简单的端口扫描工具使用TCP连接扫描的方式，即利用操作系统原生的网络功能，且通常作为SYN扫描的替代选项。Nmap将这种模式称为连接扫描，因为使用了类似Unix系统的connect()命令。如果该端口是开放的，操作系统就能完成TCP三次握手，然后端口扫描工具会立即关闭刚建立的连接，防止拒绝服务攻击。这种端口扫描模式的优势是用户无需特殊权限。但使用操作系统原生网络功能不能实现底层控制，因此这种扫描方式并不流行。并且TCP扫描很容易被发现，尤其作为端口清扫的手段：这些服务会记录发送者的 IP 地址，入侵检测系统可能触发警报。$–&gt;$（<a href="https://xz.aliyun.com/t/5376#toc-0">端口扫描类型</a>）</p>
+<p>还有另外一种扫描方式是 SYN 扫描，端口扫描工具不使用操作系统原生网络功能，而是自行生成、发送 IP 数据包，并监控其回应。这种扫描模式被称为 “半开放扫描”，因为它从不建立完整的 TCP 连接。端口扫描工具生成一个 SYN 包，如果目标端口开放，则会返回 SYN-ACK 包。扫描端回应一个 RST 包，然后在握手完成前关闭连接。如果端口关闭了但未使用过滤，目标端口应该会持续返回 RST 包。这种粗略的网络利用方式有几个优点：给扫描工具全权控制数据包发送和等待回应时长的权力，允许更详细的回应分析。关于哪一种对目标主机的扫描方式更不具备入侵性存在一些争议，但 SYN 扫描的优势是从不会建立完整的连接。然而，RST 包可能导致网络堵塞，尤其是一些简单如打印机之类的网络设备。</p>
+<p>实例中采用的是第一种扫描方式，直接利用操作系统的 socket 连接接口，初步测试目标服务器的端口是否可以连接，如果可以则返回端口打开状态。$–&gt;$（<a href="https://gist.github.com/kevinkindom/108ffd675cb9253f8f71">socket编程基础</a>）</p>
+<h3 id="实现单线程扫描功能"><a href="#实现单线程扫描功能" class="headerlink" title="实现单线程扫描功能"></a>实现单线程扫描功能</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实现从程序外部向程序传递参数</span></span><br><span class="line">host = sys.argv[<span class="number">1</span>]</span><br><span class="line">portstrs = sys.argv[<span class="number">2</span>].split(<span class="string">&#x27;-&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 扫描端口范围</span></span><br><span class="line">start_port = int(portstrs[<span class="number">0</span>])</span><br><span class="line">end_port = int(portstrs[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取目标ip地址</span></span><br><span class="line">target_ip = gethostbyname(host)</span><br><span class="line">opened_ports = []</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行循环连接</span></span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(start_port, end_port):</span><br><span class="line">    sock = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">    sock.settimeout(<span class="number">10</span>)</span><br><span class="line">    result = sock.connect_ex((target_ip, port))</span><br><span class="line">    <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">        opened_ports.append(port)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印开放的端口</span></span><br><span class="line">print(<span class="string">&quot;Opened ports:&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> opened_ports:</span><br><span class="line">    print(i)</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid</span>(<span class="params">x</span>):</span></span><br><span class="line">    s = <span class="number">1</span> / (<span class="number">1</span> + tf.math.exp(-x))</span><br><span class="line">    <span class="keyword">return</span> s</span><br></pre></td></tr></table></figure>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/2.png" class></strong></p>
+<p>上面代码实现了单线程扫描端口的测试，但是正常的程序在执行中我们需要考虑执行效率和提升性能，所以需要实现多线程程序。</p>
+<h3 id="多线程扫描"><a href="#多线程扫描" class="headerlink" title="多线程扫描"></a>多线程扫描</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> monkey</span><br><span class="line"></span><br><span class="line">monkey.patch_all()</span><br><span class="line"><span class="keyword">import</span> gevent</span><br><span class="line"><span class="keyword">import</span> gevent.pool</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">TCP_connect</span>(<span class="params">ip, port</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;模拟TCP连接&quot;&quot;&quot;</span></span><br><span class="line">    TCP_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">    TCP_sock.settimeout(<span class="number">0.5</span>)  <span class="comment"># 设置连接超时</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        result = TCP_sock.connect_ex((ip, int(port)))</span><br><span class="line">        <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">            print(<span class="string">&quot;[*]%s 端口 开启\t&quot;</span> % port)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># print(&quot;[!]%s端口 关闭&quot;%port)</span></span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        TCP_sock.close()</span><br><span class="line">    <span class="keyword">except</span> socket.error <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]错误:&quot;</span>, e)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_ip</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标IP&quot;&quot;&quot;</span></span><br><span class="line">    ip = input(<span class="string">&quot;[+]输入扫描目标IP:&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;[*]正在扫描&quot;</span>)</span><br><span class="line">    scan_port(ip)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_web</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标网址&quot;&quot;&quot;</span></span><br><span class="line">    web = input(<span class="string">&quot;[+]输入扫描网址:&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;http://&quot;</span> <span class="keyword">in</span> web <span class="keyword">or</span> <span class="string">&quot;https://&quot;</span> <span class="keyword">in</span> web:</span><br><span class="line">        web = web[web.find(<span class="string">&#x27;://&#x27;</span>) + <span class="number">3</span>:]</span><br><span class="line">        print(web)</span><br><span class="line">        print(<span class="string">&quot;[*]正在分析网站服务器IP&quot;</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        server_ip = socket.gethostbyname(str(web))</span><br><span class="line">        print(<span class="string">&quot;[*]服务器IP为%s&quot;</span> % server_ip)</span><br><span class="line">        scan_port(server_ip)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]服务器IP获取失败&quot;</span>)</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_port</span>(<span class="params">ip</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描端口&quot;&quot;&quot;</span></span><br><span class="line">    print(<span class="string">&quot;[*]开始扫描目标端口&quot;</span>)</span><br><span class="line">    start = time.time()</span><br><span class="line">    g = gevent.pool.Pool(<span class="number">50</span>)  <span class="comment"># 设置线程数</span></span><br><span class="line">    run_list = []</span><br><span class="line">    <span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">65535</span>):</span><br><span class="line">        run_list.append(g.spawn(TCP_connect, ip, port))</span><br><span class="line">    gevent.joinall(run_list)</span><br><span class="line">    end = time.time()</span><br><span class="line">    print(<span class="string">&quot;[*]总耗时%s&quot;</span> % time.strftime(<span class="string">&quot;%H:%M:%S&quot;</span>, time.gmtime(end - start)))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    print(<span class="string">&quot;1.通过IP扫描端口&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;2.通过网址扫描端口&quot;</span>)</span><br><span class="line">    uc = int(input(<span class="string">&quot;[+]请输入选择:&quot;</span>))</span><br><span class="line">    <span class="keyword">if</span> <span class="number">1</span> == uc:</span><br><span class="line">        scan_ip()</span><br><span class="line">    <span class="keyword">elif</span> <span class="number">2</span> == uc:</span><br><span class="line">        scan_web()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">&quot;[!]输入有误&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 
-<p>接下来，使用 TensorFlow 2 提供的方法初始化一组 [−10,10] 之间等间隔的 100 个值，并作为 Sigmoid 函数的输入。最终，使用 Matplotlib 绘制出 Sigmoid 函数的曲线。同样，使用 TensorFlow 2 提供的相关方法。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br><span class="line"></span><br><span class="line">x = tf.linspace(<span class="number">-10.0</span>, <span class="number">10.0</span>, <span class="number">100</span>)</span><br><span class="line">plt.plot(x, sigmoid(x))</span><br></pre></td></tr></table></figure>
+<p>这里展示部分运行结果：</p>
+<h4 id="选择通过网址扫描端口"><a href="#选择通过网址扫描端口" class="headerlink" title="选择通过网址扫描端口"></a>选择通过网址扫描端口</h4><p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/3.png" class></strong></p>
+<h4 id="选择通过IP扫描端口"><a href="#选择通过IP扫描端口" class="headerlink" title="选择通过IP扫描端口"></a>选择通过IP扫描端口</h4><p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/4.png" class></strong></p>
+<h3 id="使用nmap扫描"><a href="#使用nmap扫描" class="headerlink" title="使用nmap扫描"></a>使用nmap扫描</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> nmap</span><br><span class="line"></span><br><span class="line">host = <span class="string">&#x27;192.168.56.1&#x27;</span></span><br><span class="line"><span class="comment"># 把nmap.exe的路径放入PortScanner中，否则会有环境变量错误</span></span><br><span class="line">nm = nmap.PortScanner(nmap_search_path=(<span class="string">&#x27;nmap&#x27;</span>, <span class="string">r&quot;E:\nmap\nmap.exe&quot;</span>))</span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">130</span>, <span class="number">136</span>):</span><br><span class="line">    result = nm.scan(host, str(port))</span><br><span class="line">    <span class="comment"># 在主机192.168.56.1上获取端口22/tcp状态</span></span><br><span class="line">    state = result[<span class="string">&#x27;scan&#x27;</span>][<span class="string">&#x27;192.168.56.1&#x27;</span>][<span class="string">&#x27;tcp&#x27;</span>][int(port)][<span class="string">&#x27;state&#x27;</span>]</span><br><span class="line">    print(<span class="string">&#x27;[%s] port state: %s&#x27;</span> % (port, state))</span><br></pre></td></tr></table></figure>
 
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/1.png" alt="image"></p>
-<p>接下来，对 Sigmoid 函数求导，并实现 Sigmoid 导数函数 <code>sigmoid_derivative(x)</code>：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid_derivative</span>(<span class="params">x</span>):</span></span><br><span class="line">    d_s = sigmoid(x) * (<span class="number">1</span> - sigmoid(x))</span><br><span class="line">    <span class="keyword">return</span> d_s</span><br></pre></td></tr></table></figure>
-
-<p>同样，使用上面初始化好的 x 值，绘制 Sigmoid 函数导数的变化曲线。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot(x, sigmoid_derivative(x))</span><br></pre></td></tr></table></figure>
-
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/2.png" alt="image"></p>
-<h2 id="自动微分"><a href="#自动微分" class="headerlink" title="自动微分"></a>自动微分</h2><p>TensorFlow 中，可以使用 <code>tf.GradientTape</code> 跟踪全部运算过程，以便在必要的时候计算梯度。当然，对于上方 Sigmoid 一元函数而言，也就是自动求导过程。</p>
-<p>接下来，使用在实验中学习到的方法，使用 <code>tf.GradientTape</code> 完成自动微分。同样，需要传入前面生成的等间距 x 并绘制出导数的变化曲线。提示，在计算梯度的过程中，x 可能需要被转换为变量张量。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = tf.Variable(x)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">    s = <span class="number">1</span> / (<span class="number">1</span> + tf.math.exp(-x))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">grad = tape.gradient(s, x)  <span class="comment"># 计算梯度</span></span><br><span class="line">grad</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot(x.numpy(), grad.numpy())  <span class="comment"># 绘制 sigmoid 导数变化曲线</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/3.png" alt="image"></p>
-<p>可以发现，借助于自动微分机制，我们只需要书写计算过程即可得到关于任意变量的微分结果。</p>
+<p>使用<strong>netstat -an</strong>查看本机开启的端口服务，用端口135测试代码运行的正确性</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/1.png" class></strong></p>
+<p>也可以直接使用zenmap工具进行端口扫描：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/5.png" class></strong></p>
 ]]></content>
       <categories>
-        <category>Machine Learning</category>
-        <category>TensorFlow</category>
+        <category>Python</category>
+        <category>Web</category>
       </categories>
       <tags>
-        <tag>TensorFlow2.0</tag>
+        <tag>Python</tag>
+        <tag>Nmap</tag>
       </tags>
   </entry>
   <entry>
@@ -1207,37 +1200,44 @@
       </tags>
   </entry>
   <entry>
-    <title>python实现端口扫描器</title>
-    <url>/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/0.png" class></strong></p>
+    <title>导数计算和自动微分实现</title>
+    <url>/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/0.png" class></strong></p>
  <a id="more"></a>
 
-<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>最简单的端口扫描工具使用TCP连接扫描的方式，即利用操作系统原生的网络功能，且通常作为SYN扫描的替代选项。Nmap将这种模式称为连接扫描，因为使用了类似Unix系统的connect()命令。如果该端口是开放的，操作系统就能完成TCP三次握手，然后端口扫描工具会立即关闭刚建立的连接，防止拒绝服务攻击。这种端口扫描模式的优势是用户无需特殊权限。但使用操作系统原生网络功能不能实现底层控制，因此这种扫描方式并不流行。并且TCP扫描很容易被发现，尤其作为端口清扫的手段：这些服务会记录发送者的 IP 地址，入侵检测系统可能触发警报。$–&gt;$（<a href="https://xz.aliyun.com/t/5376#toc-0">端口扫描类型</a>）</p>
-<p>还有另外一种扫描方式是 SYN 扫描，端口扫描工具不使用操作系统原生网络功能，而是自行生成、发送 IP 数据包，并监控其回应。这种扫描模式被称为 “半开放扫描”，因为它从不建立完整的 TCP 连接。端口扫描工具生成一个 SYN 包，如果目标端口开放，则会返回 SYN-ACK 包。扫描端回应一个 RST 包，然后在握手完成前关闭连接。如果端口关闭了但未使用过滤，目标端口应该会持续返回 RST 包。这种粗略的网络利用方式有几个优点：给扫描工具全权控制数据包发送和等待回应时长的权力，允许更详细的回应分析。关于哪一种对目标主机的扫描方式更不具备入侵性存在一些争议，但 SYN 扫描的优势是从不会建立完整的连接。然而，RST 包可能导致网络堵塞，尤其是一些简单如打印机之类的网络设备。</p>
-<p>实例中采用的是第一种扫描方式，直接利用操作系统的 socket 连接接口，初步测试目标服务器的端口是否可以连接，如果可以则返回端口打开状态。$–&gt;$（<a href="https://gist.github.com/kevinkindom/108ffd675cb9253f8f71">socket编程基础</a>）</p>
-<h3 id="实现单线程扫描功能"><a href="#实现单线程扫描功能" class="headerlink" title="实现单线程扫描功能"></a>实现单线程扫描功能</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实现从程序外部向程序传递参数</span></span><br><span class="line">host = sys.argv[<span class="number">1</span>]</span><br><span class="line">portstrs = sys.argv[<span class="number">2</span>].split(<span class="string">&#x27;-&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 扫描端口范围</span></span><br><span class="line">start_port = int(portstrs[<span class="number">0</span>])</span><br><span class="line">end_port = int(portstrs[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取目标ip地址</span></span><br><span class="line">target_ip = gethostbyname(host)</span><br><span class="line">opened_ports = []</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行循环连接</span></span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(start_port, end_port):</span><br><span class="line">    sock = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">    sock.settimeout(<span class="number">10</span>)</span><br><span class="line">    result = sock.connect_ex((target_ip, port))</span><br><span class="line">    <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">        opened_ports.append(port)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印开放的端口</span></span><br><span class="line">print(<span class="string">&quot;Opened ports:&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> opened_ports:</span><br><span class="line">    print(i)</span><br></pre></td></tr></table></figure>
+<h2 id="导数计算"><a href="#导数计算" class="headerlink" title="导数计算"></a>导数计算</h2><p>Sigmoid 函数是机器学习中会经常看到的一个函数，它是逻辑回归的基础也可以充当神经网络的激活函数。Sigmoid 函数如下所示：</p>
+<p>$<br>\mathit{sigmoid}(x) = \frac{1}{1+e^{-x}}<br>$</p>
+<p>下面使用Tensorflow实现sigmoid函数：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">tf.__version__</span><br><span class="line"></span><br><span class="line">Out:  <span class="string">&#x27;2.1.0&#x27;</span></span><br></pre></td></tr></table></figure>
 
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/2.png" class></strong></p>
-<p>上面代码实现了单线程扫描端口的测试，但是正常的程序在执行中我们需要考虑执行效率和提升性能，所以需要实现多线程程序。</p>
-<h3 id="多线程扫描"><a href="#多线程扫描" class="headerlink" title="多线程扫描"></a>多线程扫描</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> monkey</span><br><span class="line"></span><br><span class="line">monkey.patch_all()</span><br><span class="line"><span class="keyword">import</span> gevent</span><br><span class="line"><span class="keyword">import</span> gevent.pool</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">TCP_connect</span>(<span class="params">ip, port</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;模拟TCP连接&quot;&quot;&quot;</span></span><br><span class="line">    TCP_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">    TCP_sock.settimeout(<span class="number">0.5</span>)  <span class="comment"># 设置连接超时</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        result = TCP_sock.connect_ex((ip, int(port)))</span><br><span class="line">        <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">            print(<span class="string">&quot;[*]%s 端口 开启\t&quot;</span> % port)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># print(&quot;[!]%s端口 关闭&quot;%port)</span></span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        TCP_sock.close()</span><br><span class="line">    <span class="keyword">except</span> socket.error <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]错误:&quot;</span>, e)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_ip</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标IP&quot;&quot;&quot;</span></span><br><span class="line">    ip = input(<span class="string">&quot;[+]输入扫描目标IP:&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;[*]正在扫描&quot;</span>)</span><br><span class="line">    scan_port(ip)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_web</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标网址&quot;&quot;&quot;</span></span><br><span class="line">    web = input(<span class="string">&quot;[+]输入扫描网址:&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;http://&quot;</span> <span class="keyword">in</span> web <span class="keyword">or</span> <span class="string">&quot;https://&quot;</span> <span class="keyword">in</span> web:</span><br><span class="line">        web = web[web.find(<span class="string">&#x27;://&#x27;</span>) + <span class="number">3</span>:]</span><br><span class="line">        print(web)</span><br><span class="line">        print(<span class="string">&quot;[*]正在分析网站服务器IP&quot;</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        server_ip = socket.gethostbyname(str(web))</span><br><span class="line">        print(<span class="string">&quot;[*]服务器IP为%s&quot;</span> % server_ip)</span><br><span class="line">        scan_port(server_ip)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]服务器IP获取失败&quot;</span>)</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_port</span>(<span class="params">ip</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描端口&quot;&quot;&quot;</span></span><br><span class="line">    print(<span class="string">&quot;[*]开始扫描目标端口&quot;</span>)</span><br><span class="line">    start = time.time()</span><br><span class="line">    g = gevent.pool.Pool(<span class="number">50</span>)  <span class="comment"># 设置线程数</span></span><br><span class="line">    run_list = []</span><br><span class="line">    <span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">65535</span>):</span><br><span class="line">        run_list.append(g.spawn(TCP_connect, ip, port))</span><br><span class="line">    gevent.joinall(run_list)</span><br><span class="line">    end = time.time()</span><br><span class="line">    print(<span class="string">&quot;[*]总耗时%s&quot;</span> % time.strftime(<span class="string">&quot;%H:%M:%S&quot;</span>, time.gmtime(end - start)))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    print(<span class="string">&quot;1.通过IP扫描端口&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;2.通过网址扫描端口&quot;</span>)</span><br><span class="line">    uc = int(input(<span class="string">&quot;[+]请输入选择:&quot;</span>))</span><br><span class="line">    <span class="keyword">if</span> <span class="number">1</span> == uc:</span><br><span class="line">        scan_ip()</span><br><span class="line">    <span class="keyword">elif</span> <span class="number">2</span> == uc:</span><br><span class="line">        scan_web()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">&quot;[!]输入有误&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid</span>(<span class="params">x</span>):</span></span><br><span class="line">    s = <span class="number">1</span> / (<span class="number">1</span> + tf.math.exp(-x))</span><br><span class="line">    <span class="keyword">return</span> s</span><br></pre></td></tr></table></figure>
 
-<p>这里展示部分运行结果：</p>
-<h4 id="选择通过网址扫描端口"><a href="#选择通过网址扫描端口" class="headerlink" title="选择通过网址扫描端口"></a>选择通过网址扫描端口</h4><p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/3.png" class></strong></p>
-<h4 id="选择通过IP扫描端口"><a href="#选择通过IP扫描端口" class="headerlink" title="选择通过IP扫描端口"></a>选择通过IP扫描端口</h4><p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/4.png" class></strong></p>
-<h3 id="使用nmap扫描"><a href="#使用nmap扫描" class="headerlink" title="使用nmap扫描"></a>使用nmap扫描</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> nmap</span><br><span class="line"></span><br><span class="line">host = <span class="string">&#x27;192.168.56.1&#x27;</span></span><br><span class="line"><span class="comment"># 把nmap.exe的路径放入PortScanner中，否则会有环境变量错误</span></span><br><span class="line">nm = nmap.PortScanner(nmap_search_path=(<span class="string">&#x27;nmap&#x27;</span>, <span class="string">r&quot;E:\nmap\nmap.exe&quot;</span>))</span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">130</span>, <span class="number">136</span>):</span><br><span class="line">    result = nm.scan(host, str(port))</span><br><span class="line">    <span class="comment"># 在主机192.168.56.1上获取端口22/tcp状态</span></span><br><span class="line">    state = result[<span class="string">&#x27;scan&#x27;</span>][<span class="string">&#x27;192.168.56.1&#x27;</span>][<span class="string">&#x27;tcp&#x27;</span>][int(port)][<span class="string">&#x27;state&#x27;</span>]</span><br><span class="line">    print(<span class="string">&#x27;[%s] port state: %s&#x27;</span> % (port, state))</span><br></pre></td></tr></table></figure>
+<p>接下来，使用 TensorFlow 2 提供的方法初始化一组 [−10,10] 之间等间隔的 100 个值，并作为 Sigmoid 函数的输入。最终，使用 Matplotlib 绘制出 Sigmoid 函数的曲线。同样，使用 TensorFlow 2 提供的相关方法。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br><span class="line"></span><br><span class="line">x = tf.linspace(<span class="number">-10.0</span>, <span class="number">10.0</span>, <span class="number">100</span>)</span><br><span class="line">plt.plot(x, sigmoid(x))</span><br></pre></td></tr></table></figure>
 
-<p>使用<strong>netstat -an</strong>查看本机开启的端口服务，用端口135测试代码运行的正确性</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/1.png" class></strong></p>
-<p>也可以直接使用zenmap工具进行端口扫描：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/5.png" class></strong></p>
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/1.png" alt="image"></p>
+<p>接下来，对 Sigmoid 函数求导，并实现 Sigmoid 导数函数 <code>sigmoid_derivative(x)</code>：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid_derivative</span>(<span class="params">x</span>):</span></span><br><span class="line">    d_s = sigmoid(x) * (<span class="number">1</span> - sigmoid(x))</span><br><span class="line">    <span class="keyword">return</span> d_s</span><br></pre></td></tr></table></figure>
+
+<p>同样，使用上面初始化好的 x 值，绘制 Sigmoid 函数导数的变化曲线。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot(x, sigmoid_derivative(x))</span><br></pre></td></tr></table></figure>
+
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/2.png" alt="image"></p>
+<h2 id="自动微分"><a href="#自动微分" class="headerlink" title="自动微分"></a>自动微分</h2><p>TensorFlow 中，可以使用 <code>tf.GradientTape</code> 跟踪全部运算过程，以便在必要的时候计算梯度。当然，对于上方 Sigmoid 一元函数而言，也就是自动求导过程。</p>
+<p>接下来，使用在实验中学习到的方法，使用 <code>tf.GradientTape</code> 完成自动微分。同样，需要传入前面生成的等间距 x 并绘制出导数的变化曲线。提示，在计算梯度的过程中，x 可能需要被转换为变量张量。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = tf.Variable(x)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">    s = <span class="number">1</span> / (<span class="number">1</span> + tf.math.exp(-x))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">grad = tape.gradient(s, x)  <span class="comment"># 计算梯度</span></span><br><span class="line">grad</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot(x.numpy(), grad.numpy())  <span class="comment"># 绘制 sigmoid 导数变化曲线</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/3.png" alt="image"></p>
+<p>可以发现，借助于自动微分机制，我们只需要书写计算过程即可得到关于任意变量的微分结果。</p>
 ]]></content>
       <categories>
-        <category>Python</category>
-        <category>Web</category>
+        <category>Machine Learning</category>
+        <category>TensorFlow</category>
       </categories>
       <tags>
-        <tag>Python</tag>
-        <tag>Nmap</tag>
+        <tag>TensorFlow2.0</tag>
       </tags>
   </entry>
   <entry>
