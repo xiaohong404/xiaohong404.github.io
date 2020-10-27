@@ -271,134 +271,145 @@
       
         <p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/TensorFlow2%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%AD%E6%B3%95/0.png" class></strong></p>
  <a id="more"></a>
-
 <h2 id="张量"><a href="#张量" class="headerlink" title="张量"></a>张量</h2><p>数学或物理上关于张量的两种定义方法（抽象）：</p>
 <ul>
 <li>通常定义张量的物理学或传统数学方法，是把张量看成一个多维数组，当变换坐标或变换基底时，其分量会按照一定规则进行变换，这些规则有两种：即协变或逆变转换。</li>
 <li>通常现代数学中的方法，是把张量定义成某个矢量空间或其对偶空间上的多重线性映射，这矢量空间在需要引入基底之前不固定任何坐标系统。例如协变矢量，可以描述为 1-形式，或者作为逆变矢量的对偶空间的元素。</li>
 </ul>
 <p>通俗来讲，一阶张量为向量，二阶张量为矩阵。当然，零阶张量也就是标量，而更重要的是 𝑁 阶张量，也就是 𝑁 维数组。</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
-<th align="center">阶</th>
-<th align="center">数学实例</th>
+<th style="text-align:center">阶</th>
+<th style="text-align:center">数学实例</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="center">0</td>
-<td align="center">标量（只有大小）</td>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">标量（只有大小）</td>
 </tr>
 <tr>
-<td align="center">1</td>
-<td align="center">矢量（大小和方向）</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">矢量（大小和方向）</td>
 </tr>
 <tr>
-<td align="center">2</td>
-<td align="center">矩阵（数据表）</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">矩阵（数据表）</td>
 </tr>
 <tr>
-<td align="center">3</td>
-<td align="center">3 阶张量（数据立体）</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">3 阶张量（数据立体）</td>
 </tr>
 <tr>
-<td align="center">N</td>
-<td align="center">N 阶张量（自行想象）</td>
+<td style="text-align:center">N</td>
+<td style="text-align:center">N 阶张量（自行想象）</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/TensorFlow2%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%AD%E6%B3%95/1.png" class></strong></p>
 <p>大多数深度学习框架都会使用张量的概念，这样做的好处是统一对数据的定义。NumPy 中，数据都使用 Ndarray 多维数组进行定义，TensorFlow 中，数据都会用张量进行表述。</p>
 <p>下面就来学习 TensorFlow 中对张量的定义。在 TensorFlow 中，每一个 Tensor 都具备两个基础属性：<strong>数据类型（默认：float32）和形状</strong>。</p>
 <p>其中，数据类型大致如下表所示：</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
-<th align="center">Tensor 类型</th>
-<th align="center">描述</th>
+<th style="text-align:center">Tensor 类型</th>
+<th style="text-align:center">描述</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="center"><code>tf.float32</code></td>
-<td align="center">32 位浮点数</td>
+<tbody>
+<tr>
+<td style="text-align:center"><code>tf.float32</code></td>
+<td style="text-align:center">32 位浮点数</td>
 </tr>
 <tr>
-<td align="center"><code>tf.float64</code></td>
-<td align="center">64 位浮点数</td>
+<td style="text-align:center"><code>tf.float64</code></td>
+<td style="text-align:center">64 位浮点数</td>
 </tr>
 <tr>
-<td align="center"><code>tf.int64</code></td>
-<td align="center">64 位有符号整型</td>
+<td style="text-align:center"><code>tf.int64</code></td>
+<td style="text-align:center">64 位有符号整型</td>
 </tr>
 <tr>
-<td align="center"><code>tf.int32</code></td>
-<td align="center">32 位有符号整型</td>
+<td style="text-align:center"><code>tf.int32</code></td>
+<td style="text-align:center">32 位有符号整型</td>
 </tr>
 <tr>
-<td align="center"><code>tf.int16</code></td>
-<td align="center">16 位有符号整型</td>
+<td style="text-align:center"><code>tf.int16</code></td>
+<td style="text-align:center">16 位有符号整型</td>
 </tr>
 <tr>
-<td align="center"><code>tf.int8</code></td>
-<td align="center">8 位有符号整型</td>
+<td style="text-align:center"><code>tf.int8</code></td>
+<td style="text-align:center">8 位有符号整型</td>
 </tr>
 <tr>
-<td align="center"><code>tf.uint8</code></td>
-<td align="center">8 位无符号整型</td>
+<td style="text-align:center"><code>tf.uint8</code></td>
+<td style="text-align:center">8 位无符号整型</td>
 </tr>
 <tr>
-<td align="center"><code>tf.string</code></td>
-<td align="center">可变长度的字节数组</td>
+<td style="text-align:center"><code>tf.string</code></td>
+<td style="text-align:center">可变长度的字节数组</td>
 </tr>
 <tr>
-<td align="center"><code>tf.bool</code></td>
-<td align="center">布尔型</td>
+<td style="text-align:center"><code>tf.bool</code></td>
+<td style="text-align:center">布尔型</td>
 </tr>
 <tr>
-<td align="center"><code>tf.complex64</code></td>
-<td align="center">实数和虚数</td>
+<td style="text-align:center"><code>tf.complex64</code></td>
+<td style="text-align:center">实数和虚数</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <p>另外，TensorFlow 通过三种符号约定来描述张量维度：<strong>阶，形状和维数</strong>。三者之间的关系如下：</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
-<th align="center">形状</th>
-<th align="center">阶</th>
-<th align="center">维数</th>
-<th align="center">示例</th>
+<th style="text-align:center">形状</th>
+<th style="text-align:center">阶</th>
+<th style="text-align:center">维数</th>
+<th style="text-align:center">示例</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="center">[]</td>
-<td align="center">0</td>
-<td align="center">0-D</td>
-<td align="center">0 维张量，标量。</td>
+<tbody>
+<tr>
+<td style="text-align:center">[]</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0-D</td>
+<td style="text-align:center">0 维张量，标量。</td>
 </tr>
 <tr>
-<td align="center">[D0]</td>
-<td align="center">1</td>
-<td align="center">1-D</td>
-<td align="center">形状为 [5] 的 1 维张量。</td>
+<td style="text-align:center">[D0]</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1-D</td>
+<td style="text-align:center">形状为 [5] 的 1 维张量。</td>
 </tr>
 <tr>
-<td align="center">[D0, D1]</td>
-<td align="center">2</td>
-<td align="center">2-D</td>
-<td align="center">形状为 [3, 4] 的 2 维张量。</td>
+<td style="text-align:center">[D0, D1]</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2-D</td>
+<td style="text-align:center">形状为 [3, 4] 的 2 维张量。</td>
 </tr>
 <tr>
-<td align="center">[D0, D1, D2]</td>
-<td align="center">3</td>
-<td align="center">3-D</td>
-<td align="center">形状为 [1, 4, 3] 的 3 维张量。</td>
+<td style="text-align:center">[D0, D1, D2]</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">3-D</td>
+<td style="text-align:center">形状为 [1, 4, 3] 的 3 维张量。</td>
 </tr>
 <tr>
-<td align="center">[D0, D1, … Dn-1]</td>
-<td align="center">n</td>
-<td align="center">n-D</td>
-<td align="center">形状为 [D0, D1, … Dn-1] 的张量。</td>
+<td style="text-align:center">[D0, D1, … Dn-1]</td>
+<td style="text-align:center">n</td>
+<td style="text-align:center">n-D</td>
+<td style="text-align:center">形状为 [D0, D1, … Dn-1] 的张量。</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <p>值得注意的是，上表中的示例都是形容张量的形状。例如 <code>[3, 4]</code> 指的张量的形状为 <code>[3, 4]</code>，而不是张量 <code>[3, 4]</code>。</p>
 <p> 根据不同的用途，TensorFlow 中主要有 2 种张量类型，分别是：</p>
 <ul>
@@ -410,17 +421,13 @@
 <p>我们可以通过传入列表或 NumPy 数组来新建变量和常量类型的张量：</p>
 <p>查看tensorflow版本</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">tf.__version__</span><br><span class="line"></span><br><span class="line">Out:  <span class="string">&#x27;2.1.0&#x27;</span></span><br></pre></td></tr></table></figure>
-
 <p>  输入形状为 (2, 2) 的二维变量</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">v = tf.Variable([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]])  <span class="comment"># 形状为 (2, 2) 的二维变量</span></span><br><span class="line">v</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Variable <span class="string">&#x27;Variable:0&#x27;</span> shape=(<span class="number">2</span>, <span class="number">2</span>) dtype=int32, numpy=</span><br><span class="line">		array([[<span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">      		   [<span class="number">3</span>, <span class="number">4</span>]], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
-
 <p>  输入形状为 (2, 2) 的二维常量</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">c = tf.constant([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]])  <span class="comment"># 形状为 (2, 2) 的二维常量</span></span><br><span class="line">c</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=int32, numpy=</span><br><span class="line">    	 array([[<span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">         	    [<span class="number">3</span>, <span class="number">4</span>]], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
-
 <p>输出包含了张量的 3 部分属性，分别是形状 <code>shape</code>，数据类型 <code>dtype</code>，以及对应的 NumPy 数组。</p>
 <p>还可以直接通过 <code>.numpy()</code> 输出张量的 NumPy 数组：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">c.numpy()</span><br><span class="line"></span><br><span class="line">Out:  array([[<span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">             [<span class="number">3</span>, <span class="number">4</span>]], dtype=int32)</span><br></pre></td></tr></table></figure>
-
 <p>下面列举几个经常会用到的新建特殊常量张量的方法：</p>
 <ul>
 <li><code>tf.zeros</code>：新建指定形状且全为 0 的常量 Tensor</li>
@@ -431,45 +438,34 @@
 </ul>
 <p>3x3 全为 0 的常量 Tensor</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">c = tf.zeros([<span class="number">3</span>, <span class="number">3</span>])  <span class="comment"># 3x3 全为 0 的常量 Tensor</span></span><br><span class="line">c</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">3</span>, <span class="number">3</span>), dtype=float32, numpy=</span><br><span class="line">        array([[<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
 <p>与 c 形状一致全为 1 的常量 Tensor</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">tf.ones_like(c)  <span class="comment"># 与 c 形状一致全为 1 的常量 Tensor</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">3</span>, <span class="number">3</span>), dtype=float32, numpy=</span><br><span class="line">        array([[<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>],</span><br><span class="line">               [<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>],</span><br><span class="line">               [<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
 <p>2x3 全为 6 的常量 Tensor</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tf.fill([<span class="number">2</span>, <span class="number">3</span>], <span class="number">6</span>)  <span class="comment"># 2x3 全为 6 的常量 Tensor</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">3</span>), dtype=int32, numpy=</span><br><span class="line">        array([[<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>],</span><br><span class="line">               [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>]], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
-
 <p>除此之外，还可以创建一些序列:</p>
 <ul>
 <li><code>tf.linspace</code>：创建一个等间隔序列。</li>
 <li><code>tf.range</code>：创建一个数字序列。</li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tf.linspace(<span class="number">1.0</span>, <span class="number">10.0</span>, <span class="number">5</span>, name=<span class="string">&quot;linspace&quot;</span>)</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">5</span>,), dtype=float32, numpy=array([ <span class="number">1.</span>  ,  <span class="number">3.25</span>,  <span class="number">5.5</span> ,  <span class="number">7.75</span>, <span class="number">10.</span>  ],     dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tf.range(start=<span class="number">1</span>, limit=<span class="number">10</span>, delta=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">5</span>,), dtype=int32, numpy=array([<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
-
 <h2 id="Eager-Execution"><a href="#Eager-Execution" class="headerlink" title="Eager Execution"></a>Eager Execution</h2><p>TensorFlow 2 带来的最大改变之一是将 1.x 的 Graph Execution（图与会话机制）更改为 Eager Execution（动态图机制）。在 1.x 版本中，低级别 TensorFlow API 首先需要定义数据流图，然后再创建 TensorFlow 会话，这一点在 2.0 中被完全舍弃。TensorFlow 2 中的 Eager Execution 是一种命令式编程环境，可立即评估操作，无需构建图。</p>
 <p>所以说，TensorFlow 的张量运算过程可以像 NumPy 一样直观且自然了。接下来，我们以最简单的加法运算为例：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">c + c  <span class="comment"># 加法计算</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">3</span>, <span class="number">3</span>), dtype=float32, numpy=</span><br><span class="line">        array([[<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
 <p> 1.x 版本的 TensorFlow，一个加法运算过程十分复杂。我们需要初始化全局变量 → 建立会话 → 执行计算，最终才能打印出张量的运算结果。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">init_op = tf.global_variables_initializer()  <span class="comment"># 初始化全局变量</span></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:  <span class="comment"># 启动会话</span></span><br><span class="line">    sess.run(init_op)</span><br><span class="line">    print(sess.run(c + c))  <span class="comment"># 执行计算</span></span><br></pre></td></tr></table></figure>
-
 <p>Eager Execution 带来的好处显而易见，其进一步降低了 TensorFlow 的入门门槛。之前的 Graph Execution 模式，实际上让很多人在入门时都很郁闷，因为完全不符合正常思维习惯。</p>
 <p>TensorFlow 中提供的数学计算，包括线性代数计算方面的方法也是应有尽有，十分丰富。下面，我们再列举几个示例:</p>
 <p>矩阵乘法：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">a = tf.constant([<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>], shape=[<span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line">b = tf.constant([<span class="number">7.</span>, <span class="number">8.</span>, <span class="number">9.</span>, <span class="number">10.</span>, <span class="number">11.</span>, <span class="number">12.</span>], shape=[<span class="number">3</span>, <span class="number">2</span>])</span><br><span class="line"></span><br><span class="line">c = tf.linalg.matmul(a, b)  <span class="comment"># 矩阵乘法</span></span><br><span class="line">c</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=float32, numpy=</span><br><span class="line">        array([[ <span class="number">58.</span>,  <span class="number">64.</span>],</span><br><span class="line">               [<span class="number">139.</span>, <span class="number">154.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
 <p>转置矩阵：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tf.linalg.matrix_transpose(c)  <span class="comment"># 转置矩阵</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=float32, numpy=</span><br><span class="line">        array([[ <span class="number">58.</span>, <span class="number">139.</span>],</span><br><span class="line">               [ <span class="number">64.</span>, <span class="number">154.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
 <p><code>可以把 TensorFlow 理解成为 TensorFlow 式的 NumPy + 为搭建神经网络而生的 API</code></p>
 <h2 id="自动微分"><a href="#自动微分" class="headerlink" title="自动微分"></a>自动微分</h2><p>在数学中，微分是对函数的局部变化率的一种线性描述。虽然微分和导数是两个不同的概念。但是，对一元函数来说，可微与可导是完全等价的。如果熟悉神经网络的搭建过程，应该明白梯度的重要性。而对于复杂函数的微分过程是极其麻烦的，为了提高应用效率，大部分深度学习框架都有自动微分机制。</p>
 <p>TensorFlow 中，可以使用 <code>tf.GradientTape</code> 跟踪全部运算过程，以便在必要的时候计算梯度。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">w = tf.Variable([<span class="number">1.0</span>])  <span class="comment"># 新建张量</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">    loss = w * w</span><br><span class="line"></span><br><span class="line">grad = tape.gradient(loss, w)  <span class="comment"># 计算梯度</span></span><br><span class="line">grad</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">1</span>,), dtype=float32, numpy=array([<span class="number">2.</span>], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
 <p>上面演示了一个自动微分过程，它的数学求导过程如下：</p>
-<p>$$ loss = w^2 \rightarrow \frac {\partial loss}{\partial w} = 2w $$</p>
-<p>所以，当 w 等于 1 时，计算结果为 2。</p>
+<script type="math/tex; mode=display">loss = w^2 \rightarrow \frac {\partial loss}{\partial w} = 2w</script><p>所以，当 w 等于 1 时，计算结果为 2。</p>
 <p><code>tf.GradientTape</code> 会像磁带一样记录下计算图中的梯度信息，然后使用 <code>.gradient</code> 即可回溯计算出任意梯度，这对于使用 TensorFlow 低阶 API 构建神经网络时更新参数非常重要。</p>
 <h2 id="常用模块"><a href="#常用模块" class="headerlink" title="常用模块"></a>常用模块</h2><p>上面已经学习了 TensorFlow 核心知识，接下来将对 TensorFlow API 中的常用模块进行简单的功能介绍。对于框架的使用，实际上就是灵活运用各种封装好的类和函数。由于 TensorFlow API 数量太多，迭代太快，所以要养成随时 <a target="_blank" rel="noopener" href="https://www.tensorflow.org/versions/r2.0/api_docs/python/tf"> <em>查阅官方文档</em></a> 的习惯。</p>
 <ul>
