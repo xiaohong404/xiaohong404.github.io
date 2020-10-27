@@ -384,6 +384,30 @@
       </tags>
   </entry>
   <entry>
+    <title>blackjack</title>
+    <url>/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/1.png" class></strong></p>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>本题链接打不开了！！！ 只能参考别人的wp</p>
+<p>有两个比较关键的点</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/2.png" class></strong></p>
+<p>判断用户下注的金额如果大于用户拥有的金额，则会提示用户不能下注，但程序的漏洞在于如果输入的金额是负数，会直接通过，并且返回输入的下注金额。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/3.png" class></strong></p>
+<p>如果用户输了，则会扣除用户下注的金额，这里使用简单的减法操作，结合前面下注金额可以为负数，则直接输入一个很大的负数，之后故意输掉比赛，使得金额超过阈值拿到flag。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/4.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>blukat</title>
     <url>/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/0.png" class></strong></p>
@@ -398,30 +422,6 @@
 <p>这里看到password文件的用户组含有blukat_pwn，而当前用户在blukat_pwn组，因此是具有读权限的，那运行cat命令：</p>
 <p>提示没有访问权限？不，这里的文件内容就是这句话，那直接将这句话输入到可执行文件中即可拿到flag。</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/3.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>blackjack</title>
-    <url>/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/1.png" class></strong></p>
-<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>本题链接打不开了！！！ 只能参考别人的wp</p>
-<p>有两个比较关键的点</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/2.png" class></strong></p>
-<p>判断用户下注的金额如果大于用户拥有的金额，则会提示用户不能下注，但程序的漏洞在于如果输入的金额是负数，会直接通过，并且返回输入的下注金额。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/3.png" class></strong></p>
-<p>如果用户输了，则会扣除用户下注的金额，这里使用简单的减法操作，结合前面下注金额可以为负数，则直接输入一个很大的负数，之后故意输掉比赛，使得金额超过阈值拿到flag。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/4.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -505,30 +505,6 @@
       </tags>
   </entry>
   <entry>
-    <title>coin</title>
-    <url>/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/3.png" class></strong></p>
-<h3 id="使用netcat连接上远程的服务器"><a href="#使用netcat连接上远程的服务器" class="headerlink" title="使用netcat连接上远程的服务器"></a>使用netcat连接上远程的服务器</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/1.png" class></strong></p>
-<p>题目是一个游戏，大致意思是，一堆硬币，有一个假币，重量为9，而其他为10，要通过给定的C次机会内找到假币。一共要在30s内找到100个假币，也就是完成100次游戏，最终会给出flag。</p>
-<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>简单的二分法，但这里不能从本地直接连远程服务器，这样会超时，需要通过之前的连接登录远程服务器，之后在服务器上编写脚本运行，下面的代码即可成功运行：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;localhost&#x27;</span>, <span class="number">9007</span>)</span><br><span class="line">print(p.recv())</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100</span>):</span><br><span class="line">	N, C = re.findall(<span class="string">&quot;N=(\d+) C=(\d+)&quot;</span>, p.recv())[<span class="number">0</span>]</span><br><span class="line">	N = int(N)</span><br><span class="line">	C = int(C)</span><br><span class="line">	print(N, C)</span><br><span class="line"></span><br><span class="line">	start, end = <span class="number">0</span>, N<span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> start &lt;= end <span class="keyword">and</span> C &gt; <span class="number">0</span>:</span><br><span class="line">		mid = (start + end) // <span class="number">2</span></span><br><span class="line">		x = <span class="string">&quot; &quot;</span>.join([str(j) <span class="keyword">for</span> j <span class="keyword">in</span> range(start, mid+<span class="number">1</span>)])	<span class="comment"># build range list</span></span><br><span class="line">		p.sendline(x)</span><br><span class="line">		</span><br><span class="line">		res = int(p.recvline()[:<span class="number">-1</span>])</span><br><span class="line">		<span class="keyword">if</span> res % <span class="number">10</span> == <span class="number">0</span>:</span><br><span class="line">			start = mid+<span class="number">1</span>	<span class="comment"># through first half</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid<span class="number">-1</span>		<span class="comment"># through second half</span></span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> C &gt; <span class="number">0</span>:	<span class="comment"># use all the tries</span></span><br><span class="line">		p.sendline(<span class="string">&quot;0&quot;</span>)</span><br><span class="line">		p.recv(<span class="number">1024</span>)</span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	p.sendline(str(start))	<span class="comment"># final answer</span></span><br><span class="line">	print(p.recv())</span><br><span class="line"></span><br><span class="line">print(p.recv())</span><br></pre></td></tr></table></figure>
-
-<p>注意这里有个细节是需要先进入服务器的/tmp文件夹下，之后自己再主动建立一个新的文件夹，否则会没有权限访问python的库，一直提示未定义的错误。之后在这个新的文件夹下建立一个python文件，可以随便取个名字，这里我就命名为coin.py。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/2.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>collision</title>
     <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/1.png" class></strong></p>
@@ -553,6 +529,30 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">./col $(python -c <span class="string">&quot;print &#x27;\x01\x01\x01\x01&#x27;*4 + &#x27;\xe8\x05\xd9\x1d&#x27;&quot;</span>)</span><br><span class="line"><span class="comment"># 这一inline的python表达式可以将生成的结果作为argv[1]参数</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/collision/8.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>coin</title>
+    <url>/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/3.png" class></strong></p>
+<h3 id="使用netcat连接上远程的服务器"><a href="#使用netcat连接上远程的服务器" class="headerlink" title="使用netcat连接上远程的服务器"></a>使用netcat连接上远程的服务器</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/1.png" class></strong></p>
+<p>题目是一个游戏，大致意思是，一堆硬币，有一个假币，重量为9，而其他为10，要通过给定的C次机会内找到假币。一共要在30s内找到100个假币，也就是完成100次游戏，最终会给出flag。</p>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>简单的二分法，但这里不能从本地直接连远程服务器，这样会超时，需要通过之前的连接登录远程服务器，之后在服务器上编写脚本运行，下面的代码即可成功运行：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;localhost&#x27;</span>, <span class="number">9007</span>)</span><br><span class="line">print(p.recv())</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100</span>):</span><br><span class="line">	N, C = re.findall(<span class="string">&quot;N=(\d+) C=(\d+)&quot;</span>, p.recv())[<span class="number">0</span>]</span><br><span class="line">	N = int(N)</span><br><span class="line">	C = int(C)</span><br><span class="line">	print(N, C)</span><br><span class="line"></span><br><span class="line">	start, end = <span class="number">0</span>, N<span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> start &lt;= end <span class="keyword">and</span> C &gt; <span class="number">0</span>:</span><br><span class="line">		mid = (start + end) // <span class="number">2</span></span><br><span class="line">		x = <span class="string">&quot; &quot;</span>.join([str(j) <span class="keyword">for</span> j <span class="keyword">in</span> range(start, mid+<span class="number">1</span>)])	<span class="comment"># build range list</span></span><br><span class="line">		p.sendline(x)</span><br><span class="line">		</span><br><span class="line">		res = int(p.recvline()[:<span class="number">-1</span>])</span><br><span class="line">		<span class="keyword">if</span> res % <span class="number">10</span> == <span class="number">0</span>:</span><br><span class="line">			start = mid+<span class="number">1</span>	<span class="comment"># through first half</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid<span class="number">-1</span>		<span class="comment"># through second half</span></span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> C &gt; <span class="number">0</span>:	<span class="comment"># use all the tries</span></span><br><span class="line">		p.sendline(<span class="string">&quot;0&quot;</span>)</span><br><span class="line">		p.recv(<span class="number">1024</span>)</span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	p.sendline(str(start))	<span class="comment"># final answer</span></span><br><span class="line">	print(p.recv())</span><br><span class="line"></span><br><span class="line">print(p.recv())</span><br></pre></td></tr></table></figure>
+
+<p>注意这里有个细节是需要先进入服务器的/tmp文件夹下，之后自己再主动建立一个新的文件夹，否则会没有权限访问python的库，一直提示未定义的错误。之后在这个新的文件夹下建立一个python文件，可以随便取个名字，这里我就命名为coin.py。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/coin/2.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -673,6 +673,33 @@
       </tags>
   </entry>
   <entry>
+    <title>random</title>
+    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/1.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/2.png" class></strong></p>
+<h3 id="查看random-c源代码"><a href="#查看random-c源代码" class="headerlink" title="查看random.c源代码"></a>查看random.c源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/3.png" class></strong></p>
+<p>函数的整个执行流程是rand（）产生的随机值和输入的密钥进行异或，若其结果等于$0xdeadbeef$，则可以执行system函数，拿到flag。</p>
+<h3 id="rand（）函数"><a href="#rand（）函数" class="headerlink" title="rand（）函数"></a>rand（）函数</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/4.png" class></strong></p>
+<p>由此可见，如果不重新生成种子（一般情况下，默认生成种子为1），则每次产生的随机数将会是一个固定值，那么接下来的任务就是确定这个固定值。</p>
+<h3 id="查看随机数"><a href="#查看随机数" class="headerlink" title="查看随机数"></a>查看随机数</h3><h4 id="disassemble-r-main-查看汇编代码"><a href="#disassemble-r-main-查看汇编代码" class="headerlink" title="$disassemble /r \ main$查看汇编代码"></a>$disassemble /r \ main$查看汇编代码</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/5.png" class></strong></p>
+<h4 id="在cmp处下断点"><a href="#在cmp处下断点" class="headerlink" title="在cmp处下断点"></a>在cmp处下断点</h4><p>汇编代码中，在进行cmp之前先进行了一次异或运算，显然这是将用户输入的key和生成的随机数进行异或，由此可以判断随机数的位置为$rbp-4$（先压入栈中），因此使用$x/10x \ $rbp-4$查看内存的值即可。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/6.png" class></strong></p>
+<p>所以生成的随机数为0x6b8b4567，可多次运行程序查看其值是否发生变化，这里不做演示。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>求出$0x6b8b4567\oplus 0xdeadbeef$的值输入即可</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/7.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>passcode</title>
     <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/passcode/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/passcode/11.png" class></strong></p>
@@ -699,33 +726,6 @@
 
 <p>因为passcode是输入int型，即输入$0x080485e3 = 134514147$。</p>
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/passcode/10.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>random</title>
-    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/1.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/2.png" class></strong></p>
-<h3 id="查看random-c源代码"><a href="#查看random-c源代码" class="headerlink" title="查看random.c源代码"></a>查看random.c源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/3.png" class></strong></p>
-<p>函数的整个执行流程是rand（）产生的随机值和输入的密钥进行异或，若其结果等于$0xdeadbeef$，则可以执行system函数，拿到flag。</p>
-<h3 id="rand（）函数"><a href="#rand（）函数" class="headerlink" title="rand（）函数"></a>rand（）函数</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/4.png" class></strong></p>
-<p>由此可见，如果不重新生成种子（一般情况下，默认生成种子为1），则每次产生的随机数将会是一个固定值，那么接下来的任务就是确定这个固定值。</p>
-<h3 id="查看随机数"><a href="#查看随机数" class="headerlink" title="查看随机数"></a>查看随机数</h3><h4 id="disassemble-r-main-查看汇编代码"><a href="#disassemble-r-main-查看汇编代码" class="headerlink" title="$disassemble /r \ main$查看汇编代码"></a>$disassemble /r \ main$查看汇编代码</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/5.png" class></strong></p>
-<h4 id="在cmp处下断点"><a href="#在cmp处下断点" class="headerlink" title="在cmp处下断点"></a>在cmp处下断点</h4><p>汇编代码中，在进行cmp之前先进行了一次异或运算，显然这是将用户输入的key和生成的随机数进行异或，由此可以判断随机数的位置为$rbp-4$（先压入栈中），因此使用$x/10x \ $rbp-4$查看内存的值即可。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/6.png" class></strong></p>
-<p>所以生成的随机数为0x6b8b4567，可多次运行程序查看其值是否发生变化，这里不做演示。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>求出$0x6b8b4567\oplus 0xdeadbeef$的值输入即可</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/7.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
