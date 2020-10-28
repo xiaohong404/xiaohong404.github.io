@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/xiaohong404.github.io/images/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/xiaohong404.github.io/images/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/xiaohong404.github.io/images/logo.png">
+  <link rel="mask-icon" href="/xiaohong404.github.io/images/logo.png" color="#222">
+
+<link rel="stylesheet" href="/xiaohong404.github.io/css/main.css">
+
+
+<link rel="stylesheet" href="/xiaohong404.github.io/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"github.com","root":"/xiaohong404.github.io/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="TensorFlow2简单神经网络">
+<meta property="og:url" content="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/28/TensorFlow2.0/TensorFlow2%E7%AE%80%E5%8D%95%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/index.html">
+<meta property="og:site_name" content="Mr.red">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/28/TensorFlow2.0/TensorFlow2%E7%AE%80%E5%8D%95%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/0.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/28/TensorFlow2.0/TensorFlow2%E7%AE%80%E5%8D%95%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/1.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/28/TensorFlow2.0/TensorFlow2%E7%AE%80%E5%8D%95%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/2.png">
+<meta property="article:published_time" content="2020-10-28T08:44:25.000Z">
+<meta property="article:modified_time" content="2020-10-28T09:35:54.000Z">
+<meta property="article:author" content="Xiao Hong">
+<meta property="article:tag" content="TensorFlow2.0">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/xiaohong404.github.io/2020/10/28/TensorFlow2.0/TensorFlow2%E7%AE%80%E5%8D%95%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/0.png">
+
+<link rel="canonical" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/28/TensorFlow2.0/TensorFlow2%E7%AE%80%E5%8D%95%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>TensorFlow2简单神经网络 | Mr.red</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/xiaohong404.github.io/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Mr.red</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/xiaohong404.github.io/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/xiaohong404.github.io/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/xiaohong404.github.io/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/xiaohong404.github.io/Categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/xiaohong404.github.io/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/28/TensorFlow2.0/TensorFlow2%E7%AE%80%E5%8D%95%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
+      <meta itemprop="name" content="Xiao Hong">
+      <meta itemprop="description" content="Things always start to get better after you give up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mr.red">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TensorFlow2简单神经网络
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-10-28 16:44:25 / Modified: 17:35:54" itemprop="dateCreated datePublished" datetime="2020-10-28T16:44:25+08:00">2020-10-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/xiaohong404.github.io/Categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/xiaohong404.github.io/Categories/Machine-Learning/TensorFlow/" itemprop="url" rel="index"><span itemprop="name">TensorFlow</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/xiaohong404.github.io/2020/10/28/TensorFlow2.0/TensorFlow2%E7%AE%80%E5%8D%95%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" class="post-meta-item leancloud_visitors" data-flag-title="TensorFlow2简单神经网络" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/xiaohong404.github.io/2020/10/28/TensorFlow2.0/TensorFlow2%E7%AE%80%E5%8D%95%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/xiaohong404.github.io/2020/10/28/TensorFlow2.0/TensorFlow2%E7%AE%80%E5%8D%95%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong><img src="/xiaohong404.github.io/2020/10/28/TensorFlow2.0/TensorFlow2%E7%AE%80%E5%8D%95%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/0.png" class></strong></p>
+ <a id="more"></a>
+<p>人工神经网络是一种发展时间较早且十分常用的机器学习算法。因其模仿人类神经元工作的特点，在监督学习和非监督学习领域都给予了人工神经网络较高的期望。目前，由传统人工神经网络发展而来的卷积神经网络、循环神经网络已经成为了深度学习的基石。</p>
+<p>本次实验将从简单神经网络入手，使用 TensorFlow 2 来完成构建过程。这里，我们先加载一组数据，DIGITS 数据集是 scikit-learn 提供的简单手写字符识别数据集。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/28/TensorFlow2.0/TensorFlow2%E7%AE%80%E5%8D%95%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/1.png" class></strong></p>
+<p>我们读取数据集并进行简单切分，这里对字符标签进行了独热编码方便后面计算损失值。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_digits</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"></span><br><span class="line">digits = load_digits()  <span class="comment"># 加载数据集</span></span><br><span class="line">digits_y = np.eye(<span class="number">10</span>)[digits.target]  <span class="comment"># 标签独热编码</span></span><br><span class="line"><span class="comment"># 切分数据集，测试集占 20%</span></span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(digits.data, digits_y,</span><br><span class="line">                                                    test_size=<span class="number">0.2</span>, random_state=<span class="number">1</span>)</span><br><span class="line"><span class="comment"># 输出训练特征，训练目标值，测试特征，测试目标值形状</span></span><br><span class="line">X_train.shape, y_train.shape, X_test.shape, y_test.shape</span><br><span class="line"></span><br><span class="line">Out: ((<span class="number">1437</span>, <span class="number">64</span>), (<span class="number">1437</span>, <span class="number">10</span>), (<span class="number">360</span>, <span class="number">64</span>), (<span class="number">360</span>, <span class="number">10</span>))</span><br></pre></td></tr></table></figure>
+<p>独热编码是一种稀疏向量，其中：一个元素设为 1，所有其他元素均设为 0。例如手写字符标签 1 会被表示为向量：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">y_test[<span class="number">0</span>]  <span class="comment"># 运行查看</span></span><br><span class="line"></span><br><span class="line">Out: array([<span class="number">0.</span>, <span class="number">1.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>])</span><br></pre></td></tr></table></figure>
+<h2 id="低阶api构建"><a class="markdownIt-Anchor" href="#低阶api构建"></a> 低阶API构建</h2>
+<p>下面，使用 TensorFlow 2 低阶 API 构建一个包含 1 个隐含层的简单神经网络结构。神经网络的输入是单个手写字符样本的向量长度 64，隐含层输入为 30，最终的输出层为 10。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/28/TensorFlow2.0/TensorFlow2%E7%AE%80%E5%8D%95%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/2.png" class></strong></p>
+<p>特别地，对隐含层进行 RELU 激活，输出层不激活。输出层的单样本长度为 10，这样正好就和上方独热编码后的值对应上了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Model</span>(<span class="params">object</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="comment"># 随机初始化张量参数</span></span><br><span class="line">        self.W1 = tf.Variable(tf.random.normal([<span class="number">64</span>, <span class="number">30</span>]))</span><br><span class="line">        self.b1 = tf.Variable(tf.random.normal([<span class="number">30</span>]))</span><br><span class="line">        self.W2 = tf.Variable(tf.random.normal([<span class="number">30</span>, <span class="number">10</span>]))</span><br><span class="line">        self.b2 = tf.Variable(tf.random.normal([<span class="number">10</span>]))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        x = tf.cast(x, tf.float32)  <span class="comment"># 转换输入数据类型</span></span><br><span class="line">        <span class="comment"># 线性计算 + RELU 激活</span></span><br><span class="line">        fc1 = tf.nn.relu(tf.add(tf.matmul(x, self.W1), self.b1))  <span class="comment"># 全连接层 1</span></span><br><span class="line">        fc2 = tf.add(tf.matmul(fc1, self.W2), self.b2)  <span class="comment"># 全连接层 2</span></span><br><span class="line">        <span class="keyword">return</span> fc2</span><br></pre></td></tr></table></figure>
+<p>如上所述，模型的结构和前面的线性回归基本一致，只是我们使用到更多的组件。</p>
+<p>下面，开始构建损失函数。损失函数使用 TensorFlow 提供的 <code>tf.nn.softmax_cross_entropy_with_logits</code>，这是一个自带 Softmax 的交叉熵损失函数。最终通过 <code>reduce_mean</code> 求得全局平均损失。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_fn</span>(<span class="params">model, x, y</span>):</span></span><br><span class="line">    preds = model(x)</span><br><span class="line">    <span class="keyword">return</span> tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=preds, labels=y))</span><br></pre></td></tr></table></figure>
+<p>于此同时，为了方便后续评估测试集分类准确度，我们需要手动构建一个准确度评估函数。<code>tf.argmax</code> 可以将 Softmax 结果转换为对应的字符值。然后使用 <code>tf.equal</code> 比对各样本的结果是否正确，最终使用 <code>reduce_mean</code> 求得全部样本的分类准确度。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">accuracy_fn</span>(<span class="params">logits, labels</span>):</span></span><br><span class="line">    preds = tf.argmax(logits, axis=<span class="number">1</span>)  <span class="comment"># 取值最大的索引，正好对应字符标签</span></span><br><span class="line">    labels = tf.argmax(labels, axis=<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> tf.reduce_mean(tf.cast(tf.equal(preds, labels), tf.float32))</span><br></pre></td></tr></table></figure>
+<p>下面开始构建最关键的训练迭代过程。实际上，这部分和构建线性回归非常相似，我们的目的是对神经网络参数进行迭代优化。其中，优化器选择了 Adam，一种比 SDG 随机梯度下降更常用于深度学习的优化算法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">EPOCHS = <span class="number">100</span>  <span class="comment"># 迭代此时</span></span><br><span class="line">LEARNING_RATE = <span class="number">0.02</span>  <span class="comment"># 学习率</span></span><br><span class="line">model = Model()  <span class="comment"># 实例化模型类</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(EPOCHS):</span><br><span class="line">    <span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">        loss = loss_fn(model, X_train, y_train)</span><br><span class="line"></span><br><span class="line">    trainable_variables = [model.W1, model.b1, model.W2, model.b2]  <span class="comment"># 需优化参数列表</span></span><br><span class="line">    grads = tape.gradient(loss, trainable_variables)  <span class="comment"># 计算梯度</span></span><br><span class="line"></span><br><span class="line">    optimizer = tf.optimizers.Adam(learning_rate=LEARNING_RATE)  <span class="comment"># Adam 优化器</span></span><br><span class="line">    optimizer.apply_gradients(zip(grads, trainable_variables))  <span class="comment"># 更新梯度</span></span><br><span class="line">    accuracy = accuracy_fn(model(X_test), y_test)  <span class="comment"># 计算准确度</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 输出各项指标</span></span><br><span class="line">    <span class="keyword">if</span> (epoch + <span class="number">1</span>) % <span class="number">10</span> == <span class="number">0</span>:</span><br><span class="line">        print(<span class="string">f&#x27;Epoch [<span class="subst">&#123;epoch+<span class="number">1</span>&#125;</span>/<span class="subst">&#123;EPOCHS&#125;</span>], Train loss: <span class="subst">&#123;loss&#125;</span>, Test accuracy: <span class="subst">&#123;accuracy&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="keras-高阶-api-实现"><a class="markdownIt-Anchor" href="#keras-高阶-api-实现"></a> Keras 高阶 API 实现</h2>
+<h3 id="顺序模型"><a class="markdownIt-Anchor" href="#顺序模型"></a> 顺序模型</h3>
+<p>线性回归中使用了 Keras 提供的 <code>Sequential</code> 顺序模型来实现，最终只用了 4 行代码。接下来，同样使用顺序模型重写上方的模型构建过程，尝试用更精简的代码来完成训练过程。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">model = tf.keras.Sequential()  <span class="comment"># 建立顺序模型</span></span><br><span class="line">model.add(tf.keras.layers.Dense(units=<span class="number">30</span>, input_dim=<span class="number">64</span>, activation=<span class="string">&#x27;relu&#x27;</span>))  <span class="comment"># 隐含层 </span></span><br><span class="line">model.add(tf.keras.layers.Dense(units=<span class="number">10</span>, activation=<span class="string">&#x27;softmax&#x27;</span>))  <span class="comment"># 输出层</span></span><br><span class="line">model.summary()  <span class="comment"># 查看模型结构</span></span><br></pre></td></tr></table></figure>
+<p>下面开始编译和训练模型。这里使用 <code>tf.optimizers.Adam</code> 作为优化器，<code>tf.losses.categorical_crossentropy</code> 多分类交叉熵作为损失函数。与 <code>tf.nn.softmax_cross_entropy_with_logits</code> 不同的是，<code>tf.losses.categorical_crossentropy</code> 是从 Keras 中演化而来的，其去掉了 Softmax 的过程。而这个过程被我们直接加入到模型的构建中。可以看到，上面的 model 输出层使用了 <code>softmax</code> 激活。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编译模型，添加优化器，损失函数和评估方法</span></span><br><span class="line">model.compile(optimizer=<span class="string">&#x27;adam&#x27;</span>, loss=<span class="string">&#x27;categorical_crossentropy&#x27;</span>, metrics=[<span class="string">&#x27;accuracy&#x27;</span>])</span><br><span class="line"><span class="comment"># 训练模型</span></span><br><span class="line">model.fit(X_train, y_train, batch_size=<span class="number">64</span>, epochs=<span class="number">20</span>, validation_data=(X_test, y_test))</span><br></pre></td></tr></table></figure>
+<p>Keras 的训练过程可以采用小批量迭代，直接指定 <code>batch_size</code> 即可。<code>validation_data</code> 可以传入测试数据得到准确度评估结果，非常方便。</p>
+<p>同样，随着迭代次数的增加，你可以看到模型的分类准确率稳步提升。</p>
+<h3 id="函数式模型"><a class="markdownIt-Anchor" href="#函数式模型"></a> 函数式模型</h3>
+<p>除了顺序模型，Keras 中更容易理解的是函数式模型。函数式模型最直观的地方在于可以看清楚输入和输出。</p>
+<p>例如，下面开始定义函数式模型。首先是 <code>Input</code> 层，这在顺序模型中是没有的。然后将 <code>inputs</code> 传入 <code>Dense</code> 层，最终再输出。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 函数式模型</span></span><br><span class="line">inputs = tf.keras.Input(shape=(<span class="number">64</span>,))  <span class="comment"># 输入层</span></span><br><span class="line">x = tf.keras.layers.Dense(<span class="number">30</span>, activation=<span class="string">&#x27;relu&#x27;</span>)(inputs)  <span class="comment"># 隐含层</span></span><br><span class="line">outputs = tf.keras.layers.Dense(<span class="number">10</span>, activation=<span class="string">&#x27;softmax&#x27;</span>)(x)  <span class="comment"># 输出层</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定输入和输出</span></span><br><span class="line">model = tf.keras.Model(inputs=inputs, outputs=outputs)</span><br><span class="line">model.summary()  <span class="comment"># 查看模型结构</span></span><br></pre></td></tr></table></figure>
+<p>值得注意的是，函数式模型中需要使用 <code>tf.keras.Model</code> 来最终确定输入和输出。同样开始模型编译和训练：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编译模型，添加优化器，损失函数和评估方法</span></span><br><span class="line">model.compile(optimizer=<span class="string">&#x27;adam&#x27;</span>, loss=<span class="string">&#x27;categorical_crossentropy&#x27;</span>, metrics=[<span class="string">&#x27;accuracy&#x27;</span>])</span><br><span class="line"><span class="comment"># 训练模型</span></span><br><span class="line">model.fit(X_train, y_train, batch_size=<span class="number">64</span>, epochs=<span class="number">20</span>, validation_data=(X_test, y_test))</span><br></pre></td></tr></table></figure>
+<p>Keras 实现过程比低阶 API 要简单太多了，顺序模型只用了 5 行代码，函数式模型只用了 6 行代码，优势非常明显。对于顺序模型和函数式模型而言，二者并没有性能上的区别，主要是看自己更习惯于哪一种书写方式。当然，如果了解深度学习，可能会知道有一些多输入模型只能使用函数式 API 进行构建，这也就是二者同时存在的必要性了。</p>
+<h3 id="混合模型"><a class="markdownIt-Anchor" href="#混合模型"></a> 混合模型</h3>
+<p>TensorFlow 2 中还支持另外一种更为灵活的 Keras 定义模型方法，我将其称为「Keras 混合模型」。这种方法和 PyTorch 中继承 <code>torch.nn.Module</code> 来定义模型的思路非常相似。我们可以继承 <code>tf.keras.Model</code> 来构建模型。这种模型的定义方法自由度更高，我们可以添加更多的中间组件。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 继承 tf.keras.Model 构建模型类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Model</span>(<span class="params">tf.keras.Model</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        super(Model, self).__init__()</span><br><span class="line">        self.dense_1 = tf.keras.layers.Dense(<span class="number">30</span>, activation=<span class="string">&#x27;relu&#x27;</span>)  <span class="comment"># 初始化</span></span><br><span class="line">        self.dense_2 = tf.keras.layers.Dense(<span class="number">10</span>, activation=<span class="string">&#x27;softmax&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">call</span>(<span class="params">self, inputs</span>):</span></span><br><span class="line">        x = self.dense_1(inputs)  <span class="comment"># 前向传播过程</span></span><br><span class="line">        <span class="keyword">return</span> self.dense_2(x)</span><br></pre></td></tr></table></figure>
+<p>接下来的过程和上面相似，实例化模型然后训练并评估。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">model = Model()  <span class="comment"># 实例化模型</span></span><br><span class="line">model.compile(optimizer=<span class="string">&#x27;adam&#x27;</span>, loss=<span class="string">&#x27;categorical_crossentropy&#x27;</span>, metrics=[<span class="string">&#x27;accuracy&#x27;</span>])</span><br><span class="line">model.fit(X_train, y_train, batch_size=<span class="number">64</span>, epochs=<span class="number">10</span>, validation_data=(X_test, y_test))</span><br></pre></td></tr></table></figure>
+<p>对于这类方法，你会发现其同时兼具了低阶 API 的灵活性和高阶 API 的易用性。实际应用中，我们可以自由去组合模型的结构，又可以同时使用 Keras 提供的 API 编译和训练模型，非常方便。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/xiaohong404.github.io/tags/TensorFlow2-0/" rel="tag"><i class="fa fa-tag"></i> TensorFlow2.0</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/xiaohong404.github.io/2020/10/28/TensorFlow2.0/%E4%BD%8E%E9%98%B6API%E5%AE%9E%E7%8E%B0%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9B%9E%E5%BD%92/" rel="prev" title="低阶API实现多项式回归">
+      <i class="fa fa-chevron-left"></i> 低阶API实现多项式回归
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+  
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8E%E9%98%B6api%E6%9E%84%E5%BB%BA"><span class="nav-number">1.</span> <span class="nav-text"> 低阶API构建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#keras-%E9%AB%98%E9%98%B6-api-%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text"> Keras 高阶 API 实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.1.</span> <span class="nav-text"> 顺序模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%BC%8F%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.2.</span> <span class="nav-text"> 函数式模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B7%E5%90%88%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.3.</span> <span class="nav-text"> 混合模型</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiao Hong"
+      src="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
+  <p class="site-author-name" itemprop="name">Xiao Hong</p>
+  <div class="site-description" itemprop="description">Things always start to get better after you give up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/xiaohong404.github.io/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/xiaohong404.github.io/Categories/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/xiaohong404.github.io/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaohong404" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaohong404"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/pluto-9-55" title="ZhiHu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;pluto-9-55" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>ZhiHu</a>
+      </span>
+  </div>
+
+
+<!-- CloudCalendar -->
+<div class="widget-wrap" style="width: 90%;margin-left: auto;margin-right: auto; opacity: 0.97;">
+	<div class="widget" id="CloudCalendar"></div>
+</div>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020-10-28</span>
+  <span class="with-love",id="animate">
+    <i class="fa fa-basketball-ball"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaohong</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/xiaohong404.github.io/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/xiaohong404.github.io/lib/anime.min.js"></script>
+  <script src="/xiaohong404.github.io/lib/velocity/velocity.min.js"></script>
+  <script src="/xiaohong404.github.io/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/xiaohong404.github.io/js/utils.js"></script>
+
+<script src="/xiaohong404.github.io/js/motion.js"></script>
+
+
+<script src="/xiaohong404.github.io/js/schemes/muse.js"></script>
+
+
+<script src="/xiaohong404.github.io/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/xiaohong404.github.io/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/xiaohong404.github.io/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qgoG1EyC6yrAnmbPcCl9pCH8-gzGzoHsz',
+      appKey     : 'yzRsxAlXtg72qlBbwrwA034j',
+      placeholder: "Just go go",
+      avatar     : 'wavatar',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : 'en,zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+<script src="/xiaohong404.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/xiaohong404.github.io/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":150,"height":300,"hOffset":80,"vOffset":-50},"mobile":{"show":true},"log":false,"tagMode":false});</script></body>
+</html>
