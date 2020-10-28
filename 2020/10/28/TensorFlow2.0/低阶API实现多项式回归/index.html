@@ -21,22 +21,21 @@
   </script>
 
   <meta property="og:type" content="article">
-<meta property="og:title" content="导数计算和自动微分实现">
-<meta property="og:url" content="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:title" content="低阶API实现多项式回归">
+<meta property="og:url" content="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/28/TensorFlow2.0/%E4%BD%8E%E9%98%B6API%E5%AE%9E%E7%8E%B0%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9B%9E%E5%BD%92/index.html">
 <meta property="og:site_name" content="Mr.red">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/0.png">
-<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/1.png">
-<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/2.png">
-<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/3.png">
-<meta property="article:published_time" content="2020-10-26T10:32:53.000Z">
-<meta property="article:modified_time" content="2020-10-27T12:53:18.000Z">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/10/28/TensorFlow2.0/%E4%BD%8E%E9%98%B6API%E5%AE%9E%E7%8E%B0%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9B%9E%E5%BD%92/0.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/28/TensorFlow2.0/%E4%BD%8E%E9%98%B6API%E5%AE%9E%E7%8E%B0%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9B%9E%E5%BD%92/1.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/28/TensorFlow2.0/%E4%BD%8E%E9%98%B6API%E5%AE%9E%E7%8E%B0%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9B%9E%E5%BD%92/2.png">
+<meta property="article:published_time" content="2020-10-28T08:29:40.000Z">
+<meta property="article:modified_time" content="2020-10-28T08:42:52.000Z">
 <meta property="article:author" content="Xiao Hong">
 <meta property="article:tag" content="TensorFlow2.0">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://github.com/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/0.png">
+<meta name="twitter:image" content="https://github.com/xiaohong404.github.io/2020/10/28/TensorFlow2.0/%E4%BD%8E%E9%98%B6API%E5%AE%9E%E7%8E%B0%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9B%9E%E5%BD%92/0.png">
 
-<link rel="canonical" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/">
+<link rel="canonical" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/28/TensorFlow2.0/%E4%BD%8E%E9%98%B6API%E5%AE%9E%E7%8E%B0%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9B%9E%E5%BD%92/">
 
 
 <script id="page-configurations">
@@ -49,7 +48,7 @@
   };
 </script>
 
-  <title>导数计算和自动微分实现 | Mr.red</title>
+  <title>低阶API实现多项式回归 | Mr.red</title>
   
 
 
@@ -199,7 +198,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/10/28/TensorFlow2.0/%E4%BD%8E%E9%98%B6API%E5%AE%9E%E7%8E%B0%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9B%9E%E5%BD%92/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
@@ -212,7 +211,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          导数计算和自动微分实现
+          低阶API实现多项式回归
         </h1>
 
         <div class="post-meta">
@@ -221,16 +220,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2020-10-26 18:32:53" itemprop="dateCreated datePublished" datetime="2020-10-26T18:32:53+08:00">2020-10-26</time>
+              <time title="Created: 2020-10-28 16:29:40 / Modified: 16:42:52" itemprop="dateCreated datePublished" datetime="2020-10-28T16:29:40+08:00">2020-10-28</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-27 20:53:18" itemprop="dateModified" datetime="2020-10-27T20:53:18+08:00">2020-10-27</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -246,7 +239,7 @@
             </span>
 
           
-            <span id="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/" class="post-meta-item leancloud_visitors" data-flag-title="导数计算和自动微分实现" title="Views">
+            <span id="/xiaohong404.github.io/2020/10/28/TensorFlow2.0/%E4%BD%8E%E9%98%B6API%E5%AE%9E%E7%8E%B0%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9B%9E%E5%BD%92/" class="post-meta-item leancloud_visitors" data-flag-title="低阶API实现多项式回归" title="Views">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -261,8 +254,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/" itemprop="commentCount"></span>
+    <a title="valine" href="/xiaohong404.github.io/2020/10/28/TensorFlow2.0/%E4%BD%8E%E9%98%B6API%E5%AE%9E%E7%8E%B0%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9B%9E%E5%BD%92/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/xiaohong404.github.io/2020/10/28/TensorFlow2.0/%E4%BD%8E%E9%98%B6API%E5%AE%9E%E7%8E%B0%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9B%9E%E5%BD%92/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -277,27 +270,24 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/0.png" class></strong></p>
+        <p><strong><img src="/xiaohong404.github.io/2020/10/28/TensorFlow2.0/%E4%BD%8E%E9%98%B6API%E5%AE%9E%E7%8E%B0%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9B%9E%E5%BD%92/0.png" class></strong></p>
  <a id="more"></a>
-<h2 id="导数计算"><a href="#导数计算" class="headerlink" title="导数计算"></a>导数计算</h2><p>Sigmoid 函数是机器学习中会经常看到的一个函数，它是逻辑回归的基础也可以充当神经网络的激活函数。Sigmoid 函数如下所示：</p>
-<p>$<br>\mathit{sigmoid}(x) = \frac{1}{1+e^{-x}}<br>$</p>
-<p>下面使用Tensorflow实现sigmoid函数：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">tf.__version__</span><br><span class="line"></span><br><span class="line">Out:  <span class="string">&#x27;2.1.0&#x27;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid</span>(<span class="params">x</span>):</span></span><br><span class="line">    s = <span class="number">1</span> / (<span class="number">1</span> + tf.math.exp(-x))</span><br><span class="line">    <span class="keyword">return</span> s</span><br></pre></td></tr></table></figure>
-<p>接下来，使用 TensorFlow 2 提供的方法初始化一组 [−10,10] 之间等间隔的 100 个值，并作为 Sigmoid 函数的输入。最终，使用 Matplotlib 绘制出 Sigmoid 函数的曲线。同样，使用 TensorFlow 2 提供的相关方法。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br><span class="line"></span><br><span class="line">x = tf.linspace(<span class="number">-10.0</span>, <span class="number">10.0</span>, <span class="number">100</span>)</span><br><span class="line">plt.plot(x, sigmoid(x))</span><br></pre></td></tr></table></figure>
-<p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/1.png" class></strong></p>
-<p>接下来，对 Sigmoid 函数求导，并实现 Sigmoid 导数函数 <code>sigmoid_derivative(x)</code>：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid_derivative</span>(<span class="params">x</span>):</span></span><br><span class="line">    d_s = sigmoid(x) * (<span class="number">1</span> - sigmoid(x))</span><br><span class="line">    <span class="keyword">return</span> d_s</span><br></pre></td></tr></table></figure>
-<p>同样，使用上面初始化好的 x 值，绘制 Sigmoid 函数导数的变化曲线。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plt.plot(x, sigmoid_derivative(x))</span><br></pre></td></tr></table></figure>
-<p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/2.png" class></strong></p>
-<h2 id="自动微分"><a href="#自动微分" class="headerlink" title="自动微分"></a>自动微分</h2><p>TensorFlow 中，可以使用 <code>tf.GradientTape</code> 跟踪全部运算过程，以便在必要的时候计算梯度。当然，对于上方 Sigmoid 一元函数而言，也就是自动求导过程。</p>
-<p>接下来，使用在实验中学习到的方法，使用 <code>tf.GradientTape</code> 完成自动微分。同样，需要传入前面生成的等间距 x 并绘制出导数的变化曲线。提示，在计算梯度的过程中，x 可能需要被转换为变量张量。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">x = tf.Variable(x)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">    s = <span class="number">1</span> / (<span class="number">1</span> + tf.math.exp(-x))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">grad = tape.gradient(s, x)  <span class="comment"># 计算梯度</span></span><br><span class="line">grad</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plt.plot(x.numpy(), grad.numpy())  <span class="comment"># 绘制 sigmoid 导数变化曲线</span></span><br></pre></td></tr></table></figure>
-<p><strong><img src="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97%E5%92%8C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E5%AE%9E%E7%8E%B0/3.png" class></strong></p>
-<p>可以发现，借助于自动微分机制，我们只需要书写计算过程即可得到关于任意变量的微分结果。</p>
+<p>区别于线性函数，多项式是由多个单项式组合的代数表达式。例如，下面是一个一元二次多项式：</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>y</mi><mo>=</mo><mi>a</mi><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mi>b</mi><mi>x</mi><mo>+</mo><mi>c</mi></mrow><annotation encoding="application/x-tex">y = ax^2 + bx +c
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9474379999999999em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">a</span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">b</span><span class="mord mathdefault">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">c</span></span></span></span></span></p>
+<p>线性函数是直线，而多项式函数则可以是曲线。而在很多时候，散点通过曲线拟合比直线更加合理。例如下方这组散点样本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">%matplotlib inline</span><br><span class="line"></span><br><span class="line"><span class="comment"># 直接运行加载示例数据</span></span><br><span class="line">x = np.array([<span class="number">0.12</span>, <span class="number">0.21</span>, <span class="number">0.32</span>, <span class="number">0.41</span>, <span class="number">0.51</span>, <span class="number">0.62</span>, <span class="number">0.73</span>, <span class="number">0.86</span>, <span class="number">0.97</span>, <span class="number">0.99</span>])</span><br><span class="line">y = np.array([<span class="number">0.53</span>, <span class="number">0.57</span>, <span class="number">0.63</span>, <span class="number">0.70</span>, <span class="number">0.79</span>, <span class="number">0.91</span>, <span class="number">1.05</span>, <span class="number">1.246</span>, <span class="number">1.42</span>, <span class="number">1.51</span>])</span><br><span class="line"></span><br><span class="line">plt.scatter(x, y)</span><br></pre></td></tr></table></figure>
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/28/TensorFlow2.0/%E4%BD%8E%E9%98%B6API%E5%AE%9E%E7%8E%B0%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9B%9E%E5%BD%92/1.png" alt="img"></p>
+<p>接下来利用 TensorFlow 提供的方法，结合前面实验中的梯度下降法求解线性回归拟合参数的内容，完成一元二次多项式对示例样本的拟合求解过程。最终，找出合理的一元二次多项式参数，并绘制出拟合曲线。</p>
+<p>由于 TensorFlow Keras 并未提供多项式层，所以只能使用 TensorFlow 低阶 API 完成构建。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Model</span>(<span class="params">object</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.a = tf.Variable(tf.random.uniform([<span class="number">1</span>]))  <span class="comment"># 随机初始化参数</span></span><br><span class="line">        self.b = tf.Variable(tf.random.uniform([<span class="number">1</span>]))</span><br><span class="line">        self.c = tf.Variable(tf.random.uniform([<span class="number">1</span>]))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__call__</span>(<span class="params">self, x</span>):</span></span><br><span class="line">    <span class="keyword">return</span> self.a * x * x + self.b * x + self.c  <span class="comment"># a*x^2 + b*x + c</span></span><br></pre></td></tr></table></figure>
+<p>然后，实现损失函数，可选择与线性回归实现时一样的损失函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_fn</span>(<span class="params">model, x, y</span>):</span></span><br><span class="line">    y_ = model(x)</span><br><span class="line">    <span class="keyword">return</span> tf.reduce_mean(tf.square(y_ - y))</span><br></pre></td></tr></table></figure>
+<p>最后，利用梯度下降法实现优化迭代过程：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">EPOCHS = <span class="number">20</span>  <span class="comment"># 全部数据迭代 20 次</span></span><br><span class="line">LEARNING_RATE = <span class="number">0.1</span>  <span class="comment"># 学习率</span></span><br><span class="line"></span><br><span class="line">model = Model()  <span class="comment"># 实例化模型</span></span><br><span class="line"></span><br><span class="line">x = tf.constant(x, dtype=tf.float32) <span class="comment"># 转换为张量</span></span><br><span class="line">y = tf.constant(y, dtype=tf.float32) <span class="comment"># 转换为张量</span></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot;实现多项式回归优化迭代过程&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(EPOCHS):  <span class="comment"># 迭代次数</span></span><br><span class="line">    <span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:  <span class="comment"># 追踪梯度</span></span><br><span class="line">        loss = loss_fn(model, x, y)  <span class="comment"># 计算损失</span></span><br><span class="line">    da, db, dc = tape.gradient(loss, [model.a, model.b, model.c])  <span class="comment"># 计算梯度</span></span><br><span class="line">    model.a.assign_sub(LEARNING_RATE * da)  <span class="comment"># 更新梯度</span></span><br><span class="line">    model.b.assign_sub(LEARNING_RATE * db)</span><br><span class="line">    model.c.assign_sub(LEARNING_RATE * dc)</span><br><span class="line">    <span class="comment"># 输出计算过程</span></span><br><span class="line">    print(<span class="string">f&#x27;Epoch [<span class="subst">&#123;epoch&#125;</span>/<span class="subst">&#123;EPOCHS&#125;</span>], loss [<span class="subst">&#123;loss&#125;</span>]&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>绘制出迭代完成之后的拟合曲线图：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 为了绘制曲线图生成的等间距 x 值</span></span><br><span class="line">X = tf.linspace(<span class="number">0.0</span>, <span class="number">1.0</span>, <span class="number">50</span>)</span><br><span class="line"></span><br><span class="line">plt.scatter(x, y)</span><br><span class="line">plt.plot(X, model(X), c=<span class="string">&#x27;r&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/10/28/TensorFlow2.0/%E4%BD%8E%E9%98%B6API%E5%AE%9E%E7%8E%B0%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9B%9E%E5%BD%92/2.png" alt="image"></p>
 
     </div>
 
@@ -317,13 +307,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/xiaohong404.github.io/2020/10/26/TensorFlow2.0/TensorFlow2%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%AD%E6%B3%95/" rel="prev" title="TensorFlow2基础概念语法">
-      <i class="fa fa-chevron-left"></i> TensorFlow2基础概念语法
+    <a href="/xiaohong404.github.io/2020/10/27/TensorFlow2.0/TensorFlow2%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/" rel="prev" title="TensorFlow2实现线性回归">
+      <i class="fa fa-chevron-left"></i> TensorFlow2实现线性回归
     </a></div>
-      <div class="post-nav-item">
-    <a href="/xiaohong404.github.io/2020/10/27/AD_World/forgot/" rel="next" title="forgot">
-      forgot <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -384,7 +371,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E6%95%B0%E8%AE%A1%E7%AE%97"><span class="nav-number">1.</span> <span class="nav-text">导数计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86"><span class="nav-number">2.</span> <span class="nav-text">自动微分</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
