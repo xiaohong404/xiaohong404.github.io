@@ -289,6 +289,7 @@
       
         <p><strong><img src="/xiaohong404.github.io/2020/10/17/PWN/Heap/Heap-II/0.png" class></strong></p>
  <a id="more"></a>
+
 <p>[<a target="_blank" rel="noopener" href="https://azeria-labs.com/heap-exploitation-part-2-glibc-heap-free-bins/">原版传送门</a>]</p>
 <h3 id="UNDERSTANDING-THE-GLIBC-HEAP-IMPLEMENTATION"><a href="#UNDERSTANDING-THE-GLIBC-HEAP-IMPLEMENTATION" class="headerlink" title="UNDERSTANDING THE GLIBC HEAP IMPLEMENTATION"></a><strong>UNDERSTANDING THE GLIBC HEAP IMPLEMENTATION</strong></h3><p>前一部分解释了<a target="_blank" rel="noopener" href="https://linux.die.net/man/3/malloc"><em>malloc</em></a>和<a target="_blank" rel="noopener" href="https://linux.die.net/man/3/free"><em>free</em></a>的基本行为。我们看到，<em>malloc</em>通过分配内存块来处理内存分配请求<em>。</em>每个块不仅存储程序员将与之交互的malloc返回的“用户数据”区域，还存储与该块关联的元数据。</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/17/PWN/Heap/Heap-II/1.png" class></strong></p>
@@ -354,7 +355,7 @@
 <p>假设在一个线程上提供服务的Web请求尝试更新数据库某一行，而另一个并发Web请求尝试从同一行读取。通常，我们将要确保第二个线程永远不会看到中间写入的值，但因为它正被另一个线程覆盖使用，从而第二个线程可能看到部分或损坏形式的行数据。数据库通过使读写操作看起来像<strong>原子操作</strong>来解决此问题：如果两个线程试图同时访问同一行，则必须先完成一个操作，然后才能开始下一个操作。解决这些竞争条件的一种非常常见的方法是通过使用锁，使其他同时访问全局资源的请求强制进入顺序队列。</p>
 <p>通常，锁是通过一个线程在其使用之前“标记”它拥有全局资源的所有权，然后执行其操作，然后标记该资源不再使用来进行锁定的。如果出现另一个线程并希望使用该资源并看到其他线程正在使用该资源，则该线程将等待，直到另一个线程完成。这样可以确保全局资源一次仅由一个线程使用。但这带来了成本：正在等待资源的线程停滞并浪费时间。这称为“<em>lock contention</em>”（锁争用）。</p>
 <p>对于许多全局变量，这个开销还可以接受。但是对于所有线程都在不断使用的堆，此开销会很快导致整个程序的速度变慢。</p>
-<p>堆管理器主要通过为每个线程创建自己的<em>arena</em>解决这个问题，直到达到arena分配数目的阈值。此外，<em>tcache</em> 中<em>per-thread cache</em>的目的是减少锁本身的成本，因为锁指令开销很大，并且最终会占用”fast-path“中很大一部分执行时间。此功能已<a target="_blank" rel="noopener" href="https://www.phoronix.com/scan.php?page=news_item&amp;px=glibc-malloc-thread-cache">添加到glibc 2.26中的malloc内存分配功能中</a>，并且默认情况下启用。</p>
+<p>堆管理器主要通过为每个线程创建自己的<em>arena</em>解决这个问题，直到达到arena分配数目的阈值。此外，<em>tcache</em> 中<em>per-thread cache</em>的目的是减少锁本身的成本，因为锁指令开销很大，并且最终会占用”fast-path“中很大一部分执行时间。此功能已<a target="_blank" rel="noopener" href="https://www.phoronix.com/scan.php?page=news_item&px=glibc-malloc-thread-cache">添加到glibc 2.26中的malloc内存分配功能中</a>，并且默认情况下启用。</p>
 <p><em>Per-thread caching</em>通过准备好小块的<em>per-thread bins</em>来加快分配速度。这样，当线程请求一个块时，如果该线程在其tcache上有一个块可用，则它可以为分配提供服务，而不必等待堆锁。</p>
 <p>默认情况下，每个线程都有64个单链接的<em>tcache bins</em>。每个bin最多包含<a target="_blank" rel="noopener" href="https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/malloc.c;h=2527e2504761744df2bdb1abdc02d936ff907ad2;hb=d5c3fafc4307c9b7a4c7d5cb381fcdbfad340bcc#l323">7个相同大小的块</a>，<a target="_blank" rel="noopener" href="https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/malloc.c;h=2527e2504761744df2bdb1abdc02d936ff907ad2;hb=d5c3fafc4307c9b7a4c7d5cb381fcdbfad340bcc#l315">在64位系统上为</a><a target="_blank" rel="noopener" href="https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/malloc.c;h=2527e2504761744df2bdb1abdc02d936ff907ad2;hb=d5c3fafc4307c9b7a4c7d5cb381fcdbfad340bcc#l315">24到1032字节，在32位系统上为12到516字节</a>。</p>
 <h3 id="HOW-DO-CHUNKS-END-UP-IN-TCACHE-BINS"><a href="#HOW-DO-CHUNKS-END-UP-IN-TCACHE-BINS" class="headerlink" title="HOW DO CHUNKS END UP IN TCACHE BINS?"></a><strong>HOW DO CHUNKS END UP IN TCACHE BINS?</strong></h3><p>一个块被释放后，堆管理器将查看该块是否存在与该块大小相对应的<em>tcache</em>容器。与<em>fast bin</em>一样，<em>tcache bin</em> 上的块被视为“正在使用”，并且不会与相邻释放的块合并。</p>
@@ -515,7 +516,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/xiaohong404.github.io/archives/">
         
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
