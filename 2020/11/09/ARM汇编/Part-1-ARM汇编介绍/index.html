@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/xiaohong404.github.io/images/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/xiaohong404.github.io/images/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/xiaohong404.github.io/images/logo.png">
+  <link rel="mask-icon" href="/xiaohong404.github.io/images/logo.png" color="#222">
+
+<link rel="stylesheet" href="/xiaohong404.github.io/css/main.css">
+
+
+<link rel="stylesheet" href="/xiaohong404.github.io/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"github.com","root":"/xiaohong404.github.io/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="Part 1: ARM汇编介绍">
+<meta property="og:url" content="https://github.com/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/index.html">
+<meta property="og:site_name" content="Mr.red">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/0.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/1.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/2.gif">
+<meta property="article:published_time" content="2020-11-09T05:00:05.000Z">
+<meta property="article:modified_time" content="2020-11-09T08:44:18.000Z">
+<meta property="article:author" content="Xiao Hong">
+<meta property="article:tag" content="ARM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/0.png">
+
+<link rel="canonical" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Part 1: ARM汇编介绍 | Mr.red</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/xiaohong404.github.io/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Mr.red</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/xiaohong404.github.io/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/xiaohong404.github.io/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/xiaohong404.github.io/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/xiaohong404.github.io/Categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/xiaohong404.github.io/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
+      <meta itemprop="name" content="Xiao Hong">
+      <meta itemprop="description" content="Things always start to get better after you give up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mr.red">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Part 1: ARM汇编介绍
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-11-09 13:00:05 / Modified: 16:44:18" itemprop="dateCreated datePublished" datetime="2020-11-09T13:00:05+08:00">2020-11-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/xiaohong404.github.io/Categories/ARM%E6%B1%87%E7%BC%96/" itemprop="url" rel="index"><span itemprop="name">ARM汇编</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/" class="post-meta-item leancloud_visitors" data-flag-title="Part 1: ARM汇编介绍" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p>欢迎来到ARM汇编基础教程，这套教程是为了让你可以在ARM架构下进行漏洞利用打基础的。在我们能开始写ARM的shellcode以及构建ROP链之前，我们需要先学习相关的ARM汇编基础知识。</p>
+<p>这些基础知识包括：</p>
+<p><a target="_blank" rel="noopener" href="https://azeria-labs.com/writing-arm-assembly-part-1/">Part 1：ARM汇编介绍</a></p>
+<p><a target="_blank" rel="noopener" href="https://azeria-labs.com/arm-data-types-and-registers-part-2/">Part 2：数据类型寄存器</a></p>
+<p><a target="_blank" rel="noopener" href="https://azeria-labs.com/arm-instruction-set-part-3/">Part 3: ARM指令集</a></p>
+<p><a target="_blank" rel="noopener" href="https://azeria-labs.com/memory-instructions-load-and-store-part-4/">Part 4: 内存相关指令：加载以及存储</a></p>
+<p><a target="_blank" rel="noopener" href="https://azeria-labs.com/load-and-store-multiple-part-5/">Part 5：重复性加载及存储</a></p>
+<p><a target="_blank" rel="noopener" href="https://azeria-labs.com/arm-conditional-execution-and-branching-part-6/">Part 6: 分支和条件执行</a></p>
+<p><a target="_blank" rel="noopener" href="https://azeria-labs.com/functions-and-the-stack-part-7/">Part 7：栈以及函数</a></p>
+<p>为了能跟着这个系列教程动手实践，你可以准备一个ARM的运行环境。如果你没有ARM设备（比如说树莓派或者手机），你可以通过QEMU来创建一个，[<a target="_blank" rel="noopener" href="https://azeria-labs.com/emulate-raspberry-pi-with-qemu/">教程在这]</a>。如果你对于GDB调试的基础命令不熟悉的话，可以通过[<a target="_blank" rel="noopener" href="https://azeria-labs.com/debugging-with-gdb-introduction/">这个]</a>学习。在这篇教程中，我们的核心关注点为32位的ARM，相关的例子在ARMv6下编译。</p>
+<h2 id="为什么是ARM？"><a href="#为什么是ARM？" class="headerlink" title="为什么是ARM？"></a><strong>为什么是ARM？</strong></h2><p>前面说过，本系列教程的核心目的，是为那些想学习在ARM架构下进行漏洞利用的人而准备。可以看看你身边，有多少设备是ARM架构的， 手机，路由器，以及IOT设备，很多都是ARM架构的。无疑ARM架构已经成为了全世界主流而广泛的CPU架构。所以我们面对的越来越多的安全问题，也都会是ARM架构下的，那么在这种架构下的开发以及漏洞利用，也会成为一种主流趋势。</p>
+<p>我们在X86架构上进行了很多研究，而ARM可能是最简单的广泛使用的汇编语言。但是人们为什么不关注ARM呢？可能是在intel架构上可供漏洞利用的学习资料比ARM多得多吧。比如[<a target="_blank" rel="noopener" href="https://www.corelan.be/index.php/2009/07/19/exploit-writing-tutorial-part-1-stack-based-overflows/">Corelan Team]</a>写的很棒的intel X86漏洞利用教程，旨在帮助我们可以更准确更高效的学习到关键的漏洞利用基础知识。如果你对于x86漏洞利用很感兴趣，那我觉得Corelan Team的教程是一个不错的选择。但是在我们这个系列里，我们要创造一本高效的ARM架构下的漏洞利用新手手册。</p>
+<h2 id="ARM-VS-INTEL"><a href="#ARM-VS-INTEL" class="headerlink" title="ARM VS. INTEL"></a><strong>ARM VS. INTEL</strong></h2><p>ARM处理器Intel处理器有很多不同，但是最主要的不同怕是指令集了。Intel属于复杂指令集（CISC）处理器，有很多特性丰富的访问内存的复杂指令集。因此它拥有更多指令代码以及取址都是，但是寄存器比ARM的要少。复杂指令集处理器主要被应用在PC机，工作站以及服务器上。</p>
+<p>ARM属于简单指令集（RISC）处理器，所以与复杂指令集先比，只有简单的差不多100条指令集，但会有更多的寄存器。与Intel不同，ARM的指令集仅仅操作寄存器或者是用于从内存的加载/储存过程，这也就是说，简单的加载/存储指令即可访问到内存。这意味着在ARM中，要对特定地址中存储的的32位值加一的话，仅仅需要从内存中加载到寄存器，加一，再从寄存器储存到内存即可。</p>
+<p>简单的指令集既有好处也有坏处。一个好处就是代码的执行变得更快了。（RISC指令集允许通过缩短时钟周期来加速代码执行）。坏处就是更少的指令集也要求了编写代码时要更加注意指令间使用的关系以及约束。还有重要的一点，ARM架构有两种模式，ARM模式和Thumb模式。Thumb模式的代码只有2或者4字节。</p>
+<p>ARM与X86的不同还体现在：</p>
+<p>ARM中很多指令都可以用来做为条件执行的判断依据</p>
+<p>X86与X64机器码使用小端格式</p>
+<p>ARM机器码在版本3之前是小端。但是之后默认采用大端格式，但可以设置切换到小端。</p>
+<p>除了以上这些ARM与Intel间的差异，ARM自身也有很多版本。本系列教程旨在尽力保持通用性的情况下来讲讲ARM的工作流程。而且当你懂得了这个形式，学习其他版本的也很容易了。在系列教程中使用的样例都是在32位的ARMv6下运行的，所以相关解释也是主要依赖这个版本的。</p>
+<p>不同版本的ARM命名也是有些复杂：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/1.png" class></strong></p>
+<h2 id="写ARM汇编"><a href="#写ARM汇编" class="headerlink" title="写ARM汇编"></a><strong>写ARM汇编</strong></h2><p>在开始用ARM汇编做漏洞利用开发之前，还是需要先学习下基础的汇编语言知识的。为什么我们需要ARM汇编呢，用正常的变成语言写不够么？的确不够，因为如果我们想做逆向工程，或者理解相关二进制程序的执行流程，构建我们自己的ARM架构的shellcode，ROP链，以及调试ARM应用，这些都要求先懂得ARM汇编。当然你也不需要学习的太过深入，足够做逆向工作以及漏洞利用开发刚刚好。如果有些知识要求先了解一些背景知识，别担心，这些知识也会在本系列文章里面介绍到的。当然如果你想学习更多，也可以去本文末尾提供的相关链接学习。</p>
+<p>ARM汇编，是一种更容易被人们接受的汇编语言。当然我们的计算机也不能直接运行汇编代码，还是需要编译成机器码的。通过编译工具链中<strong>as</strong>程序来将文件后缀为”.s”的汇编代码编译成机器码。写完汇编代码后，一般保存后缀为”.s”的文件，然后你需要用<strong>as</strong>编译以及用<strong>ld</strong>链接程序:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ as program.s -o program.o</span><br><span class="line">$ ld program.o -o program</span><br></pre></td></tr></table></figure>
+
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/2.gif" class></strong></p>
+<h2 id="汇编语言本质"><a href="#汇编语言本质" class="headerlink" title="汇编语言本质"></a><strong>汇编语言本质</strong></h2><p>让我们来看看汇编语言的底层本质。在最底层，只有电路的电信号。信号被格式化成可以变化的高低电平0V(off)或者5V(on)。但是通过电压变化来表述电路状态是繁琐的，所以用0和1来代替高低电平，也就有了二进制格式。由二进制序列组成的组合便是最小的计算机处理器工作单元了，比如下面的这句机器码序列就是例子。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1110 0001 1010 0000 0010 0000 0000 0001</span><br></pre></td></tr></table></figure>
+
+<p>看上去不错，但是我们还是不能记住这些组合的含义。所以，我们需要用助记符和缩写来帮助我们记住这些二进制组合。这些助记符一般是连续的三个字母，我们可以用这些助记符作为指令来编写程序。这种程序就叫做汇编语言程序。用以代表一种计算机的机器码的助记符集合就叫做这种计算机汇编语言。因此，汇编语言是人们用来编写程序的最底层语言。同时指令的操作符也有对应的助记符，比如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MOV R2, R1</span><br></pre></td></tr></table></figure>
+
+<p>现在我们知道了汇编程序是助记符的文本信息集合，我们需要将其转换成机器码。就像之前的，在[<a target="_blank" rel="noopener" href="https://www.gnu.org/software/binutils/">GNU Binutils]</a>工程中提供了叫做<strong>as</strong>的工具。使用汇编工具去将汇编语言转换成机器码的过程叫做汇编(assembling)。(参考：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/111500914">gcc生成可执行文件的过程</a>)</p>
+<p>总结一下，在这篇中我们学习了计算机是通过由0101代表高低电平的机器码序列来进行运算的。我们可以使用机器码去让计算机做我们想让它做的事情。不过因为我们不能记住机器码，我们使用了缩写助记符来代表有相关功能的机器码，这些助记符的集合就是汇编语言。最后我们使用汇编器将汇编语言转换成机器可以理解的机器码。当然，在更高级别的语言编译生成机器码过程中，核心原理也是这个。</p>
+<h2 id="拓展阅读"><a href="#拓展阅读" class="headerlink" title="拓展阅读"></a><strong>拓展阅读</strong></h2><ol>
+<li><p><a target="_blank" rel="noopener" href="https://www.coranac.com/tonc/text/asm.htm">Whirlwind Tour of ARM Assembly.</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://thinkingeek.com/arm-assembler-raspberry-pi/">ARM assembler in Raspberry Pi.</a></p>
+</li>
+<li><p>Practical Reverse Engineering: x86, x64, ARM, Windows Kernel, Reversing Tools, and Obfuscation by Bruce Dang, Alexandre Gazet, Elias Bachaalany and Sebastien Josse.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://infocenter.arm.com/help/topic/com.arm.doc.dui0068b/index.html">ARM Reference Manual.</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://www.keil.com/support/man/docs/armasm/default.htm">Assembler User Guide.</a></p>
+</li>
+</ol>
+<blockquote>
+<p>译文仅供参考，具体内容表达以及含义以原文为准</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/xiaohong404.github.io/tags/ARM/" rel="tag"><i class="fa fa-tag"></i> ARM</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/" rel="prev" title="Mary_Morton">
+      <i class="fa fa-chevron-left"></i> Mary_Morton
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/" rel="next" title="Part 2: 数据类型寄存器">
+      Part 2: 数据类型寄存器 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+  
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AFARM%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">为什么是ARM？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ARM-VS-INTEL"><span class="nav-number">2.</span> <span class="nav-text">ARM VS. INTEL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99ARM%E6%B1%87%E7%BC%96"><span class="nav-number">3.</span> <span class="nav-text">写ARM汇编</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E6%9C%AC%E8%B4%A8"><span class="nav-number">4.</span> <span class="nav-text">汇编语言本质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%93%E5%B1%95%E9%98%85%E8%AF%BB"><span class="nav-number">5.</span> <span class="nav-text">拓展阅读</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiao Hong"
+      src="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
+  <p class="site-author-name" itemprop="name">Xiao Hong</p>
+  <div class="site-description" itemprop="description">Things always start to get better after you give up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/xiaohong404.github.io/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/xiaohong404.github.io/Categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/xiaohong404.github.io/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaohong404" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaohong404"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/pluto-9-55" title="ZhiHu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;pluto-9-55" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>ZhiHu</a>
+      </span>
+  </div>
+
+
+<!-- CloudCalendar -->
+<div class="widget-wrap" style="width: 90%;margin-left: auto;margin-right: auto; opacity: 0.97;">
+	<div class="widget" id="CloudCalendar"></div>
+</div>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020-11-09</span>
+  <span class="with-love",id="animate">
+    <i class="fa fa-basketball-ball"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaohong</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/xiaohong404.github.io/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/xiaohong404.github.io/lib/anime.min.js"></script>
+  <script src="/xiaohong404.github.io/lib/velocity/velocity.min.js"></script>
+  <script src="/xiaohong404.github.io/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/xiaohong404.github.io/js/utils.js"></script>
+
+<script src="/xiaohong404.github.io/js/motion.js"></script>
+
+
+<script src="/xiaohong404.github.io/js/schemes/muse.js"></script>
+
+
+<script src="/xiaohong404.github.io/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/xiaohong404.github.io/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/xiaohong404.github.io/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qgoG1EyC6yrAnmbPcCl9pCH8-gzGzoHsz',
+      appKey     : 'yzRsxAlXtg72qlBbwrwA034j',
+      placeholder: "Just go go",
+      avatar     : 'wavatar',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : 'en,zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+<script src="/xiaohong404.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/xiaohong404.github.io/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":150,"height":300,"hOffset":80,"vOffset":-50},"mobile":{"show":true},"log":false,"tagMode":false});</script></body>
+</html>

