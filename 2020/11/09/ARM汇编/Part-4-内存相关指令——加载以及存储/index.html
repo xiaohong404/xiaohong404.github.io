@@ -20,17 +20,24 @@
     var CONFIG = {"hostname":"github.com","root":"/xiaohong404.github.io/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Things always start to get better after you give up">
-<meta property="og:type" content="article">
+  <meta property="og:type" content="article">
 <meta property="og:title" content="Part 4: 内存相关指令——加载以及存储">
 <meta property="og:url" content="https://github.com/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/index.html">
 <meta property="og:site_name" content="Mr.red">
-<meta property="og:description" content="Things always start to get better after you give up">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/0.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/1.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/2.gif">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/3.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/4.gif">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/5.gif">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/6.png">
 <meta property="article:published_time" content="2020-11-09T05:01:37.000Z">
-<meta property="article:modified_time" content="2020-11-09T05:01:38.000Z">
+<meta property="article:modified_time" content="2020-11-10T06:48:58.000Z">
 <meta property="article:author" content="Xiao Hong">
+<meta property="article:tag" content="ARM">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/0.png">
 
 <link rel="canonical" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/">
 
@@ -217,9 +224,24 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-11-09 13:01:37 / Modified: 13:01:38" itemprop="dateCreated datePublished" datetime="2020-11-09T13:01:37+08:00">2020-11-09</time>
+              <time title="Created: 2020-11-09 13:01:37" itemprop="dateCreated datePublished" datetime="2020-11-09T13:01:37+08:00">2020-11-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-11-10 14:48:58" itemprop="dateModified" datetime="2020-11-10T14:48:58+08:00">2020-11-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/xiaohong404.github.io/Categories/ARM%E6%B1%87%E7%BC%96/" itemprop="url" rel="index"><span itemprop="name">ARM汇编</span></a>
+                </span>
             </span>
 
           
@@ -254,7 +276,153 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        
+        <p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/0.png" class></strong></p>
+ <a id="more"></a>
+
+
+
+<p>ARM使用加载-存储模式控制对内存的访问，这意味着只有加载/存储(LDR或者STR)才能访问内存。尽管X86中允许很多指令直接操作在内存中的数据，但ARM中依然要求在操作数据前，必须先从内存中将数据取出来。这就意味着如果要增加一个32位的在内存中的值，需要做三种类型的操作(加载，加一，存储)将数据从内存中取到寄存器，对寄存器中的值加一，再将结果放回到内存中。</p>
+<p>为了解释ARM架构中的加载和存储机制，我们准备了一个基础的例子以及附加在这个基础例子上的三种不同的对内存地址的便宜访问形式。每个例子除了STR/LDR的偏移模式不同外，其余的都一样。而且这个例子很简单，最佳的实践方式是用GDB去调试这段汇编代码。</p>
+<p>第一种偏移形式：立即数作为偏移</p>
+<p>地址模式：用作偏移</p>
+<p>地址模式：前向索引</p>
+<p>地址模式：后向索引</p>
+<p>第二种偏移形式：寄存器作为偏移</p>
+<p>地址模式：用作偏移</p>
+<p>地址模式：前向索引</p>
+<p>地址模式：后向索引</p>
+<p>第三种偏移形式：寄存器缩放值作为偏移</p>
+<p>地址模式：用作偏移</p>
+<p>地址模式：前向索引</p>
+<p>地址模式：后向索引</p>
+<h2 id="基础样例代码"><a href="#基础样例代码" class="headerlink" title="基础样例代码"></a><strong>基础样例代码</strong></h2><p>通常，LDR被用来从内存中加载数据到寄存器，STR被用作将寄存器的值存放到内存中。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/1.png" class></strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">LDR R2, [R0]   @ [R0] - 数据源地址来自于R0指向的内存地址</span><br><span class="line"><span class="meta">@ LDR操作：从R0指向的地址中取值放到R2中</span></span><br><span class="line">STR R2, [R1]   @ [R1] - 目的地址来自于R1在内存中指向的地址</span><br><span class="line"><span class="meta">@ STR操作：将R2中的值放到R1指向的地址中</span></span><br></pre></td></tr></table></figure>
+
+<p>样例程序的汇编代码及解释如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">.data          <span class="comment">/* 数据段是在内存中动态创建的，所以它的在内存中的地址不可预测*/</span></span><br><span class="line">var1: .word <span class="number">3</span>  <span class="comment">/* 内存中的第一个变量 */</span></span><br><span class="line">var2: .word <span class="number">4</span>  <span class="comment">/* 内存中的第二个变量 */</span></span><br><span class="line">.text          <span class="comment">/* 代码段开始 */</span> </span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">    ldr r0, adr_var1  @ 将存放var1值的地址adr_var1加载到寄存器R0中 </span><br><span class="line">    ldr r1, adr_var2  @ 将存放var2值的地址adr_var2加载到寄存器R1中 </span><br><span class="line">    ldr r2, [r0]      @ 将R0所指向地址中存放的<span class="number">0x3</span>加载到寄存器R2中  </span><br><span class="line">    str r2, [r1]      @ 将R2中的值<span class="number">0x3</span>存放到R1做指向的地址 </span><br><span class="line">    bkpt             </span><br><span class="line">adr_var1: .word var1  <span class="comment">/* var1的地址助记符 */</span></span><br><span class="line">adr_var2: .word var2  <span class="comment">/* var2的地址助记符 */</span></span><br></pre></td></tr></table></figure>
+
+<p>在底部我们有我们的文字标识池(在代码段中用来存储常量，字符串，或者偏移等的内存，可以通过位置无关的方式引用)，分别用adr_var1和adr_var2存储着变量var1和var2的内存地址(var1和var2的值在数据段定义)。第一条LDR指令将变量var1的地址加载到寄存器R0。第二条LDR指令同样将var2的地址加载到寄存器R1。之后我们将存储在R0指向的内存地址中的值加载到R2，最后将R2中的值存储到R1指向的内存地址中。</p>
+<p>当我们加载数据到寄存器时，方括号“[]”意味着：将其中的值当做内存地址，并取这个内存地址中的值加载到对应寄存器。</p>
+<p>当我们存储数据到内存时，方括号“[]”意味着：将其中的值当做内存地址，并向这个内存地址所指向的位置存入对应的值。</p>
+<p>听者好像有些抽象，所以再来看看这个动画吧：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/2.gif" class></strong></p>
+<p>同样的再来看看的这段代码在调试器中的样子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">gef&gt; disassemble _start</span><br><span class="line">Dump of assembler code <span class="keyword">for</span> function _start:</span><br><span class="line"> <span class="number">0x00008074</span> &lt;+<span class="number">0</span>&gt;:      ldr  r0, [pc, #<span class="number">12</span>]   ; <span class="number">0x8088</span> &lt;adr_var1&gt;</span><br><span class="line"> <span class="number">0x00008078</span> &lt;+<span class="number">4</span>&gt;:      ldr  r1, [pc, #<span class="number">12</span>]   ; <span class="number">0x808c</span> &lt;adr_var2&gt;</span><br><span class="line"> <span class="number">0x0000807c</span> &lt;+<span class="number">8</span>&gt;:      ldr  r2, [r0]</span><br><span class="line"> <span class="number">0x00008080</span> &lt;+<span class="number">12</span>&gt;:     str  r2, [r1]</span><br><span class="line"> <span class="number">0x00008084</span> &lt;+<span class="number">16</span>&gt;:     bx   lr</span><br><span class="line">End of assembler dump.</span><br></pre></td></tr></table></figure>
+
+<p>可以看到此时的反汇编代码和我们编写的汇编代码有出入了。前两个LDR操作的源寄存器被改成了[pc,#12]。这种操作叫做PC相对地址。因为我们在汇编代码中使用的只是数据的标签，所以在编译时候编译器帮我们计算出来了与我们想访问的文字标识池的相对便宜，即PC+12。你也可以看汇编代码中手动计算验证这个偏移是正确的，以adr_var1为例，执行到8074时，其当前有效PC与数据段还有三个四字节的距离，所以要加12。关于PC相对取址我们接下来还会接着介绍。</p>
+<p>PS：如果你对这里的PC的地址有疑问，可以看外面第二篇关于程序执行时PC的值的说明，PC是指向当前执行指令之后第二条指令所在位置的，在32位ARM模式下是当前执行位置加偏移值8，在Thumb模式下是加偏移值4。这也是与X86架构PC的区别之所在。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/3.png" class></strong></p>
+<h2 id="第一种偏移形式：立即数作偏移"><a href="#第一种偏移形式：立即数作偏移" class="headerlink" title="第一种偏移形式：立即数作偏移"></a><strong>第一种偏移形式：立即数作偏移</strong></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">STR    Ra, [Rb, imm]</span><br><span class="line">LDR    Ra, [Rc, imm]</span><br></pre></td></tr></table></figure>
+
+<p>在这段汇编代码中，我们使用立即数作为偏移量。这个立即数被用来与一个寄存器中存放的地址做加减操作(下面例子中的R1)，以访问对应地址偏移处的数据。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">.data</span><br><span class="line">var1: .word <span class="number">3</span></span><br><span class="line">var2: .word <span class="number">4</span></span><br><span class="line">.text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">    ldr r0, adr_var1  @ 将存放var1值的地址adr_var1加载到寄存器R0中 </span><br><span class="line">    ldr r1, adr_var2  @ 将存放var2值的地址adr_var2加载到寄存器R1中 </span><br><span class="line">    ldr r2, [r0]      @ 将R0所指向地址中存放的<span class="number">0x3</span>加载到寄存器R2中  </span><br><span class="line">    str r2, [r1, #<span class="number">2</span>]  @ 取址模式：基于偏移量。R2寄存器中的值<span class="number">0x3</span>被存放到R1寄存器的值加<span class="number">2</span>所指向地址处。</span><br><span class="line">    str r2, [r1, #<span class="number">4</span>]! @ 取址模式：基于索引前置修改。R2寄存器中的值<span class="number">0x3</span>被存放到R1寄存器的值加<span class="number">4</span>所指向地址处，之后R1寄存器中存储的值加<span class="number">4</span>,也就是R1=R1+<span class="number">4</span>。</span><br><span class="line">    ldr r3, [r1], #<span class="number">4</span>  @ 取址模式：基于索引后置修改。R3寄存器中的值是从R1寄存器的值所指向的地址中加载的，加载之后R1寄存器中存储的值加<span class="number">4</span>,也就是R1=R1+<span class="number">4</span>。</span><br><span class="line">    bkpt</span><br><span class="line">adr_var1: .word var1</span><br><span class="line">adr_var2: .word var2</span><br></pre></td></tr></table></figure>
+
+<p>让我们把上面的这段汇编代码编译一下，并用GDB调试起来看看真实情况。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ as ldr.s -o ldr.o</span><br><span class="line">$ ld ldr.o -o ldr</span><br><span class="line">$ gdb ldr</span><br></pre></td></tr></table></figure>
+
+<p>在GDB(使用GEF插件)中，我们对_start下一个断点并继续运行程序。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">gef&gt; <span class="keyword">break</span> _start</span><br><span class="line">gef&gt; run</span><br><span class="line">...</span><br><span class="line">gef&gt; nexti <span class="number">3</span>     <span class="comment">/* 向后执行三条指令 */</span></span><br></pre></td></tr></table></figure>
+
+<p>执行完上述GDB指令后，在我的系统的寄存器的值现在是这个样子(在你的系统里面可能不同)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$r0</span> : 0x00010098 -&gt; 0x00000003</span><br><span class="line"><span class="variable">$r1</span> : 0x0001009c -&gt; 0x00000004</span><br><span class="line"><span class="variable">$r2</span> : 0x00000003</span><br><span class="line"><span class="variable">$r3</span> : 0x00000000</span><br><span class="line"><span class="variable">$r4</span> : 0x00000000</span><br><span class="line"><span class="variable">$r5</span> : 0x00000000</span><br><span class="line"><span class="variable">$r6</span> : 0x00000000</span><br><span class="line"><span class="variable">$r7</span> : 0x00000000</span><br><span class="line"><span class="variable">$r8</span> : 0x00000000</span><br><span class="line"><span class="variable">$r9</span> : 0x00000000</span><br><span class="line"><span class="variable">$r10</span> : 0x00000000</span><br><span class="line"><span class="variable">$r11</span> : 0x00000000</span><br><span class="line"><span class="variable">$r12</span> : 0x00000000</span><br><span class="line"><span class="variable">$sp</span> : 0xbefff7e0 -&gt; 0x00000001</span><br><span class="line"><span class="variable">$lr</span> : 0x00000000</span><br><span class="line"><span class="variable">$pc</span> : 0x00010080 -&gt; &lt;_start+12&gt; str r2, [r1]</span><br><span class="line"><span class="variable">$cpsr</span> : 0x00000010</span><br></pre></td></tr></table></figure>
+
+<p>下面来分别调试这三条关键指令。首先执行基于地址偏移的取址模式的STR操作了。就会将R2(0x00000003)中的值存放到R1(0x0001009c)所指向地址偏移2的位置0x1009e。下面一段是执行完对应STR操作后对应内存位置的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gef&gt; nexti</span><br><span class="line">gef&gt; x/w <span class="number">0x1009e</span> </span><br><span class="line"><span class="number">0x1009e</span> &lt;var2+<span class="number">2</span>&gt;: <span class="number">0x3</span></span><br></pre></td></tr></table></figure>
+
+<p>下一条STR操作使用了基于索引前置修改的取址模式。这种模式的识别特征是(!)。区别是在R2中的值被存放到对应地址后，R1的值也会被更新。这意味着，当我们将R2中的值0x3存储到R1(0x1009c)的偏移4之后的地址0x100A0后，R1的值也会被更新到为这个地址。下面一段是执行完对应STR操作后对应内存位置以及寄存器的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">gef&gt; nexti</span><br><span class="line">gef&gt; x/w <span class="number">0x100A0</span></span><br><span class="line"><span class="number">0x100a0</span>: <span class="number">0x3</span></span><br><span class="line">gef&gt; info <span class="keyword">register</span> r1</span><br><span class="line">r1     <span class="number">0x100a0</span>     <span class="number">65696</span></span><br></pre></td></tr></table></figure>
+
+<p>最后一个LDR操作使用了基于索引后置的取址模式。这意味着基础寄存器R1被用作加载的内存地址，之后R1的值被更新为R1+4。换句话说，加载的是R1所指向的地址而不是R1+4所指向的地址，也就是0x100A0中的值被加载到R3寄存器，然后R1寄存器的值被更新为0x100A0+0x4也就是0x100A4。下面一段是执行完对应LDR操作后对应内存位置以及寄存器的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">gef&gt; info <span class="keyword">register</span> r1</span><br><span class="line">r1      <span class="number">0x100a4</span>   <span class="number">65700</span></span><br><span class="line">gef&gt; info <span class="keyword">register</span> r3</span><br><span class="line">r3      <span class="number">0x3</span>       <span class="number">3</span></span><br></pre></td></tr></table></figure>
+
+<p>下图是这个操作发生的动态示意图：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/4.gif" class></strong></p>
+<h2 id="第二种偏移形式：寄存器作偏移"><a href="#第二种偏移形式：寄存器作偏移" class="headerlink" title="第二种偏移形式：寄存器作偏移"></a><strong>第二种偏移形式：寄存器作偏移</strong></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">STR    Ra, [Rb, Rc]</span><br><span class="line">LDR    Ra, [Rb, Rc]</span><br></pre></td></tr></table></figure>
+
+<p>在这个偏移模式中，寄存器的值被用作偏移。下面的样例代码展示了当试着访问数组的时候是如何计算索引值的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">.data</span><br><span class="line">var1: .word <span class="number">3</span></span><br><span class="line">var2: .word <span class="number">4</span></span><br><span class="line">.text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">    ldr r0, adr_var1  @ 将存放var1值的地址adr_var1加载到寄存器R0中 </span><br><span class="line">    ldr r1, adr_var2  @ 将存放var2值的地址adr_var2加载到寄存器R1中 </span><br><span class="line">    ldr r2, [r0]      @ 将R0所指向地址中存放的<span class="number">0x3</span>加载到寄存器R2中  </span><br><span class="line">    str r2, [r1, r2]  @ 取址模式：基于偏移量。R2寄存器中的值<span class="number">0x3</span>被存放到R1寄存器的值加R2寄存器的值所指向地址处。R1寄存器不会被修改。 </span><br><span class="line">    str r2, [r1, r2]! @ 取址模式：基于索引前置修改。R2寄存器中的值<span class="number">0x3</span>被存放到R1寄存器的值加R2寄存器的值所指向地址处，之后R1寄存器中的值被更新,也就是R1=R1+R2。</span><br><span class="line">    ldr r3, [r1], r2  @ 取址模式：基于索引后置修改。R3寄存器中的值是从R1寄存器的值所指向的地址中加载的，加载之后R1寄存器中的值被更新也就是R1=R1+R2。</span><br><span class="line">    bx lr</span><br><span class="line">adr_var1: .word var1</span><br><span class="line">adr_var2: .word var2</span><br></pre></td></tr></table></figure>
+
+<p>下面来分别调试这三条关键指令。在执行完基于偏移量的取址模式的STR操作后，R2的值被存在了地址0x1009c + 0x3 = 0x1009F处。下面一段是执行完对应STR操作后对应内存位置的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gef&gt; x/w <span class="number">0x0001009F</span></span><br><span class="line"> <span class="number">0x1009f</span> &lt;var2+<span class="number">3</span>&gt;: <span class="number">0x00000003</span></span><br></pre></td></tr></table></figure>
+
+<p>下一条STR操作使用了基于索引前置修改的取址模式，R1的值被更新为R1+R2的值。下面一段是执行完对应STR操作后寄存器的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gef&gt; info <span class="keyword">register</span> r1</span><br><span class="line"> r1     <span class="number">0x1009f</span>      <span class="number">65695</span></span><br></pre></td></tr></table></figure>
+
+<p>最后一个LDR操作使用了基于索引后置的取址模式。将R1指向的值加载到R2之后，更新了R1寄存器的值(R1+R2 = 0x1009f + 0x3 = 0x100a2)。下面一段是执行完对应LDR操作后对应内存位置以及寄存器的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">gef&gt; info <span class="keyword">register</span> r1</span><br><span class="line"> r1      <span class="number">0x100a2</span>     <span class="number">65698</span></span><br><span class="line">gef&gt; info <span class="keyword">register</span> r3</span><br><span class="line"> r3      <span class="number">0x3</span>       <span class="number">3</span></span><br></pre></td></tr></table></figure>
+
+<p>下图是这个操作发生的动态示意图:</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/5.gif" class></strong></p>
+<h2 id="第三种偏移形式：寄存器缩放值作偏移"><a href="#第三种偏移形式：寄存器缩放值作偏移" class="headerlink" title="第三种偏移形式：寄存器缩放值作偏移"></a><strong>第三种偏移形式：寄存器缩放值作偏移</strong></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LDR    Ra, [Rb, Rc, &lt;shifter&gt;]</span><br><span class="line">STR    Ra, [Rb, Rc, &lt;shifter&gt;]</span><br></pre></td></tr></table></figure>
+
+<p>在这种偏移形式下，第三个偏移量还有一个寄存器做支持。Rb是基址寄存器，Rc中的值作为偏移量，或者是要被左移或右移的次的值。这意味着移位器shifter被用来用作缩放Rc寄存器中存放的偏移量。下面的样例代码展示了对一个数组的循环操作。同样的，我们也会用GDB调试这段代码。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">.data</span><br><span class="line">var1: .word <span class="number">3</span></span><br><span class="line">var2: .word <span class="number">4</span></span><br><span class="line">.text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">    ldr r0, adr_var1         @ 将存放var1值的地址adr_var1加载到寄存器R0中 </span><br><span class="line">    ldr r1, adr_var2         @ 将存放var2值的地址adr_var2加载到寄存器R1中 </span><br><span class="line">    ldr r2, [r0]             @ 将R0所指向地址中存放的<span class="number">0x3</span>加载到寄存器R2中  </span><br><span class="line">    str r2, [r1, r2, LSL#<span class="number">2</span>]  @ 取址模式：基于偏移量。R2寄存器中的值<span class="number">0x3</span>被存放到R1寄存器的值加(左移两位后的R2寄存器的值)所指向地址处。R1寄存器不会被修改。</span><br><span class="line">    str r2, [r1, r2, LSL#<span class="number">2</span>]! @ 取址模式：基于索引前置修改。R2寄存器中的值<span class="number">0x3</span>被存放到R1寄存器的值加(左移两位后的R2寄存器的值)所指向地址处，之后R1寄存器中的值被更新,也就R1 = R1 + R2&lt;&lt;<span class="number">2</span>。</span><br><span class="line">    ldr r3, [r1], r2, LSL#<span class="number">2</span>  @ 取址模式：基于索引后置修改。R3寄存器中的值是从R1寄存器的值所指向的地址中加载的，加载之后R1寄存器中的值被更新也就是R1 = R1 + R2&lt;&lt;<span class="number">2</span>。</span><br><span class="line">    bkpt</span><br><span class="line">adr_var1: .word var1</span><br><span class="line">adr_var2: .word var2</span><br></pre></td></tr></table></figure>
+
+<p>下面来分别调试这三条关键指令。在执行完基于偏移量的取址模式的STR操作后，R2被存储到的位置是[r1,r2,LSL#2]，也就是说被存储到R1+(R2&lt;&lt;2)的位置了，如下图所示:</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/6.png" class></strong></p>
+<p>下一条STR操作使用了基于索引前置修改的取址模式，R1的值被更新为R1+(R2&lt;&lt;2)的值。下面一段是执行完对应STR操作后寄存器的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gef&gt; info <span class="keyword">register</span> r1</span><br><span class="line">r1      <span class="number">0x100a8</span>      <span class="number">65704</span></span><br></pre></td></tr></table></figure>
+
+<p>最后一个LDR操作使用了基于索引后置的取址模式。将R1指向的值加载到R2之后，更新了R1寄存器的值(R1+R2 = 0x100a8 + (0x3&lt;&lt;2) = 0x100b4)。下面一段是执行完对应LDR操作后寄存器的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gef&gt; info <span class="keyword">register</span> r1</span><br><span class="line">r1      <span class="number">0x100b4</span>      <span class="number">65716</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a><strong>小结</strong></h2><p>LDR/STR的三种偏移模式：</p>
+<p>立即数作为偏移</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldr   r3, [r1, #<span class="number">4</span>]</span><br></pre></td></tr></table></figure>
+
+<p>寄存器作为偏移</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldr   r3, [r1, r2]</span><br></pre></td></tr></table></figure>
+
+<p>寄存器缩放值作为偏移</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldr   r3, [r1, r2, LSL#<span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+
+<p>如何区分取址模式：</p>
+<p>如果有一个叹号!，那就是索引前置取址模式，即使用计算后的地址，之后更新基址寄存器。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ldr   r3, [r1, #<span class="number">4</span>]!</span><br><span class="line">ldr   r3, [r1, r2]!</span><br><span class="line">ldr   r3, [r1, r2, LSL#<span class="number">2</span>]!</span><br></pre></td></tr></table></figure>
+
+<p>如果在[]外有一个寄存器，那就是索引后置取址模式，即使用原有基址寄存器中的地址，之后再更新基址寄存器</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ldr   r3, [r1], #<span class="number">4</span></span><br><span class="line">ldr   r3, [r1], r2</span><br><span class="line">ldr   r3, [r1], r2, LSL#<span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p>除此之外，就都是偏移取址模式了</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ldr   r3, [r1, #<span class="number">4</span>]</span><br><span class="line">ldr   r3, [r1, r2]</span><br><span class="line">ldr   r3, [r1, r2, LSL#<span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+
+<p>地址模式：用作偏移</p>
+<p>地址模式：前向索引</p>
+<p>地址模式：后向索引</p>
+<h3 id="关于PC相对取址的LDR指令"><a href="#关于PC相对取址的LDR指令" class="headerlink" title="关于PC相对取址的LDR指令"></a><strong>关于PC相对取址的LDR指令</strong></h3><p>有时候LDR并不仅仅被用来从内存中加载数据。还有如下这操作:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.section .text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">   ldr r0, =jump        <span class="comment">/* 加载jump标签所在的内存位置到R0 */</span></span><br><span class="line">   ldr r1, =<span class="number">0x68DB00AD</span>  <span class="comment">/* 加载立即数0x68DB00AD到R1 */</span></span><br><span class="line">jump:</span><br><span class="line">   ldr r2, =<span class="number">511</span>         <span class="comment">/* 加载立即数511到R2 */</span> </span><br><span class="line">   bkpt</span><br></pre></td></tr></table></figure>
+
+<p>这些指令学术上被称作伪指令。但我们在编写ARM汇编时可以用这种格式的指令去引用我们文字标识池中的数据。在上面的例子中我们用一条指令将一个32位的常量值放到了一个寄存器中。为什么我们会这么写是因为ARM每次仅仅能加载8位的值，原因倾听我解释立即数在ARM架构下的处理。</p>
+<h3 id="在ARM中使用立即数的规律"><a href="#在ARM中使用立即数的规律" class="headerlink" title="在ARM中使用立即数的规律"></a><strong>在ARM中使用立即数的规律</strong></h3><p>在ARM中不能像X86那样直接将立即数加载到寄存器中。因为你使用的立即数是受限的。这些限制听上去有些无聊。但是听我说，这也是为了告诉你绕过这些限制的技巧(通过LDR)。</p>
+<p>我们都知道每条ARM指令的宽度是32位，所有的指令都是可以条件执行的。我们有16中条件可以使用而且每个条件在机器码中的占位都是4位。之后我们需要2位来做为目的寄存器。2位作为第一操作寄存器，1位用作设置状态的标记位，再加上比如操作码(opcode)这些的占位。最后每条指令留给我们存放立即数的空间只有12位宽。也就是4096个不同的值。</p>
+<p>这也就意味着ARM在使用MOV指令时所能操作的立即数值范围是有限的。那如果很大的话，只能拆分成多个部分外加移位操作拼接了。</p>
+<p>所以这剩下的12位可以再次划分，8位用作加载0-255中的任意值，4位用作对这个值做0~30位的循环右移。这也就意味着这个立即数可以通过这个公式得到：v = n ror 2*r。换句话说，有效的立即数都可以通过循环右移来得到。这里有一个例子</p>
+<p>有效值:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#<span class="number">256</span>        <span class="comment">// 1 循环右移 24位 --&gt; 256</span></span><br><span class="line">#<span class="number">384</span>        <span class="comment">// 6 循环右移 26位 --&gt; 384</span></span><br><span class="line">#<span class="number">484</span>        <span class="comment">// 121 循环右移 30位 --&gt; 484</span></span><br><span class="line">#<span class="number">16384</span>      <span class="comment">// 1 循环右移 18位 --&gt; 16384</span></span><br><span class="line">#<span class="number">2030043136</span> <span class="comment">// 121 循环右移 8位 --&gt; 2030043136</span></span><br><span class="line">#<span class="number">0x06000000</span> <span class="comment">// 6 循环右移 8位 --&gt; 100663296 (十六进制值0x06000000)</span></span><br><span class="line">Invalid values:</span><br><span class="line">#<span class="number">370</span>        <span class="comment">// 185 循环右移 31位 --&gt; 31不在范围内 (0 – 30)</span></span><br><span class="line">#<span class="number">511</span>        <span class="comment">// 1 1111 1111 --&gt; 比特模型不符合</span></span><br><span class="line">#<span class="number">0x06010000</span> <span class="comment">// 1 1000 0001.. --&gt; 比特模型不符合</span></span><br></pre></td></tr></table></figure>
+
+<p>看上去这样并不能一次性加载所有的32位值。不过我们可以通过以下的两个选项来解决这个问题：</p>
+<p>用小部分去组成更大的值。</p>
+<p>比如对于指令<code> MOV r0, #511</code></p>
+<p>将511分成两部分：<code>MOV r0, #256, and ADD r0, #255</code></p>
+<p>用加载指令构造<code>ldr r1,=value</code>的形式，编译器会帮你转换成MOV的形式，如果失败的话就转换成从数据段中通过PC相对偏移加载。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LDR r1, =<span class="number">511</span></span><br></pre></td></tr></table></figure>
+
+<p>如果你尝试加载一个非法的值，编译器会报错并且告诉你 invalid constant。如果在遇到这个问题，你现在应该知道该怎么解决了吧。唉还是举个栗子，就比如你想把511加载到R0。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.section .text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">    mov     r0, #<span class="number">511</span></span><br><span class="line">    bkpt</span><br></pre></td></tr></table></figure>
+
+<p>这样做的结果就是编译报错:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">azeria@<span class="built_in">labs</span>:~$ as test.s -o test.o</span><br><span class="line">test.s: Assembler messages:</span><br><span class="line">test.s:<span class="number">5</span>: Error: <span class="function">invalid <span class="title">constant</span> <span class="params">(<span class="number">1f</span>f)</span> after fixup</span></span><br></pre></td></tr></table></figure>
+
+<p>你需要将511分成多部分，或者直接用LDR指令。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">.section .text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line"> mov r0, #<span class="number">256</span>   <span class="comment">/* 1 ror 24 = 256, so it&#x27;s valid */</span></span><br><span class="line"> add r0, #<span class="number">255</span>   <span class="comment">/* 255 ror 0 = 255, valid. r0 = 256 + 255 = 511 */</span></span><br><span class="line"> ldr r1, =<span class="number">511</span>   <span class="comment">/* load 511 from the literal pool using LDR */</span></span><br><span class="line"> bkpt</span><br></pre></td></tr></table></figure>
+
+<p>如果你想知道你能用的立即数的有效值，你不需要自己计算。我这有个小脚本 <a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/azeria-labs/rotator/master/rotator.py">rotator.py</a>,用法如下。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">azeria@<span class="built_in">labs</span>:~$ python rotator.py</span><br><span class="line">Enter the value you want to check: <span class="number">511</span></span><br><span class="line">Sorry, <span class="number">511</span> cannot be used as an immediate number <span class="keyword">and</span> has to be split.</span><br><span class="line">azeria@<span class="built_in">labs</span>:~$ python rotator.py</span><br><span class="line">Enter the value you want to check: <span class="number">256</span></span><br><span class="line">The number <span class="number">256</span> can be used as a valid immediate number.</span><br><span class="line"><span class="number">1</span> ror <span class="number">24</span> --&gt; <span class="number">256</span></span><br></pre></td></tr></table></figure>
+
+
     </div>
 
     
@@ -262,6 +430,10 @@
     
 
       <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/xiaohong404.github.io/tags/ARM/" rel="tag"><i class="fa fa-tag"></i> ARM</a>
+          </div>
 
         
 
@@ -336,6 +508,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E6%A0%B7%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">基础样例代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%A7%8D%E5%81%8F%E7%A7%BB%E5%BD%A2%E5%BC%8F%EF%BC%9A%E7%AB%8B%E5%8D%B3%E6%95%B0%E4%BD%9C%E5%81%8F%E7%A7%BB"><span class="nav-number">2.</span> <span class="nav-text">第一种偏移形式：立即数作偏移</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%A7%8D%E5%81%8F%E7%A7%BB%E5%BD%A2%E5%BC%8F%EF%BC%9A%E5%AF%84%E5%AD%98%E5%99%A8%E4%BD%9C%E5%81%8F%E7%A7%BB"><span class="nav-number">3.</span> <span class="nav-text">第二种偏移形式：寄存器作偏移</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E7%A7%8D%E5%81%8F%E7%A7%BB%E5%BD%A2%E5%BC%8F%EF%BC%9A%E5%AF%84%E5%AD%98%E5%99%A8%E7%BC%A9%E6%94%BE%E5%80%BC%E4%BD%9C%E5%81%8F%E7%A7%BB"><span class="nav-number">4.</span> <span class="nav-text">第三种偏移形式：寄存器缩放值作偏移</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">小结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8EPC%E7%9B%B8%E5%AF%B9%E5%8F%96%E5%9D%80%E7%9A%84LDR%E6%8C%87%E4%BB%A4"><span class="nav-number">5.1.</span> <span class="nav-text">关于PC相对取址的LDR指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8ARM%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%AB%8B%E5%8D%B3%E6%95%B0%E7%9A%84%E8%A7%84%E5%BE%8B"><span class="nav-number">5.2.</span> <span class="nav-text">在ARM中使用立即数的规律</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -488,6 +661,61 @@ document.querySelectorAll('.pdfobject-container').forEach(element => {
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 

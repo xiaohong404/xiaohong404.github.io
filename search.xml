@@ -1,19 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>深度学习的对抗攻击方法综述</title>
-    <url>/xiaohong404.github.io/2020/10/28/AI%E5%AE%89%E5%85%A8/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0/</url>
-    <content><![CDATA[ <div class="pdfobject-container" data-target="./PDF/深度学习的对抗攻击方法综述.pdf" data-height="500px"></div>]]></content>
-      <categories>
-        <category>Machine Learning</category>
-        <category>AI安全</category>
-      </categories>
-      <tags>
-        <tag>AI</tag>
-        <tag>Machine Learning</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Part 1: ARM汇编介绍</title>
     <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-1-ARM%E6%B1%87%E7%BC%96%E4%BB%8B%E7%BB%8D/0.png" class></strong></p>
@@ -84,7 +71,7 @@
  <a id="more"></a>
 
 <h2 id="ARM汇编数据类型基础"><a href="#ARM汇编数据类型基础" class="headerlink" title="ARM汇编数据类型基础"></a><strong>ARM汇编数据类型基础</strong></h2><p>与高级语言类似，ARM也支持操作不同的数据类型。</p>
-<p><img src="https://azeria-labs.com/wp-content/uploads/2017/03/data-types-1.png" alt="img"></p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/1.png" class></strong></p>
 <p>被加载或者存储的数据类型可以是无符号（有符号）的字(words，四字节)，半字(halfwords，两字节)，或者字节(bytes)。这些数据类型在汇编语言中的扩展后缀为**-h<strong>或者</strong>-sh<strong>对应着半字，</strong>-b<strong>或者</strong>-sb**对应着字节，但是对于字并没有对应的扩展。无符号类型与有符号类型的差别是：</p>
 <p>符号数据类型可以包含正负数所以数值范围上更低些</p>
 <p>无符号数据类型可以放得下很大的正数但是放不了负数</p>
@@ -92,12 +79,12 @@
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ldr = 加载字，宽度四字节</span><br><span class="line">ldrh = 加载无符号的半字，宽度两字节</span><br><span class="line">ldrsh = 加载有符号的半字，宽度两字节</span><br><span class="line">ldrb = 加载无符号的字节</span><br><span class="line">ldrsb = 加载有符号的字节</span><br><span class="line">str = 存储字，宽度四字节</span><br><span class="line">strh = 存储无符号的半字，宽度两字节</span><br><span class="line">strsh = 存储有符号的半字，宽度两字节</span><br><span class="line">strb = 存储无符号的字节</span><br><span class="line">strsb = 存储有符号的字节</span><br></pre></td></tr></table></figure>
 
 <h2 id="字节序"><a href="#字节序" class="headerlink" title="字节序"></a><strong>字节序</strong></h2><p>在内存中有两种字节排布顺序，大端序(BE)或者小端序(LE)。两者的主要不同是对象中的每个字节在内存中的存储顺序存在差异。一般X86中是小端序，最低的字节存储在最低的地址上。在大端机中最高的字节存储在最低的地址上。</p>
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/Xiaohong_Blog\blog\source_posts\ARM汇编\Part-2-数据类型寄存器\2.png" alt="img"></p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/2.png" class></strong></p>
 <p>在版本3之前，ARM使用的是小端序，但在这之后就都是使用大端序了，但也允许切换回小端序。在我们样例代码所在的ARMv6中，指令代码是以[<a href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.ddi0301h/Cdfbbchb.html">小端序排列对齐]</a>。但是数据访问时采取大端序还是小端序使用程序状态寄存器(CPSR)的第9比特位来决定的。</p>
 <h2 id="ARM寄存器"><a href="#ARM寄存器" class="headerlink" title="ARM寄存器"></a><strong>ARM寄存器</strong></h2><p>寄存器的数量由ARM版本决定。根据[<a href="http://infocenter.arm.com/help/topic/com.arm.doc.dui0473c/Babdfiih.html">ARM参考手册]</a>，在ARMv6-M与ARMv7-M的处理器中有30个32bit位宽度的通用寄存器。前16个寄存器是用户层可访问控制的，其他的寄存器在高权限进程中可以访问（但ARMv6-M与ARMv7-M除外）。我们仅介绍可以在任何权限模式下访问的16个寄存器。这16个寄存器分为两组：通用寄存器与有特殊含义的寄存器。</p>
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/Xiaohong_Blog\blog\source_posts\ARM汇编\Part-2-数据类型寄存器\3.png" alt="image-20201109224140126"></p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/3.png" class></strong></p>
 <p>下面这张表是ARM架构与寄存器与Intel架构寄存器的关系：</p>
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/Xiaohong_Blog\blog\source_posts\ARM汇编\Part-2-数据类型寄存器\4.png" alt="image-20201109224330032"></p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/4.png" class></strong></p>
 <p>R0-R12：用来在通用操作中存储临时的值，指针等。R0被用来存储函数调用的返回值。R7经常被用作存储系统调用号，R11存放着帮助我们找到栈帧边界的指针（之后会讲）。以及，在ARM的函数调用约定中，前四个参数按顺序存放在R0-R3中。</p>
 <p>R13：SP(栈指针）。栈指针寄存器用来指向当前的栈顶。栈是一片来存储函数调用中相关数据的内存，在函数返回时会被修改为对应的栈指针。栈指针用来帮助在栈上申请数据空间。比如说你要申请一个字的大小，就会将栈指针减4，再将数据放入之前所指向的位置。</p>
 <p>R14：LR(链接寄存器)。当一个函数调用发生，链接寄存器就被用来记录函数调用发生所在位置的下一条指令的地址。这么做允许我们快速的从子函数返回到父函数。</p>
@@ -116,15 +103,52 @@
 
 <p>当然不是，在执行0x8054这条位置的机器码时，PC已经读到了两条指令后的位置也就是0x805c(见R0寄存器)。所以我们以为直接读取PC寄存器的值时，它指向的是下一条指令的位置。但是调试器告诉我们，PC指向当前指令向后两条机器码的位置。这是因为早期的ARM处理器总是会先获取当前位置后两条的机器码。这么做的原因也是确保与早期处理器的兼容性。</p>
 <h2 id="当前程序状态寄存器（CPSR）"><a href="#当前程序状态寄存器（CPSR）" class="headerlink" title="当前程序状态寄存器（CPSR）"></a><strong>当前程序状态寄存器（CPSR）</strong></h2><p>当你用GDB调试ARM程序的的时候你能会可以看见Flags这一栏（GDB配置插件GEF后就可以看见了，或者直接在GDB里面输入flags也可以）。</p>
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/Xiaohong_Blog\blog\source_posts\ARM汇编\Part-2-数据类型寄存器\5.png" alt="img"></p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/5.png" class></strong></p>
 <p>图中寄存器“<code>$CSPR“</code>显示了当前状态寄存器的值，Flags里面出现的thumb，fast，interrupt，overflow，carry，zero，negative就是来源于CSPR寄存器中对应比特位的值。ARM架构的N，Z，C，V与X86架构EFLAG中的SF，ZF，CF，OF相对应。这些比特位在汇编级别的条件执行或者循环的跳出时，被用作判断的依据。</p>
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/Xiaohong_Blog\blog\source_posts\ARM汇编\Part-2-数据类型寄存器\6.png" alt="image-20201109234815952"></p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/6.png" class></strong></p>
 <p>上图展示了32位的CPSR寄存器的比特位含义，左边是最大比特位，右边是最小比特位。每个单元代表一个比特。这一个个比特的含义都很丰富：</p>
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/Xiaohong_Blog\blog\source_posts\ARM汇编\Part-2-数据类型寄存器\7.png" alt="image-20201109235041376"></p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/7.png" class></strong></p>
 <p>假设我们用CMP指令去比较1和2，结果会是一个负数因为1-2=-1。然而当我们反过来用2和1比较，C位将被设定，因为在一个较大的数上减了较小的数，没有发生借位。当我们比较两个相同的数比如2和2时，由于结果是0，Z标志位将被置一。注意CMP指令中被使用的寄存器的值并不会被修改，其计算结果仅仅影响到CPSR寄存器中的状态位。</p>
 <p>在开了GEF插件的GDB中，计算结果如下图：在这里我们比较的两个寄存器是R1和R0，所以执行后的flag状态如下图。</p>
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/Xiaohong_Blog\blog\source_posts\ARM汇编\Part-2-数据类型寄存器\8.png" alt="img"></p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-2-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AF%84%E5%AD%98%E5%99%A8/8.png" class></strong></p>
 <p>Carry位Flag被设置的原因是CMP R1,R0会去拿4和2做比较。因为我们用以个较大的数字去减一个较少的数字，没有发生借位。Carry位便被置1。相反的，如果是CMP R0,R1那么Negative位会被置一。</p>
+]]></content>
+      <categories>
+        <category>ARM汇编</category>
+      </categories>
+      <tags>
+        <tag>ARM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Part 3: Arm汇编指令</title>
+    <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-3-Arm%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-3-Arm%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4/0.png" class></strong></p>
+ <a id="more"></a>
+
+<h2 id="ARM-amp-Thumb"><a href="#ARM-amp-Thumb" class="headerlink" title="ARM&amp;Thumb"></a>ARM&amp;Thumb</h2><p>ARM处理器有两个主要的操作状态，ARM模式以及Thumb模式(Jazelle模式先不考虑)。这些模式与特权模式并不冲突。SVC模式既可以在ARM下调用也可以在Thumb下调用。只不过两种状态的主要不同是指令集的不同，ARM模式的指令集宽度是32位而Thumb是16位宽度(但也可以是32位)。知道何时以及如何使用Thumb模式对于ARM漏洞利用的开发尤其重要。当我们写ARM的shellcode时候，我们需要尽可能的少用NULL以及使用16位宽度的Thumb指令以精简代码。</p>
+<p>不同版本ARM，其调用约定不完全相同，而且支持的Thumb指令集也是不完全相同。在某些版本山，ARM提出了扩展型Thumb指令集(也叫Thumbv2)，允许执行32位宽的Thumb指令以及之前版本不支持的条件执行。为了在Thumb模式下使用条件执行指令，Thumb提出了”IT”分支指令。然而，这条指令在之后的版本又被更改移除了，说是为了让一些事情变得更加简单方便。我并不清楚各个版本的ARM架构所支持的具体的ARM/Thumb指令集，而且我也的确不想知道。我觉得你也应该不用深究这个问题。因为你只需要知道你设备上的关键ARM版本所支持的Thumb指令集就可以了。以及ARM信息中心可以帮你弄清楚你的ARM版本到底是多少。</p>
+<p>就像之前说到的，Thumb也有很多不同的版本。不过不同的名字仅仅是为了区分不同版本的Thumb指令集而已(也就是对于处理器来说，这些指令永远都是Thumb指令)。</p>
+<p><strong>Thumb-1(16位宽指令集)：</strong>在ARMv6以及更早期的版本上使用。</p>
+<p><strong>Thumb-2(16位/32位宽指令集)：</strong>在Thumb-1基础上扩展的更多的指令集(在ARMv6T2以及ARMv7即很多32位Android手机所支持的架构上使用)</p>
+<p><strong>Thumb-EE：</strong>包括一些改变以及对于动态生成代码的补充(即那些在设备上执行前或者运行时编译的代码)</p>
+<h2 id="ARM与Thumb的不同之处"><a href="#ARM与Thumb的不同之处" class="headerlink" title="ARM与Thumb的不同之处"></a><strong>ARM与Thumb的不同之处</strong></h2><p><strong>对于条件执行指令（不是条件跳转指令）：</strong>所有的ARM状态指令都支持条件执行。一些版本的ARM处理器上允许在Thumb模式下通过IT汇编指令进行条件执行。条件执行减少了要被执行的指令数量，以及用来做分支跳转的语句，所以具有更高的代码密度。</p>
+<p><strong>ARM模式与Thumb模式的32位指令：</strong>Thumb的32位汇编指令都有类似于a.w的扩展后缀。</p>
+<p>桶型移位是另一种独特的ARM模式特性。它可以被用来减少指令数量。比如说，为了减少使用乘法所需的两条指令(乘法操作需要先乘2然后再把结果用MOV存储到另一个寄存器中)，就可以使用在MOV中自带移位乘法操作的左移指令(Mov R1, R0, LSL #1)。</p>
+<p>在ARM模式与Thumb模式间切换的话，以下两个条件之一必须满足：</p>
+<p>我们可以在使用分支跳转指令BX(branch and exchange)或者分支链接跳转指令BLX(branch,link and exchange)时，将目的寄存器的最低位置为1。之后的代码执行就会在Thumb模式下进行。你也许会好奇这样做目标跳转地址不就有对齐问题了么，因为代码都是2字节或者4字节对齐的？但事实上这并不会造成问题，因为处理器会直接忽略最低比特位的标识。更多的细节我们会在第6篇中解释。</p>
+<p>我们之前有说过，在CPSR当前程序状态寄存器中，T标志位用来代表当前程序是不是在Thumb模式下运行的。</p>
+<h2 id="ARM指令集规律含义"><a href="#ARM指令集规律含义" class="headerlink" title="ARM指令集规律含义"></a><strong>ARM指令集规律含义</strong></h2><p>这一节的目的是简要的介绍ARM的通用指令集。知道每一句汇编指令是怎么操作使用，相互关联，最终组成程序是很重要的。之前说过，汇编语言是由构建机器码块的指令组成。所以ARM指令通常由助记符外加一到两个跟在后面的操作符组成，如下面的模板所示：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">MNEMONIC&#123;S&#125;&#123;condition&#125; &#123;Rd&#125;, Operand1, Operand2</span><br><span class="line">助记符&#123;是否使用CPSR&#125;&#123;是否条件执行以及条件&#125; &#123;目的寄存器&#125;, 操作符<span class="number">1</span>, 操作符<span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p>由于ARM指令的灵活性，不是全部的指令都满足这个模板，不过大部分都满足了。下面来说说模板中的含义:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">MNEMONIC     - 指令的助记符如ADD</span><br><span class="line">&#123;S&#125;          - 可选的扩展位，如果指令后加了S，则需要依据计算结果更新CPSR寄存器中的条件跳转相关的FLAG</span><br><span class="line">&#123;condition&#125;  - 如果机器码要被条件执行，那它需要满足的条件标示</span><br><span class="line">&#123;Rd&#125;         - 存储结果的目的寄存器</span><br><span class="line">Operand1     - 第一个操作数，寄存器或者是一个立即数</span><br><span class="line">Operand2     - 第二个(可变的)操作数，可以是一个立即数或者寄存器或者有偏移量的寄存器</span><br></pre></td></tr></table></figure>
+
+<p>当助记符，S，目的寄存器以及第一个操作数都被声明的时候，条件执行以及第二操作数需要一些声明。因为条件执行是依赖于CPSR寄存器的值的，更精确的说是寄存器中的一些比特位。第二操作数是一个可变操作数，因为我们可以以各种形式来使用它，立即数，寄存器，或者有偏移量的寄存器。举例来说，第二操作数还有如下操作：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">#<span class="number">123</span>                    - 立即数</span><br><span class="line">Rx                      - 寄存器比如R1</span><br><span class="line">Rx, ASR n               - 对寄存器中的值进行算术右移n位后的值</span><br><span class="line">Rx, LSL n               - 对寄存器中的值进行逻辑左移n位后的值</span><br><span class="line">Rx, LSR n               - 对寄存器中的值进行逻辑右移n位后的值</span><br><span class="line">Rx, ROR n               - 对寄存器中的值进行循环右移n位后的值</span><br><span class="line">Rx, RRX                 - 对寄存器中的值进行带扩展的循环右移<span class="number">1</span>位后的值</span><br></pre></td></tr></table></figure>
+
+<p>在知道了这个机器码模板后，然我们试着去理解这些指令：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-3-Arm%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4/1.png" class></strong></p>
 ]]></content>
       <categories>
         <category>ARM汇编</category>
@@ -136,22 +160,341 @@
   <entry>
     <title>Part 5: 重复性加载及存储</title>
     <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-5-%E9%87%8D%E5%A4%8D%E6%80%A7%E5%8A%A0%E8%BD%BD%E5%8F%8A%E5%AD%98%E5%82%A8/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>Part 4: 内存相关指令——加载以及存储</title>
-    <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-5-%E9%87%8D%E5%A4%8D%E6%80%A7%E5%8A%A0%E8%BD%BD%E5%8F%8A%E5%AD%98%E5%82%A8/0.png" class></strong></p>
+ <a id="more"></a>
+
+<h2 id="连续加载-存储"><a href="#连续加载-存储" class="headerlink" title="连续加载/存储"></a><strong>连续加载/存储</strong></h2><p>有时连续加载(存储)会显得更加高效。因为我们可以使用LDM(load multiple)以及STM(store multiple)。这些指令基于起始地址的不同，有不同的形式。下面是我们会在这一节用到的相关代码。在下文中会详细讲解。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">.data</span><br><span class="line">array_buff:</span><br><span class="line"> .word <span class="number">0x00000000</span>             <span class="comment">/* array_buff[0] */</span></span><br><span class="line"> .word <span class="number">0x00000000</span>             <span class="comment">/* array_buff[1] */</span></span><br><span class="line"> .word <span class="number">0x00000000</span>             <span class="comment">/* array_buff[2]. 这一项存的是指向array_buff+8的指针 */</span></span><br><span class="line"> .word <span class="number">0x00000000</span>             <span class="comment">/* array_buff[3] */</span></span><br><span class="line"> .word <span class="number">0x00000000</span>             <span class="comment">/* array_buff[4] */</span></span><br><span class="line">.text</span><br><span class="line">.global main</span><br><span class="line">main:</span><br><span class="line"> adr r0, words+<span class="number">12</span>             <span class="comment">/* words[3]的地址 -&gt; r0 */</span></span><br><span class="line"> ldr r1, array_buff_bridge    <span class="comment">/* array_buff[0]的地址 -&gt; r1 */</span></span><br><span class="line"> ldr r2, array_buff_bridge+<span class="number">4</span>  <span class="comment">/* array_buff[2]的地址 -&gt; r2 */</span></span><br><span class="line"> ldm r0, &#123;r4,r5&#125;              <span class="comment">/* words[3] -&gt; r4 = 0x03; words[4] -&gt; r5 = 0x04 */</span></span><br><span class="line"> stm r1, &#123;r4,r5&#125;              <span class="comment">/* r4 -&gt; array_buff[0] = 0x03; r5 -&gt; array_buff[1] = 0x04 */</span></span><br><span class="line"> ldmia r0, &#123;r4-r6&#125;            <span class="comment">/* words[3] -&gt; r4 = 0x03, words[4] -&gt; r5 = 0x04; words[5] -&gt; r6 = 0x05; */</span></span><br><span class="line"> stmia r1, &#123;r4-r6&#125;            <span class="comment">/* r4 -&gt; array_buff[0] = 0x03; r5 -&gt; array_buff[1] = 0x04; r6 -&gt; array_buff[2] = 0x05 */</span></span><br><span class="line"> ldmib r0, &#123;r4-r6&#125;            <span class="comment">/* words[4] -&gt; r4 = 0x04; words[5] -&gt; r5 = 0x05; words[6] -&gt; r6 = 0x06 */</span></span><br><span class="line"> stmib r1, &#123;r4-r6&#125;            <span class="comment">/* r4 -&gt; array_buff[1] = 0x04; r5 -&gt; array_buff[2] = 0x05; r6 -&gt; array_buff[3] = 0x06 */</span></span><br><span class="line"> ldmda r0, &#123;r4-r6&#125;            <span class="comment">/* words[3] -&gt; r6 = 0x03; words[2] -&gt; r5 = 0x02; words[1] -&gt; r4 = 0x01 */</span></span><br><span class="line"> ldmdb r0, &#123;r4-r6&#125;            <span class="comment">/* words[2] -&gt; r6 = 0x02; words[1] -&gt; r5 = 0x01; words[0] -&gt; r4 = 0x00 */</span></span><br><span class="line"> stmda r2, &#123;r4-r6&#125;            <span class="comment">/* r6 -&gt; array_buff[2] = 0x02; r5 -&gt; array_buff[1] = 0x01; r4 -&gt; array_buff[0] = 0x00 */</span></span><br><span class="line"> stmdb r2, &#123;r4-r5&#125;            <span class="comment">/* r5 -&gt; array_buff[1] = 0x01; r4 -&gt; array_buff[0] = 0x00; */</span></span><br><span class="line"> bx lr</span><br><span class="line">words:</span><br><span class="line"> .word <span class="number">0x00000000</span>             <span class="comment">/* words[0] */</span></span><br><span class="line"> .word <span class="number">0x00000001</span>             <span class="comment">/* words[1] */</span></span><br><span class="line"> .word <span class="number">0x00000002</span>             <span class="comment">/* words[2] */</span></span><br><span class="line"> .word <span class="number">0x00000003</span>             <span class="comment">/* words[3] */</span></span><br><span class="line"> .word <span class="number">0x00000004</span>             <span class="comment">/* words[4] */</span></span><br><span class="line"> .word <span class="number">0x00000005</span>             <span class="comment">/* words[5] */</span></span><br><span class="line"> .word <span class="number">0x00000006</span>             <span class="comment">/* words[6] */</span></span><br><span class="line">array_buff_bridge:</span><br><span class="line"> .word array_buff             <span class="comment">/* array_buff的地址*/</span></span><br><span class="line"> .word array_buff+<span class="number">8</span>           <span class="comment">/* array_buff[2]的地址 */</span></span><br></pre></td></tr></table></figure>
+
+<p>在开始前，再深化一个概念，就是.word标识是对内存中长度为32位的数据块作引用。这对于理解代码中的偏移量很重要。所以程序中由.data段组成的数据，内存中会申请一个长度为5的4字节数组array_buff。我们的所有内存存储操作，都是针对这段内存中的数据段做读写的。而.text端包含着我们对内存操作的代码以及只读的两个标签，一个标签是含有七个元素的数组，另一个是为了链接.text段和.data段所存在的对于array_buff的引用。下面就开始一行行的分析了！</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">adr r0, words+<span class="number">12</span>             <span class="comment">/* words[3]的地址 -&gt; r0 */</span></span><br></pre></td></tr></table></figure>
+
+<p>我们用ADR指令来获得words[3]的地址，并存到R0中。我们选了一个中间的位置是因为一会要做向前以及向后的操作。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; <span class="keyword">break</span> _start </span><br><span class="line">gef&gt; run</span><br><span class="line">gef&gt; nexti</span><br></pre></td></tr></table></figure>
+
+<p>R0当前就存着words[3]的地址了，也就是0x80B8。也就是说，我们的数组word[0]的地址是:0x80AC(0x80B8-0XC)。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; x/<span class="number">7</span>w <span class="number">0x00080AC</span></span><br><span class="line"><span class="number">0x80ac</span> &lt;words&gt;: <span class="number">0x00000000</span> <span class="number">0x00000001</span> <span class="number">0x00000002</span> <span class="number">0x00000003</span></span><br><span class="line"><span class="number">0x80bc</span> &lt;words+<span class="number">16</span>&gt;: <span class="number">0x00000004</span> <span class="number">0x00000005</span> <span class="number">0x00000006</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来我们把R1和R2指向array_buff[0]以及array_buff[2]。在获取了这些指针后，我们就可以操作这个数组了。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ldr r1, array_buff_bridge    <span class="comment">/* array_buff[0]的地址 -&gt; r1 */</span></span><br><span class="line">ldr r2, array_buff_bridge+<span class="number">4</span>  <span class="comment">/* array_buff[2]的地址 -&gt; r2 */</span></span><br></pre></td></tr></table></figure>
+
+<p>执行完上面这两条指令后，R1和R2的变化。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; info <span class="keyword">register</span> r1 r2</span><br><span class="line">r1      <span class="number">0x100d0</span>     <span class="number">65744</span></span><br><span class="line">r2      <span class="number">0x100d8</span>     <span class="number">65752</span></span><br></pre></td></tr></table></figure>
+
+<p>下一条LDM指令从R0指向的内存中加载了两个字的数据。因为R0指向words[3]的起始处，所以words[3]的值赋给R4，words[4]的值赋给R5。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ldm r0, &#123;r4,r5&#125;              <span class="comment">/* words[3] -&gt; r4 = 0x03; words[4] -&gt; r5 = 0x04 */</span></span><br></pre></td></tr></table></figure>
+
+<p>所以我们用一条指令加载了两个数据块，并且放到了R4和R5中。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; info registers r4 r5</span><br><span class="line">r4      <span class="number">0x3</span>      <span class="number">3</span></span><br><span class="line">r5      <span class="number">0x4</span>      <span class="number">4</span></span><br></pre></td></tr></table></figure>
+
+<p>看上去不错，再来看看STM指令。STM指令将R4与R5中的值0x3和0x4存储到R1指向的内存中。这里R1指向的是array_buff[0]，也就是说 array_buff[0] = 0x00000003以及array_buff[1] = 0x00000004。如不特定指定，LDM与STM指令操作的最小单位都是一个字(四字节)。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">stm r1, &#123;r4,r5&#125;              <span class="comment">/* r4 -&gt; array_buff[0] = 0x03; r5 -&gt; array_buff[1] = 0x04 */</span></span><br></pre></td></tr></table></figure>
+
+<p>值0x3与0x4被存储到了R1指向的地方0x100D0以及0x100D4。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; x/<span class="number">2</span>w <span class="number">0x000100D0</span></span><br><span class="line"><span class="number">0x100d0</span> &lt;array_buff&gt;:  <span class="number">0x00000003</span>   <span class="number">0x00000004</span></span><br></pre></td></tr></table></figure>
+
+<p>之前说过LDM和STM有多种形式。不同形式的扩展字符和含义都不同：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">IA(increase after)</span><br><span class="line">IB(increase before)</span><br><span class="line">DA(decrease after)</span><br><span class="line">DB(decrease before)</span><br></pre></td></tr></table></figure>
+
+<p>这些扩展划分的主要依据是，作为源地址或者目的地址的指针是在访问内存前增减，还是访问内存后增减。以及，LDM与LDMIA功能相同，都是在加载操作完成后访问对地址增加的。通过这种方式，我们可以序列化的向前或者向后从一个指针指向的内存加载数据到寄存器，或者存放数据到内存。如下示意代码 。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ldmia r0, &#123;r4-r6&#125; <span class="comment">/* words[3] -&gt; r4 = 0x03, words[4] -&gt; r5 = 0x04; words[5] -&gt; r6 = 0x05; */</span> </span><br><span class="line">stmia r1, &#123;r4-r6&#125; <span class="comment">/* r4 -&gt; array_buff[0] = 0x03; r5 -&gt; array_buff[1] = 0x04; r6 -&gt; array_buff[2] = 0x05 */</span></span><br></pre></td></tr></table></figure>
+
+<p>在执行完这两条代码后，R4到R6寄存器所访问的内存地址以及存取的值是0x000100D0，0x000100D4，以及0x000100D8，值对应是 0x3，0x4，以及0x5。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; info registers r4 r5 r6</span><br><span class="line">r4     <span class="number">0x3</span>     <span class="number">3</span></span><br><span class="line">r5     <span class="number">0x4</span>     <span class="number">4</span></span><br><span class="line">r6     <span class="number">0x5</span>     <span class="number">5</span></span><br><span class="line">gef&gt; x/<span class="number">3</span>w <span class="number">0x000100D0</span></span><br><span class="line"><span class="number">0x100d0</span> &lt;array_buff&gt;: <span class="number">0x00000003</span>  <span class="number">0x00000004</span>  <span class="number">0x00000005</span></span><br></pre></td></tr></table></figure>
+
+<p>而LDMIB指令会首先对指向的地址先加4，然后再加载数据到寄存器中。所以第一次加载的时候也会对指针加4，所以存入寄存器的是0X4(words[4])而不是0x3(words[3])。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ldmib r0, &#123;r4-r6&#125;            <span class="comment">/* words[4] -&gt; r4 = 0x04; words[5] -&gt; r5 = 0x05; words[6] -&gt; r6 = 0x06 */</span></span><br><span class="line">stmib r1, &#123;r4-r6&#125;            <span class="comment">/* r4 -&gt; array_buff[1] = 0x04; r5 -&gt; array_buff[2] = 0x05; r6 -&gt; array_buff[3] = 0x06 */</span></span><br></pre></td></tr></table></figure>
+
+<p>执行后的调试示意:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; x/<span class="number">3</span>w <span class="number">0x100D4</span></span><br><span class="line"><span class="number">0x100d4</span> &lt;array_buff+<span class="number">4</span>&gt;: <span class="number">0x00000004</span>  <span class="number">0x00000005</span>  <span class="number">0x00000006</span></span><br><span class="line">gef&gt; info <span class="keyword">register</span> r4 r5 r6</span><br><span class="line">r4     <span class="number">0x4</span>    <span class="number">4</span></span><br><span class="line">r5     <span class="number">0x5</span>    <span class="number">5</span></span><br><span class="line">r6     <span class="number">0x6</span>    <span class="number">6</span></span><br></pre></td></tr></table></figure>
+
+<p>当用LDMDA指令时，执行的就是反向操作了。R0指向words[3]，当加载数据时数据的加载方向变成加载words[3]，words[2]，words[1]的值到R6，R5，R4中。这种加载流程发生的原因是我们LDM指令的后缀是DA，也就是在加载操作完成后，会将指针做递减的操作。注意在做减法模式下的寄存器的操作是反向的，这么设定的原因为了保持让编号大的寄存器访问高地址的内存的原则。</p>
+<p>多次加载，后置减法：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ldmda r0, &#123;r4-r6&#125; <span class="comment">/* words[3] -&gt; r6 = 0x03; words[2] -&gt; r5 = 0x02; words[1] -&gt; r4 = 0x01 */</span></span><br></pre></td></tr></table></figure>
+
+<p>执行之后，R4-R6的值：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; info <span class="keyword">register</span> r4 r5 r6</span><br><span class="line">r4     <span class="number">0x1</span>    <span class="number">1</span></span><br><span class="line">r5     <span class="number">0x2</span>    <span class="number">2</span></span><br><span class="line">r6     <span class="number">0x3</span>    <span class="number">3</span></span><br></pre></td></tr></table></figure>
+
+<p>多次加载，前置减法：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ldmdb r0, &#123;r4-r6&#125; <span class="comment">/* words[2] -&gt; r6 = 0x02; words[1] -&gt; r5 = 0x01; words[0] -&gt; r4 = 0x00 */</span></span><br></pre></td></tr></table></figure>
+
+<p>执行之后，R4-R6的值：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; info <span class="keyword">register</span> r4 r5 r6</span><br><span class="line">r4 <span class="number">0x0</span> <span class="number">0</span></span><br><span class="line">r5 <span class="number">0x1</span> <span class="number">1</span></span><br><span class="line">r6 <span class="number">0x2</span> <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p>多次存储，后置减法：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">stmda r2, &#123;r4-r6&#125; <span class="comment">/* r6 -&gt; array_buff[2] = 0x02; r5 -&gt; array_buff[1] = 0x01; r4 -&gt; array_buff[0] = 0x00 */</span></span><br><span class="line">执行之后，array_buff[<span class="number">2</span>]，array_buff[<span class="number">1</span>]，以及array_buff[<span class="number">0</span>]的值：</span><br><span class="line">gef&gt; x/<span class="number">3</span>w <span class="number">0x100D0</span></span><br><span class="line"><span class="number">0x100d0</span> &lt;array_buff&gt;: <span class="number">0x00000000</span> <span class="number">0x00000001</span> <span class="number">0x00000002</span></span><br></pre></td></tr></table></figure>
+
+<p>多次存储，前置减法：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">stmdb r2, &#123;r4-r5&#125; <span class="comment">/* r5 -&gt; array_buff[1] = 0x01; r4 -&gt; array_buff[0] = 0x00; */</span></span><br></pre></td></tr></table></figure>
+
+<p>执行之后，array_buff[1]，以及array_buff[0]的值：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; x/<span class="number">2</span>w <span class="number">0x100D0</span></span><br><span class="line"><span class="number">0x100d0</span> &lt;array_buff&gt;: <span class="number">0x00000000</span> <span class="number">0x00000001</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>PUSH和POP</strong></p>
+<p>在内存中存在一块进程相关的区域叫做栈。栈指针寄存器SP在正常情形下指向这篇区域。应用经常通过栈做临时的数据存储。X86使用PUSH和POP来访问存取栈上数据。在ARM中我们也可以用这两条指令：</p>
+<p>当PUSH压栈时，会发生以下事情：</p>
+<p>SP值减4。</p>
+<p>存放信息到SP指向的位置。</p>
+<p>当POP出栈时，会发生以下事情：</p>
+<p>数据从SP指向位置被加载</p>
+<p>SP值加4。</p>
+<p>下面是我们使用PUSH/POP以及LDMIA/STMDB命令示例:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">.text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">   mov r0, #<span class="number">3</span></span><br><span class="line">   mov r1, #<span class="number">4</span></span><br><span class="line">   push &#123;r0, r1&#125;</span><br><span class="line">   pop &#123;r2, r3&#125;</span><br><span class="line">   stmdb sp!, &#123;r0, r1&#125;</span><br><span class="line">   ldmia sp!, &#123;r4, r5&#125;</span><br><span class="line">   bkpt</span><br></pre></td></tr></table></figure>
+
+<p>让我们来看看这段汇编的反汇编：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">azeria@<span class="built_in">labs</span>:~$ as pushpop.s -o pushpop.o</span><br><span class="line">azeria@<span class="built_in">labs</span>:~$ ld pushpop.o -o pushpop</span><br><span class="line">azeria@<span class="built_in">labs</span>:~$ objdump -D pushpop</span><br><span class="line">pushpop: file format elf32-littlearm</span><br><span class="line">Disassembly of section .text:</span><br><span class="line"><span class="number">00008054</span> &lt;_start&gt;:</span><br><span class="line"> <span class="number">8054</span>: e3a00003 mov r0, #<span class="number">3</span></span><br><span class="line"> <span class="number">8058</span>: e3a01004 mov r1, #<span class="number">4</span></span><br><span class="line"> <span class="number">805</span>c: e92d0003 push &#123;r0, r1&#125;</span><br><span class="line"> <span class="number">8060</span>: e8bd000c pop &#123;r2, r3&#125;</span><br><span class="line"> <span class="number">8064</span>: e92d0003 push &#123;r0, r1&#125;</span><br><span class="line"> <span class="number">8068</span>: e8bd0030 pop &#123;r4, r5&#125;</span><br><span class="line"> <span class="number">806</span>c: e1200070 bkpt <span class="number">0x0000</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到，我们的LDMIA以及STMDB指令被编译器换为了PUSH和POP。因为PUSH和STMDB sp!是等效的。同样的还有POP和LDMIA sp!。让我们在GDB里面跑一下上面那段汇编代码。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; <span class="keyword">break</span> _start</span><br><span class="line">gef&gt; run</span><br><span class="line">gef&gt; nexti <span class="number">2</span></span><br><span class="line">[...]</span><br><span class="line">gef&gt; x/w $sp</span><br><span class="line"><span class="number">0xbefff7e0</span>: <span class="number">0x00000001</span></span><br></pre></td></tr></table></figure>
+
+<p>在连续执行完前两条指令后，我们来看看SP，下一条PUSH指令会将其减8，并将R1和R0的值按序存放到栈上。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; nexti</span><br><span class="line">[...] ----- Stack -----</span><br><span class="line"><span class="number">0xbefff7d8</span>|+<span class="number">0x00</span>: <span class="number">0x3</span> &lt;- $sp</span><br><span class="line"><span class="number">0xbefff7dc</span>|+<span class="number">0x04</span>: <span class="number">0x4</span></span><br><span class="line"><span class="number">0xbefff7e0</span>|+<span class="number">0x08</span>: <span class="number">0x1</span></span><br><span class="line">[...] </span><br><span class="line">gef&gt; x/w $sp</span><br><span class="line"><span class="number">0xbefff7d8</span>: <span class="number">0x00000003</span></span><br></pre></td></tr></table></figure>
+
+<p>再之后，这两个值被出栈，按序存到寄存器R2和R3中，之后SP加8。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; nexti</span><br><span class="line">gef&gt; info <span class="keyword">register</span> r2 r3</span><br><span class="line">r2     <span class="number">0x3</span>    <span class="number">3</span></span><br><span class="line">r3     <span class="number">0x4</span>    <span class="number">4</span></span><br><span class="line">gef&gt; x/w $sp</span><br><span class="line"><span class="number">0xbefff7e0</span>: <span class="number">0x00000001</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>ARM汇编</category>
+      </categories>
+      <tags>
+        <tag>ARM</tag>
+      </tags>
   </entry>
   <entry>
     <title>Part 6:: 分支和条件执行</title>
     <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-6-%E5%88%86%E6%94%AF%E5%92%8C%E6%9D%A1%E4%BB%B6%E6%89%A7%E8%A1%8C/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-6-%E5%88%86%E6%94%AF%E5%92%8C%E6%9D%A1%E4%BB%B6%E6%89%A7%E8%A1%8C/0.png" class></strong></p>
+ <a id="more"></a>
+
+<h2 id="条件执行"><a href="#条件执行" class="headerlink" title="条件执行"></a><strong>条件执行</strong></h2><p>在之前讨论CPSR寄存器那部分时，我们大概提了一下条件执行这个词。条件执行用来控制程序执行跳转，或者满足条件下的特定指令的执行。相关条件在CPSR寄存器中描述。寄存器中的比特位的变化决定着不同的条件。比如说当我们比较两个数是否相同时，我们使用的Zero比特位(Z=1)，因为这种情况下发生的运算是a-b=0。在这种情况下我们就满足了EQual的条件。如果第一个数更大些，我们就满足了更大的条件Grater Than或者相反的较小Lower Than。条件缩写都是英文首字母缩写，比如小于等于Lower Than(LE)，大于等于Greater Equal(GE)等。</p>
+<p>下面列表是各个条件的含义以及其检测的状态位(条件指令都是其英文含义的缩写，为了便于记忆不翻译了)：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-6-%E5%88%86%E6%94%AF%E5%92%8C%E6%9D%A1%E4%BB%B6%E6%89%A7%E8%A1%8C/1.png" class></strong></p>
+<p>我们使用如下代码来实践条件执行相加指令：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">.global main</span><br><span class="line">main:</span><br><span class="line">        mov     r0, #<span class="number">2</span>     <span class="comment">/* 初始化值 */</span></span><br><span class="line">        cmp     r0, #<span class="number">3</span>     <span class="comment">/* 将R0和3相比做差，负数产生则N位置1 */</span></span><br><span class="line">        addlt   r0, r0, #<span class="number">1</span> <span class="comment">/* 如果小于等于3，则R0加一 */</span></span><br><span class="line">        cmp     r0, #<span class="number">3</span>     <span class="comment">/* 将R0和3相比做差，零结果产生则Z位置一，N位置恢复为0 */</span></span><br><span class="line">        addlt   r0, r0, #<span class="number">1</span> <span class="comment">/* 如果小于等于3，则R0加一R0 IF it was determined that it is smaller (lower than) number 3 */</span></span><br><span class="line">        bx      lr</span><br></pre></td></tr></table></figure>
+
+<p>上面代码段中的第一条CMP指令将N位置一同时也就指明了R0比3小。之后ADDLT指令在LT条件下执行，对应到CPSR寄存器的情况时V与N比特位不能相同。在执行第二条CMP前，R0=3。所以第二条置了Z位而消除了N位。所以ADDLT不会执行R0也不会被修改，最终程序结果是3。</p>
+<h2 id="Thumb模式中的条件执行"><a href="#Thumb模式中的条件执行" class="headerlink" title="Thumb模式中的条件执行"></a><strong>Thumb模式中的条件执行</strong></h2><p>在指令集那篇文章中我们谈到了不同的指令集，对于Thumb中，其实也有条件执的(Thumb-2中有)。有些ARM处理器版本支持IT指令，允许在Thumb模式下条件执行最多四条指令。</p>
+<p>相关引用：<a href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0552a/BABIJDIC.html">http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0552a/BABIJDIC.html</a> </p>
+<p>指令格式：Syntax: IT{x{y{z}}} cond</p>
+<p>cond 代表在IT指令后第一条条件执行执行指令的需要满足的条件。</p>
+<p>x 代表着第二条条件执行指令要满足的条件逻辑相同还是相反。</p>
+<p>y 代表着第三条条件执行指令要满足的条件逻辑相同还是相反。</p>
+<p>z 代表着第四条条件执行指令要满足的条件逻辑相同还是相反。</p>
+<p>IT指令的含义是“IF-Then-(Else)”，跟这个形式类似的还有：</p>
+<p>IT，If-Then，接下来的一条指令条件执行。</p>
+<p>ITT，If-Then-Then，接下来的两条指令条件执行。</p>
+<p>ITE，If-Then-Else，接下来的两条指令条件执行。</p>
+<p>ITTE，If-Then-Then-Else，接下来的三条指令条件执行。</p>
+<p>ITTEE，If-Then-Then-Else-Else，接下来的四条指令条件执行。</p>
+<p>在IT块中的每一条条件执行指令必须是相同逻辑条件或者相反逻辑条件。比如说ITE指令，第一条和第二条指令必须使用相同的条件，而第三条必须是与前两条逻辑上相反的条件。这有一些ARM reference上的例子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ITTE   NE           ; 后三条指令条件执行</span><br><span class="line">ANDNE  R0, R0, R1   ; ANDNE不更新条件执行相关flags</span><br><span class="line">ADDSNE R2, R2, #<span class="number">1</span>   ; ADDSNE更新条件执行相关flags</span><br><span class="line">MOVEQ  R2, R3       ; 条件执行的move</span><br><span class="line">ITE    GT           ; 后两条指令条件执行</span><br><span class="line">ADDGT  R1, R0, #<span class="number">55</span>  ; GT条件满足时执行加</span><br><span class="line">ADDLE  R1, R0, #<span class="number">48</span>  ; GT条件不满足时执行加</span><br><span class="line">ITTEE  EQ           ; 后两条指令条件执行</span><br><span class="line">MOVEQ  R0, R1       ; 条件执行MOV</span><br><span class="line">ADDEQ  R2, R2, #<span class="number">10</span>  ; 条件执行ADD</span><br><span class="line">ANDNE  R3, R3, #<span class="number">1</span>   ; 条件执行AND</span><br><span class="line">BNE.W  dloop        ; 分支指令只能在IT块的最后一条指令中使用</span><br></pre></td></tr></table></figure>
+
+<p>错误的格式：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">IT     NE           ; 下一条指令条件执行</span><br><span class="line">ADD    R0, R0, R1   ; 格式错误：没有条件指令</span><br></pre></td></tr></table></figure>
+
+<p>下图是条件指令后缀含义以及他们的逻辑相反指令：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-6-%E5%88%86%E6%94%AF%E5%92%8C%E6%9D%A1%E4%BB%B6%E6%89%A7%E8%A1%8C/2.png" class></strong></p>
+<p>让我们试试下面这段代码：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">.syntax unified    @ 这很重要！</span><br><span class="line">.text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">    .code <span class="number">32</span></span><br><span class="line">    add r3, pc, #<span class="number">1</span>   @ R3=pc+<span class="number">1</span></span><br><span class="line">    bx r3            @ 分支跳转到R3并且切换到Thumb模式下由于最低比特位为<span class="number">1</span></span><br><span class="line">    .code <span class="number">16</span>         @ Thumb模式</span><br><span class="line">    cmp r0, #<span class="number">10</span>      </span><br><span class="line">    ite eq           @ <span class="keyword">if</span> R0 == <span class="number">10</span></span><br><span class="line">    addeq r1, #<span class="number">2</span>     @ then R1 = R1 + <span class="number">2</span></span><br><span class="line">    addne r1, #<span class="number">3</span>     @ <span class="keyword">else</span> R1 = R1 + <span class="number">3</span></span><br><span class="line">    bkpt</span><br></pre></td></tr></table></figure>
+
+<p>.code16是在Thumb模式下执行的代码。这段代码中的条件执行前提是R0等于10。ADDEQ指令代表了如果条件满足，那么就执行R1=R1+2，ADDNE代表了不满足时候的情况。</p>
+<h2 id="分支指令"><a href="#分支指令" class="headerlink" title="分支指令"></a><strong>分支指令</strong></h2><p>分支指令(也叫分支跳转)允许我们在代码中跳转到别的段。当我们需要跳到一些函数上执行或者跳过一些代码块时很有用。这部分的最佳例子就是条件跳转IF以及循环。先来看看IF分支。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">.global main</span><br><span class="line">main:</span><br><span class="line">mov r1, #<span class="number">2</span> / 初始化 a /</span><br><span class="line">mov r2, #<span class="number">3</span> / 初始化 b /</span><br><span class="line">cmp r1, r2 / 比较谁更大些 /</span><br><span class="line">blt r1_lower / 如果R2更大跳转到r1_lower /</span><br><span class="line">mov r0, r1 / 如果分支跳转没有发生，将R1的值放到到R0 /</span><br><span class="line">b end / 跳转到结束 /</span><br><span class="line">r1_lower:</span><br><span class="line">mov r0, r2 / 将R2的值放到R0 /</span><br><span class="line">b end / 跳转到结束 /</span><br><span class="line">end:</span><br><span class="line">bx lr / THE END /</span><br></pre></td></tr></table></figure>
+
+<p>上面的汇编代码的含义就是找到较大的数，类似的C伪代码是这样的:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> a = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">int</span> b = <span class="number">3</span>;</span><br><span class="line"><span class="keyword">if</span>(a &lt; b) &#123;</span><br><span class="line">max = b;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">max = a;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再来看看循环中的条件分支:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">.global main</span><br><span class="line">main:</span><br><span class="line">mov r0, #<span class="number">0</span> / 初始化 a /</span><br><span class="line">loop:</span><br><span class="line">cmp r0, #<span class="number">4</span> / 检查 a==<span class="number">4</span> /</span><br><span class="line">beq end / 如果是则结束 /</span><br><span class="line">add r0, r0, #<span class="number">1</span> / 如果不是则加<span class="number">1</span> /</span><br><span class="line">b loop / 重复循环 /</span><br><span class="line">end:</span><br><span class="line">bx lr / THE END /</span><br></pre></td></tr></table></figure>
+
+<p>对应的C伪代码长这样子:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="keyword">int</span> a = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span>(a &lt; <span class="number">4</span>) &#123;</span><br><span class="line">a= a+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="B-BX-BLX"><a href="#B-BX-BLX" class="headerlink" title="B/BX/BLX"></a><strong>B/BX/BLX</strong></h2><p>有三种类型的分支指令:</p>
+<p>Branch(B)</p>
+<p>简单的跳转到一个函数</p>
+<p>Branch link(BL)</p>
+<p>将下一条指令的入口(PC+4)保存到LR，跳转到函数</p>
+<p>Branch exchange(BX) 以及 Branch link exchange(BLX)</p>
+<p>与B/BL相同，外加执行模式切换(ARM与Thumb)</p>
+<p>需要寄存器类型作为第一操作数:BX/BLX reg</p>
+<p>BX/BLX指令被用来从ARM模式切换到Thumb模式。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">.text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">.code <span class="number">32</span> @ ARM模式</span><br><span class="line">add r2, pc, #<span class="number">1</span> @ PC+<span class="number">1</span>放到R2</span><br><span class="line">bx r2 @ 分支切换到R2</span><br><span class="line">.code <span class="number">16</span>          @ Thumb模式</span><br><span class="line"> mov r0, #<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>上面的代码将当前的PC值加1存放到了R2中(此时PC指向其后两条指令的偏移处)，通过BX跳转到了寄存器指向的位置，由于最低有效位为1，所以切换到Thumb模式执行。下面GDB调试的动图说明了这一切。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-6-%E5%88%86%E6%94%AF%E5%92%8C%E6%9D%A1%E4%BB%B6%E6%89%A7%E8%A1%8C/3.gif" class></strong></p>
+<h2 id="条件分支指令"><a href="#条件分支指令" class="headerlink" title="条件分支指令"></a><strong>条件分支指令</strong></h2><p>条件分支指令是指在满足某种特定条件下的跳转指令。指令模式是跳转指令后加上条件后缀。我们用BEQ来举例吧。下面这段汇编代码对一些值做了操作，然后依据比较结果进行条件分支跳转。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-6-%E5%88%86%E6%94%AF%E5%92%8C%E6%9D%A1%E4%BB%B6%E6%89%A7%E8%A1%8C/4.png" class></strong></p>
+<p>对应汇编代码如下:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">.text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">mov r0, #<span class="number">2</span></span><br><span class="line">mov r1, #<span class="number">2</span></span><br><span class="line">add r0, r0, r1</span><br><span class="line">cmp r0, #<span class="number">4</span></span><br><span class="line">beq func1</span><br><span class="line">add r1, #<span class="number">5</span></span><br><span class="line">b func2</span><br><span class="line">func1:</span><br><span class="line">mov r1, r0</span><br><span class="line">bx lr</span><br><span class="line">func2:</span><br><span class="line">mov r0, r1</span><br><span class="line">bx lr</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>ARM汇编</category>
+      </categories>
+      <tags>
+        <tag>ARM</tag>
+      </tags>
   </entry>
   <entry>
     <title>Part 7: 栈以及函数</title>
     <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-7-%E6%A0%88%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-7-%E6%A0%88%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p>在这部分我们将研究一篇独特的内存区域叫做栈，讲解栈的目的以及相关操作。除此之外，我们还会研究ARM架构中函数的调用约定。</p>
+<p>$2^3 = 8$</p>
+<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a><strong>栈</strong></h2><p>一般来说，栈是一片在程序/进程中的内存区域。这部分内存是在进程创建的时候被创建的。我们利用栈来存储一些临时数据比如说函数的局部变量，环境变量等。在之前的文章中，我们讲了操作栈的相关指令PUSH和POP。</p>
+<p>在我们开始之前，还是了解一下栈的相关知识以及其实现方式吧。首先谈谈栈的增长，即当我们把32位的数据放到栈上时候它的变化。栈可以向上增长(当栈的实现是负向增长时)，或者向下增长(当栈的实现是正向增长时)。具体的关于下一个32位的数据被放到哪里是由栈指针来决定的，更精确的说是由SP寄存器决定。不过这里面所指向的位置，可能是当前(也就是上一次)存储的数据，也可能是下一次存储时的位置。如果SP当前指向上一次存放的数据在栈中的位置(满栈实现)，SP将会递减(降序栈)或者递增(升序栈)，然后再对指向的内容进行操作。而如果SP指向的是下一次要操作的数据的空闲位置(空栈实现)，数据会先被存放，而后SP会被递减(降序栈)或递增(升序栈)。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-7-%E6%A0%88%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0/1.gif" class></strong></p>
+<p>不同的栈实现，可以用不同情形下的多次存取指令来表示(这里很绕…):</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-7-%E6%A0%88%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0/2.png" class></strong></p>
+<p>我们的例子中，使用的是满栈降序的栈实现。让我们看一个栈相关的例子。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* azeria@labs:~$ as stack.s -o stack.o &amp;&amp; gcc stack.o -o stack &amp;&amp; gdb stack */</span></span><br><span class="line">.global main</span><br><span class="line">main:</span><br><span class="line">     mov   r0, #<span class="number">2</span>  <span class="comment">/* 设置R0 */</span></span><br><span class="line">     push  &#123;r0&#125;    <span class="comment">/* 将R0存在栈上 */</span></span><br><span class="line">     mov   r0, #<span class="number">3</span>  <span class="comment">/* 修改R0 */</span></span><br><span class="line">     pop   &#123;r0&#125;    <span class="comment">/* 恢复R0为初始值 */</span></span><br><span class="line">     bx    lr      <span class="comment">/* 程序结束 */</span></span><br></pre></td></tr></table></figure>
+
+<p>在一开始，栈指针指向地址0xbefff6f8,代表着上一次入栈数据的位置。可以看到当前位置存储了一些值。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; x/<span class="number">1</span>x $sp</span><br><span class="line"><span class="number">0xbefff6f8</span>: <span class="number">0xb6fc7000</span></span><br></pre></td></tr></table></figure>
+
+<p>在执行完第一条指令MOV后，栈没有改变。在只执行完下一条PUSH指令后，首先SP的值会被减4字节。之后存储在R0中的值会被存放到SP指向的位置中。现在我们在看看SP指向的位置以及其中的值。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; x/x $sp</span><br><span class="line"><span class="number">0xbefff6f4</span>: <span class="number">0x00000002</span></span><br></pre></td></tr></table></figure>
+
+<p>之后的指令将R0的值修改为3。然后我们执行POP指令将SP中的值存放到R0中，并且将SP的值加4，指向当前栈顶存放数据的位置。z最终R0的值是2。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; info registers r0</span><br><span class="line">r0       <span class="number">0x2</span>          <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p>(下面的动图展示了低地址在顶部的栈的变化情况)</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-7-%E6%A0%88%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0/3.gif" class></strong></p>
+<p>栈被用来存储局部变量，之前的寄存器状态。为了统一管理，函数使用了栈帧这个概念，栈帧是在栈内用于存储函数相关数据的特定区域。栈帧在函数开始时被创建。栈帧指针(FP)指向栈帧的底部元素，栈帧指针确定后，会在栈上申请栈帧所属的缓冲区。栈帧(从它的底部算起)一般包含着返回地址(之前说的LR)，上一层函数的栈帧指针，以及任何需要被保存的寄存器，函数参数(当函数需要4个以上参数时)，局部变量等。虽然栈帧包含着很多数据，但是这其中不少类型我们之前已经了解过了。最后，栈帧在函数结束时被销毁。</p>
+<p>下图是关于栈帧的在栈中的位置的抽象描述(默认栈，满栈降序):</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-7-%E6%A0%88%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0/4.png" class></strong></p>
+<p>来一个例子来更具体的了解下栈帧吧:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* azeria@labs:~$ gcc func.c -o func &amp;&amp; gdb func */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"> <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line"> <span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line"> <span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line"> res = max(a, b);</span><br><span class="line"> <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">max</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"> do_nothing();</span><br><span class="line"> <span class="keyword">if</span>(a&lt;b)</span><br><span class="line"> &#123;</span><br><span class="line"> <span class="keyword">return</span> b;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">else</span></span><br><span class="line"> &#123;</span><br><span class="line"> <span class="keyword">return</span> a;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">do_nothing</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在下面的截图中我们可以看到GDB中栈帧的相关信息:</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-7-%E6%A0%88%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0/5.png" class></strong></p>
+<p>可以看到上面的图片中我们即将离开函数max(最下面的反汇编中可以看到)。在此时，FP(R11)寄存器指向的0xbefff254就是当前栈帧的底部。这个地址对应的栈上(绿色地址区域)位置存储着0x00010418这个返回地址(LR)。再往上看4字节是0xbefff26c。可以看到这个值是上层函数的栈帧指针。在0xbefff24c和0xbefff248的0x1和0x2是函数max执行时产生的局部变量。所以栈帧包含着我们之前说过的LR，FP以及两个局部变量。</p>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a><strong>函数</strong></h2><p>在开始学习ARM下的函数前，我们需要先明白一个函数的结构:</p>
+<p>序言准备(Prologue)</p>
+<p>函数体</p>
+<p>结束收尾(Epilogue)</p>
+<p>序言的目的是为了保存之前程序的执行状态(通过存储LR以及R11到栈上)以及设定栈以及局部函数变量。这些的步骤的实现可能根据编译器的不同有差异。通常来说是用PUSH/ADD/SUB这些指令。举个例子:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">push   &#123;r11, lr&#125;    <span class="comment">/* 保存R11与LR */</span></span><br><span class="line">add    r11, sp, #<span class="number">4</span>  <span class="comment">/* 设置栈帧底部,PUSH两个寄存器,SP加4后指向栈帧底部元素 */</span></span><br><span class="line">sub    sp, sp, #<span class="number">16</span>  <span class="comment">/* 在栈上申请相应空间 */</span></span><br></pre></td></tr></table></figure>
+
+<p>函数体部分就是函数本身要完成的任务了。这部分包括了函数自身的指令，或者跳转到其它函数等。下面这个是函数体的例子。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">mov    r0, #<span class="number">1</span>       <span class="comment">/* 设置局部变量(a=1),同时也是为函数max准备参数a */</span></span><br><span class="line">mov    r1, #<span class="number">2</span>       <span class="comment">/* 设置局部变量(b=2),同时也是为函数max准备参数b */</span></span><br><span class="line">bl     max          <span class="comment">/* 分支跳转调用函数max */</span></span><br></pre></td></tr></table></figure>
+
+<p>上面的代码也展示了调用函数前需要如何准备局部变量，以为函数调用设定参数。一般情况下，前四个参数通过R0-R3来传递，而多出来的参数则需要通过栈来传递了。函数调用结束后，返回值存放在R0寄存器中。所以不管max函数如何运作，我们都可以通过R0来得知返回值。而且当返回值位64位值时，使用的是R0与R1寄存器一同存储64位的值。</p>
+<p>函数的最后一部分即结束收尾，这一部分主要是用来恢复程序寄存器以及回到函数调用发生之前的状态。我们需要先恢复SP栈指针，这个可以通过之前保存的栈帧指针寄存器外加一些加减操作做到(保证回到FP,LR的出栈位置)。而当我们重新调整了栈指针后，我们就可以通过出栈操作恢复之前保存的寄存器的值。基于函数类型的不同，POP指令有可能是结束收尾的最后一条指令。然而，在恢复后我们可能还需要通过BX指令离开函数。一个收尾的样例代码是这样的。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">sub    sp, r11, #<span class="number">4</span>  <span class="comment">/* 收尾操作开始，调整栈指针，有两个寄存器要POP，所以从栈帧底部元素再减4 */</span></span><br><span class="line">pop    &#123;r11, pc&#125;    <span class="comment">/* 收尾操作结束。恢复之前函数的栈帧指针，以及通过之前保存的LR来恢复PC。 */</span></span><br></pre></td></tr></table></figure>
+
+<p>总结一下：</p>
+<p>序言设定函数环境</p>
+<p>函数体实现函数逻辑功能，将结果存到R0</p>
+<p>收尾恢复程序状态，回到调用发生的地方。</p>
+<p>关于函数，有一个关键点我们要知道，函数的类型分为叶函数以及非叶函数。叶函数是指函数中没有分支跳转到其他函数指令的函数。非叶函数指包含有跳转到其他函数的分支跳转指令的函数。这两种函数的实现都很类似，当然也有一些小不同。这里我们举个例子来分析一下:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* azeria@labs:~$ as func.s -o func.o &amp;&amp; gcc func.o -o func &amp;&amp; gdb func */</span></span><br><span class="line">.global main</span><br><span class="line">main:</span><br><span class="line">    push   &#123;r11, lr&#125;    <span class="comment">/* Start of the prologue. Saving Frame Pointer and LR onto the stack */</span></span><br><span class="line">    add    r11, sp, #<span class="number">4</span>  <span class="comment">/* Setting up the bottom of the stack frame */</span></span><br><span class="line">    sub    sp, sp, #<span class="number">16</span>  <span class="comment">/* End of the prologue. Allocating some buffer on the stack */</span></span><br><span class="line">    mov    r0, #<span class="number">1</span>       <span class="comment">/* setting up local variables (a=1). This also serves as setting up the first parameter for the max function */</span></span><br><span class="line">    mov    r1, #<span class="number">2</span>       <span class="comment">/* setting up local variables (b=2). This also serves as setting up the second parameter for the max function */</span></span><br><span class="line">    bl     max          <span class="comment">/* Calling/branching to function max */</span></span><br><span class="line">    sub    sp, r11, #<span class="number">4</span>  <span class="comment">/* Start of the epilogue. Readjusting the Stack Pointer */</span></span><br><span class="line">    pop    &#123;r11, pc&#125;    <span class="comment">/* End of the epilogue. Restoring Frame pointer from the stack, jumping to previously saved LR via direct load into PC */</span></span><br><span class="line">max:</span><br><span class="line">    push   &#123;r11&#125;        <span class="comment">/* Start of the prologue. Saving Frame Pointer onto the stack */</span></span><br><span class="line">    add    r11, sp, #<span class="number">0</span>  <span class="comment">/* 设置栈帧底部,PUSH一个寄存器,SP加0后指向栈帧底部元素 */</span></span><br><span class="line">    sub    sp, sp, #<span class="number">12</span>  <span class="comment">/* End of the prologue. Allocating some buffer on the stack */</span></span><br><span class="line">    cmp    r0, r1       <span class="comment">/* Implementation of if(a&lt;b) */</span></span><br><span class="line">    movlt  r0, r1       <span class="comment">/* if r0 was lower than r1, store r1 into r0 */</span></span><br><span class="line">    add    sp, r11, #<span class="number">0</span>  <span class="comment">/* 收尾操作开始，调整栈指针，有一个寄存器要POP，所以从栈帧底部元素再减0 */</span></span><br><span class="line">    pop    &#123;r11&#125;        <span class="comment">/* restoring frame pointer */</span></span><br><span class="line">    bx     lr           <span class="comment">/* End of the epilogue. Jumping back to main via LR register */</span></span><br></pre></td></tr></table></figure>
+
+<p>上面的函数main以及max函数，一个是非叶函数另一个是叶函数。就像之前说的非叶函数中有分支跳转到其他函数的逻辑，函数max中没有在函数体逻辑中包含有这类代码，所以是叶函数。</p>
+<p>除此之外还有一点不同是两类函数序言与收尾的实现是有差异的。来看看下面这段代码，是关于叶函数与非叶函数的序言部分的差异的:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* A prologue of a non-leaf function */</span></span><br><span class="line">push   &#123;r11, lr&#125;    <span class="comment">/* Start of the prologue. Saving Frame Pointer and LR onto the stack */</span></span><br><span class="line">add    r11, sp, #<span class="number">4</span>  <span class="comment">/* Setting up the bottom of the stack frame */</span></span><br><span class="line">sub    sp, sp, #<span class="number">16</span>  <span class="comment">/* End of the prologue. Allocating some buffer on the stack */</span></span><br><span class="line"><span class="comment">/* A prologue of a leaf function */</span></span><br><span class="line">push   &#123;r11&#125;        <span class="comment">/* Start of the prologue. Saving Frame Pointer onto the stack */</span></span><br><span class="line">add    r11, sp, #<span class="number">0</span>  <span class="comment">/* Setting up the bottom of the stack frame */</span></span><br><span class="line">sub    sp, sp, #<span class="number">12</span>  <span class="comment">/* End of the prologue. Allocating some buffer on the stack */</span></span><br></pre></td></tr></table></figure>
+
+<p>一个主要的差异是，非叶函数需要在栈上保存更多的寄存器，这是由于非叶函数的本质决定的，因为在执行时LR寄存器会被修改，所以需要保存LR寄存器以便之后恢复。当然如果有必要也可以在序言期保存更多的寄存器。</p>
+<p>下面这段代码可以看到，叶函数与非叶函数在收尾时的差异主要是在于，叶函数的结尾直接通过LR中的值跳转回去就好，而非叶函数需要先通过POP恢复LR寄存器，再进行分支跳转。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* An epilogue of a leaf function */</span></span><br><span class="line">add    sp, r11, #<span class="number">0</span>  <span class="comment">/* Start of the epilogue. Readjusting the Stack Pointer */</span></span><br><span class="line">pop    &#123;r11&#125;        <span class="comment">/* restoring frame pointer */</span></span><br><span class="line">bx     lr           <span class="comment">/* End of the epilogue. Jumping back to main via LR register */</span></span><br><span class="line"><span class="comment">/* An epilogue of a non-leaf function */</span></span><br><span class="line">sub    sp, r11, #<span class="number">4</span>  <span class="comment">/* Start of the epilogue. Readjusting the Stack Pointer */</span></span><br><span class="line">pop    &#123;r11, pc&#125;    <span class="comment">/* End of the epilogue. Restoring Frame pointer from the stack, jumping to previously saved LR via direct load into PC */</span></span><br></pre></td></tr></table></figure>
+
+<p>最后，我们要再次强调一下在函数中BL和BX指令的使用。在我们的示例中，通过使用BL指令跳转到叶函数中。在汇编代码中我们使用了标签，在编译过程中，标签被转换为对应的内存地址。在跳转到对应位置之前，BL会将下一条指令的地址存储到LR寄存器中这样我们就能在函数max完成的时候返回了。</p>
+<p>BX指令在被用在我们离开一个叶函数时，使用LR作为寄存器参数。刚刚说了LR存放着函数调用返回后下一条指令的地址。由于叶函数不会在执行时修改LR寄存器，所以就可以通过LR寄存器跳转返回到main函数了。同样BX指令还会帮助我们切换ARM/Thumb模式。同样这也通过LR寄存器的最低比特位来完成，0代表ARM模式，1代表Thumb模式。</p>
+<p>最后，这张动图阐述了非叶函数调用叶函数时候的内部寄存器的工作状态。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-7-%E6%A0%88%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0/6.gif" class></strong></p>
+<p><strong>原作者在后续叶函数和非叶函数相关样例代码中将设置与恢复栈帧指针时的偏移写错了，根据栈帧设置的逻辑已经修复。</strong></p>
+]]></content>
+      <categories>
+        <category>ARM汇编</category>
+      </categories>
+      <tags>
+        <tag>ARM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python实现端口扫描器</title>
+    <url>/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/0.png" class></strong></p>
+ <a id="more"></a>
+
+<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>最简单的端口扫描工具使用TCP连接扫描的方式，即利用操作系统原生的网络功能，且通常作为SYN扫描的替代选项。Nmap将这种模式称为连接扫描，因为使用了类似Unix系统的connect()命令。如果该端口是开放的，操作系统就能完成TCP三次握手，然后端口扫描工具会立即关闭刚建立的连接，防止拒绝服务攻击。这种端口扫描模式的优势是用户无需特殊权限。但使用操作系统原生网络功能不能实现底层控制，因此这种扫描方式并不流行。并且TCP扫描很容易被发现，尤其作为端口清扫的手段：这些服务会记录发送者的 IP 地址，入侵检测系统可能触发警报。$–&gt;$（<a href="https://xz.aliyun.com/t/5376#toc-0">端口扫描类型</a>）</p>
+<p>还有另外一种扫描方式是 SYN 扫描，端口扫描工具不使用操作系统原生网络功能，而是自行生成、发送 IP 数据包，并监控其回应。这种扫描模式被称为 “半开放扫描”，因为它从不建立完整的 TCP 连接。端口扫描工具生成一个 SYN 包，如果目标端口开放，则会返回 SYN-ACK 包。扫描端回应一个 RST 包，然后在握手完成前关闭连接。如果端口关闭了但未使用过滤，目标端口应该会持续返回 RST 包。这种粗略的网络利用方式有几个优点：给扫描工具全权控制数据包发送和等待回应时长的权力，允许更详细的回应分析。关于哪一种对目标主机的扫描方式更不具备入侵性存在一些争议，但 SYN 扫描的优势是从不会建立完整的连接。然而，RST 包可能导致网络堵塞，尤其是一些简单如打印机之类的网络设备。</p>
+<p>实例中采用的是第一种扫描方式，直接利用操作系统的 socket 连接接口，初步测试目标服务器的端口是否可以连接，如果可以则返回端口打开状态。$–&gt;$（<a href="https://gist.github.com/kevinkindom/108ffd675cb9253f8f71">socket编程基础</a>）</p>
+<h3 id="实现单线程扫描功能"><a href="#实现单线程扫描功能" class="headerlink" title="实现单线程扫描功能"></a>实现单线程扫描功能</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实现从程序外部向程序传递参数</span></span><br><span class="line">host = sys.argv[<span class="number">1</span>]</span><br><span class="line">portstrs = sys.argv[<span class="number">2</span>].split(<span class="string">&#x27;-&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 扫描端口范围</span></span><br><span class="line">start_port = int(portstrs[<span class="number">0</span>])</span><br><span class="line">end_port = int(portstrs[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取目标ip地址</span></span><br><span class="line">target_ip = gethostbyname(host)</span><br><span class="line">opened_ports = []</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行循环连接</span></span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(start_port, end_port):</span><br><span class="line">    sock = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">    sock.settimeout(<span class="number">10</span>)</span><br><span class="line">    result = sock.connect_ex((target_ip, port))</span><br><span class="line">    <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">        opened_ports.append(port)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印开放的端口</span></span><br><span class="line">print(<span class="string">&quot;Opened ports:&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> opened_ports:</span><br><span class="line">    print(i)</span><br></pre></td></tr></table></figure>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/2.png" class></strong></p>
+<p>上面代码实现了单线程扫描端口的测试，但是正常的程序在执行中我们需要考虑执行效率和提升性能，所以需要实现多线程程序。</p>
+<h3 id="多线程扫描"><a href="#多线程扫描" class="headerlink" title="多线程扫描"></a>多线程扫描</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> monkey</span><br><span class="line"></span><br><span class="line">monkey.patch_all()</span><br><span class="line"><span class="keyword">import</span> gevent</span><br><span class="line"><span class="keyword">import</span> gevent.pool</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">TCP_connect</span>(<span class="params">ip, port</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;模拟TCP连接&quot;&quot;&quot;</span></span><br><span class="line">    TCP_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">    TCP_sock.settimeout(<span class="number">0.5</span>)  <span class="comment"># 设置连接超时</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        result = TCP_sock.connect_ex((ip, int(port)))</span><br><span class="line">        <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">            print(<span class="string">&quot;[*]%s 端口 开启\t&quot;</span> % port)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># print(&quot;[!]%s端口 关闭&quot;%port)</span></span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        TCP_sock.close()</span><br><span class="line">    <span class="keyword">except</span> socket.error <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]错误:&quot;</span>, e)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_ip</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标IP&quot;&quot;&quot;</span></span><br><span class="line">    ip = input(<span class="string">&quot;[+]输入扫描目标IP:&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;[*]正在扫描&quot;</span>)</span><br><span class="line">    scan_port(ip)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_web</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标网址&quot;&quot;&quot;</span></span><br><span class="line">    web = input(<span class="string">&quot;[+]输入扫描网址:&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;http://&quot;</span> <span class="keyword">in</span> web <span class="keyword">or</span> <span class="string">&quot;https://&quot;</span> <span class="keyword">in</span> web:</span><br><span class="line">        web = web[web.find(<span class="string">&#x27;://&#x27;</span>) + <span class="number">3</span>:]</span><br><span class="line">        print(web)</span><br><span class="line">        print(<span class="string">&quot;[*]正在分析网站服务器IP&quot;</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        server_ip = socket.gethostbyname(str(web))</span><br><span class="line">        print(<span class="string">&quot;[*]服务器IP为%s&quot;</span> % server_ip)</span><br><span class="line">        scan_port(server_ip)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]服务器IP获取失败&quot;</span>)</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_port</span>(<span class="params">ip</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描端口&quot;&quot;&quot;</span></span><br><span class="line">    print(<span class="string">&quot;[*]开始扫描目标端口&quot;</span>)</span><br><span class="line">    start = time.time()</span><br><span class="line">    g = gevent.pool.Pool(<span class="number">50</span>)  <span class="comment"># 设置线程数</span></span><br><span class="line">    run_list = []</span><br><span class="line">    <span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">65535</span>):</span><br><span class="line">        run_list.append(g.spawn(TCP_connect, ip, port))</span><br><span class="line">    gevent.joinall(run_list)</span><br><span class="line">    end = time.time()</span><br><span class="line">    print(<span class="string">&quot;[*]总耗时%s&quot;</span> % time.strftime(<span class="string">&quot;%H:%M:%S&quot;</span>, time.gmtime(end - start)))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    print(<span class="string">&quot;1.通过IP扫描端口&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;2.通过网址扫描端口&quot;</span>)</span><br><span class="line">    uc = int(input(<span class="string">&quot;[+]请输入选择:&quot;</span>))</span><br><span class="line">    <span class="keyword">if</span> <span class="number">1</span> == uc:</span><br><span class="line">        scan_ip()</span><br><span class="line">    <span class="keyword">elif</span> <span class="number">2</span> == uc:</span><br><span class="line">        scan_web()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">&quot;[!]输入有误&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+<p>这里展示部分运行结果：</p>
+<h4 id="选择通过网址扫描端口"><a href="#选择通过网址扫描端口" class="headerlink" title="选择通过网址扫描端口"></a>选择通过网址扫描端口</h4><p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/3.png" class></strong></p>
+<h4 id="选择通过IP扫描端口"><a href="#选择通过IP扫描端口" class="headerlink" title="选择通过IP扫描端口"></a>选择通过IP扫描端口</h4><p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/4.png" class></strong></p>
+<h3 id="使用nmap扫描"><a href="#使用nmap扫描" class="headerlink" title="使用nmap扫描"></a>使用nmap扫描</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> nmap</span><br><span class="line"></span><br><span class="line">host = <span class="string">&#x27;192.168.56.1&#x27;</span></span><br><span class="line"><span class="comment"># 把nmap.exe的路径放入PortScanner中，否则会有环境变量错误</span></span><br><span class="line">nm = nmap.PortScanner(nmap_search_path=(<span class="string">&#x27;nmap&#x27;</span>, <span class="string">r&quot;E:\nmap\nmap.exe&quot;</span>))</span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">130</span>, <span class="number">136</span>):</span><br><span class="line">    result = nm.scan(host, str(port))</span><br><span class="line">    <span class="comment"># 在主机192.168.56.1上获取端口22/tcp状态</span></span><br><span class="line">    state = result[<span class="string">&#x27;scan&#x27;</span>][<span class="string">&#x27;192.168.56.1&#x27;</span>][<span class="string">&#x27;tcp&#x27;</span>][int(port)][<span class="string">&#x27;state&#x27;</span>]</span><br><span class="line">    print(<span class="string">&#x27;[%s] port state: %s&#x27;</span> % (port, state))</span><br></pre></td></tr></table></figure>
+
+<p>使用<strong>netstat -an</strong>查看本机开启的端口服务，用端口135测试代码运行的正确性</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/1.png" class></strong></p>
+<p>也可以直接使用zenmap工具进行端口扫描：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/5.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>Python</category>
+        <category>Web</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Nmap</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>深度学习的对抗攻击方法综述</title>
+    <url>/xiaohong404.github.io/2020/10/28/AI%E5%AE%89%E5%85%A8/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0/</url>
+    <content><![CDATA[ <div class="pdfobject-container" data-target="./PDF/深度学习的对抗攻击方法综述.pdf" data-height="500px"></div>]]></content>
+      <categories>
+        <category>Machine Learning</category>
+        <category>AI安全</category>
+      </categories>
+      <tags>
+        <tag>AI</tag>
+        <tag>Machine Learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>forgot</title>
+    <url>/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/6.png" class></strong></p>
+<h3 id="检查文件开启的保护措施"><a href="#检查文件开启的保护措施" class="headerlink" title="检查文件开启的保护措施"></a>检查文件开启的保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/1.png" class></strong></p>
+<h3 id="用IDA32打开"><a href="#用IDA32打开" class="headerlink" title="用IDA32打开"></a>用IDA32打开</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/2.png" class></strong></p>
+<p>**__isoc99_scanf()**函数存在栈溢出漏洞，不会检查输入的字符串的长度，第二个参数表明写入地址为v2的地址，因此可以利用从v2地址开始写入内容覆盖控制函数执行流。</p>
+<h3 id="shift-F12查看字符串"><a href="#shift-F12查看字符串" class="headerlink" title="shift+F12查看字符串"></a>shift+F12查看字符串</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/3.png" class></strong></p>
+<p>找到其调用函数的位置</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/4.png" class></strong></p>
+<p>查看sub_80486CC函数所在地址（这里函数名称就对应其地址）</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/5.png" class></strong></p>
+<p>其函数所在地址0x080486CC，注意这里调用system函数需要传递<strong>cat flag</strong>参数，如果跳转地址直接为system函数的地址，则无法传递相应的参数。</p>
+<h3 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h3><p>利用栈溢出漏洞，输入v2，将v3-v12任意一个函数的地址修改为sub_80486CC的地址，之后让控制函数执行调用即可。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/7.png" class></strong></p>
+<p>v2是一个32字节的char数组，v2基地址为ebp-0x74，v3基地址为0x54，相差0x74-0x54=0x20=32byte，正好是32字节的char数组的空间大小。因此，这里选择覆盖v3的地址，原因在于v3在栈中紧贴存在栈溢出漏洞的变量，对程序流程造成的未知影响的可能性最小。之后只需要保证函数结尾调用v3，则需要保证- -v14等于0，即让v14等于1。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/8.png" class></strong></p>
+<p>即使得sub_8048702判断条件不成立，直接跳出循环，使得v14的值保持不变，仍为刚开始的1。查看该函数执行的逻辑。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/9.png" class></strong></p>
+<p>查看其ASCII码对应的字符为：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/10.png" class></strong></p>
+<p>若要使得该函数的判断条件不成立，则不能输入字符‘a’-‘z’，’0‘-’9‘，’+‘ ，’-‘，’_’</p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;220.249.52.133&#x27;</span>,<span class="number">52435</span>)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,<span class="string">&#x27;xiaohong&#x27;</span>)</span><br><span class="line">cat_flag_addr = <span class="number">0x80486CC</span></span><br><span class="line">payload = <span class="string">&#x27;/&#x27;</span>*(<span class="number">0x74</span><span class="number">-0x54</span>)+ p32(cat_flag_addr)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/11.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>AD_World</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+        <tag>Stack</tag>
+      </tags>
   </entry>
   <entry>
     <title>Mary_Morton</title>
@@ -204,75 +547,92 @@
       </tags>
   </entry>
   <entry>
-    <title>python实现端口扫描器</title>
-    <url>/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/0.png" class></strong></p>
+    <title>Heap I</title>
+    <url>/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/0.png" class></strong></p>
  <a id="more"></a>
 
-<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>最简单的端口扫描工具使用TCP连接扫描的方式，即利用操作系统原生的网络功能，且通常作为SYN扫描的替代选项。Nmap将这种模式称为连接扫描，因为使用了类似Unix系统的connect()命令。如果该端口是开放的，操作系统就能完成TCP三次握手，然后端口扫描工具会立即关闭刚建立的连接，防止拒绝服务攻击。这种端口扫描模式的优势是用户无需特殊权限。但使用操作系统原生网络功能不能实现底层控制，因此这种扫描方式并不流行。并且TCP扫描很容易被发现，尤其作为端口清扫的手段：这些服务会记录发送者的 IP 地址，入侵检测系统可能触发警报。$–&gt;$（<a href="https://xz.aliyun.com/t/5376#toc-0">端口扫描类型</a>）</p>
-<p>还有另外一种扫描方式是 SYN 扫描，端口扫描工具不使用操作系统原生网络功能，而是自行生成、发送 IP 数据包，并监控其回应。这种扫描模式被称为 “半开放扫描”，因为它从不建立完整的 TCP 连接。端口扫描工具生成一个 SYN 包，如果目标端口开放，则会返回 SYN-ACK 包。扫描端回应一个 RST 包，然后在握手完成前关闭连接。如果端口关闭了但未使用过滤，目标端口应该会持续返回 RST 包。这种粗略的网络利用方式有几个优点：给扫描工具全权控制数据包发送和等待回应时长的权力，允许更详细的回应分析。关于哪一种对目标主机的扫描方式更不具备入侵性存在一些争议，但 SYN 扫描的优势是从不会建立完整的连接。然而，RST 包可能导致网络堵塞，尤其是一些简单如打印机之类的网络设备。</p>
-<p>实例中采用的是第一种扫描方式，直接利用操作系统的 socket 连接接口，初步测试目标服务器的端口是否可以连接，如果可以则返回端口打开状态。$–&gt;$（<a href="https://gist.github.com/kevinkindom/108ffd675cb9253f8f71">socket编程基础</a>）</p>
-<h3 id="实现单线程扫描功能"><a href="#实现单线程扫描功能" class="headerlink" title="实现单线程扫描功能"></a>实现单线程扫描功能</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实现从程序外部向程序传递参数</span></span><br><span class="line">host = sys.argv[<span class="number">1</span>]</span><br><span class="line">portstrs = sys.argv[<span class="number">2</span>].split(<span class="string">&#x27;-&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 扫描端口范围</span></span><br><span class="line">start_port = int(portstrs[<span class="number">0</span>])</span><br><span class="line">end_port = int(portstrs[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取目标ip地址</span></span><br><span class="line">target_ip = gethostbyname(host)</span><br><span class="line">opened_ports = []</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行循环连接</span></span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(start_port, end_port):</span><br><span class="line">    sock = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">    sock.settimeout(<span class="number">10</span>)</span><br><span class="line">    result = sock.connect_ex((target_ip, port))</span><br><span class="line">    <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">        opened_ports.append(port)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印开放的端口</span></span><br><span class="line">print(<span class="string">&quot;Opened ports:&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> opened_ports:</span><br><span class="line">    print(i)</span><br></pre></td></tr></table></figure>
+<p><a href="https://azeria-labs.com/heap-exploitation-part-1-understanding-the-glibc-heap-implementation/">原版传送门</a></p>
+<h3 id="WHAT-IS-THE-HEAP-AND-WHY-DO-PEOPLE-USE-IT"><a href="#WHAT-IS-THE-HEAP-AND-WHY-DO-PEOPLE-USE-IT" class="headerlink" title="WHAT IS THE HEAP, AND WHY DO PEOPLE USE IT?"></a><strong>WHAT IS THE HEAP, AND WHY DO PEOPLE USE IT?</strong></h3><p>堆是C/C++程序员在程序执行期间手动分配的新的区域。程序员通过调用堆相关的函数如<em>malloc</em>向堆管理器请求这部分区域。这些被分配的内存区域，或者称为“allocations”，之后可以被程序员一直使用、修改或者引用，直到他们不再需要这部分区域，会调用free函数将这部分区域返还给堆管理器。</p>
+<p>下面是一个C语言程序分配、使用并且释放堆上的结构体的例子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> field1;</span><br><span class="line">    <span class="keyword">char</span>* field2;</span><br><span class="line">&#125; SomeStruct;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    SomeStruct* myObject = (SomeStruct*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(SomeStruct));</span><br><span class="line">    <span class="keyword">if</span>(myObject != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        myObject-&gt;field1 = <span class="number">1234</span>;</span><br><span class="line">        myObject-&gt;field2 = “Hello World!”;</span><br><span class="line">        do_stuff(myObject);</span><br><span class="line">	<span class="built_in">free</span>(myObject);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/2.png" class></strong></p>
-<p>上面代码实现了单线程扫描端口的测试，但是正常的程序在执行中我们需要考虑执行效率和提升性能，所以需要实现多线程程序。</p>
-<h3 id="多线程扫描"><a href="#多线程扫描" class="headerlink" title="多线程扫描"></a>多线程扫描</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> monkey</span><br><span class="line"></span><br><span class="line">monkey.patch_all()</span><br><span class="line"><span class="keyword">import</span> gevent</span><br><span class="line"><span class="keyword">import</span> gevent.pool</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">TCP_connect</span>(<span class="params">ip, port</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;模拟TCP连接&quot;&quot;&quot;</span></span><br><span class="line">    TCP_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">    TCP_sock.settimeout(<span class="number">0.5</span>)  <span class="comment"># 设置连接超时</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        result = TCP_sock.connect_ex((ip, int(port)))</span><br><span class="line">        <span class="keyword">if</span> result == <span class="number">0</span>:</span><br><span class="line">            print(<span class="string">&quot;[*]%s 端口 开启\t&quot;</span> % port)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># print(&quot;[!]%s端口 关闭&quot;%port)</span></span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        TCP_sock.close()</span><br><span class="line">    <span class="keyword">except</span> socket.error <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]错误:&quot;</span>, e)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_ip</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标IP&quot;&quot;&quot;</span></span><br><span class="line">    ip = input(<span class="string">&quot;[+]输入扫描目标IP:&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;[*]正在扫描&quot;</span>)</span><br><span class="line">    scan_port(ip)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_web</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描目标网址&quot;&quot;&quot;</span></span><br><span class="line">    web = input(<span class="string">&quot;[+]输入扫描网址:&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;http://&quot;</span> <span class="keyword">in</span> web <span class="keyword">or</span> <span class="string">&quot;https://&quot;</span> <span class="keyword">in</span> web:</span><br><span class="line">        web = web[web.find(<span class="string">&#x27;://&#x27;</span>) + <span class="number">3</span>:]</span><br><span class="line">        print(web)</span><br><span class="line">        print(<span class="string">&quot;[*]正在分析网站服务器IP&quot;</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        server_ip = socket.gethostbyname(str(web))</span><br><span class="line">        print(<span class="string">&quot;[*]服务器IP为%s&quot;</span> % server_ip)</span><br><span class="line">        scan_port(server_ip)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;[!]服务器IP获取失败&quot;</span>)</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan_port</span>(<span class="params">ip</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;扫描端口&quot;&quot;&quot;</span></span><br><span class="line">    print(<span class="string">&quot;[*]开始扫描目标端口&quot;</span>)</span><br><span class="line">    start = time.time()</span><br><span class="line">    g = gevent.pool.Pool(<span class="number">50</span>)  <span class="comment"># 设置线程数</span></span><br><span class="line">    run_list = []</span><br><span class="line">    <span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">65535</span>):</span><br><span class="line">        run_list.append(g.spawn(TCP_connect, ip, port))</span><br><span class="line">    gevent.joinall(run_list)</span><br><span class="line">    end = time.time()</span><br><span class="line">    print(<span class="string">&quot;[*]总耗时%s&quot;</span> % time.strftime(<span class="string">&quot;%H:%M:%S&quot;</span>, time.gmtime(end - start)))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    print(<span class="string">&quot;1.通过IP扫描端口&quot;</span>)</span><br><span class="line">    print(<span class="string">&quot;2.通过网址扫描端口&quot;</span>)</span><br><span class="line">    uc = int(input(<span class="string">&quot;[+]请输入选择:&quot;</span>))</span><br><span class="line">    <span class="keyword">if</span> <span class="number">1</span> == uc:</span><br><span class="line">        scan_ip()</span><br><span class="line">    <span class="keyword">elif</span> <span class="number">2</span> == uc:</span><br><span class="line">        scan_web()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">&quot;[!]输入有误&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<p>所以只要程序员遵循下面几个小的规则，堆管理器将确保每个已分配的堆不会相互重叠。这个特点使得堆非常有用并且高效，这和大多数C/C++程序追求性能的要求相符合。</p>
+<p>接下来的图表列出了一些程序员在使用堆时的基本规则，以及在程序员违反这些规则时发生的一些漏洞类别。之后，我将更详细地讨论所有这些与堆相关的漏洞类别，目前只讨论堆使用正确时的表现。</p>
+<h3 id="HEAP-RULES"><a href="#HEAP-RULES" class="headerlink" title="HEAP RULES"></a>HEAP RULES</h3><p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/1.png" class></strong></p>
+<p>当然，<em>malloc</em>和<em>free</em>并不是C和C++程序员与堆进行交互的唯一方式。相反，C++开发人员通常通过C++运算符new和new []分配内存。必须使用相应的C++运算符delete和delete []而不是<em>free</em>释放这些分配。程序员还可以通过与malloc兼容的堆函数（例如<a href="http://man7.org/linux/man-pages/man3/calloc.3p.html"><em>calloc</em></a>，<a href="http://man7.org/linux/man-pages/man3/realloc.3p.html"><em>realloc</em></a>和<a href="https://linux.die.net/man/3/memalign"><em>memalign）</em></a>来分配内存，这些函数最终也通过<em>free</em>释放，就像<em>malloc</em>一样。</p>
+<p>为简单起见，将首先讨论<em>malloc</em>和<em>free</em>，下面是一个C++程序如何分配，使用和释放堆上的结构体的例子：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomeClass</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> field1;</span><br><span class="line">    <span class="keyword">char</span>* field2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    SomeClass* myObject = <span class="keyword">new</span> SomeClass();</span><br><span class="line">    myObject-&gt;field1 = <span class="number">1234</span>;</span><br><span class="line">    myObject-&gt;field2 = “Hello World!”;</span><br><span class="line">    do_stuff(myObject);</span><br><span class="line">    <span class="keyword">delete</span> myObject;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>这里展示部分运行结果：</p>
-<h4 id="选择通过网址扫描端口"><a href="#选择通过网址扫描端口" class="headerlink" title="选择通过网址扫描端口"></a>选择通过网址扫描端口</h4><p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/3.png" class></strong></p>
-<h4 id="选择通过IP扫描端口"><a href="#选择通过IP扫描端口" class="headerlink" title="选择通过IP扫描端口"></a>选择通过IP扫描端口</h4><p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/4.png" class></strong></p>
-<h3 id="使用nmap扫描"><a href="#使用nmap扫描" class="headerlink" title="使用nmap扫描"></a>使用nmap扫描</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> nmap</span><br><span class="line"></span><br><span class="line">host = <span class="string">&#x27;192.168.56.1&#x27;</span></span><br><span class="line"><span class="comment"># 把nmap.exe的路径放入PortScanner中，否则会有环境变量错误</span></span><br><span class="line">nm = nmap.PortScanner(nmap_search_path=(<span class="string">&#x27;nmap&#x27;</span>, <span class="string">r&quot;E:\nmap\nmap.exe&quot;</span>))</span><br><span class="line"><span class="keyword">for</span> port <span class="keyword">in</span> range(<span class="number">130</span>, <span class="number">136</span>):</span><br><span class="line">    result = nm.scan(host, str(port))</span><br><span class="line">    <span class="comment"># 在主机192.168.56.1上获取端口22/tcp状态</span></span><br><span class="line">    state = result[<span class="string">&#x27;scan&#x27;</span>][<span class="string">&#x27;192.168.56.1&#x27;</span>][<span class="string">&#x27;tcp&#x27;</span>][int(port)][<span class="string">&#x27;state&#x27;</span>]</span><br><span class="line">    print(<span class="string">&#x27;[%s] port state: %s&#x27;</span> % (port, state))</span><br></pre></td></tr></table></figure>
 
-<p>使用<strong>netstat -an</strong>查看本机开启的端口服务，用端口135测试代码运行的正确性</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/1.png" class></strong></p>
-<p>也可以直接使用zenmap工具进行端口扫描：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/24/Python/python%E5%AE%9E%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%99%A8/5.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>Python</category>
-        <category>Web</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-        <tag>Nmap</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>forgot</title>
-    <url>/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/0.png" class></strong></p>
- <a id="more"></a>
 
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/6.png" class></strong></p>
-<h3 id="检查文件开启的保护措施"><a href="#检查文件开启的保护措施" class="headerlink" title="检查文件开启的保护措施"></a>检查文件开启的保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/1.png" class></strong></p>
-<h3 id="用IDA32打开"><a href="#用IDA32打开" class="headerlink" title="用IDA32打开"></a>用IDA32打开</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/2.png" class></strong></p>
-<p>**__isoc99_scanf()**函数存在栈溢出漏洞，不会检查输入的字符串的长度，第二个参数表明写入地址为v2的地址，因此可以利用从v2地址开始写入内容覆盖控制函数执行流。</p>
-<h3 id="shift-F12查看字符串"><a href="#shift-F12查看字符串" class="headerlink" title="shift+F12查看字符串"></a>shift+F12查看字符串</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/3.png" class></strong></p>
-<p>找到其调用函数的位置</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/4.png" class></strong></p>
-<p>查看sub_80486CC函数所在地址（这里函数名称就对应其地址）</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/5.png" class></strong></p>
-<p>其函数所在地址0x080486CC，注意这里调用system函数需要传递<strong>cat flag</strong>参数，如果跳转地址直接为system函数的地址，则无法传递相应的参数。</p>
-<h3 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h3><p>利用栈溢出漏洞，输入v2，将v3-v12任意一个函数的地址修改为sub_80486CC的地址，之后让控制函数执行调用即可。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/7.png" class></strong></p>
-<p>v2是一个32字节的char数组，v2基地址为ebp-0x74，v3基地址为0x54，相差0x74-0x54=0x20=32byte，正好是32字节的char数组的空间大小。因此，这里选择覆盖v3的地址，原因在于v3在栈中紧贴存在栈溢出漏洞的变量，对程序流程造成的未知影响的可能性最小。之后只需要保证函数结尾调用v3，则需要保证- -v14等于0，即让v14等于1。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/8.png" class></strong></p>
-<p>即使得sub_8048702判断条件不成立，直接跳出循环，使得v14的值保持不变，仍为刚开始的1。查看该函数执行的逻辑。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/9.png" class></strong></p>
-<p>查看其ASCII码对应的字符为：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/10.png" class></strong></p>
-<p>若要使得该函数的判断条件不成立，则不能输入字符‘a’-‘z’，’0‘-’9‘，’+‘ ，’-‘，’_’</p>
-<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;220.249.52.133&#x27;</span>,<span class="number">52435</span>)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,<span class="string">&#x27;xiaohong&#x27;</span>)</span><br><span class="line">cat_flag_addr = <span class="number">0x80486CC</span></span><br><span class="line">payload = <span class="string">&#x27;/&#x27;</span>*(<span class="number">0x74</span><span class="number">-0x54</span>)+ p32(cat_flag_addr)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/11.png" class></strong></p>
+<h3 id="MEMORY-CHUNKS-AND-THE-CHUNK-ALLOCATION-STRATEGIES"><a href="#MEMORY-CHUNKS-AND-THE-CHUNK-ALLOCATION-STRATEGIES" class="headerlink" title="MEMORY CHUNKS AND THE CHUNK ALLOCATION STRATEGIES"></a><strong>MEMORY CHUNKS AND THE CHUNK ALLOCATION STRATEGIES</strong></h3><p>假设一个程序员通过malloc需求10字节内存，为了满足这个请求，堆管理器不仅仅只随机寻找一个10字节的程序员可以写的区域，而是需要做更多的事情。堆管理器也需要存储此次分配的元数据。这个元数据被存储在紧邻分配的10字节区域处。</p>
+<p>堆管理器还需要确保分配空间在32位系统上是8字节对齐的，在64位系统上是16字节对齐的。如果程序员只想存储文本字符串或字节数组之类的数据，那么分配空间的对齐方式无关紧要。但是如果程序员打算使用分配空间来存储更多复杂的数据结构，则对齐方式会对程序的正确性和性能会产生重大影响。由于<em>malloc</em>无法知道程序员将在分配空间中存储什么内容，因此堆管理器必须默认确保所有分配空间均对齐。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/2.png" class></strong></p>
+<p>此分配元数据和对齐填充字节与<em>malloc</em>的内存区域将一起被存储并返回给程序员。因此，堆管理器在内部分配的“块”内存比程序员最初要求的稍大。当程序员要求10个字节的内存时，堆管理器会找到或创建一个新的内存块，该块足以存储10个字节的空间、元数据以及对齐填充字节。然后，堆管理器将此块标记为“已分配”，并返回指向块内对齐的10字节“用户数据”区域的指针，程序员将收到<em>malloc</em>调用的返回值。</p>
+<h3 id="CHUNK-ALLOCATION-BASIC-STRATEGY"><a href="#CHUNK-ALLOCATION-BASIC-STRATEGY" class="headerlink" title="CHUNK ALLOCATION: BASIC STRATEGY"></a><strong>CHUNK ALLOCATION: BASIC STRATEGY</strong></h3><p>那么堆管理器如何在内部分配这些块呢？</p>
+<p>首先，让我们看一下堆管理器的大部分工作，分配小块内存的（大大简化的）策略。我将在详细地解释每个步骤，之后我们就可以研究分配大块内存的特殊情况。</p>
+<p>简化的小块分配策略如下：</p>
+<ol>
+<li><p>如果有一个先前释放的内存块，并且该块足够大，可以满足用户的请求，则堆管理器将使用这个释放的块进行新的分配。</p>
+</li>
+<li><p>否则，如果堆顶部有可用空间，则堆管理器将从这个空闲的空间中分配一个新的块并使用它。</p>
+</li>
+<li><p>否则，堆管理器将要求内核向堆的末尾添加新的内存，并且从新分配的空间中分配一个新块给用户。</p>
+</li>
+<li><p>如果前面所有策略均失败，则无法为提供分配服务，并且<em>malloc</em>返回NULL。</p>
+</li>
+</ol>
+<h4 id="ALLOCATING-FROM-FREE’D-CHUNKS"><a href="#ALLOCATING-FROM-FREE’D-CHUNKS" class="headerlink" title="ALLOCATING FROM FREE’D CHUNKS"></a><strong>ALLOCATING FROM FREE’D CHUNKS</strong></h4><p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/3.png" class></strong></p>
+<p>从概念上讲，分配之前释放的块非常简单。因为当一个块在内存中被释放，堆管理器会在一系列称为<em>“bins”</em>的不同链表中记录这些释放的块。用户发出一个分配请求后，堆管理器会在这些<em>“bins”</em>中搜索一个足够大的空闲块，为用户提供服务。如果可以成功找到一个，则将这个空闲块从特定的bin中删除，并标记为“已分配”，然后这个指向该“user data”区域块的指针，会作为<em>malloc</em>的返回值返回给程序员。</p>
+<p>出于性能原因，有几种不同类型的<em>bins</em>，即<em>fast bins 、unsorted bins 、small bins、large bins 、per-thread tcache</em>。下个部分将详细讨论这些不同种类的<em>bins</em>。</p>
+<h4 id="ALLOCATING-FROM-THE-TOP-OF-THE-HEAP"><a href="#ALLOCATING-FROM-THE-TOP-OF-THE-HEAP" class="headerlink" title="ALLOCATING FROM THE TOP OF THE HEAP"></a><strong>ALLOCATING FROM THE TOP OF THE HEAP</strong></h4><p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/4.gif" class></strong></p>
+<p>如果没有可用的空闲块可以满足分配请求，则堆管理器必须从头开始构造一个新块。为此，堆管理器首先查看堆顶部是否有足够的可用空间（有时称为“top chunk”或“remainder chunk”）。如果存在，堆管理器将在此可用空间基础上构造一个新块。</p>
+<h4 id="ASKING-THE-KERNEL-FOR-MORE-MEMORY-AT-THE-TOP-OF-THE-HEAP"><a href="#ASKING-THE-KERNEL-FOR-MORE-MEMORY-AT-THE-TOP-OF-THE-HEAP" class="headerlink" title="ASKING THE KERNEL FOR MORE MEMORY AT THE TOP OF THE HEAP"></a><strong>ASKING THE KERNEL FOR MORE MEMORY AT THE TOP OF THE HEAP</strong></h4><p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/5.gif" class></strong></p>
+<p>一旦堆顶部的可用空间用完，堆管理器将不得不要求内核在堆的末尾增加更多内存。</p>
+<p>在建立堆的开始阶段上，堆管理器通过调用<a href="http://man7.org/linux/man-pages/man2/sbrk.2.html"><em>sbrk</em></a>，要求内核在堆末尾分配更多的内存。在大多数基于Linux的系统上，在内部使用称为“ <a href="https://linux.die.net/man/2/brk">brk</a> ”的系统调用。这个系统调用的名称很容易混淆，它最初的意思是“更改程序中断位置”，通俗来说，它表示在程序加载到内存之后，该区域会增加更多的内存。因为这是堆管理器从一开始创建堆的地方，所以此系统调用的作用是在程序堆的末尾分配更多的内存。</p>
+<p>最终，如果一直使用<em>sbrk</em>扩展堆会导致分配失败，因为堆空间增长得太大之后，进一步扩展将导致其与进程地址空间中的其他内容发生冲突，例如内存映射，共享库或线程的堆栈区域。因此sbrk无法分配时，堆管理器将使用<a href="http://man7.org/linux/man-pages/man2/mmap.2.html"><em>mmap</em></a>调用将新的非连续内存<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l2320">附加</a>到初始程序堆。</p>
+<p>如果<em>mmap</em>也失败，则该进程根本无法分配更多的内存，并且<em>malloc</em>将返回NULL。</p>
+<h3 id="OFF-HEAP-ALLOCATIONS-VIA-MMAP"><a href="#OFF-HEAP-ALLOCATIONS-VIA-MMAP" class="headerlink" title="OFF-HEAP ALLOCATIONS VIA MMAP"></a><strong>OFF-HEAP ALLOCATIONS VIA MMAP</strong></h3><p>很大的分配请求（超过某个阈值*）在堆管理器中会得到<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l866">特殊处理</a>。通过直接调用<em>mmap</em>可以在堆外分配这些大块，并使用块中元数据的标记位来标记这一事实。当这些巨大块通过调用<em>free</em>释放到堆管理器时，堆管理器将通过<em>munmap</em>将整个<em>mmap</em> 过的区域返还给系统。</p>
+<p>*默认情况下，此<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l858">阈值</a> 在32位系统上为128KB~512KB，在64位系统上为32MB，但是，如果堆管理器检测到这些分配的大块内存只需要被临时使用，则此阈值也会<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l949">动态增加</a>。</p>
+<h3 id="ARENAS"><a href="#ARENAS" class="headerlink" title="ARENAS"></a><strong>ARENAS</strong></h3><p>在多线程应用程序上，堆管理器需要保护内部堆数据结构免受可能导致程序崩溃的竞争条件的影响。在<em>ptmalloc2</em>之前，堆管理器通过在每次堆操作之前简单地使用全局互斥锁，以确保在任何给定时间只有一个线程可以与堆进行交互。</p>
+<p>尽管此策略有效，但堆分配器对高利用率和性能非常敏感，以至于导致使用大量线程的应用程序出现严重的性能问题。为了解决这个问题，<em>ptmalloc2</em>堆分配器引入了<em>“arenas”</em>的概念。每个<em>“arenas”</em>本质上是一个完全不同的堆，它完全独立地管理自己的块分配和<em>free bins</em>。每个<em>“arenas”</em>仍然使用互斥锁来序列化不同线程对内部数据结构的访问，但是只要线程与不同的<em>“arenas”</em>进行交互，线程就可以安全地执行堆操作而不会彼此停顿。</p>
+<p>程序的初始（“main”）<em>“arenas”</em>仅包含我们已经看到的堆，对于单线程应用程序，这是堆管理器将使用的唯一<em>arena</em>。但是，随着新线程加入该进程，堆管理器会为每个新线程分配并附加<em>“arenas”</em>，以减少<em>malloc</em>和<em>free</em>等操作的等待时间。</p>
+<p>对于每个加入该进程的新线程，堆管理器将先查找没有被其他线程在使用的<em>“arenas”</em>，并将该<em>“arenas”</em>附加到该线程。一旦所有可用的<em>“arenas”</em>都是在其它线程使用中，堆管理器将<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/arena.c;h=efca2bcf682667c618e285b2357888d10d336c5f;hb=HEAD#l872">创建一个新的</a><em>“arenas”</em>，直到<em>“arenas”</em>的数目达到最大（32位进程为CPU核心数的2倍、64位进程位CPU核心的8倍）。一旦最终达到该限制，堆管理器就会放弃分配，这样多个线程将必须共享一个<em>“arenas”</em>，即执行堆操作将需要那些线程中的一个等待另一个线程。</p>
+<p>但是这些二级<em>“arenas”</em>如何工作？我们看到，主堆在程序加载到内存的紧邻其后的位置，并使用<em>brk</em>系统调用对其进行扩展开始工作，但二级<em>“arenas”</em>并不相同，这些二级<em>“arenas”</em>使用<em>mmap</em>和<em>mprotect</em>创建的一个或多个“<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/arena.c;h=efca2bcf682667c618e285b2357888d10d336c5f;hb=HEAD#l452">子堆</a>”来模拟主堆的行为。</p>
+<h3 id="SUBHEAPS"><a href="#SUBHEAPS" class="headerlink" title="SUBHEAPS"></a><strong>SUBHEAPS</strong></h3><p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/6.png" class></strong></p>
+<p>子堆的工作方式与初始程序堆基本相同，主要存在两个区别。初始堆位于程序加载到内存之后的紧邻其后的位置，并且由<em>sbrk</em>动态扩展。相比之下，每个子堆使用<em>mmap</em>定位到内存中，堆管理器使用<em>mprotect</em>手动模拟增长子堆。</p>
+<p>当堆管理器想要创建子堆时，它首先通过调用<em>mmap</em>要求内核保留该子堆可能增长到的内存区域<em>。</em>保留该区域不会将内存直接分配到子堆中；它只是要求内核不要在该区域内分配诸如线程堆栈，mmap区域或者其它的分配任务。*默认情况下，子堆大小最大（即保留该子堆使用的内存区域）在32位上为1MB，在64位系统上为64MB。</p>
+<p>这是通过<em>mmap</em>询问标记为<em>PROT_NONE</em>的页面来完成的，这表明内核仅需要为该区域保留地址范围，不需要内核将内存直接分配给它。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/7.png" class></strong></p>
+<p>在使用<em>sbrk</em>增长初始堆的地方，堆管理器通过手动调用<a href="http://man7.org/linux/man-pages/man2/mprotect.2.html"><em>mprotect</em></a>将区域中的页面从<em>PROT_NONE</em>更改为<em>PROT_READ | PROT_WRITE</em>来将子堆“增长”到此保留的地址范围。这导致内核将物理内存附加到那些地址，实际上也会导致子堆缓慢增长，直到整个<em>mmap</em>区域已满。一旦整个子堆都用完，<em>arenas</em>便会分配另一个子堆。这将允许二级<em>”arenas”</em>几乎无限期地保持增长，直到内核耗尽内存或进程耗尽地址空间时才会失败。</p>
+<h4 id="Recap："><a href="#Recap：" class="headerlink" title="Recap："></a>Recap：</h4><p>初始（“main”）<em>arena</em>仅包含主堆，该主堆位于将程序二进制文件加载到内存之后的位置，并使用<em>sbrk</em>进行扩展。这是用于单线程应用程序的唯一<em>arena</em>。在多线程应用程序上，为新线程分配了二级<em>arena</em>，从中可以分配这些二级<em>arena</em>。使用<em>arenas</em>可以降低线程在执行堆操作之前需要等待互斥锁的可能性，从而提高了程序的速度。与<em>main arena</em>不同，这些二级<em>arena</em>从一个或多个子堆中分配块，这些子堆在内存中的位置首先使用<em>mmap</em>进行确定，并通过使用<em>mprotect</em>进行扩展。</p>
+<h3 id="CHUNK-METADATA"><a href="#CHUNK-METADATA" class="headerlink" title="CHUNK METADATA"></a><strong>CHUNK METADATA</strong></h3><p>现在，了解了分配块的所有不同方式，这些块不仅包含提供给程序员的“用户数据”区域（作为<em>malloc</em>的返回值），同时包含元数据。下面介绍元数据实际记录的值以及存放的位置。</p>
+<p>块的元数据在内存中的<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l1038">确切布局</a>可能会很混乱，因为堆管理器源代码将一个块末尾的元数据与下一个块末尾的元数据组合在一起，并且几个存在并被使用的元数据字段取决于不同种类的chunk。</p>
+<p>现在，我们仅看一下实时分配，它具有单个<em>size_t</em> * 标头，该标头位于给程序员的“用户数据”区域的后面。此字段（在源代码中称为<em>mchunk_size</em>）是在<em>malloc</em>期间写入的，之后由<em>free</em>决定如何处理该分配空间的释放。</p>
+<p>* size_t值在32位系统上为4字节整数，在64位系统上为8字节整数。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/8.png" class></strong></p>
+<p>该<em>mchunk_size</em>存储了四种信息：块的大小，以及被称为“A”,“M”和“P”三比特位。这些都被存储在相同的<em>size_t</em>字段中，因为块大小始终是8字节对齐的（在64位上是16字节对齐），因此，块大小的低三位始终为零。</p>
+<p><strong>“ A ”标志</strong>是用来告诉堆管理器，是否该块属于二级<em>arena</em>，而不是在<em>main arena</em>。在free期间，堆管理器仅仅给了一个指向程序员想要释放空间的指针，并且堆管理器需要确定该指针属于哪一个<em>arena</em>。如果在块的元数据中A标志被设置，则堆管理器必须搜索每个<em>arena</em>，并查看指针是否位于该<em>arena</em>的任何子堆中。如果未设置该标志，则堆管理器可以减少搜索，因为它知道该块来自初始的<em>arena</em>。</p>
+<p><strong>“ M ”标志</strong>用于指示该块是一个通过<em>mmap</em>进行堆外分配的巨大分配。当此分配空间最终返回给<em>free时</em>，堆管理器将通过<em>munmap</em>立即将整个块返回给操作系统，而不是尝试对其进行回收。因此，空闲即已经被释放的块永远不会设置该标志位。</p>
+<p><strong>“ P ”标志</strong>令人困惑，因为它实际上属于先前的块。它指示先前的块是一个空闲块。这意味着当这个块被释放时，可以将其安全地连接到先前的块上，以创建更大的空闲块。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/9.gif" class></strong></p>
+<p>下面是一些和堆相关的文章：</p>
+<ul>
+<li><a href="http://phrack.org/issues/57/9.html">Once upon a free()</a></li>
+<li><a href="http://phrack.org/issues/66/10.html">Malloc des-maleficarum</a></li>
+<li><a href="http://phrack.org/issues/67/8.html">The house of lore</a></li>
+<li><a href="http://phrack.org/issues/61/6.html">Advanced Doug Lea’s malloc exploits</a></li>
+<li><a href="http://phrack.org/issues/66/6.html">Yet another free() exploitation technique</a></li>
+</ul>
 ]]></content>
       <categories>
         <category>PWN</category>
-        <category>AD_World</category>
+        <category>Heap</category>
+        <category>Heap_Basic</category>
       </categories>
       <tags>
         <tag>PWN</tag>
-        <tag>Stack</tag>
       </tags>
   </entry>
   <entry>
@@ -464,95 +824,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Heap I</title>
-    <url>/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><a href="https://azeria-labs.com/heap-exploitation-part-1-understanding-the-glibc-heap-implementation/">原版传送门</a></p>
-<h3 id="WHAT-IS-THE-HEAP-AND-WHY-DO-PEOPLE-USE-IT"><a href="#WHAT-IS-THE-HEAP-AND-WHY-DO-PEOPLE-USE-IT" class="headerlink" title="WHAT IS THE HEAP, AND WHY DO PEOPLE USE IT?"></a><strong>WHAT IS THE HEAP, AND WHY DO PEOPLE USE IT?</strong></h3><p>堆是C/C++程序员在程序执行期间手动分配的新的区域。程序员通过调用堆相关的函数如<em>malloc</em>向堆管理器请求这部分区域。这些被分配的内存区域，或者称为“allocations”，之后可以被程序员一直使用、修改或者引用，直到他们不再需要这部分区域，会调用free函数将这部分区域返还给堆管理器。</p>
-<p>下面是一个C语言程序分配、使用并且释放堆上的结构体的例子：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> field1;</span><br><span class="line">    <span class="keyword">char</span>* field2;</span><br><span class="line">&#125; SomeStruct;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    SomeStruct* myObject = (SomeStruct*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(SomeStruct));</span><br><span class="line">    <span class="keyword">if</span>(myObject != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        myObject-&gt;field1 = <span class="number">1234</span>;</span><br><span class="line">        myObject-&gt;field2 = “Hello World!”;</span><br><span class="line">        do_stuff(myObject);</span><br><span class="line">	<span class="built_in">free</span>(myObject);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>所以只要程序员遵循下面几个小的规则，堆管理器将确保每个已分配的堆不会相互重叠。这个特点使得堆非常有用并且高效，这和大多数C/C++程序追求性能的要求相符合。</p>
-<p>接下来的图表列出了一些程序员在使用堆时的基本规则，以及在程序员违反这些规则时发生的一些漏洞类别。之后，我将更详细地讨论所有这些与堆相关的漏洞类别，目前只讨论堆使用正确时的表现。</p>
-<h3 id="HEAP-RULES"><a href="#HEAP-RULES" class="headerlink" title="HEAP RULES"></a>HEAP RULES</h3><p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/1.png" class></strong></p>
-<p>当然，<em>malloc</em>和<em>free</em>并不是C和C++程序员与堆进行交互的唯一方式。相反，C++开发人员通常通过C++运算符new和new []分配内存。必须使用相应的C++运算符delete和delete []而不是<em>free</em>释放这些分配。程序员还可以通过与malloc兼容的堆函数（例如<a href="http://man7.org/linux/man-pages/man3/calloc.3p.html"><em>calloc</em></a>，<a href="http://man7.org/linux/man-pages/man3/realloc.3p.html"><em>realloc</em></a>和<a href="https://linux.die.net/man/3/memalign"><em>memalign）</em></a>来分配内存，这些函数最终也通过<em>free</em>释放，就像<em>malloc</em>一样。</p>
-<p>为简单起见，将首先讨论<em>malloc</em>和<em>free</em>，下面是一个C++程序如何分配，使用和释放堆上的结构体的例子：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomeClass</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> field1;</span><br><span class="line">    <span class="keyword">char</span>* field2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    SomeClass* myObject = <span class="keyword">new</span> SomeClass();</span><br><span class="line">    myObject-&gt;field1 = <span class="number">1234</span>;</span><br><span class="line">    myObject-&gt;field2 = “Hello World!”;</span><br><span class="line">    do_stuff(myObject);</span><br><span class="line">    <span class="keyword">delete</span> myObject;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="MEMORY-CHUNKS-AND-THE-CHUNK-ALLOCATION-STRATEGIES"><a href="#MEMORY-CHUNKS-AND-THE-CHUNK-ALLOCATION-STRATEGIES" class="headerlink" title="MEMORY CHUNKS AND THE CHUNK ALLOCATION STRATEGIES"></a><strong>MEMORY CHUNKS AND THE CHUNK ALLOCATION STRATEGIES</strong></h3><p>假设一个程序员通过malloc需求10字节内存，为了满足这个请求，堆管理器不仅仅只随机寻找一个10字节的程序员可以写的区域，而是需要做更多的事情。堆管理器也需要存储此次分配的元数据。这个元数据被存储在紧邻分配的10字节区域处。</p>
-<p>堆管理器还需要确保分配空间在32位系统上是8字节对齐的，在64位系统上是16字节对齐的。如果程序员只想存储文本字符串或字节数组之类的数据，那么分配空间的对齐方式无关紧要。但是如果程序员打算使用分配空间来存储更多复杂的数据结构，则对齐方式会对程序的正确性和性能会产生重大影响。由于<em>malloc</em>无法知道程序员将在分配空间中存储什么内容，因此堆管理器必须默认确保所有分配空间均对齐。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/2.png" class></strong></p>
-<p>此分配元数据和对齐填充字节与<em>malloc</em>的内存区域将一起被存储并返回给程序员。因此，堆管理器在内部分配的“块”内存比程序员最初要求的稍大。当程序员要求10个字节的内存时，堆管理器会找到或创建一个新的内存块，该块足以存储10个字节的空间、元数据以及对齐填充字节。然后，堆管理器将此块标记为“已分配”，并返回指向块内对齐的10字节“用户数据”区域的指针，程序员将收到<em>malloc</em>调用的返回值。</p>
-<h3 id="CHUNK-ALLOCATION-BASIC-STRATEGY"><a href="#CHUNK-ALLOCATION-BASIC-STRATEGY" class="headerlink" title="CHUNK ALLOCATION: BASIC STRATEGY"></a><strong>CHUNK ALLOCATION: BASIC STRATEGY</strong></h3><p>那么堆管理器如何在内部分配这些块呢？</p>
-<p>首先，让我们看一下堆管理器的大部分工作，分配小块内存的（大大简化的）策略。我将在详细地解释每个步骤，之后我们就可以研究分配大块内存的特殊情况。</p>
-<p>简化的小块分配策略如下：</p>
-<ol>
-<li><p>如果有一个先前释放的内存块，并且该块足够大，可以满足用户的请求，则堆管理器将使用这个释放的块进行新的分配。</p>
-</li>
-<li><p>否则，如果堆顶部有可用空间，则堆管理器将从这个空闲的空间中分配一个新的块并使用它。</p>
-</li>
-<li><p>否则，堆管理器将要求内核向堆的末尾添加新的内存，并且从新分配的空间中分配一个新块给用户。</p>
-</li>
-<li><p>如果前面所有策略均失败，则无法为提供分配服务，并且<em>malloc</em>返回NULL。</p>
-</li>
-</ol>
-<h4 id="ALLOCATING-FROM-FREE’D-CHUNKS"><a href="#ALLOCATING-FROM-FREE’D-CHUNKS" class="headerlink" title="ALLOCATING FROM FREE’D CHUNKS"></a><strong>ALLOCATING FROM FREE’D CHUNKS</strong></h4><p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/3.png" class></strong></p>
-<p>从概念上讲，分配之前释放的块非常简单。因为当一个块在内存中被释放，堆管理器会在一系列称为<em>“bins”</em>的不同链表中记录这些释放的块。用户发出一个分配请求后，堆管理器会在这些<em>“bins”</em>中搜索一个足够大的空闲块，为用户提供服务。如果可以成功找到一个，则将这个空闲块从特定的bin中删除，并标记为“已分配”，然后这个指向该“user data”区域块的指针，会作为<em>malloc</em>的返回值返回给程序员。</p>
-<p>出于性能原因，有几种不同类型的<em>bins</em>，即<em>fast bins 、unsorted bins 、small bins、large bins 、per-thread tcache</em>。下个部分将详细讨论这些不同种类的<em>bins</em>。</p>
-<h4 id="ALLOCATING-FROM-THE-TOP-OF-THE-HEAP"><a href="#ALLOCATING-FROM-THE-TOP-OF-THE-HEAP" class="headerlink" title="ALLOCATING FROM THE TOP OF THE HEAP"></a><strong>ALLOCATING FROM THE TOP OF THE HEAP</strong></h4><p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/4.gif" class></strong></p>
-<p>如果没有可用的空闲块可以满足分配请求，则堆管理器必须从头开始构造一个新块。为此，堆管理器首先查看堆顶部是否有足够的可用空间（有时称为“top chunk”或“remainder chunk”）。如果存在，堆管理器将在此可用空间基础上构造一个新块。</p>
-<h4 id="ASKING-THE-KERNEL-FOR-MORE-MEMORY-AT-THE-TOP-OF-THE-HEAP"><a href="#ASKING-THE-KERNEL-FOR-MORE-MEMORY-AT-THE-TOP-OF-THE-HEAP" class="headerlink" title="ASKING THE KERNEL FOR MORE MEMORY AT THE TOP OF THE HEAP"></a><strong>ASKING THE KERNEL FOR MORE MEMORY AT THE TOP OF THE HEAP</strong></h4><p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/5.gif" class></strong></p>
-<p>一旦堆顶部的可用空间用完，堆管理器将不得不要求内核在堆的末尾增加更多内存。</p>
-<p>在建立堆的开始阶段上，堆管理器通过调用<a href="http://man7.org/linux/man-pages/man2/sbrk.2.html"><em>sbrk</em></a>，要求内核在堆末尾分配更多的内存。在大多数基于Linux的系统上，在内部使用称为“ <a href="https://linux.die.net/man/2/brk">brk</a> ”的系统调用。这个系统调用的名称很容易混淆，它最初的意思是“更改程序中断位置”，通俗来说，它表示在程序加载到内存之后，该区域会增加更多的内存。因为这是堆管理器从一开始创建堆的地方，所以此系统调用的作用是在程序堆的末尾分配更多的内存。</p>
-<p>最终，如果一直使用<em>sbrk</em>扩展堆会导致分配失败，因为堆空间增长得太大之后，进一步扩展将导致其与进程地址空间中的其他内容发生冲突，例如内存映射，共享库或线程的堆栈区域。因此sbrk无法分配时，堆管理器将使用<a href="http://man7.org/linux/man-pages/man2/mmap.2.html"><em>mmap</em></a>调用将新的非连续内存<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l2320">附加</a>到初始程序堆。</p>
-<p>如果<em>mmap</em>也失败，则该进程根本无法分配更多的内存，并且<em>malloc</em>将返回NULL。</p>
-<h3 id="OFF-HEAP-ALLOCATIONS-VIA-MMAP"><a href="#OFF-HEAP-ALLOCATIONS-VIA-MMAP" class="headerlink" title="OFF-HEAP ALLOCATIONS VIA MMAP"></a><strong>OFF-HEAP ALLOCATIONS VIA MMAP</strong></h3><p>很大的分配请求（超过某个阈值*）在堆管理器中会得到<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l866">特殊处理</a>。通过直接调用<em>mmap</em>可以在堆外分配这些大块，并使用块中元数据的标记位来标记这一事实。当这些巨大块通过调用<em>free</em>释放到堆管理器时，堆管理器将通过<em>munmap</em>将整个<em>mmap</em> 过的区域返还给系统。</p>
-<p>*默认情况下，此<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l858">阈值</a> 在32位系统上为128KB~512KB，在64位系统上为32MB，但是，如果堆管理器检测到这些分配的大块内存只需要被临时使用，则此阈值也会<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l949">动态增加</a>。</p>
-<h3 id="ARENAS"><a href="#ARENAS" class="headerlink" title="ARENAS"></a><strong>ARENAS</strong></h3><p>在多线程应用程序上，堆管理器需要保护内部堆数据结构免受可能导致程序崩溃的竞争条件的影响。在<em>ptmalloc2</em>之前，堆管理器通过在每次堆操作之前简单地使用全局互斥锁，以确保在任何给定时间只有一个线程可以与堆进行交互。</p>
-<p>尽管此策略有效，但堆分配器对高利用率和性能非常敏感，以至于导致使用大量线程的应用程序出现严重的性能问题。为了解决这个问题，<em>ptmalloc2</em>堆分配器引入了<em>“arenas”</em>的概念。每个<em>“arenas”</em>本质上是一个完全不同的堆，它完全独立地管理自己的块分配和<em>free bins</em>。每个<em>“arenas”</em>仍然使用互斥锁来序列化不同线程对内部数据结构的访问，但是只要线程与不同的<em>“arenas”</em>进行交互，线程就可以安全地执行堆操作而不会彼此停顿。</p>
-<p>程序的初始（“main”）<em>“arenas”</em>仅包含我们已经看到的堆，对于单线程应用程序，这是堆管理器将使用的唯一<em>arena</em>。但是，随着新线程加入该进程，堆管理器会为每个新线程分配并附加<em>“arenas”</em>，以减少<em>malloc</em>和<em>free</em>等操作的等待时间。</p>
-<p>对于每个加入该进程的新线程，堆管理器将先查找没有被其他线程在使用的<em>“arenas”</em>，并将该<em>“arenas”</em>附加到该线程。一旦所有可用的<em>“arenas”</em>都是在其它线程使用中，堆管理器将<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/arena.c;h=efca2bcf682667c618e285b2357888d10d336c5f;hb=HEAD#l872">创建一个新的</a><em>“arenas”</em>，直到<em>“arenas”</em>的数目达到最大（32位进程为CPU核心数的2倍、64位进程位CPU核心的8倍）。一旦最终达到该限制，堆管理器就会放弃分配，这样多个线程将必须共享一个<em>“arenas”</em>，即执行堆操作将需要那些线程中的一个等待另一个线程。</p>
-<p>但是这些二级<em>“arenas”</em>如何工作？我们看到，主堆在程序加载到内存的紧邻其后的位置，并使用<em>brk</em>系统调用对其进行扩展开始工作，但二级<em>“arenas”</em>并不相同，这些二级<em>“arenas”</em>使用<em>mmap</em>和<em>mprotect</em>创建的一个或多个“<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/arena.c;h=efca2bcf682667c618e285b2357888d10d336c5f;hb=HEAD#l452">子堆</a>”来模拟主堆的行为。</p>
-<h3 id="SUBHEAPS"><a href="#SUBHEAPS" class="headerlink" title="SUBHEAPS"></a><strong>SUBHEAPS</strong></h3><p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/6.png" class></strong></p>
-<p>子堆的工作方式与初始程序堆基本相同，主要存在两个区别。初始堆位于程序加载到内存之后的紧邻其后的位置，并且由<em>sbrk</em>动态扩展。相比之下，每个子堆使用<em>mmap</em>定位到内存中，堆管理器使用<em>mprotect</em>手动模拟增长子堆。</p>
-<p>当堆管理器想要创建子堆时，它首先通过调用<em>mmap</em>要求内核保留该子堆可能增长到的内存区域<em>。</em>保留该区域不会将内存直接分配到子堆中；它只是要求内核不要在该区域内分配诸如线程堆栈，mmap区域或者其它的分配任务。*默认情况下，子堆大小最大（即保留该子堆使用的内存区域）在32位上为1MB，在64位系统上为64MB。</p>
-<p>这是通过<em>mmap</em>询问标记为<em>PROT_NONE</em>的页面来完成的，这表明内核仅需要为该区域保留地址范围，不需要内核将内存直接分配给它。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/7.png" class></strong></p>
-<p>在使用<em>sbrk</em>增长初始堆的地方，堆管理器通过手动调用<a href="http://man7.org/linux/man-pages/man2/mprotect.2.html"><em>mprotect</em></a>将区域中的页面从<em>PROT_NONE</em>更改为<em>PROT_READ | PROT_WRITE</em>来将子堆“增长”到此保留的地址范围。这导致内核将物理内存附加到那些地址，实际上也会导致子堆缓慢增长，直到整个<em>mmap</em>区域已满。一旦整个子堆都用完，<em>arenas</em>便会分配另一个子堆。这将允许二级<em>”arenas”</em>几乎无限期地保持增长，直到内核耗尽内存或进程耗尽地址空间时才会失败。</p>
-<h4 id="Recap："><a href="#Recap：" class="headerlink" title="Recap："></a>Recap：</h4><p>初始（“main”）<em>arena</em>仅包含主堆，该主堆位于将程序二进制文件加载到内存之后的位置，并使用<em>sbrk</em>进行扩展。这是用于单线程应用程序的唯一<em>arena</em>。在多线程应用程序上，为新线程分配了二级<em>arena</em>，从中可以分配这些二级<em>arena</em>。使用<em>arenas</em>可以降低线程在执行堆操作之前需要等待互斥锁的可能性，从而提高了程序的速度。与<em>main arena</em>不同，这些二级<em>arena</em>从一个或多个子堆中分配块，这些子堆在内存中的位置首先使用<em>mmap</em>进行确定，并通过使用<em>mprotect</em>进行扩展。</p>
-<h3 id="CHUNK-METADATA"><a href="#CHUNK-METADATA" class="headerlink" title="CHUNK METADATA"></a><strong>CHUNK METADATA</strong></h3><p>现在，了解了分配块的所有不同方式，这些块不仅包含提供给程序员的“用户数据”区域（作为<em>malloc</em>的返回值），同时包含元数据。下面介绍元数据实际记录的值以及存放的位置。</p>
-<p>块的元数据在内存中的<a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l1038">确切布局</a>可能会很混乱，因为堆管理器源代码将一个块末尾的元数据与下一个块末尾的元数据组合在一起，并且几个存在并被使用的元数据字段取决于不同种类的chunk。</p>
-<p>现在，我们仅看一下实时分配，它具有单个<em>size_t</em> * 标头，该标头位于给程序员的“用户数据”区域的后面。此字段（在源代码中称为<em>mchunk_size</em>）是在<em>malloc</em>期间写入的，之后由<em>free</em>决定如何处理该分配空间的释放。</p>
-<p>* size_t值在32位系统上为4字节整数，在64位系统上为8字节整数。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/8.png" class></strong></p>
-<p>该<em>mchunk_size</em>存储了四种信息：块的大小，以及被称为“A”,“M”和“P”三比特位。这些都被存储在相同的<em>size_t</em>字段中，因为块大小始终是8字节对齐的（在64位上是16字节对齐），因此，块大小的低三位始终为零。</p>
-<p><strong>“ A ”标志</strong>是用来告诉堆管理器，是否该块属于二级<em>arena</em>，而不是在<em>main arena</em>。在free期间，堆管理器仅仅给了一个指向程序员想要释放空间的指针，并且堆管理器需要确定该指针属于哪一个<em>arena</em>。如果在块的元数据中A标志被设置，则堆管理器必须搜索每个<em>arena</em>，并查看指针是否位于该<em>arena</em>的任何子堆中。如果未设置该标志，则堆管理器可以减少搜索，因为它知道该块来自初始的<em>arena</em>。</p>
-<p><strong>“ M ”标志</strong>用于指示该块是一个通过<em>mmap</em>进行堆外分配的巨大分配。当此分配空间最终返回给<em>free时</em>，堆管理器将通过<em>munmap</em>立即将整个块返回给操作系统，而不是尝试对其进行回收。因此，空闲即已经被释放的块永远不会设置该标志位。</p>
-<p><strong>“ P ”标志</strong>令人困惑，因为它实际上属于先前的块。它指示先前的块是一个空闲块。这意味着当这个块被释放时，可以将其安全地连接到先前的块上，以创建更大的空闲块。</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/16/PWN/Heap/Heap-I/9.gif" class></strong></p>
-<p>下面是一些和堆相关的文章：</p>
-<ul>
-<li><a href="http://phrack.org/issues/57/9.html">Once upon a free()</a></li>
-<li><a href="http://phrack.org/issues/66/10.html">Malloc des-maleficarum</a></li>
-<li><a href="http://phrack.org/issues/67/8.html">The house of lore</a></li>
-<li><a href="http://phrack.org/issues/61/6.html">Advanced Doug Lea’s malloc exploits</a></li>
-<li><a href="http://phrack.org/issues/66/6.html">Yet another free() exploitation technique</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Heap</category>
-        <category>Heap_Basic</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>blackjack</title>
     <url>/xiaohong404.github.io/2020/10/19/PWN/Pwnable_kr/blackjack/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/19/PWN/Pwnable_kr/blackjack/0.png" class></strong></p>
@@ -624,27 +895,6 @@
       </tags>
   </entry>
   <entry>
-    <title>cmd1</title>
-    <url>/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd1/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd1/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd1/1.png" class></strong></p>
-<h3 id="查看cmd1-c源代码"><a href="#查看cmd1-c源代码" class="headerlink" title="查看cmd1.c源代码"></a>查看cmd1.c源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd1/2.png" class></strong></p>
-<p><a href="https://man7.org/linux/man-pages/man3/putenv.3.html">putenv函数</a>是添加或者改变一个环境变量。</p>
-<p>filter函数的作用是通过<a href="https://blog.csdn.net/qq_21792169/article/details/51147489">strstr函数</a>匹配$flag、sh、tmp$三个字符串，如果检测到这三个字符串，则函数返回值不为0，会导致主函数退出，无法执行system函数。所以这里需要将我们输入的字符串隐藏起来，绕过filter函数的检查，但这里我们需要得到flag。又不能直接输入flag，于是想到可以使用通配符来代替flag。system命令的默认PWD环境变量应该是与这个程序的PWD环境变量相同，这个环境变量是什么，就是默认“./”执行的文件夹目录，一般是根据程序调用的bash窗口目录来的。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd1/3.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>cmd2</title>
     <url>/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd2/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd2/0.png" class></strong></p>
@@ -663,6 +913,27 @@
 
 <p>首先在/tmp目录下建立自己的目录xiaohong404(这个目录可以任意取名，但不能和已经存在的文件名重复），然后创建目录*<em>/tmp/xiaohong404/c<strong>。那么，如果在/tmp/xiaohong404/c目录下执行</strong>pwd命令<strong>就可以得到这个路径字符”/tmp/xiaohong404/c“。然后在</strong>/tmp/exploit<strong>目录下构造</strong>cat<strong>的软链接</strong>ln -s /bin/cat cat<strong>，在</strong>/tmp/exploit/c<strong>下建立</strong>flag<strong>的软链接</strong>ln -s /home/cmd2/flag flag<strong>。然后在</strong>/tmp/exploit/c<strong>下执行命令</strong>/home/cmd2/cmd2”$(pwd)at f**</em>，这里表示执行cmd2程序，相当于*<em>./cmd2 “$(pwd)at f\</em>“<strong>就可以得到flag了。其原理就是利用</strong>”$(pwd)at”<strong>构造出</strong>/tmp/xiaohong404/cat**命令。</p>
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd2/2.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>cmd1</title>
+    <url>/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd1/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd1/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd1/1.png" class></strong></p>
+<h3 id="查看cmd1-c源代码"><a href="#查看cmd1-c源代码" class="headerlink" title="查看cmd1.c源代码"></a>查看cmd1.c源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd1/2.png" class></strong></p>
+<p><a href="https://man7.org/linux/man-pages/man3/putenv.3.html">putenv函数</a>是添加或者改变一个环境变量。</p>
+<p>filter函数的作用是通过<a href="https://blog.csdn.net/qq_21792169/article/details/51147489">strstr函数</a>匹配$flag、sh、tmp$三个字符串，如果检测到这三个字符串，则函数返回值不为0，会导致主函数退出，无法执行system函数。所以这里需要将我们输入的字符串隐藏起来，绕过filter函数的检查，但这里我们需要得到flag。又不能直接输入flag，于是想到可以使用通配符来代替flag。system命令的默认PWD环境变量应该是与这个程序的PWD环境变量相同，这个环境变量是什么，就是默认“./”执行的文件夹目录，一般是根据程序调用的bash窗口目录来的。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd1/3.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -698,41 +969,6 @@
       </tags>
   </entry>
   <entry>
-    <title>fd</title>
-    <url>/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/1.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/2.png" class></strong></p>
-<h3 id="登录远程服务器"><a href="#登录远程服务器" class="headerlink" title="登录远程服务器"></a>登录远程服务器</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/3.png" class></strong></p>
-<h3 id="ls-la查看文件信息"><a href="#ls-la查看文件信息" class="headerlink" title="ls -la查看文件信息"></a>ls -la查看文件信息</h3><p><strong><a href="https://blog.csdn.net/u013197629/article/details/73608613">linux文件权限知识</a></strong></p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/4.png" class></strong></p>
-<p>发现fd.c和其对应的可执行文件fd（用户有执行权限）</p>
-<h3 id="cat-fd-c查看c语言代码"><a href="#cat-fd-c查看c语言代码" class="headerlink" title="cat fd.c查看c语言代码"></a>cat fd.c查看c语言代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/5.png" class></strong></p>
-<p>有源代码可知，这里需要执行system函数的条件为buf缓冲区内容为LETMEIWN</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/6.png" class></strong></p>
-<h3 id="read-fd-buf-32"><a href="#read-fd-buf-32" class="headerlink" title="read(fd,buf,32)"></a>read(fd,buf,32)</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">read(fd, buf, <span class="number">32</span>)</span><br><span class="line"></span><br><span class="line">fd == <span class="number">0</span>时：则表示标准输入；</span><br><span class="line">fd == <span class="number">1</span>时：则表示标准输出；</span><br><span class="line">fd == <span class="number">2</span>时，则表示标准输出错误。</span><br><span class="line">buf 表示读入的缓冲区；</span><br><span class="line"><span class="number">32</span>表示读入<span class="number">32</span>字节；</span><br></pre></td></tr></table></figure>
-
-<p>因此我们需要设置fd为0，读取我们输入的LETMEWIN到buf缓冲区中即可获得flag。</p>
-<p>注意到</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">fd = atoi(argv[<span class="number">1</span>]) - <span class="number">0x1234</span></span><br></pre></td></tr></table></figure>
-
-<p>要使得$fd=0$，就是让main函数的第一个参数argv[1]等于$0x1234$</p>
-<h3 id="fd-4660"><a href="#fd-4660" class="headerlink" title="./fd 4660"></a>./fd 4660</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/7.png" class></strong></p>
-<p>注意这里参数需要转为10进制   $0x1234_{16} = 4660_{10}$</p>
-<figure class="highlight erlang-repl"><table><tr><td class="code"><pre><span class="line">flag: mommy! I think I know what a file descriptor is!!</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>collision</title>
     <url>/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/1.png" class></strong></p>
@@ -757,6 +993,41 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">./col $(python -c <span class="string">&quot;print &#x27;\x01\x01\x01\x01&#x27;*4 + &#x27;\xe8\x05\xd9\x1d&#x27;&quot;</span>)</span><br><span class="line"><span class="comment"># 这一inline的python表达式可以将生成的结果作为argv[1]参数</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/collision/8.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>fd</title>
+    <url>/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/1.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/2.png" class></strong></p>
+<h3 id="登录远程服务器"><a href="#登录远程服务器" class="headerlink" title="登录远程服务器"></a>登录远程服务器</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/3.png" class></strong></p>
+<h3 id="ls-la查看文件信息"><a href="#ls-la查看文件信息" class="headerlink" title="ls -la查看文件信息"></a>ls -la查看文件信息</h3><p><strong><a href="https://blog.csdn.net/u013197629/article/details/73608613">linux文件权限知识</a></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/4.png" class></strong></p>
+<p>发现fd.c和其对应的可执行文件fd（用户有执行权限）</p>
+<h3 id="cat-fd-c查看c语言代码"><a href="#cat-fd-c查看c语言代码" class="headerlink" title="cat fd.c查看c语言代码"></a>cat fd.c查看c语言代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/5.png" class></strong></p>
+<p>有源代码可知，这里需要执行system函数的条件为buf缓冲区内容为LETMEIWN</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/6.png" class></strong></p>
+<h3 id="read-fd-buf-32"><a href="#read-fd-buf-32" class="headerlink" title="read(fd,buf,32)"></a>read(fd,buf,32)</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">read(fd, buf, <span class="number">32</span>)</span><br><span class="line"></span><br><span class="line">fd == <span class="number">0</span>时：则表示标准输入；</span><br><span class="line">fd == <span class="number">1</span>时：则表示标准输出；</span><br><span class="line">fd == <span class="number">2</span>时，则表示标准输出错误。</span><br><span class="line">buf 表示读入的缓冲区；</span><br><span class="line"><span class="number">32</span>表示读入<span class="number">32</span>字节；</span><br></pre></td></tr></table></figure>
+
+<p>因此我们需要设置fd为0，读取我们输入的LETMEWIN到buf缓冲区中即可获得flag。</p>
+<p>注意到</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">fd = atoi(argv[<span class="number">1</span>]) - <span class="number">0x1234</span></span><br></pre></td></tr></table></figure>
+
+<p>要使得$fd=0$，就是让main函数的第一个参数argv[1]等于$0x1234$</p>
+<h3 id="fd-4660"><a href="#fd-4660" class="headerlink" title="./fd 4660"></a>./fd 4660</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/7.png" class></strong></p>
+<p>注意这里参数需要转为10进制   $0x1234_{16} = 4660_{10}$</p>
+<figure class="highlight erlang-repl"><table><tr><td class="code"><pre><span class="line">flag: mommy! I think I know what a file descriptor is!!</span><br></pre></td></tr></table></figure>
+
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -858,6 +1129,34 @@
       </tags>
   </entry>
   <entry>
+    <title>mistake</title>
+    <url>/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/1.png" class></strong></p>
+<h3 id="查看mistake-c源文件"><a href="#查看mistake-c源文件" class="headerlink" title="查看mistake.c源文件"></a>查看mistake.c源文件</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PW_LEN 10</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> XORKEY 1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">xor</span><span class="params">(<span class="keyword">char</span>* s, <span class="keyword">int</span> len)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;len; i++)&#123;</span><br><span class="line">                s[i] ^= XORKEY;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> fd;</span><br><span class="line">        <span class="keyword">if</span>(fd=open(<span class="string">&quot;/home/mistake/password&quot;</span>,O_RDONLY,<span class="number">0400</span>) &lt; <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;can&#x27;t open password %d\n&quot;</span>, fd);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;do not bruteforce...\n&quot;</span>);</span><br><span class="line">        sleep(time(<span class="number">0</span>)%<span class="number">20</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">char</span> pw_buf[PW_LEN+<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">int</span> len;</span><br><span class="line">        <span class="keyword">if</span>(!(len=read(fd,pw_buf,PW_LEN) &gt; <span class="number">0</span>))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;read error\n&quot;</span>);</span><br><span class="line">                close(fd);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">char</span> pw_buf2[PW_LEN+<span class="number">1</span>];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;input password : &quot;</span>);</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%10s&quot;</span>, pw_buf2);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// xor your input</span></span><br><span class="line">        <span class="keyword">xor</span>(pw_buf2, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">strncmp</span>(pw_buf, pw_buf2, PW_LEN))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Password OK\n&quot;</span>);</span><br><span class="line">                system(<span class="string">&quot;/bin/cat flag\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    	<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Wrong Password\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        close(fd);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>整个程序的执行逻辑为，打开系统目录下保存密码的文件，之后开辟了一个数组读取该密码文件中的密码并保存，之后由用户输入10字节长的密码，存放到一个新的数组中，将用户输入的密码进行与$0x1$进行异或（按位取反）操作，之后将两个数组的内容进行比较，如果数组中的内容相同，则验证通过，可执行system函数拿到flag。</p>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>最自然的想法是直接爆破10位用户的密码，但代码中打印“do not bruteforce”，并且在题目中提示<em>operator priority</em>，因此审查源代码中存在两个运算符以上的语句：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/2.png" class></strong></p>
+<p>这里$&lt;$运算符的优先级高于$=$运算符，因此实际上fd最终并不是理想的文件描述符，而是0才对。这里的正确写法如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>((fd=open(<span class="string">&quot;/home/mistake/password&quot;</span>,O_RDONLY,<span class="number">0400</span>)) &lt; <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<p>而另一方面，<strong>0作为文件描述符，它指向的是stdin</strong>。</p>
+<p>因此，后面的read函数实际上是从stdin读取，而不是password文件，而stdin我们可以控制，则我们可以输入任意已知的密码，之后再输入与$0x1$异或的值，使得两次输入的密码相匹配。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/3.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.kr</category>
+        <category>Toddler&#39;s Bottle</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>passcode</title>
     <url>/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/passcode/</url>
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/passcode/11.png" class></strong></p>
@@ -911,34 +1210,6 @@
 <p>所以生成的随机数为0x6b8b4567，可多次运行程序查看其值是否发生变化，这里不做演示。</p>
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p>求出$0x6b8b4567\oplus 0xdeadbeef$的值输入即可</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/random/7.png" class></strong></p>
-]]></content>
-      <categories>
-        <category>PWN</category>
-        <category>Pwnable.kr</category>
-        <category>Toddler&#39;s Bottle</category>
-      </categories>
-      <tags>
-        <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>mistake</title>
-    <url>/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/</url>
-    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/0.png" class></strong></p>
- <a id="more"></a>
-
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/1.png" class></strong></p>
-<h3 id="查看mistake-c源文件"><a href="#查看mistake-c源文件" class="headerlink" title="查看mistake.c源文件"></a>查看mistake.c源文件</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PW_LEN 10</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> XORKEY 1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">xor</span><span class="params">(<span class="keyword">char</span>* s, <span class="keyword">int</span> len)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;len; i++)&#123;</span><br><span class="line">                s[i] ^= XORKEY;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> fd;</span><br><span class="line">        <span class="keyword">if</span>(fd=open(<span class="string">&quot;/home/mistake/password&quot;</span>,O_RDONLY,<span class="number">0400</span>) &lt; <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;can&#x27;t open password %d\n&quot;</span>, fd);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;do not bruteforce...\n&quot;</span>);</span><br><span class="line">        sleep(time(<span class="number">0</span>)%<span class="number">20</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">char</span> pw_buf[PW_LEN+<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">int</span> len;</span><br><span class="line">        <span class="keyword">if</span>(!(len=read(fd,pw_buf,PW_LEN) &gt; <span class="number">0</span>))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;read error\n&quot;</span>);</span><br><span class="line">                close(fd);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">char</span> pw_buf2[PW_LEN+<span class="number">1</span>];</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;input password : &quot;</span>);</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%10s&quot;</span>, pw_buf2);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// xor your input</span></span><br><span class="line">        <span class="keyword">xor</span>(pw_buf2, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">strncmp</span>(pw_buf, pw_buf2, PW_LEN))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Password OK\n&quot;</span>);</span><br><span class="line">                system(<span class="string">&quot;/bin/cat flag\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    	<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Wrong Password\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        close(fd);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>整个程序的执行逻辑为，打开系统目录下保存密码的文件，之后开辟了一个数组读取该密码文件中的密码并保存，之后由用户输入10字节长的密码，存放到一个新的数组中，将用户输入的密码进行与$0x1$进行异或（按位取反）操作，之后将两个数组的内容进行比较，如果数组中的内容相同，则验证通过，可执行system函数拿到flag。</p>
-<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>最自然的想法是直接爆破10位用户的密码，但代码中打印“do not bruteforce”，并且在题目中提示<em>operator priority</em>，因此审查源代码中存在两个运算符以上的语句：</p>
-<p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/2.png" class></strong></p>
-<p>这里$&lt;$运算符的优先级高于$=$运算符，因此实际上fd最终并不是理想的文件描述符，而是0才对。这里的正确写法如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>((fd=open(<span class="string">&quot;/home/mistake/password&quot;</span>,O_RDONLY,<span class="number">0400</span>)) &lt; <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
-
-<p>而另一方面，<strong>0作为文件描述符，它指向的是stdin</strong>。</p>
-<p>因此，后面的read函数实际上是从stdin读取，而不是password文件，而stdin我们可以控制，则我们可以输入任意已知的密码，之后再输入与$0x1$异或的值，使得两次输入的密码相匹配。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/18/PWN/Pwnable_kr/mistake/3.png" class></strong></p>
 ]]></content>
       <categories>
         <category>PWN</category>
@@ -1057,6 +1328,163 @@
       </categories>
       <tags>
         <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Part 4: 内存相关指令——加载以及存储</title>
+    <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/0.png" class></strong></p>
+ <a id="more"></a>
+
+
+
+<p>ARM使用加载-存储模式控制对内存的访问，这意味着只有加载/存储(LDR或者STR)才能访问内存。尽管X86中允许很多指令直接操作在内存中的数据，但ARM中依然要求在操作数据前，必须先从内存中将数据取出来。这就意味着如果要增加一个32位的在内存中的值，需要做三种类型的操作(加载，加一，存储)将数据从内存中取到寄存器，对寄存器中的值加一，再将结果放回到内存中。</p>
+<p>为了解释ARM架构中的加载和存储机制，我们准备了一个基础的例子以及附加在这个基础例子上的三种不同的对内存地址的便宜访问形式。每个例子除了STR/LDR的偏移模式不同外，其余的都一样。而且这个例子很简单，最佳的实践方式是用GDB去调试这段汇编代码。</p>
+<p>第一种偏移形式：立即数作为偏移</p>
+<p>地址模式：用作偏移</p>
+<p>地址模式：前向索引</p>
+<p>地址模式：后向索引</p>
+<p>第二种偏移形式：寄存器作为偏移</p>
+<p>地址模式：用作偏移</p>
+<p>地址模式：前向索引</p>
+<p>地址模式：后向索引</p>
+<p>第三种偏移形式：寄存器缩放值作为偏移</p>
+<p>地址模式：用作偏移</p>
+<p>地址模式：前向索引</p>
+<p>地址模式：后向索引</p>
+<h2 id="基础样例代码"><a href="#基础样例代码" class="headerlink" title="基础样例代码"></a><strong>基础样例代码</strong></h2><p>通常，LDR被用来从内存中加载数据到寄存器，STR被用作将寄存器的值存放到内存中。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/1.png" class></strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">LDR R2, [R0]   @ [R0] - 数据源地址来自于R0指向的内存地址</span><br><span class="line"><span class="meta">@ LDR操作：从R0指向的地址中取值放到R2中</span></span><br><span class="line">STR R2, [R1]   @ [R1] - 目的地址来自于R1在内存中指向的地址</span><br><span class="line"><span class="meta">@ STR操作：将R2中的值放到R1指向的地址中</span></span><br></pre></td></tr></table></figure>
+
+<p>样例程序的汇编代码及解释如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">.data          <span class="comment">/* 数据段是在内存中动态创建的，所以它的在内存中的地址不可预测*/</span></span><br><span class="line">var1: .word <span class="number">3</span>  <span class="comment">/* 内存中的第一个变量 */</span></span><br><span class="line">var2: .word <span class="number">4</span>  <span class="comment">/* 内存中的第二个变量 */</span></span><br><span class="line">.text          <span class="comment">/* 代码段开始 */</span> </span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">    ldr r0, adr_var1  @ 将存放var1值的地址adr_var1加载到寄存器R0中 </span><br><span class="line">    ldr r1, adr_var2  @ 将存放var2值的地址adr_var2加载到寄存器R1中 </span><br><span class="line">    ldr r2, [r0]      @ 将R0所指向地址中存放的<span class="number">0x3</span>加载到寄存器R2中  </span><br><span class="line">    str r2, [r1]      @ 将R2中的值<span class="number">0x3</span>存放到R1做指向的地址 </span><br><span class="line">    bkpt             </span><br><span class="line">adr_var1: .word var1  <span class="comment">/* var1的地址助记符 */</span></span><br><span class="line">adr_var2: .word var2  <span class="comment">/* var2的地址助记符 */</span></span><br></pre></td></tr></table></figure>
+
+<p>在底部我们有我们的文字标识池(在代码段中用来存储常量，字符串，或者偏移等的内存，可以通过位置无关的方式引用)，分别用adr_var1和adr_var2存储着变量var1和var2的内存地址(var1和var2的值在数据段定义)。第一条LDR指令将变量var1的地址加载到寄存器R0。第二条LDR指令同样将var2的地址加载到寄存器R1。之后我们将存储在R0指向的内存地址中的值加载到R2，最后将R2中的值存储到R1指向的内存地址中。</p>
+<p>当我们加载数据到寄存器时，方括号“[]”意味着：将其中的值当做内存地址，并取这个内存地址中的值加载到对应寄存器。</p>
+<p>当我们存储数据到内存时，方括号“[]”意味着：将其中的值当做内存地址，并向这个内存地址所指向的位置存入对应的值。</p>
+<p>听者好像有些抽象，所以再来看看这个动画吧：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/2.gif" class></strong></p>
+<p>同样的再来看看的这段代码在调试器中的样子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; disassemble _start</span><br><span class="line">Dump of assembler code <span class="keyword">for</span> function _start:</span><br><span class="line"> <span class="number">0x00008074</span> &lt;+<span class="number">0</span>&gt;:      ldr  r0, [pc, #<span class="number">12</span>]   ; <span class="number">0x8088</span> &lt;adr_var1&gt;</span><br><span class="line"> <span class="number">0x00008078</span> &lt;+<span class="number">4</span>&gt;:      ldr  r1, [pc, #<span class="number">12</span>]   ; <span class="number">0x808c</span> &lt;adr_var2&gt;</span><br><span class="line"> <span class="number">0x0000807c</span> &lt;+<span class="number">8</span>&gt;:      ldr  r2, [r0]</span><br><span class="line"> <span class="number">0x00008080</span> &lt;+<span class="number">12</span>&gt;:     str  r2, [r1]</span><br><span class="line"> <span class="number">0x00008084</span> &lt;+<span class="number">16</span>&gt;:     bx   lr</span><br><span class="line">End of assembler dump.</span><br></pre></td></tr></table></figure>
+
+<p>可以看到此时的反汇编代码和我们编写的汇编代码有出入了。前两个LDR操作的源寄存器被改成了[pc,#12]。这种操作叫做PC相对地址。因为我们在汇编代码中使用的只是数据的标签，所以在编译时候编译器帮我们计算出来了与我们想访问的文字标识池的相对便宜，即PC+12。你也可以看汇编代码中手动计算验证这个偏移是正确的，以adr_var1为例，执行到8074时，其当前有效PC与数据段还有三个四字节的距离，所以要加12。关于PC相对取址我们接下来还会接着介绍。</p>
+<p>PS：如果你对这里的PC的地址有疑问，可以看外面第二篇关于程序执行时PC的值的说明，PC是指向当前执行指令之后第二条指令所在位置的，在32位ARM模式下是当前执行位置加偏移值8，在Thumb模式下是加偏移值4。这也是与X86架构PC的区别之所在。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/3.png" class></strong></p>
+<h2 id="第一种偏移形式：立即数作偏移"><a href="#第一种偏移形式：立即数作偏移" class="headerlink" title="第一种偏移形式：立即数作偏移"></a><strong>第一种偏移形式：立即数作偏移</strong></h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">STR    Ra, [Rb, imm]</span><br><span class="line">LDR    Ra, [Rc, imm]</span><br></pre></td></tr></table></figure>
+
+<p>在这段汇编代码中，我们使用立即数作为偏移量。这个立即数被用来与一个寄存器中存放的地址做加减操作(下面例子中的R1)，以访问对应地址偏移处的数据。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">.data</span><br><span class="line">var1: .word <span class="number">3</span></span><br><span class="line">var2: .word <span class="number">4</span></span><br><span class="line">.text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">    ldr r0, adr_var1  @ 将存放var1值的地址adr_var1加载到寄存器R0中 </span><br><span class="line">    ldr r1, adr_var2  @ 将存放var2值的地址adr_var2加载到寄存器R1中 </span><br><span class="line">    ldr r2, [r0]      @ 将R0所指向地址中存放的<span class="number">0x3</span>加载到寄存器R2中  </span><br><span class="line">    str r2, [r1, #<span class="number">2</span>]  @ 取址模式：基于偏移量。R2寄存器中的值<span class="number">0x3</span>被存放到R1寄存器的值加<span class="number">2</span>所指向地址处。</span><br><span class="line">    str r2, [r1, #<span class="number">4</span>]! @ 取址模式：基于索引前置修改。R2寄存器中的值<span class="number">0x3</span>被存放到R1寄存器的值加<span class="number">4</span>所指向地址处，之后R1寄存器中存储的值加<span class="number">4</span>,也就是R1=R1+<span class="number">4</span>。</span><br><span class="line">    ldr r3, [r1], #<span class="number">4</span>  @ 取址模式：基于索引后置修改。R3寄存器中的值是从R1寄存器的值所指向的地址中加载的，加载之后R1寄存器中存储的值加<span class="number">4</span>,也就是R1=R1+<span class="number">4</span>。</span><br><span class="line">    bkpt</span><br><span class="line">adr_var1: .word var1</span><br><span class="line">adr_var2: .word var2</span><br></pre></td></tr></table></figure>
+
+<p>让我们把上面的这段汇编代码编译一下，并用GDB调试起来看看真实情况。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ as ldr.s -o ldr.o</span><br><span class="line">$ ld ldr.o -o ldr</span><br><span class="line">$ gdb ldr</span><br></pre></td></tr></table></figure>
+
+<p>在GDB(使用GEF插件)中，我们对_start下一个断点并继续运行程序。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; <span class="keyword">break</span> _start</span><br><span class="line">gef&gt; run</span><br><span class="line">...</span><br><span class="line">gef&gt; nexti <span class="number">3</span>     <span class="comment">/* 向后执行三条指令 */</span></span><br></pre></td></tr></table></figure>
+
+<p>执行完上述GDB指令后，在我的系统的寄存器的值现在是这个样子(在你的系统里面可能不同)：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="variable">$r0</span> : 0x00010098 -&gt; 0x00000003</span><br><span class="line"><span class="variable">$r1</span> : 0x0001009c -&gt; 0x00000004</span><br><span class="line"><span class="variable">$r2</span> : 0x00000003</span><br><span class="line"><span class="variable">$r3</span> : 0x00000000</span><br><span class="line"><span class="variable">$r4</span> : 0x00000000</span><br><span class="line"><span class="variable">$r5</span> : 0x00000000</span><br><span class="line"><span class="variable">$r6</span> : 0x00000000</span><br><span class="line"><span class="variable">$r7</span> : 0x00000000</span><br><span class="line"><span class="variable">$r8</span> : 0x00000000</span><br><span class="line"><span class="variable">$r9</span> : 0x00000000</span><br><span class="line"><span class="variable">$r10</span> : 0x00000000</span><br><span class="line"><span class="variable">$r11</span> : 0x00000000</span><br><span class="line"><span class="variable">$r12</span> : 0x00000000</span><br><span class="line"><span class="variable">$sp</span> : 0xbefff7e0 -&gt; 0x00000001</span><br><span class="line"><span class="variable">$lr</span> : 0x00000000</span><br><span class="line"><span class="variable">$pc</span> : 0x00010080 -&gt; &lt;_start+12&gt; str r2, [r1]</span><br><span class="line"><span class="variable">$cpsr</span> : 0x00000010</span><br></pre></td></tr></table></figure>
+
+<p>下面来分别调试这三条关键指令。首先执行基于地址偏移的取址模式的STR操作了。就会将R2(0x00000003)中的值存放到R1(0x0001009c)所指向地址偏移2的位置0x1009e。下面一段是执行完对应STR操作后对应内存位置的值。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; nexti</span><br><span class="line">gef&gt; x/w <span class="number">0x1009e</span> </span><br><span class="line"><span class="number">0x1009e</span> &lt;var2+<span class="number">2</span>&gt;: <span class="number">0x3</span></span><br></pre></td></tr></table></figure>
+
+<p>下一条STR操作使用了基于索引前置修改的取址模式。这种模式的识别特征是(!)。区别是在R2中的值被存放到对应地址后，R1的值也会被更新。这意味着，当我们将R2中的值0x3存储到R1(0x1009c)的偏移4之后的地址0x100A0后，R1的值也会被更新到为这个地址。下面一段是执行完对应STR操作后对应内存位置以及寄存器的值。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; nexti</span><br><span class="line">gef&gt; x/w <span class="number">0x100A0</span></span><br><span class="line"><span class="number">0x100a0</span>: <span class="number">0x3</span></span><br><span class="line">gef&gt; info <span class="keyword">register</span> r1</span><br><span class="line">r1     <span class="number">0x100a0</span>     <span class="number">65696</span></span><br></pre></td></tr></table></figure>
+
+<p>最后一个LDR操作使用了基于索引后置的取址模式。这意味着基础寄存器R1被用作加载的内存地址，之后R1的值被更新为R1+4。换句话说，加载的是R1所指向的地址而不是R1+4所指向的地址，也就是0x100A0中的值被加载到R3寄存器，然后R1寄存器的值被更新为0x100A0+0x4也就是0x100A4。下面一段是执行完对应LDR操作后对应内存位置以及寄存器的值。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; info <span class="keyword">register</span> r1</span><br><span class="line">r1      <span class="number">0x100a4</span>   <span class="number">65700</span></span><br><span class="line">gef&gt; info <span class="keyword">register</span> r3</span><br><span class="line">r3      <span class="number">0x3</span>       <span class="number">3</span></span><br></pre></td></tr></table></figure>
+
+<p>下图是这个操作发生的动态示意图：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/4.gif" class></strong></p>
+<h2 id="第二种偏移形式：寄存器作偏移"><a href="#第二种偏移形式：寄存器作偏移" class="headerlink" title="第二种偏移形式：寄存器作偏移"></a><strong>第二种偏移形式：寄存器作偏移</strong></h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">STR    Ra, [Rb, Rc]</span><br><span class="line">LDR    Ra, [Rb, Rc]</span><br></pre></td></tr></table></figure>
+
+<p>在这个偏移模式中，寄存器的值被用作偏移。下面的样例代码展示了当试着访问数组的时候是如何计算索引值的。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">.data</span><br><span class="line">var1: .word <span class="number">3</span></span><br><span class="line">var2: .word <span class="number">4</span></span><br><span class="line">.text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">    ldr r0, adr_var1  @ 将存放var1值的地址adr_var1加载到寄存器R0中 </span><br><span class="line">    ldr r1, adr_var2  @ 将存放var2值的地址adr_var2加载到寄存器R1中 </span><br><span class="line">    ldr r2, [r0]      @ 将R0所指向地址中存放的<span class="number">0x3</span>加载到寄存器R2中  </span><br><span class="line">    str r2, [r1, r2]  @ 取址模式：基于偏移量。R2寄存器中的值<span class="number">0x3</span>被存放到R1寄存器的值加R2寄存器的值所指向地址处。R1寄存器不会被修改。 </span><br><span class="line">    str r2, [r1, r2]! @ 取址模式：基于索引前置修改。R2寄存器中的值<span class="number">0x3</span>被存放到R1寄存器的值加R2寄存器的值所指向地址处，之后R1寄存器中的值被更新,也就是R1=R1+R2。</span><br><span class="line">    ldr r3, [r1], r2  @ 取址模式：基于索引后置修改。R3寄存器中的值是从R1寄存器的值所指向的地址中加载的，加载之后R1寄存器中的值被更新也就是R1=R1+R2。</span><br><span class="line">    bx lr</span><br><span class="line">adr_var1: .word var1</span><br><span class="line">adr_var2: .word var2</span><br></pre></td></tr></table></figure>
+
+<p>下面来分别调试这三条关键指令。在执行完基于偏移量的取址模式的STR操作后，R2的值被存在了地址0x1009c + 0x3 = 0x1009F处。下面一段是执行完对应STR操作后对应内存位置的值。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; x/w <span class="number">0x0001009F</span></span><br><span class="line"> <span class="number">0x1009f</span> &lt;var2+<span class="number">3</span>&gt;: <span class="number">0x00000003</span></span><br></pre></td></tr></table></figure>
+
+<p>下一条STR操作使用了基于索引前置修改的取址模式，R1的值被更新为R1+R2的值。下面一段是执行完对应STR操作后寄存器的值。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; info <span class="keyword">register</span> r1</span><br><span class="line"> r1     <span class="number">0x1009f</span>      <span class="number">65695</span></span><br></pre></td></tr></table></figure>
+
+<p>最后一个LDR操作使用了基于索引后置的取址模式。将R1指向的值加载到R2之后，更新了R1寄存器的值(R1+R2 = 0x1009f + 0x3 = 0x100a2)。下面一段是执行完对应LDR操作后对应内存位置以及寄存器的值。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; info <span class="keyword">register</span> r1</span><br><span class="line"> r1      <span class="number">0x100a2</span>     <span class="number">65698</span></span><br><span class="line">gef&gt; info <span class="keyword">register</span> r3</span><br><span class="line"> r3      <span class="number">0x3</span>       <span class="number">3</span></span><br></pre></td></tr></table></figure>
+
+<p>下图是这个操作发生的动态示意图:</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/5.gif" class></strong></p>
+<h2 id="第三种偏移形式：寄存器缩放值作偏移"><a href="#第三种偏移形式：寄存器缩放值作偏移" class="headerlink" title="第三种偏移形式：寄存器缩放值作偏移"></a><strong>第三种偏移形式：寄存器缩放值作偏移</strong></h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">LDR    Ra, [Rb, Rc, &lt;shifter&gt;]</span><br><span class="line">STR    Ra, [Rb, Rc, &lt;shifter&gt;]</span><br></pre></td></tr></table></figure>
+
+<p>在这种偏移形式下，第三个偏移量还有一个寄存器做支持。Rb是基址寄存器，Rc中的值作为偏移量，或者是要被左移或右移的次的值。这意味着移位器shifter被用来用作缩放Rc寄存器中存放的偏移量。下面的样例代码展示了对一个数组的循环操作。同样的，我们也会用GDB调试这段代码。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">.data</span><br><span class="line">var1: .word <span class="number">3</span></span><br><span class="line">var2: .word <span class="number">4</span></span><br><span class="line">.text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">    ldr r0, adr_var1         @ 将存放var1值的地址adr_var1加载到寄存器R0中 </span><br><span class="line">    ldr r1, adr_var2         @ 将存放var2值的地址adr_var2加载到寄存器R1中 </span><br><span class="line">    ldr r2, [r0]             @ 将R0所指向地址中存放的<span class="number">0x3</span>加载到寄存器R2中  </span><br><span class="line">    str r2, [r1, r2, LSL#<span class="number">2</span>]  @ 取址模式：基于偏移量。R2寄存器中的值<span class="number">0x3</span>被存放到R1寄存器的值加(左移两位后的R2寄存器的值)所指向地址处。R1寄存器不会被修改。</span><br><span class="line">    str r2, [r1, r2, LSL#<span class="number">2</span>]! @ 取址模式：基于索引前置修改。R2寄存器中的值<span class="number">0x3</span>被存放到R1寄存器的值加(左移两位后的R2寄存器的值)所指向地址处，之后R1寄存器中的值被更新,也就R1 = R1 + R2&lt;&lt;<span class="number">2</span>。</span><br><span class="line">    ldr r3, [r1], r2, LSL#<span class="number">2</span>  @ 取址模式：基于索引后置修改。R3寄存器中的值是从R1寄存器的值所指向的地址中加载的，加载之后R1寄存器中的值被更新也就是R1 = R1 + R2&lt;&lt;<span class="number">2</span>。</span><br><span class="line">    bkpt</span><br><span class="line">adr_var1: .word var1</span><br><span class="line">adr_var2: .word var2</span><br></pre></td></tr></table></figure>
+
+<p>下面来分别调试这三条关键指令。在执行完基于偏移量的取址模式的STR操作后，R2被存储到的位置是[r1,r2,LSL#2]，也就是说被存储到R1+(R2&lt;&lt;2)的位置了，如下图所示:</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-4-%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E2%80%94%E2%80%94%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E5%AD%98%E5%82%A8/6.png" class></strong></p>
+<p>下一条STR操作使用了基于索引前置修改的取址模式，R1的值被更新为R1+(R2&lt;&lt;2)的值。下面一段是执行完对应STR操作后寄存器的值。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; info <span class="keyword">register</span> r1</span><br><span class="line">r1      <span class="number">0x100a8</span>      <span class="number">65704</span></span><br></pre></td></tr></table></figure>
+
+<p>最后一个LDR操作使用了基于索引后置的取址模式。将R1指向的值加载到R2之后，更新了R1寄存器的值(R1+R2 = 0x100a8 + (0x3&lt;&lt;2) = 0x100b4)。下面一段是执行完对应LDR操作后寄存器的值。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gef&gt; info <span class="keyword">register</span> r1</span><br><span class="line">r1      <span class="number">0x100b4</span>      <span class="number">65716</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a><strong>小结</strong></h2><p>LDR/STR的三种偏移模式：</p>
+<p>立即数作为偏移</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ldr   r3, [r1, #<span class="number">4</span>]</span><br></pre></td></tr></table></figure>
+
+<p>寄存器作为偏移</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ldr   r3, [r1, r2]</span><br></pre></td></tr></table></figure>
+
+<p>寄存器缩放值作为偏移</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ldr   r3, [r1, r2, LSL#<span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+
+<p>如何区分取址模式：</p>
+<p>如果有一个叹号!，那就是索引前置取址模式，即使用计算后的地址，之后更新基址寄存器。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ldr   r3, [r1, #<span class="number">4</span>]!</span><br><span class="line">ldr   r3, [r1, r2]!</span><br><span class="line">ldr   r3, [r1, r2, LSL#<span class="number">2</span>]!</span><br></pre></td></tr></table></figure>
+
+<p>如果在[]外有一个寄存器，那就是索引后置取址模式，即使用原有基址寄存器中的地址，之后再更新基址寄存器</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ldr   r3, [r1], #<span class="number">4</span></span><br><span class="line">ldr   r3, [r1], r2</span><br><span class="line">ldr   r3, [r1], r2, LSL#<span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p>除此之外，就都是偏移取址模式了</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ldr   r3, [r1, #<span class="number">4</span>]</span><br><span class="line">ldr   r3, [r1, r2]</span><br><span class="line">ldr   r3, [r1, r2, LSL#<span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+
+<p>地址模式：用作偏移</p>
+<p>地址模式：前向索引</p>
+<p>地址模式：后向索引</p>
+<h3 id="关于PC相对取址的LDR指令"><a href="#关于PC相对取址的LDR指令" class="headerlink" title="关于PC相对取址的LDR指令"></a><strong>关于PC相对取址的LDR指令</strong></h3><p>有时候LDR并不仅仅被用来从内存中加载数据。还有如下这操作:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">.section .text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">   ldr r0, =jump        <span class="comment">/* 加载jump标签所在的内存位置到R0 */</span></span><br><span class="line">   ldr r1, =<span class="number">0x68DB00AD</span>  <span class="comment">/* 加载立即数0x68DB00AD到R1 */</span></span><br><span class="line">jump:</span><br><span class="line">   ldr r2, =<span class="number">511</span>         <span class="comment">/* 加载立即数511到R2 */</span> </span><br><span class="line">   bkpt</span><br></pre></td></tr></table></figure>
+
+<p>这些指令学术上被称作伪指令。但我们在编写ARM汇编时可以用这种格式的指令去引用我们文字标识池中的数据。在上面的例子中我们用一条指令将一个32位的常量值放到了一个寄存器中。为什么我们会这么写是因为ARM每次仅仅能加载8位的值，原因倾听我解释立即数在ARM架构下的处理。</p>
+<h3 id="在ARM中使用立即数的规律"><a href="#在ARM中使用立即数的规律" class="headerlink" title="在ARM中使用立即数的规律"></a><strong>在ARM中使用立即数的规律</strong></h3><p>在ARM中不能像X86那样直接将立即数加载到寄存器中。因为你使用的立即数是受限的。这些限制听上去有些无聊。但是听我说，这也是为了告诉你绕过这些限制的技巧(通过LDR)。</p>
+<p>我们都知道每条ARM指令的宽度是32位，所有的指令都是可以条件执行的。我们有16中条件可以使用而且每个条件在机器码中的占位都是4位。之后我们需要2位来做为目的寄存器。2位作为第一操作寄存器，1位用作设置状态的标记位，再加上比如操作码(opcode)这些的占位。最后每条指令留给我们存放立即数的空间只有12位宽。也就是4096个不同的值。</p>
+<p>这也就意味着ARM在使用MOV指令时所能操作的立即数值范围是有限的。那如果很大的话，只能拆分成多个部分外加移位操作拼接了。</p>
+<p>所以这剩下的12位可以再次划分，8位用作加载0-255中的任意值，4位用作对这个值做0~30位的循环右移。这也就意味着这个立即数可以通过这个公式得到：v = n ror 2*r。换句话说，有效的立即数都可以通过循环右移来得到。这里有一个例子</p>
+<p>有效值:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">#<span class="number">256</span>        <span class="comment">// 1 循环右移 24位 --&gt; 256</span></span><br><span class="line">#<span class="number">384</span>        <span class="comment">// 6 循环右移 26位 --&gt; 384</span></span><br><span class="line">#<span class="number">484</span>        <span class="comment">// 121 循环右移 30位 --&gt; 484</span></span><br><span class="line">#<span class="number">16384</span>      <span class="comment">// 1 循环右移 18位 --&gt; 16384</span></span><br><span class="line">#<span class="number">2030043136</span> <span class="comment">// 121 循环右移 8位 --&gt; 2030043136</span></span><br><span class="line">#<span class="number">0x06000000</span> <span class="comment">// 6 循环右移 8位 --&gt; 100663296 (十六进制值0x06000000)</span></span><br><span class="line">Invalid values:</span><br><span class="line">#<span class="number">370</span>        <span class="comment">// 185 循环右移 31位 --&gt; 31不在范围内 (0 – 30)</span></span><br><span class="line">#<span class="number">511</span>        <span class="comment">// 1 1111 1111 --&gt; 比特模型不符合</span></span><br><span class="line">#<span class="number">0x06010000</span> <span class="comment">// 1 1000 0001.. --&gt; 比特模型不符合</span></span><br></pre></td></tr></table></figure>
+
+<p>看上去这样并不能一次性加载所有的32位值。不过我们可以通过以下的两个选项来解决这个问题：</p>
+<p>用小部分去组成更大的值。</p>
+<p>比如对于指令<code> MOV r0, #511</code></p>
+<p>将511分成两部分：<code>MOV r0, #256, and ADD r0, #255</code></p>
+<p>用加载指令构造<code>ldr r1,=value</code>的形式，编译器会帮你转换成MOV的形式，如果失败的话就转换成从数据段中通过PC相对偏移加载。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">LDR r1, =<span class="number">511</span></span><br></pre></td></tr></table></figure>
+
+<p>如果你尝试加载一个非法的值，编译器会报错并且告诉你 invalid constant。如果在遇到这个问题，你现在应该知道该怎么解决了吧。唉还是举个栗子，就比如你想把511加载到R0。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">.section .text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">    mov     r0, #<span class="number">511</span></span><br><span class="line">    bkpt</span><br></pre></td></tr></table></figure>
+
+<p>这样做的结果就是编译报错:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">azeria@<span class="built_in">labs</span>:~$ as test.s -o test.o</span><br><span class="line">test.s: Assembler messages:</span><br><span class="line">test.s:<span class="number">5</span>: Error: <span class="function">invalid <span class="title">constant</span> <span class="params">(<span class="number">1f</span>f)</span> after fixup</span></span><br></pre></td></tr></table></figure>
+
+<p>你需要将511分成多部分，或者直接用LDR指令。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">.section .text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line"> mov r0, #<span class="number">256</span>   <span class="comment">/* 1 ror 24 = 256, so it&#x27;s valid */</span></span><br><span class="line"> add r0, #<span class="number">255</span>   <span class="comment">/* 255 ror 0 = 255, valid. r0 = 256 + 255 = 511 */</span></span><br><span class="line"> ldr r1, =<span class="number">511</span>   <span class="comment">/* load 511 from the literal pool using LDR */</span></span><br><span class="line"> bkpt</span><br></pre></td></tr></table></figure>
+
+<p>如果你想知道你能用的立即数的有效值，你不需要自己计算。我这有个小脚本 <a href="https://raw.githubusercontent.com/azeria-labs/rotator/master/rotator.py">rotator.py</a>,用法如下。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">azeria@<span class="built_in">labs</span>:~$ python rotator.py</span><br><span class="line">Enter the value you want to check: <span class="number">511</span></span><br><span class="line">Sorry, <span class="number">511</span> cannot be used as an immediate number <span class="keyword">and</span> has to be split.</span><br><span class="line">azeria@<span class="built_in">labs</span>:~$ python rotator.py</span><br><span class="line">Enter the value you want to check: <span class="number">256</span></span><br><span class="line">The number <span class="number">256</span> can be used as a valid immediate number.</span><br><span class="line"><span class="number">1</span> ror <span class="number">24</span> --&gt; <span class="number">256</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>ARM汇编</category>
+      </categories>
+      <tags>
+        <tag>ARM</tag>
       </tags>
   </entry>
   <entry>
@@ -1197,43 +1625,6 @@
       </categories>
       <tags>
         <tag>PWN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Part 3: Arm汇编指令</title>
-    <url>/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-3-Arm%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4/</url>
-    <content><![CDATA[<p><strong></strong></p>
- <a id="more"></a>
-
-<h2 id="ARM-amp-Thumb"><a href="#ARM-amp-Thumb" class="headerlink" title="ARM&amp;Thumb"></a>ARM&amp;Thumb</h2><p>ARM处理器有两个主要的操作状态，ARM模式以及Thumb模式(Jazelle模式先不考虑)。这些模式与特权模式并不冲突。SVC模式既可以在ARM下调用也可以在Thumb下调用。只不过两种状态的主要不同是指令集的不同，ARM模式的指令集宽度是32位而Thumb是16位宽度(但也可以是32位)。知道何时以及如何使用Thumb模式对于ARM漏洞利用的开发尤其重要。当我们写ARM的shellcode时候，我们需要尽可能的少用NULL以及使用16位宽度的Thumb指令以精简代码。</p>
-<p>不同版本ARM，其调用约定不完全相同，而且支持的Thumb指令集也是不完全相同。在某些版本山，ARM提出了扩展型Thumb指令集(也叫Thumbv2)，允许执行32位宽的Thumb指令以及之前版本不支持的条件执行。为了在Thumb模式下使用条件执行指令，Thumb提出了”IT”分支指令。然而，这条指令在之后的版本又被更改移除了，说是为了让一些事情变得更加简单方便。我并不清楚各个版本的ARM架构所支持的具体的ARM/Thumb指令集，而且我也的确不想知道。我觉得你也应该不用深究这个问题。因为你只需要知道你设备上的关键ARM版本所支持的Thumb指令集就可以了。以及ARM信息中心可以帮你弄清楚你的ARM版本到底是多少。</p>
-<p>就像之前说到的，Thumb也有很多不同的版本。不过不同的名字仅仅是为了区分不同版本的Thumb指令集而已(也就是对于处理器来说，这些指令永远都是Thumb指令)。</p>
-<p><strong>Thumb-1(16位宽指令集)：</strong>在ARMv6以及更早期的版本上使用。</p>
-<p><strong>Thumb-2(16位/32位宽指令集)：</strong>在Thumb-1基础上扩展的更多的指令集(在ARMv6T2以及ARMv7即很多32位Android手机所支持的架构上使用)</p>
-<p><strong>Thumb-EE：</strong>包括一些改变以及对于动态生成代码的补充(即那些在设备上执行前或者运行时编译的代码)</p>
-<h2 id="ARM与Thumb的不同之处"><a href="#ARM与Thumb的不同之处" class="headerlink" title="ARM与Thumb的不同之处"></a><strong>ARM与Thumb的不同之处</strong></h2><p><strong>对于条件执行指令（不是条件跳转指令）：</strong>所有的ARM状态指令都支持条件执行。一些版本的ARM处理器上允许在Thumb模式下通过IT汇编指令进行条件执行。条件执行减少了要被执行的指令数量，以及用来做分支跳转的语句，所以具有更高的代码密度。</p>
-<p><strong>ARM模式与Thumb模式的32位指令：</strong>Thumb的32位汇编指令都有类似于a.w的扩展后缀。</p>
-<p>桶型移位是另一种独特的ARM模式特性。它可以被用来减少指令数量。比如说，为了减少使用乘法所需的两条指令(乘法操作需要先乘2然后再把结果用MOV存储到另一个寄存器中)，就可以使用在MOV中自带移位乘法操作的左移指令(Mov R1, R0, LSL #1)。</p>
-<p>在ARM模式与Thumb模式间切换的话，以下两个条件之一必须满足：</p>
-<p>我们可以在使用分支跳转指令BX(branch and exchange)或者分支链接跳转指令BLX(branch,link and exchange)时，将目的寄存器的最低位置为1。之后的代码执行就会在Thumb模式下进行。你也许会好奇这样做目标跳转地址不就有对齐问题了么，因为代码都是2字节或者4字节对齐的？但事实上这并不会造成问题，因为处理器会直接忽略最低比特位的标识。更多的细节我们会在第6篇中解释。</p>
-<p>我们之前有说过，在CPSR当前程序状态寄存器中，T标志位用来代表当前程序是不是在Thumb模式下运行的。</p>
-<h2 id="ARM指令集规律含义"><a href="#ARM指令集规律含义" class="headerlink" title="ARM指令集规律含义"></a><strong>ARM指令集规律含义</strong></h2><p>这一节的目的是简要的介绍ARM的通用指令集。知道每一句汇编指令是怎么操作使用，相互关联，最终组成程序是很重要的。之前说过，汇编语言是由构建机器码块的指令组成。所以ARM指令通常由助记符外加一到两个跟在后面的操作符组成，如下面的模板所示：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">MNEMONIC&#123;S&#125;&#123;condition&#125; &#123;Rd&#125;, Operand1, Operand2</span><br><span class="line">助记符&#123;是否使用CPSR&#125;&#123;是否条件执行以及条件&#125; &#123;目的寄存器&#125;, 操作符<span class="number">1</span>, 操作符<span class="number">2</span></span><br></pre></td></tr></table></figure>
-
-<p>由于ARM指令的灵活性，不是全部的指令都满足这个模板，不过大部分都满足了。下面来说说模板中的含义:</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">MNEMONIC     - 指令的助记符如ADD</span><br><span class="line">&#123;S&#125;          - 可选的扩展位，如果指令后加了S，则需要依据计算结果更新CPSR寄存器中的条件跳转相关的FLAG</span><br><span class="line">&#123;condition&#125;  - 如果机器码要被条件执行，那它需要满足的条件标示</span><br><span class="line">&#123;Rd&#125;         - 存储结果的目的寄存器</span><br><span class="line">Operand1     - 第一个操作数，寄存器或者是一个立即数</span><br><span class="line">Operand2     - 第二个(可变的)操作数，可以是一个立即数或者寄存器或者有偏移量的寄存器</span><br></pre></td></tr></table></figure>
-
-<p>当助记符，S，目的寄存器以及第一个操作数都被声明的时候，条件执行以及第二操作数需要一些声明。因为条件执行是依赖于CPSR寄存器的值的，更精确的说是寄存器中的一些比特位。第二操作数是一个可变操作数，因为我们可以以各种形式来使用它，立即数，寄存器，或者有偏移量的寄存器。举例来说，第二操作数还有如下操作：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">#<span class="number">123</span>                    - 立即数</span><br><span class="line">Rx                      - 寄存器比如R1</span><br><span class="line">Rx, ASR n               - 对寄存器中的值进行算术右移n位后的值</span><br><span class="line">Rx, LSL n               - 对寄存器中的值进行逻辑左移n位后的值</span><br><span class="line">Rx, LSR n               - 对寄存器中的值进行逻辑右移n位后的值</span><br><span class="line">Rx, ROR n               - 对寄存器中的值进行循环右移n位后的值</span><br><span class="line">Rx, RRX                 - 对寄存器中的值进行带扩展的循环右移<span class="number">1</span>位后的值</span><br></pre></td></tr></table></figure>
-
-<p>在知道了这个机器码模板后，然我们试着去理解这些指令：</p>
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-3-Arm%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4/Xiaohong_Blog\blog\source_posts\ARM汇编\Part-3-Arm模式与Thumb模式\1.png" alt="image-20201110130611546"></p>
-]]></content>
-      <categories>
-        <category>ARM汇编</category>
-      </categories>
-      <tags>
-        <tag>ARM</tag>
       </tags>
   </entry>
 </search>

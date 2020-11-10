@@ -25,13 +25,14 @@
 <meta property="og:url" content="https://github.com/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-3-Arm%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4/index.html">
 <meta property="og:site_name" content="Mr.red">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://github.com/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-3-Arm%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4/Xiaohong_Blog/blog/source_posts/ARM汇编/Part-3-Arm模式与Thumb模式/1.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-3-Arm%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4/0.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-3-Arm%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4/1.png">
 <meta property="article:published_time" content="2020-11-09T05:00:52.000Z">
-<meta property="article:modified_time" content="2020-11-10T05:06:54.000Z">
+<meta property="article:modified_time" content="2020-11-10T05:13:46.000Z">
 <meta property="article:author" content="Xiao Hong">
 <meta property="article:tag" content="ARM">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://github.com/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-3-Arm%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4/Xiaohong_Blog/blog/source_posts/ARM汇编/Part-3-Arm模式与Thumb模式/1.png">
+<meta name="twitter:image" content="https://github.com/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-3-Arm%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4/0.png">
 
 <link rel="canonical" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-3-Arm%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4/">
 
@@ -226,7 +227,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-11-10 13:06:54" itemprop="dateModified" datetime="2020-11-10T13:06:54+08:00">2020-11-10</time>
+                <time title="Modified: 2020-11-10 13:13:46" itemprop="dateModified" datetime="2020-11-10T13:13:46+08:00">2020-11-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -270,7 +271,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><strong></strong></p>
+        <p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-3-Arm%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4/0.png" class></strong></p>
  <a id="more"></a>
 
 <h2 id="ARM-amp-Thumb"><a href="#ARM-amp-Thumb" class="headerlink" title="ARM&amp;Thumb"></a>ARM&amp;Thumb</h2><p>ARM处理器有两个主要的操作状态，ARM模式以及Thumb模式(Jazelle模式先不考虑)。这些模式与特权模式并不冲突。SVC模式既可以在ARM下调用也可以在Thumb下调用。只不过两种状态的主要不同是指令集的不同，ARM模式的指令集宽度是32位而Thumb是16位宽度(但也可以是32位)。知道何时以及如何使用Thumb模式对于ARM漏洞利用的开发尤其重要。当我们写ARM的shellcode时候，我们需要尽可能的少用NULL以及使用16位宽度的Thumb指令以精简代码。</p>
@@ -295,7 +296,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#<span class="number">123</span>                    - 立即数</span><br><span class="line">Rx                      - 寄存器比如R1</span><br><span class="line">Rx, ASR n               - 对寄存器中的值进行算术右移n位后的值</span><br><span class="line">Rx, LSL n               - 对寄存器中的值进行逻辑左移n位后的值</span><br><span class="line">Rx, LSR n               - 对寄存器中的值进行逻辑右移n位后的值</span><br><span class="line">Rx, ROR n               - 对寄存器中的值进行循环右移n位后的值</span><br><span class="line">Rx, RRX                 - 对寄存器中的值进行带扩展的循环右移<span class="number">1</span>位后的值</span><br></pre></td></tr></table></figure>
 
 <p>在知道了这个机器码模板后，然我们试着去理解这些指令：</p>
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-3-Arm%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4/Xiaohong_Blog\blog\source_posts\ARM汇编\Part-3-Arm模式与Thumb模式\1.png" alt="image-20201110130611546"></p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-3-Arm%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4/1.png" class></strong></p>
 
     </div>
 
