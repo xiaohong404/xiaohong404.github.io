@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-7-%E6%A0%88%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0/5.png">
 <meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-7-%E6%A0%88%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0/6.gif">
 <meta property="article:published_time" content="2020-11-09T05:02:47.000Z">
-<meta property="article:modified_time" content="2020-11-10T07:45:20.000Z">
+<meta property="article:modified_time" content="2020-11-10T07:57:52.000Z">
 <meta property="article:author" content="Xiao Hong">
 <meta property="article:tag" content="ARM">
 <meta name="twitter:card" content="summary">
@@ -232,7 +232,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-11-10 15:45:20" itemprop="dateModified" datetime="2020-11-10T15:45:20+08:00">2020-11-10</time>
+                <time title="Modified: 2020-11-10 15:57:52" itemprop="dateModified" datetime="2020-11-10T15:57:52+08:00">2020-11-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -280,7 +280,6 @@
  <a id="more"></a>
 
 <p>在这部分我们将研究一篇独特的内存区域叫做栈，讲解栈的目的以及相关操作。除此之外，我们还会研究ARM架构中函数的调用约定。</p>
-<p>$2^3 = 8$</p>
 <h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a><strong>栈</strong></h2><p>一般来说，栈是一片在程序/进程中的内存区域。这部分内存是在进程创建的时候被创建的。我们利用栈来存储一些临时数据比如说函数的局部变量，环境变量等。在之前的文章中，我们讲了操作栈的相关指令PUSH和POP。</p>
 <p>在我们开始之前，还是了解一下栈的相关知识以及其实现方式吧。首先谈谈栈的增长，即当我们把32位的数据放到栈上时候它的变化。栈可以向上增长(当栈的实现是负向增长时)，或者向下增长(当栈的实现是正向增长时)。具体的关于下一个32位的数据被放到哪里是由栈指针来决定的，更精确的说是由SP寄存器决定。不过这里面所指向的位置，可能是当前(也就是上一次)存储的数据，也可能是下一次存储时的位置。如果SP当前指向上一次存放的数据在栈中的位置(满栈实现)，SP将会递减(降序栈)或者递增(升序栈)，然后再对指向的内容进行操作。而如果SP指向的是下一次要操作的数据的空闲位置(空栈实现)，数据会先被存放，而后SP会被递减(降序栈)或递增(升序栈)。</p>
 <p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-7-%E6%A0%88%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0/1.gif" class></strong></p>
