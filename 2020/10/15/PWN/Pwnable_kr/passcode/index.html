@@ -289,7 +289,6 @@
       
         <p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/passcode/11.png" class></strong></p>
  <a id="more"></a>
-
 <p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/passcode/1.png" class></strong></p>
 <h3 id="查看passcode-c源文件"><a href="#查看passcode-c源文件" class="headerlink" title="查看passcode.c源文件"></a>查看passcode.c源文件</h3><p><strong></strong></p>
 <p>第一反应为使得passcode1为338150、passcode2为13371337，之后调用system函数。</p>
@@ -301,14 +300,13 @@
 <h4 id="disassemble-r-login"><a href="#disassemble-r-login" class="headerlink" title="disassemble /r login"></a>disassemble /r login</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/passcode/6.png" class></strong></p>
 <p>发现char数组在$ebp - 0x70$处，而passcode1、passcode2分别在$ebp - 0x10、ebp - 0xc$处，其相差的距离$0x70 - 0x10 = 96 &lt; 100,0x70 - 0xc = 100$，因此并不能直接通过输入姓名字符串覆盖变量passcode2,只可以覆盖passcode1。</p>
 <h3 id="转换思路"><a href="#转换思路" class="headerlink" title="转换思路"></a>转换思路</h3><h4 id="查看文件保护措施"><a href="#查看文件保护措施" class="headerlink" title="查看文件保护措施"></a>查看文件保护措施</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/passcode/7.png" class></strong></p>
-<p>栈上开启了Canary机制，因此栈溢出很难成功，发现没有开启PIE，因此可以通过修改某些函数got表的地址，进行调用system函数。实际上，既然scanf是一个具有写功能的函数，我们完全可以利用scanf来修改此后使用到的某个函数的got表项。例如，程序在<strong>scanf(“%d”, passcode1);**后立即使用了</strong>fflush函数<strong>，所以我们完全可以先找到fflush的got表项地址（程序没有开PIE，无需leak），把passcode1布局为该地址，并在调用到scanf(“%d”, passcode1)时输入程序代码中调用</strong>system(“/bin/cat flag”);**处的地址，这样执行fflush函数时就会执行system函数。</p>
+<p>栈上开启了Canary机制，因此栈溢出很难成功，发现没有开启PIE，因此可以通过修改某些函数got表的地址，进行调用system函数。实际上，既然scanf是一个具有写功能的函数，我们完全可以利用scanf来修改此后使用到的某个函数的got表项。例如，程序在<strong>scanf(“%d”, passcode1);</strong>后立即使用了<strong>fflush函数</strong>，所以我们完全可以先找到fflush的got表项地址（程序没有开PIE，无需leak），把passcode1布局为该地址，并在调用到scanf(“%d”, passcode1)时输入程序代码中调用<strong>system(“/bin/cat flag”);</strong>处的地址，这样执行fflush函数时就会执行system函数。</p>
 <p><strong>注意这里区分got表本身的地址和写入got表项中的地址</strong></p>
 <h4 id="fflush函数的地址"><a href="#fflush函数的地址" class="headerlink" title="fflush函数的地址"></a>fflush函数的地址</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/passcode/8.png" class></strong></p>
 <p>fflush地址为$0x0804a004$</p>
 <h4 id="system函数的地址"><a href="#system函数的地址" class="headerlink" title="system函数的地址"></a>system函数的地址</h4><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/passcode/9.png" class></strong></p>
 <p>这里注意system函数需要将参数先压栈之后再调用，即真正调用的函数地址为$0x080485e3$，即在printf函数之后执行。</p>
 <h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c <span class="string">&quot;print &#x27;A&#x27; * 96 + &#x27;\x04\xa0\x04\x08&#x27; + &#x27;134514147\n&#x27;&quot;</span> | ./passcode</span><br></pre></td></tr></table></figure>
-
 <p>因为passcode是输入int型，即输入$0x080485e3 = 134514147$。</p>
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/passcode/10.png" class></strong></p>
 
@@ -413,14 +411,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/xiaohong404.github.io/archives/">
         
-          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-count">33</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/xiaohong404.github.io/Categories/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -464,7 +462,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020-11-10</span>
+  <span itemprop="copyrightYear">2020-11-11</span>
   <span class="with-love",id="animate">
     <i class="fa fa-basketball-ball"></i>
   </span>

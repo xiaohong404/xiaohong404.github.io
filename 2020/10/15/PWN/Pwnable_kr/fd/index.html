@@ -286,7 +286,6 @@
       
         <p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/1.png" class></strong></p>
  <a id="more"></a>
-
 <p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/2.png" class></strong></p>
 <h3 id="登录远程服务器"><a href="#登录远程服务器" class="headerlink" title="登录远程服务器"></a>登录远程服务器</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/3.png" class></strong></p>
 <h3 id="ls-la查看文件信息"><a href="#ls-la查看文件信息" class="headerlink" title="ls -la查看文件信息"></a>ls -la查看文件信息</h3><p><strong><a target="_blank" rel="noopener" href="https://blog.csdn.net/u013197629/article/details/73608613">linux文件权限知识</a></strong></p>
@@ -296,16 +295,13 @@
 <p>有源代码可知，这里需要执行system函数的条件为buf缓冲区内容为LETMEIWN</p>
 <p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/6.png" class></strong></p>
 <h3 id="read-fd-buf-32"><a href="#read-fd-buf-32" class="headerlink" title="read(fd,buf,32)"></a>read(fd,buf,32)</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">read(fd, buf, <span class="number">32</span>)</span><br><span class="line"></span><br><span class="line">fd == <span class="number">0</span>时：则表示标准输入；</span><br><span class="line">fd == <span class="number">1</span>时：则表示标准输出；</span><br><span class="line">fd == <span class="number">2</span>时，则表示标准输出错误。</span><br><span class="line">buf 表示读入的缓冲区；</span><br><span class="line"><span class="number">32</span>表示读入<span class="number">32</span>字节；</span><br></pre></td></tr></table></figure>
-
 <p>因此我们需要设置fd为0，读取我们输入的LETMEWIN到buf缓冲区中即可获得flag。</p>
 <p>注意到</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fd = atoi(argv[<span class="number">1</span>]) - <span class="number">0x1234</span></span><br></pre></td></tr></table></figure>
-
 <p>要使得$fd=0$，就是让main函数的第一个参数argv[1]等于$0x1234$</p>
 <h3 id="fd-4660"><a href="#fd-4660" class="headerlink" title="./fd 4660"></a>./fd 4660</h3><p><strong><img src="/xiaohong404.github.io/2020/10/15/PWN/Pwnable_kr/fd/7.png" class></strong></p>
 <p>注意这里参数需要转为10进制   $0x1234_{16} = 4660_{10}$</p>
 <figure class="highlight erlang-repl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag: mommy! I think I know what a file descriptor is!!</span><br></pre></td></tr></table></figure>
-
 
     </div>
 
@@ -408,14 +404,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/xiaohong404.github.io/archives/">
         
-          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-count">33</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/xiaohong404.github.io/Categories/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -459,7 +455,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020-11-10</span>
+  <span itemprop="copyrightYear">2020-11-11</span>
   <span class="with-love",id="animate">
     <i class="fa fa-basketball-ball"></i>
   </span>
