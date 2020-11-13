@@ -1267,13 +1267,23 @@
     <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/11/12/PWN/Pwnable_xyz/sub/0.png" class></strong></p>
  <a id="more"></a>
 <p><strong><img src="/xiaohong404.github.io/2020/11/12/PWN/Pwnable_xyz/sub/1.png" class></strong></p>
-<h3 id="查看文件保护措施"><a href="#查看文件保护措施" class="headerlink" title="查看文件保护措施"></a>查看文件保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/11/12/PWN/Pwnable_xyz/sub/3.png" class></strong></p>
+<h3 id="查看文件保护措施"><a class="markdownIt-Anchor" href="#查看文件保护措施"></a> 查看文件保护措施</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/11/12/PWN/Pwnable_xyz/sub/3.png" class></strong></p>
+<h3 id="查看c语言源文件"><a class="markdownIt-Anchor" href="#查看c语言源文件"></a> 查看c语言源文件</h3>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function">__int64 __fastcall <span class="title">main</span><span class="params">(__int64 a1, <span class="keyword">char</span> **a2, <span class="keyword">char</span> **a3)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> v4; <span class="comment">// [rsp+0h] [rbp-18h]</span></span><br><span class="line">  <span class="keyword">int</span> v5; <span class="comment">// [rsp+4h] [rbp-14h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v6; <span class="comment">// [rsp+8h] [rbp-10h]</span></span><br><span class="line"></span><br><span class="line">  v6 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  sub_A3E();</span><br><span class="line">  v4 = <span class="number">0</span>;</span><br><span class="line">  v5 = <span class="number">0</span>;</span><br><span class="line">  _printf_chk(<span class="number">1L</span>L, <span class="string">&quot;1337 input: &quot;</span>);</span><br><span class="line">  _isoc99_scanf(<span class="string">&quot;%u %u&quot;</span>, &amp;v4, &amp;v5);</span><br><span class="line">  <span class="keyword">if</span> ( v4 &lt;= <span class="number">4918</span> &amp;&amp; v5 &lt;= <span class="number">4918</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( v4 - v5 == <span class="number">4919</span> )</span><br><span class="line">      system(<span class="string">&quot;cat /flag&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;Sowwy&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0L</span>L;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>显然输入使得<code>V4-V5=4919</code>即可，v4和v5都是int类型，但要求$v4\leq 4918 、v5 \leq 4918$</p>
+<p>显然输入使得<code>V4-V5=4919</code>即可，v4和v5都是int类型，但要求<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>v</mi><mn>4</mn><mo>≤</mo><mn>4918</mn><mi mathvariant="normal">、</mi><mi>v</mi><mn>5</mn><mo>≤</mo><mn>4918</mn></mrow><annotation encoding="application/x-tex">v4\leq 4918 、v5 \leq 4918</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.78041em;vertical-align:-0.13597em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">v</span><span class="mord">4</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.78041em;vertical-align:-0.13597em;"></span><span class="mord">4</span><span class="mord">9</span><span class="mord">1</span><span class="mord">8</span><span class="mord cjk_fallback">、</span><span class="mord mathdefault" style="margin-right:0.03588em;">v</span><span class="mord">5</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">4</span><span class="mord">9</span><span class="mord">1</span><span class="mord">8</span></span></span></span></p>
 <p>1、用户输入的数据类型无论是有符号或者无符号，在堆栈中以补码形式存储。</p>
 <p>2、打印输出的数据按照打印类型的不同显示不同的结果。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/11/12/PWN/Pwnable_xyz/sub/2.png" class></strong></p>
+<h3 id="pwn"><a class="markdownIt-Anchor" href="#pwn"></a> PWN</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/11/12/PWN/Pwnable_xyz/sub/2.png" class></strong></p>
 ]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.xyz</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
   </entry>
   <entry>
     <title>Part 4: 内存相关指令——加载以及存储</title>
@@ -1528,6 +1538,34 @@
         <category>PWN</category>
         <category>Heap</category>
         <category>Heap_Basic</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>add</title>
+    <url>/xiaohong404.github.io/2020/11/13/PWN/Pwnable_xyz/add/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/11/13/PWN/Pwnable_xyz/add/0.png" class></strong></p>
+ <a id="more"></a>
+<p><strong><img src="/xiaohong404.github.io/2020/11/13/PWN/Pwnable_xyz/add/5.png" class></strong></p>
+<h3 id="查看文件保护措施"><a class="markdownIt-Anchor" href="#查看文件保护措施"></a> 查看文件保护措施</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/11/13/PWN/Pwnable_xyz/add/1.png" class></strong></p>
+<h3 id="ida64打开文件"><a class="markdownIt-Anchor" href="#ida64打开文件"></a> IDA64打开文件</h3>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> __cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> result; <span class="comment">// eax</span></span><br><span class="line">  __int64 v4; <span class="comment">// [rsp+8h] [rbp-78h]</span></span><br><span class="line">  __int64 v5; <span class="comment">// [rsp+10h] [rbp-70h]</span></span><br><span class="line">  __int64 v6; <span class="comment">// [rsp+18h] [rbp-68h]</span></span><br><span class="line">  __int64 v7[<span class="number">11</span>]; <span class="comment">// [rsp+20h] [rbp-60h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v8; <span class="comment">// [rsp+78h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v8 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  setup(*(_QWORD *)&amp;argc, argv, envp);</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    v4 = <span class="number">0L</span>L;</span><br><span class="line">    v5 = <span class="number">0L</span>L;</span><br><span class="line">    v6 = <span class="number">0L</span>L;</span><br><span class="line">    <span class="built_in">memset</span>(v7, <span class="number">0</span>, <span class="number">0x50</span>uLL);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Input: &quot;</span>, argv, v7);</span><br><span class="line">    <span class="keyword">if</span> ( (<span class="keyword">unsigned</span> <span class="keyword">int</span>)__isoc99_scanf(<span class="string">&quot;%ld %ld %ld&quot;</span>, &amp;v4, &amp;v5, &amp;v6) != <span class="number">3</span> )</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    v7[v6] = v4 + v5;</span><br><span class="line">    argv = (<span class="keyword">const</span> <span class="keyword">char</span> **)v7[v6];</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Result: %ld&quot;</span>, argv);</span><br><span class="line">  &#125;</span><br><span class="line">  result = <span class="number">0</span>;</span><br><span class="line">  __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>shift+F12 查看可疑字符串</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/13/PWN/Pwnable_xyz/add/2.png" class></strong></p>
+<p>明显存在栈溢出漏洞，只要<code>v7[v6] = v4 + v5</code>时，使得数组溢出覆盖main函数返回地址，跳转到system函数执行即可。</p>
+<p>整理一下：</p>
+<p>1、输入v4、v5、v6，其中v7的位置为<code>rbp - 60h</code>,则返回地址距离v7为<code>60h + 8h = 104 Byte</code>,v7数组是int64类型，每个元素占8Byte，则<code>104/8 = 13</code>，因此想要覆盖返回地址，至少需要填充13个元素长度，即v6=13（数组下标从0开始，0-12为13个元素，之后正好覆盖返回地址），<code>v4 = 400822h ，v5 = 0</code>即可设置返回地址为win函数的地址。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/13/PWN/Pwnable_xyz/add/3.png" class></strong></p>
+<p>2、跳出while循环，使得输入<code>scanf()!=3</code>，输入不正确的参数数目即可</p>
+<h3 id="pwn"><a class="markdownIt-Anchor" href="#pwn"></a> PWN</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/11/13/PWN/Pwnable_xyz/add/4.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.xyz</category>
       </categories>
       <tags>
         <tag>PWN</tag>
