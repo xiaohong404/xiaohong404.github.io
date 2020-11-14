@@ -35,13 +35,13 @@
 <meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/7.png">
 <meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/8.png">
 <meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/2.png">
-<meta property="og:image" content="https://github.com/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/Xiaohong_Blog/blog/source_posts/PWN/Pwnable_xyz/GrownUp/9.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/9.png">
 <meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/10.png">
 <meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/12.png">
 <meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/13.png">
 <meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/14.png">
 <meta property="article:published_time" content="2020-11-14T02:46:03.000Z">
-<meta property="article:modified_time" content="2020-11-14T08:25:58.000Z">
+<meta property="article:modified_time" content="2020-11-14T08:34:32.000Z">
 <meta property="article:author" content="Xiao Hong">
 <meta property="article:tag" content="PWN">
 <meta name="twitter:card" content="summary">
@@ -234,7 +234,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-11-14 10:46:03 / Modified: 16:25:58" itemprop="dateCreated datePublished" datetime="2020-11-14T10:46:03+08:00">2020-11-14</time>
+              <time title="Created: 2020-11-14 10:46:03 / Modified: 16:34:32" itemprop="dateCreated datePublished" datetime="2020-11-14T10:46:03+08:00">2020-11-14</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -313,7 +313,7 @@
 <p>5、查找可疑的字符串</p>
 <p><strong><img src="/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/2.png" class></strong></p>
 <p>可见Flag被存放在二进制文件中</p>
-<p><img src="/xiaohong404.github.io/xiaohong404/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/Xiaohong_Blog\blog\source_posts\PWN\Pwnable_xyz\GrownUp\9.png" alt="image-20201114142751543"></p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/9.png" class></strong></p>
 <h3 id="梳理解题思路"><a href="#梳理解题思路" class="headerlink" title="梳理解题思路"></a>梳理解题思路</h3><p><strong><img src="/xiaohong404.github.io/2020/11/14/PWN/Pwnable_xyz/GrownUp/10.png" class></strong></p>
 <p>参考上图，解题的思路如下：</p>
 <p>本来printf函数是将地址0x601168地址中的值作为参数，但由于strcpy函数复制用户输入的0x80字节数据到usr中，实际为0x81字节，而<code>0x6010E0-0x601160 = 0x80</code>，多出来的NULL字符会将0x601168改写为0x601100，而0x601100是在usr的范围内（<code>0x601100-0x6010E0 = 0x20 = 32Byte</code>)，因此用户可以通过输入格式化字符填充这块区域，打印出需要的flag的值，其中flag的地址为0x601080（<code>地址固定，因为未开启PIE</code>)。注意格式化字符串打印时，是在栈上寻找对应的参数，因此我们需要在栈上放置flag的地址，但是用户的输入只会填充到BSS段，如何在栈上放置地址呢？</p>
