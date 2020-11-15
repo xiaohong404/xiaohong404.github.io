@@ -276,16 +276,16 @@
       
         <p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-6-%E5%88%86%E6%94%AF%E5%92%8C%E6%9D%A1%E4%BB%B6%E6%89%A7%E8%A1%8C/0.png" class></strong></p>
  <a id="more"></a>
-
-<h2 id="条件执行"><a href="#条件执行" class="headerlink" title="条件执行"></a><strong>条件执行</strong></h2><p>在之前讨论CPSR寄存器那部分时，我们大概提了一下条件执行这个词。条件执行用来控制程序执行跳转，或者满足条件下的特定指令的执行。相关条件在CPSR寄存器中描述。寄存器中的比特位的变化决定着不同的条件。比如说当我们比较两个数是否相同时，我们使用的Zero比特位(Z=1)，因为这种情况下发生的运算是a-b=0。在这种情况下我们就满足了EQual的条件。如果第一个数更大些，我们就满足了更大的条件Grater Than或者相反的较小Lower Than。条件缩写都是英文首字母缩写，比如小于等于Lower Than(LE)，大于等于Greater Equal(GE)等。</p>
+<h2 id="条件执行"><a class="markdownIt-Anchor" href="#条件执行"></a> <strong>条件执行</strong></h2>
+<p>在之前讨论CPSR寄存器那部分时，我们大概提了一下条件执行这个词。条件执行用来控制程序执行跳转，或者满足条件下的特定指令的执行。相关条件在CPSR寄存器中描述。寄存器中的比特位的变化决定着不同的条件。比如说当我们比较两个数是否相同时，我们使用的Zero比特位(Z=1)，因为这种情况下发生的运算是a-b=0。在这种情况下我们就满足了EQual的条件。如果第一个数更大些，我们就满足了更大的条件Grater Than或者相反的较小Lower Than。条件缩写都是英文首字母缩写，比如小于等于Lower Than(LE)，大于等于Greater Equal(GE)等。</p>
 <p>下面列表是各个条件的含义以及其检测的状态位(条件指令都是其英文含义的缩写，为了便于记忆不翻译了)：</p>
 <p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-6-%E5%88%86%E6%94%AF%E5%92%8C%E6%9D%A1%E4%BB%B6%E6%89%A7%E8%A1%8C/1.png" class></strong></p>
 <p>我们使用如下代码来实践条件执行相加指令：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.global main</span><br><span class="line">main:</span><br><span class="line">        mov     r0, #<span class="number">2</span>     <span class="comment">/* 初始化值 */</span></span><br><span class="line">        cmp     r0, #<span class="number">3</span>     <span class="comment">/* 将R0和3相比做差，负数产生则N位置1 */</span></span><br><span class="line">        addlt   r0, r0, #<span class="number">1</span> <span class="comment">/* 如果小于等于3，则R0加一 */</span></span><br><span class="line">        cmp     r0, #<span class="number">3</span>     <span class="comment">/* 将R0和3相比做差，零结果产生则Z位置一，N位置恢复为0 */</span></span><br><span class="line">        addlt   r0, r0, #<span class="number">1</span> <span class="comment">/* 如果小于等于3，则R0加一R0 IF it was determined that it is smaller (lower than) number 3 */</span></span><br><span class="line">        bx      lr</span><br></pre></td></tr></table></figure>
-
 <p>上面代码段中的第一条CMP指令将N位置一同时也就指明了R0比3小。之后ADDLT指令在LT条件下执行，对应到CPSR寄存器的情况时V与N比特位不能相同。在执行第二条CMP前，R0=3。所以第二条置了Z位而消除了N位。所以ADDLT不会执行R0也不会被修改，最终程序结果是3。</p>
-<h2 id="Thumb模式中的条件执行"><a href="#Thumb模式中的条件执行" class="headerlink" title="Thumb模式中的条件执行"></a><strong>Thumb模式中的条件执行</strong></h2><p>在指令集那篇文章中我们谈到了不同的指令集，对于Thumb中，其实也有条件执的(Thumb-2中有)。有些ARM处理器版本支持IT指令，允许在Thumb模式下条件执行最多四条指令。</p>
-<p>相关引用：<a target="_blank" rel="noopener" href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0552a/BABIJDIC.html">http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0552a/BABIJDIC.html</a> </p>
+<h2 id="thumb模式中的条件执行"><a class="markdownIt-Anchor" href="#thumb模式中的条件执行"></a> <strong>Thumb模式中的条件执行</strong></h2>
+<p>在指令集那篇文章中我们谈到了不同的指令集，对于Thumb中，其实也有条件执的(Thumb-2中有)。有些ARM处理器版本支持IT指令，允许在Thumb模式下条件执行最多四条指令。</p>
+<p>相关引用：<a target="_blank" rel="noopener" href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0552a/BABIJDIC.html">http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0552a/BABIJDIC.html</a></p>
 <p>指令格式：Syntax: IT{x{y{z}}} cond</p>
 <p>cond 代表在IT指令后第一条条件执行执行指令的需要满足的条件。</p>
 <p>x 代表着第二条条件执行指令要满足的条件逻辑相同还是相反。</p>
@@ -299,29 +299,24 @@
 <p>ITTEE，If-Then-Then-Else-Else，接下来的四条指令条件执行。</p>
 <p>在IT块中的每一条条件执行指令必须是相同逻辑条件或者相反逻辑条件。比如说ITE指令，第一条和第二条指令必须使用相同的条件，而第三条必须是与前两条逻辑上相反的条件。这有一些ARM reference上的例子：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ITTE   NE           ; 后三条指令条件执行</span><br><span class="line">ANDNE  R0, R0, R1   ; ANDNE不更新条件执行相关flags</span><br><span class="line">ADDSNE R2, R2, #<span class="number">1</span>   ; ADDSNE更新条件执行相关flags</span><br><span class="line">MOVEQ  R2, R3       ; 条件执行的move</span><br><span class="line">ITE    GT           ; 后两条指令条件执行</span><br><span class="line">ADDGT  R1, R0, #<span class="number">55</span>  ; GT条件满足时执行加</span><br><span class="line">ADDLE  R1, R0, #<span class="number">48</span>  ; GT条件不满足时执行加</span><br><span class="line">ITTEE  EQ           ; 后两条指令条件执行</span><br><span class="line">MOVEQ  R0, R1       ; 条件执行MOV</span><br><span class="line">ADDEQ  R2, R2, #<span class="number">10</span>  ; 条件执行ADD</span><br><span class="line">ANDNE  R3, R3, #<span class="number">1</span>   ; 条件执行AND</span><br><span class="line">BNE.W  dloop        ; 分支指令只能在IT块的最后一条指令中使用</span><br></pre></td></tr></table></figure>
-
 <p>错误的格式：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">IT     NE           ; 下一条指令条件执行</span><br><span class="line">ADD    R0, R0, R1   ; 格式错误：没有条件指令</span><br></pre></td></tr></table></figure>
-
 <p>下图是条件指令后缀含义以及他们的逻辑相反指令：</p>
 <p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-6-%E5%88%86%E6%94%AF%E5%92%8C%E6%9D%A1%E4%BB%B6%E6%89%A7%E8%A1%8C/2.png" class></strong></p>
 <p>让我们试试下面这段代码：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">.syntax unified    @ 这很重要！</span><br><span class="line">.text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">    .code <span class="number">32</span></span><br><span class="line">    add r3, pc, #<span class="number">1</span>   @ R3=pc+<span class="number">1</span></span><br><span class="line">    bx r3            @ 分支跳转到R3并且切换到Thumb模式下由于最低比特位为<span class="number">1</span></span><br><span class="line">    .code <span class="number">16</span>         @ Thumb模式</span><br><span class="line">    cmp r0, #<span class="number">10</span>      </span><br><span class="line">    ite eq           @ <span class="keyword">if</span> R0 == <span class="number">10</span></span><br><span class="line">    addeq r1, #<span class="number">2</span>     @ then R1 = R1 + <span class="number">2</span></span><br><span class="line">    addne r1, #<span class="number">3</span>     @ <span class="keyword">else</span> R1 = R1 + <span class="number">3</span></span><br><span class="line">    bkpt</span><br></pre></td></tr></table></figure>
-
 <p>.code16是在Thumb模式下执行的代码。这段代码中的条件执行前提是R0等于10。ADDEQ指令代表了如果条件满足，那么就执行R1=R1+2，ADDNE代表了不满足时候的情况。</p>
-<h2 id="分支指令"><a href="#分支指令" class="headerlink" title="分支指令"></a><strong>分支指令</strong></h2><p>分支指令(也叫分支跳转)允许我们在代码中跳转到别的段。当我们需要跳到一些函数上执行或者跳过一些代码块时很有用。这部分的最佳例子就是条件跳转IF以及循环。先来看看IF分支。</p>
+<h2 id="分支指令"><a class="markdownIt-Anchor" href="#分支指令"></a> <strong>分支指令</strong></h2>
+<p>分支指令(也叫分支跳转)允许我们在代码中跳转到别的段。当我们需要跳到一些函数上执行或者跳过一些代码块时很有用。这部分的最佳例子就是条件跳转IF以及循环。先来看看IF分支。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">.global main</span><br><span class="line">main:</span><br><span class="line">mov r1, #<span class="number">2</span> / 初始化 a /</span><br><span class="line">mov r2, #<span class="number">3</span> / 初始化 b /</span><br><span class="line">cmp r1, r2 / 比较谁更大些 /</span><br><span class="line">blt r1_lower / 如果R2更大跳转到r1_lower /</span><br><span class="line">mov r0, r1 / 如果分支跳转没有发生，将R1的值放到到R0 /</span><br><span class="line">b end / 跳转到结束 /</span><br><span class="line">r1_lower:</span><br><span class="line">mov r0, r2 / 将R2的值放到R0 /</span><br><span class="line">b end / 跳转到结束 /</span><br><span class="line">end:</span><br><span class="line">bx lr / THE END /</span><br></pre></td></tr></table></figure>
-
 <p>上面的汇编代码的含义就是找到较大的数，类似的C伪代码是这样的:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> a = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">int</span> b = <span class="number">3</span>;</span><br><span class="line"><span class="keyword">if</span>(a &lt; b) &#123;</span><br><span class="line">max = b;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">max = a;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>再来看看循环中的条件分支:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">.global main</span><br><span class="line">main:</span><br><span class="line">mov r0, #<span class="number">0</span> / 初始化 a /</span><br><span class="line">loop:</span><br><span class="line">cmp r0, #<span class="number">4</span> / 检查 a==<span class="number">4</span> /</span><br><span class="line">beq end / 如果是则结束 /</span><br><span class="line">add r0, r0, #<span class="number">1</span> / 如果不是则加<span class="number">1</span> /</span><br><span class="line">b loop / 重复循环 /</span><br><span class="line">end:</span><br><span class="line">bx lr / THE END /</span><br></pre></td></tr></table></figure>
-
 <p>对应的C伪代码长这样子:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="keyword">int</span> a = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span>(a &lt; <span class="number">4</span>) &#123;</span><br><span class="line">a= a+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="B-BX-BLX"><a href="#B-BX-BLX" class="headerlink" title="B/BX/BLX"></a><strong>B/BX/BLX</strong></h2><p>有三种类型的分支指令:</p>
+<h2 id="bbxblx"><a class="markdownIt-Anchor" href="#bbxblx"></a> <strong>B/BX/BLX</strong></h2>
+<p>有三种类型的分支指令:</p>
 <p>Branch(B)</p>
 <p>简单的跳转到一个函数</p>
 <p>Branch link(BL)</p>
@@ -331,10 +326,10 @@
 <p>需要寄存器类型作为第一操作数:BX/BLX reg</p>
 <p>BX/BLX指令被用来从ARM模式切换到Thumb模式。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">.code <span class="number">32</span> @ ARM模式</span><br><span class="line">add r2, pc, #<span class="number">1</span> @ PC+<span class="number">1</span>放到R2</span><br><span class="line">bx r2 @ 分支切换到R2</span><br><span class="line">.code <span class="number">16</span>          @ Thumb模式</span><br><span class="line"> mov r0, #<span class="number">1</span></span><br></pre></td></tr></table></figure>
-
 <p>上面的代码将当前的PC值加1存放到了R2中(此时PC指向其后两条指令的偏移处)，通过BX跳转到了寄存器指向的位置，由于最低有效位为1，所以切换到Thumb模式执行。下面GDB调试的动图说明了这一切。</p>
 <p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-6-%E5%88%86%E6%94%AF%E5%92%8C%E6%9D%A1%E4%BB%B6%E6%89%A7%E8%A1%8C/3.gif" class></strong></p>
-<h2 id="条件分支指令"><a href="#条件分支指令" class="headerlink" title="条件分支指令"></a><strong>条件分支指令</strong></h2><p>条件分支指令是指在满足某种特定条件下的跳转指令。指令模式是跳转指令后加上条件后缀。我们用BEQ来举例吧。下面这段汇编代码对一些值做了操作，然后依据比较结果进行条件分支跳转。</p>
+<h2 id="条件分支指令"><a class="markdownIt-Anchor" href="#条件分支指令"></a> <strong>条件分支指令</strong></h2>
+<p>条件分支指令是指在满足某种特定条件下的跳转指令。指令模式是跳转指令后加上条件后缀。我们用BEQ来举例吧。下面这段汇编代码对一些值做了操作，然后依据比较结果进行条件分支跳转。</p>
 <p><strong><img src="/xiaohong404.github.io/2020/11/09/ARM%E6%B1%87%E7%BC%96/Part-6-%E5%88%86%E6%94%AF%E5%92%8C%E6%9D%A1%E4%BB%B6%E6%89%A7%E8%A1%8C/4.png" class></strong></p>
 <p>对应汇编代码如下:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">.text</span><br><span class="line">.global _start</span><br><span class="line">_start:</span><br><span class="line">mov r0, #<span class="number">2</span></span><br><span class="line">mov r1, #<span class="number">2</span></span><br><span class="line">add r0, r0, r1</span><br><span class="line">cmp r0, #<span class="number">4</span></span><br><span class="line">beq func1</span><br><span class="line">add r1, #<span class="number">5</span></span><br><span class="line">b func2</span><br><span class="line">func1:</span><br><span class="line">mov r1, r0</span><br><span class="line">bx lr</span><br><span class="line">func2:</span><br><span class="line">mov r0, r1</span><br><span class="line">bx lr</span><br></pre></td></tr></table></figure>
@@ -423,7 +418,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E6%89%A7%E8%A1%8C"><span class="nav-number">1.</span> <span class="nav-text">条件执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thumb%E6%A8%A1%E5%BC%8F%E4%B8%AD%E7%9A%84%E6%9D%A1%E4%BB%B6%E6%89%A7%E8%A1%8C"><span class="nav-number">2.</span> <span class="nav-text">Thumb模式中的条件执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E6%8C%87%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">分支指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-BX-BLX"><span class="nav-number">4.</span> <span class="nav-text">B&#x2F;BX&#x2F;BLX</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%88%86%E6%94%AF%E6%8C%87%E4%BB%A4"><span class="nav-number">5.</span> <span class="nav-text">条件分支指令</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E6%89%A7%E8%A1%8C"><span class="nav-number">1.</span> <span class="nav-text"> 条件执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#thumb%E6%A8%A1%E5%BC%8F%E4%B8%AD%E7%9A%84%E6%9D%A1%E4%BB%B6%E6%89%A7%E8%A1%8C"><span class="nav-number">2.</span> <span class="nav-text"> Thumb模式中的条件执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E6%8C%87%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text"> 分支指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bbxblx"><span class="nav-number">4.</span> <span class="nav-text"> B&#x2F;BX&#x2F;BLX</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%88%86%E6%94%AF%E6%8C%87%E4%BB%A4"><span class="nav-number">5.</span> <span class="nav-text"> 条件分支指令</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -439,7 +434,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/xiaohong404.github.io/archives/">
         
-          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-count">38</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -490,7 +485,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020-11-14</span>
+  <span itemprop="copyrightYear">2020-11-15</span>
   <span class="with-love",id="animate">
     <i class="fa fa-basketball-ball"></i>
   </span>

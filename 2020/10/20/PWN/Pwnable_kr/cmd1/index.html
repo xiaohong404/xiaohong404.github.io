@@ -277,12 +277,13 @@
       
         <p><strong><img src="/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd1/0.png" class></strong></p>
  <a id="more"></a>
-
 <p><strong><img src="/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd1/1.png" class></strong></p>
-<h3 id="查看cmd1-c源代码"><a href="#查看cmd1-c源代码" class="headerlink" title="查看cmd1.c源代码"></a>查看cmd1.c源代码</h3><p><strong><img src="/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd1/2.png" class></strong></p>
+<h3 id="查看cmd1c源代码"><a class="markdownIt-Anchor" href="#查看cmd1c源代码"></a> 查看cmd1.c源代码</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd1/2.png" class></strong></p>
 <p><a target="_blank" rel="noopener" href="https://man7.org/linux/man-pages/man3/putenv.3.html">putenv函数</a>是添加或者改变一个环境变量。</p>
-<p>filter函数的作用是通过<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_21792169/article/details/51147489">strstr函数</a>匹配$flag、sh、tmp$三个字符串，如果检测到这三个字符串，则函数返回值不为0，会导致主函数退出，无法执行system函数。所以这里需要将我们输入的字符串隐藏起来，绕过filter函数的检查，但这里我们需要得到flag。又不能直接输入flag，于是想到可以使用通配符来代替flag。system命令的默认PWD环境变量应该是与这个程序的PWD环境变量相同，这个环境变量是什么，就是默认“./”执行的文件夹目录，一般是根据程序调用的bash窗口目录来的。</p>
-<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd1/3.png" class></strong></p>
+<p>filter函数的作用是通过<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_21792169/article/details/51147489">strstr函数</a>匹配<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>f</mi><mi>l</mi><mi>a</mi><mi>g</mi><mi mathvariant="normal">、</mi><mi>s</mi><mi>h</mi><mi mathvariant="normal">、</mi><mi>t</mi><mi>m</mi><mi>p</mi></mrow><annotation encoding="application/x-tex">flag、sh、tmp</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mord cjk_fallback">、</span><span class="mord mathdefault">s</span><span class="mord mathdefault">h</span><span class="mord cjk_fallback">、</span><span class="mord mathdefault">t</span><span class="mord mathdefault">m</span><span class="mord mathdefault">p</span></span></span></span>三个字符串，如果检测到这三个字符串，则函数返回值不为0，会导致主函数退出，无法执行system函数。所以这里需要将我们输入的字符串隐藏起来，绕过filter函数的检查，但这里我们需要得到flag。又不能直接输入flag，于是想到可以使用通配符来代替flag。system命令的默认PWD环境变量应该是与这个程序的PWD环境变量相同，这个环境变量是什么，就是默认“./”执行的文件夹目录，一般是根据程序调用的bash窗口目录来的。</p>
+<h3 id="pwn"><a class="markdownIt-Anchor" href="#pwn"></a> PWN</h3>
+<p><strong><img src="/xiaohong404.github.io/2020/10/20/PWN/Pwnable_kr/cmd1/3.png" class></strong></p>
 
     </div>
 
@@ -369,7 +370,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8Bcmd1-c%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">查看cmd1.c源代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PWN"><span class="nav-number">2.</span> <span class="nav-text">PWN</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8Bcmd1c%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text"> 查看cmd1.c源代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pwn"><span class="nav-number">2.</span> <span class="nav-text"> PWN</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -385,7 +386,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/xiaohong404.github.io/archives/">
         
-          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-count">38</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -436,7 +437,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020-11-14</span>
+  <span itemprop="copyrightYear">2020-11-15</span>
   <span class="with-love",id="animate">
     <i class="fa fa-basketball-ball"></i>
   </span>
