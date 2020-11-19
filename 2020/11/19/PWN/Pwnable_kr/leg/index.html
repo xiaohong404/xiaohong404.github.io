@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/xiaohong404.github.io/images/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/xiaohong404.github.io/images/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/xiaohong404.github.io/images/logo.png">
+  <link rel="mask-icon" href="/xiaohong404.github.io/images/logo.png" color="#222">
+
+<link rel="stylesheet" href="/xiaohong404.github.io/css/main.css">
+
+
+<link rel="stylesheet" href="/xiaohong404.github.io/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"github.com","root":"/xiaohong404.github.io/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="leg">
+<meta property="og:url" content="https://github.com/xiaohong404/xiaohong404.github.io/2020/11/19/PWN/Pwnable_kr/leg/index.html">
+<meta property="og:site_name" content="Mr.red">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/19/PWN/Pwnable_kr/leg/0.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/19/PWN/Pwnable_kr/leg/1.png">
+<meta property="og:image" content="https://github.com/xiaohong404.github.io/2020/11/19/PWN/Pwnable_kr/leg/2.png">
+<meta property="article:published_time" content="2020-11-19T02:02:55.000Z">
+<meta property="article:modified_time" content="2020-11-19T03:11:58.000Z">
+<meta property="article:author" content="Xiao Hong">
+<meta property="article:tag" content="PWN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/xiaohong404.github.io/2020/11/19/PWN/Pwnable_kr/leg/0.png">
+
+<link rel="canonical" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/11/19/PWN/Pwnable_kr/leg/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>leg | Mr.red</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/xiaohong404.github.io/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Mr.red</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/xiaohong404.github.io/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/xiaohong404.github.io/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/xiaohong404.github.io/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/xiaohong404.github.io/Categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/xiaohong404.github.io/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xiaohong404/xiaohong404.github.io/2020/11/19/PWN/Pwnable_kr/leg/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
+      <meta itemprop="name" content="Xiao Hong">
+      <meta itemprop="description" content="Things always start to get better after you give up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mr.red">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          leg
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-11-19 10:02:55 / Modified: 11:11:58" itemprop="dateCreated datePublished" datetime="2020-11-19T10:02:55+08:00">2020-11-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/xiaohong404.github.io/Categories/PWN/" itemprop="url" rel="index"><span itemprop="name">PWN</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/xiaohong404.github.io/Categories/PWN/Pwnable-kr/" itemprop="url" rel="index"><span itemprop="name">Pwnable.kr</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/xiaohong404.github.io/Categories/PWN/Pwnable-kr/Toddler-s-Bottle/" itemprop="url" rel="index"><span itemprop="name">Toddler's Bottle</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/xiaohong404.github.io/2020/11/19/PWN/Pwnable_kr/leg/" class="post-meta-item leancloud_visitors" data-flag-title="leg" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/xiaohong404.github.io/2020/11/19/PWN/Pwnable_kr/leg/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/xiaohong404.github.io/2020/11/19/PWN/Pwnable_kr/leg/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong><img src="/xiaohong404.github.io/2020/11/19/PWN/Pwnable_kr/leg/0.png" class></strong></p>
+ <a id="more"></a>
+
+<p><strong><img src="/xiaohong404.github.io/2020/11/19/PWN/Pwnable_kr/leg/1.png" class></strong></p>
+<h3 id="查看leg-c文件"><a href="#查看leg-c文件" class="headerlink" title="查看leg.c文件"></a>查看leg.c文件</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">key1</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">asm</span>(<span class="string">&quot;mov r3, pc\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">key2</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">asm</span>(</span><br><span class="line">	<span class="string">&quot;push	&#123;r6&#125;\n&quot;</span></span><br><span class="line">	<span class="string">&quot;add	r6, pc, $1\n&quot;</span></span><br><span class="line">	<span class="string">&quot;bx	r6\n&quot;</span></span><br><span class="line">	<span class="string">&quot;.code   16\n&quot;</span></span><br><span class="line">	<span class="string">&quot;mov	r3, pc\n&quot;</span></span><br><span class="line">	<span class="string">&quot;add	r3, $0x4\n&quot;</span></span><br><span class="line">	<span class="string">&quot;push	&#123;r3&#125;\n&quot;</span></span><br><span class="line">	<span class="string">&quot;pop	&#123;pc&#125;\n&quot;</span></span><br><span class="line">	<span class="string">&quot;.code	32\n&quot;</span></span><br><span class="line">	<span class="string">&quot;pop	&#123;r6&#125;\n&quot;</span></span><br><span class="line">	);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">key3</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">asm</span>(<span class="string">&quot;mov r3, lr\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> key=<span class="number">0</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Daddy has very strong arm! : &quot;</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;key);</span><br><span class="line">	<span class="keyword">if</span>( (key1()+key2()+key3()) == key )&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;Congratz!\n&quot;</span>);</span><br><span class="line">		<span class="keyword">int</span> fd = open(<span class="string">&quot;flag&quot;</span>, O_RDONLY);</span><br><span class="line">		<span class="keyword">char</span> buf[<span class="number">100</span>];</span><br><span class="line">		<span class="keyword">int</span> r = read(fd, buf, <span class="number">100</span>);</span><br><span class="line">		write(<span class="number">0</span>, buf, r);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;I have strong leg :P\n&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>key1,key2,key3三个函数都是内联arm汇编。看起来只需要通过<code>key1()+key2()+key3()==key</code>即可，而key我们是可以控制的，因此只需要计算三个函数的返回值即可。对于arm平台的东西，需要用对应的arm toolchain中的gdb来反汇编，这道题直接给出了gdb反汇编的结果文件：</p>
+<h3 id="main（）"><a href="#main（）" class="headerlink" title="main（）"></a>main（）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">(gdb) disass main</span><br><span class="line">Dump of assembler code <span class="keyword">for</span> <span class="keyword">function</span> main:</span><br><span class="line">   0x00008d3c &lt;+0&gt;:	push	&#123;r4, r11, lr&#125;</span><br><span class="line">   0x00008d40 &lt;+4&gt;:	add	r11, sp, <span class="comment">#8</span></span><br><span class="line">   0x00008d44 &lt;+8&gt;:	sub	sp, sp, <span class="comment">#12</span></span><br><span class="line">   0x00008d48 &lt;+12&gt;:	mov	r3, <span class="comment">#0</span></span><br><span class="line">   0x00008d4c &lt;+16&gt;:	str	r3, [r11, <span class="comment">#-16]</span></span><br><span class="line">   0x00008d50 &lt;+20&gt;:	ldr	r0, [pc, <span class="comment">#104]	; 0x8dc0 &lt;main+132&gt;</span></span><br><span class="line">   0x00008d54 &lt;+24&gt;:	bl	0xfb6c &lt;<span class="built_in">printf</span>&gt;</span><br><span class="line">   0x00008d58 &lt;+28&gt;:	sub	r3, r11, <span class="comment">#16</span></span><br><span class="line">   0x00008d5c &lt;+32&gt;:	ldr	r0, [pc, <span class="comment">#96]	; 0x8dc4 &lt;main+136&gt;</span></span><br><span class="line">   0x00008d60 &lt;+36&gt;:	mov	r1, r3</span><br><span class="line">   0x00008d64 &lt;+40&gt;:	bl	0xfbd8 &lt;__isoc99_scanf&gt;</span><br><span class="line">   0x00008d68 &lt;+44&gt;:	bl	0x8cd4 &lt;key1&gt;</span><br><span class="line">   0x00008d6c &lt;+48&gt;:	mov	r4, r0</span><br><span class="line">   0x00008d70 &lt;+52&gt;:	bl	0x8cf0 &lt;key2&gt;</span><br><span class="line">   0x00008d74 &lt;+56&gt;:	mov	r3, r0</span><br><span class="line">   0x00008d78 &lt;+60&gt;:	add	r4, r4, r3</span><br><span class="line">   0x00008d7c &lt;+64&gt;:	bl	0x8d20 &lt;key3&gt;</span><br><span class="line">   0x00008d80 &lt;+68&gt;:	mov	r3, r0</span><br><span class="line">   0x00008d84 &lt;+72&gt;:	add	r2, r4, r3</span><br><span class="line">   0x00008d88 &lt;+76&gt;:	ldr	r3, [r11, <span class="comment">#-16]</span></span><br><span class="line">   0x00008d8c &lt;+80&gt;:	cmp	r2, r3</span><br><span class="line">   0x00008d90 &lt;+84&gt;:	bne	0x8da8 &lt;main+108&gt;</span><br><span class="line">   0x00008d94 &lt;+88&gt;:	ldr	r0, [pc, <span class="comment">#44]	; 0x8dc8 &lt;main+140&gt;</span></span><br><span class="line">   0x00008d98 &lt;+92&gt;:	bl	0x1050c &lt;puts&gt;</span><br><span class="line">   0x00008d9c &lt;+96&gt;:	ldr	r0, [pc, <span class="comment">#40]	; 0x8dcc &lt;main+144&gt;</span></span><br><span class="line">   0x00008da0 &lt;+100&gt;:	bl	0xf89c &lt;system&gt;</span><br><span class="line">   0x00008da4 &lt;+104&gt;:	b	0x8db0 &lt;main+116&gt;</span><br><span class="line">   0x00008da8 &lt;+108&gt;:	ldr	r0, [pc, <span class="comment">#32]	; 0x8dd0 &lt;main+148&gt;</span></span><br><span class="line">   0x00008dac &lt;+112&gt;:	bl	0x1050c &lt;puts&gt;</span><br><span class="line">   0x00008db0 &lt;+116&gt;:	mov	r3, <span class="comment">#0</span></span><br><span class="line">   0x00008db4 &lt;+120&gt;:	mov	r0, r3</span><br><span class="line">   0x00008db8 &lt;+124&gt;:	sub	sp, r11, <span class="comment">#8</span></span><br><span class="line">   0x00008dbc &lt;+128&gt;:	pop	&#123;r4, r11, pc&#125;</span><br><span class="line">   0x00008dc0 &lt;+132&gt;:	andeq	r10, r6, r12, lsl <span class="comment">#9</span></span><br><span class="line">   0x00008dc4 &lt;+136&gt;:	andeq	r10, r6, r12, lsr <span class="comment">#9</span></span><br><span class="line">   0x00008dc8 &lt;+140&gt;:			; &lt;UNDEFINED&gt; instruction: 0x0006a4b0</span><br><span class="line">   0x00008dcc &lt;+144&gt;:			; &lt;UNDEFINED&gt; instruction: 0x0006a4bc</span><br><span class="line">   0x00008dd0 &lt;+148&gt;:	andeq	r10, r6, r4, asr <span class="comment">#9</span></span><br><span class="line">End of assembler dump.</span><br></pre></td></tr></table></figure>
+
+<h3 id="key1"><a href="#key1" class="headerlink" title="key1()"></a>key1()</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">(gdb) disass key1</span><br><span class="line">Dump of assembler code <span class="keyword">for</span> <span class="keyword">function</span> key1:</span><br><span class="line">   0x00008cd4 &lt;+0&gt;:	push	&#123;r11&#125;		; (str r11, [sp, <span class="comment">#-4]!)</span></span><br><span class="line">   0x00008cd8 &lt;+4&gt;:	add	r11, sp, <span class="comment">#0</span></span><br><span class="line">   0x00008cdc &lt;+8&gt;:	mov	r3, pc</span><br><span class="line">   0x00008ce0 &lt;+12&gt;:	mov	r0, r3</span><br><span class="line">   0x00008ce4 &lt;+16&gt;:	sub	sp, r11, <span class="comment">#0</span></span><br><span class="line">   0x00008ce8 &lt;+20&gt;:	pop	&#123;r11&#125;		; (ldr r11, [sp], <span class="comment">#4)</span></span><br><span class="line">   0x00008cec &lt;+24&gt;:	bx	lr</span><br><span class="line">End of assembler dump.</span><br></pre></td></tr></table></figure>
+
+<p>寄存器pc（r15）在arm状态下（指令长度为4，RISC等长指令集），总是指向当前指令（正在执行）+8处，这里执行了<code>0x00008cdc</code>后，r3为<code>0x00008ce4</code>。此后将r3给了r0作为返回值（<code>ARM用r0传递返回值</code>）。</p>
+<h3 id="key2"><a href="#key2" class="headerlink" title="key2()"></a>key2()</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">(gdb) disass key2</span><br><span class="line">Dump of assembler code <span class="keyword">for</span> <span class="keyword">function</span> key2:</span><br><span class="line">   0x00008cf0 &lt;+0&gt;:	push	&#123;r11&#125;		; (str r11, [sp, <span class="comment">#-4]!)</span></span><br><span class="line">   0x00008cf4 &lt;+4&gt;:	add	r11, sp, <span class="comment">#0</span></span><br><span class="line">   0x00008cf8 &lt;+8&gt;:	push	&#123;r6&#125;		; (str r6, [sp, <span class="comment">#-4]!)</span></span><br><span class="line">   0x00008cfc &lt;+12&gt;:	add	r6, pc, <span class="comment">#1</span></span><br><span class="line">   0x00008d00 &lt;+16&gt;:	bx	r6</span><br><span class="line">   0x00008d04 &lt;+20&gt;:	mov	r3, pc</span><br><span class="line">   0x00008d06 &lt;+22&gt;:	adds	r3, <span class="comment">#4</span></span><br><span class="line">   0x00008d08 &lt;+24&gt;:	push	&#123;r3&#125;</span><br><span class="line">   0x00008d0a &lt;+26&gt;:	pop	&#123;pc&#125;</span><br><span class="line">   0x00008d0c &lt;+28&gt;:	pop	&#123;r6&#125;		; (ldr r6, [sp], <span class="comment">#4)</span></span><br><span class="line">   0x00008d10 &lt;+32&gt;:	mov	r0, r3</span><br><span class="line">   0x00008d14 &lt;+36&gt;:	sub	sp, r11, <span class="comment">#0</span></span><br><span class="line">   0x00008d18 &lt;+40&gt;:	pop	&#123;r11&#125;		; (ldr r11, [sp], <span class="comment">#4)</span></span><br><span class="line">   0x00008d1c &lt;+44&gt;:	bx	lr</span><br><span class="line">End of assembler dump.</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>key2+8处程序一开始保存了r6，则说明r6会被后面的指令用到。</li>
+<li>key2+12处r6变为<code>0x00008d05</code>。</li>
+<li>key2+16处bx跳转到key+20（指令地址会先和0xFFFFFFFE进行按位与，因为最后一位肯定是0，因此最后一位用于做<code>标志位</code>，bx执行时如果地址最后一位是0，表示跳到arm状态，1则跳到thumb态），因为地址最低位是1，所以切换为thumb状态。</li>
+<li>key2+20处，把pc传递给r3，此时r3就是0x00008d08(<code>thumb状态每条指令是2字节长</code>)。</li>
+<li>此后，key2+22处对r3增加4，变成<code>0x00008d0c</code>。</li>
+<li>最后把r3给r0作为返回值，也就是0x00008d0c。此后通过bx跳回main（<code>此前bl指令将pc-4存在lr中</code>）时，状态又换为arm。</li>
+</ol>
+<h3 id="key3"><a href="#key3" class="headerlink" title="key3()"></a>key3()</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">(gdb) disass key3</span><br><span class="line">Dump of assembler code <span class="keyword">for</span> <span class="keyword">function</span> key3:</span><br><span class="line">   0x00008d20 &lt;+0&gt;:	push	&#123;r11&#125;		; (str r11, [sp, <span class="comment">#-4]!)</span></span><br><span class="line">   0x00008d24 &lt;+4&gt;:	add	r11, sp, <span class="comment">#0</span></span><br><span class="line">   0x00008d28 &lt;+8&gt;:	mov	r3, lr</span><br><span class="line">   0x00008d2c &lt;+12&gt;:	mov	r0, r3</span><br><span class="line">   0x00008d30 &lt;+16&gt;:	sub	sp, r11, <span class="comment">#0</span></span><br><span class="line">   0x00008d34 &lt;+20&gt;:	pop	&#123;r11&#125;		; (ldr r11, [sp], <span class="comment">#4)</span></span><br><span class="line">   0x00008d38 &lt;+24&gt;:	bx	lr</span><br><span class="line">End of assembler dump.</span><br></pre></td></tr></table></figure>
+
+<p>lr的值给了r3，最后再传给r0返回，这里lr就是main函数<code>0x00008d7c &lt;+64&gt;:    bl    0x8d20 &lt;key3&gt;</code>处pc-4也就是下一条指令的地址——<code>0x00008d80</code>。</p>
+<p>到此，我们算出了三个返回值，加起来为：<code>0x8ce4+0x8d0c+0x8d80 = 0x1A770 = 108400</code>。</p>
+<h3 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h3><p><strong><img src="/xiaohong404.github.io/2020/11/19/PWN/Pwnable_kr/leg/2.png" class></strong></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/xiaohong404.github.io/tags/PWN/" rel="tag"><i class="fa fa-tag"></i> PWN</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/xiaohong404.github.io/2020/11/16/PWN/Pwnable_xyz/xor/" rel="prev" title="xor">
+      <i class="fa fa-chevron-left"></i> xor
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+  
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8Bleg-c%E6%96%87%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">查看leg.c文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#main%EF%BC%88%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">main（）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#key1"><span class="nav-number">3.</span> <span class="nav-text">key1()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#key2"><span class="nav-number">4.</span> <span class="nav-text">key2()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#key3"><span class="nav-number">5.</span> <span class="nav-text">key3()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PWN"><span class="nav-number">6.</span> <span class="nav-text">PWN</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiao Hong"
+      src="https://avatars1.githubusercontent.com/u/69063618?s=460&u=11199d69e5551ba91c0709fae0a30a592ab1271b&v=4">
+  <p class="site-author-name" itemprop="name">Xiao Hong</p>
+  <div class="site-description" itemprop="description">Things always start to get better after you give up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/xiaohong404.github.io/archives/">
+        
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/xiaohong404.github.io/Categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/xiaohong404.github.io/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaohong404" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaohong404"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/pluto-9-55" title="ZhiHu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;pluto-9-55" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>ZhiHu</a>
+      </span>
+  </div>
+
+
+<!-- CloudCalendar -->
+<div class="widget-wrap" style="width: 90%;margin-left: auto;margin-right: auto; opacity: 0.97;">
+	<div class="widget" id="CloudCalendar"></div>
+</div>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020-11-19</span>
+  <span class="with-love",id="animate">
+    <i class="fa fa-basketball-ball"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaohong</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/xiaohong404.github.io/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/xiaohong404.github.io/lib/anime.min.js"></script>
+  <script src="/xiaohong404.github.io/lib/velocity/velocity.min.js"></script>
+  <script src="/xiaohong404.github.io/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/xiaohong404.github.io/js/utils.js"></script>
+
+<script src="/xiaohong404.github.io/js/motion.js"></script>
+
+
+<script src="/xiaohong404.github.io/js/schemes/muse.js"></script>
+
+
+<script src="/xiaohong404.github.io/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/xiaohong404.github.io/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/xiaohong404.github.io/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qgoG1EyC6yrAnmbPcCl9pCH8-gzGzoHsz',
+      appKey     : 'yzRsxAlXtg72qlBbwrwA034j',
+      placeholder: "Just go go",
+      avatar     : 'wavatar',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : 'en,zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+<script src="/xiaohong404.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/xiaohong404.github.io/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":150,"height":300,"hOffset":80,"vOffset":-50},"mobile":{"show":true},"log":false,"tagMode":false});</script></body>
+</html>
