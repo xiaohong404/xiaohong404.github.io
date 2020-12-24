@@ -1971,4 +1971,17 @@
         <tag>PWN</tag>
       </tags>
   </entry>
+  <entry>
+    <title>DeepFool算法论文导读</title>
+    <url>/xiaohong404.github.io/2020/12/24/AI%E5%AE%89%E5%85%A8/DeepFool%E7%AE%97%E6%B3%95%E8%AE%BA%E6%96%87%E5%AF%BC%E8%AF%BB/</url>
+    <content><![CDATA[ <div class="pdfobject-container" data-target="./PDF/DeepFool算法论文导读.pdf" data-height="500px"></div>]]></content>
+      <categories>
+        <category>Machine Learning</category>
+        <category>AI安全</category>
+      </categories>
+      <tags>
+        <tag>AI</tag>
+        <tag>Machine Learning</tag>
+      </tags>
+  </entry>
 </search>
